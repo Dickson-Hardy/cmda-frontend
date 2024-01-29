@@ -19,7 +19,7 @@ This is the frontend web application for CMDA Nigeria.
 
 ```bash
 # Change to project directory
-$ cd ebvs-react-frontend
+$ cd cmda-nigeria-frontend
 
 # Install dependencies
 $ yarn

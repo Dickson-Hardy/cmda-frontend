@@ -1,3 +1,36 @@
+import AppRouter from "./routes/AppRouter";
+import { Provider } from "react-redux";
+import store, { persistor } from "./redux/store/store";
+import { PersistGate } from "redux-persist/integration/react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export default function App() {
-  return <h1 className="text-3xl font-bold underline text-red-500">CMDA Nigeria!</h1>;
+  return (
+    <Provider store={store}>
+      <PersistGate
+        loading={
+          <div className="w-full h-screen flex items-center justify-center">
+            <h2 className="font-bold text-xl">Loading...</h2>
+          </div>
+        }
+        persistor={persistor}
+      >
+        <AppRouter />
+
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={true}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
+      </PersistGate>
+    </Provider>
+  );
 }
