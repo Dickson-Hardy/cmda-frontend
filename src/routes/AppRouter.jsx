@@ -8,6 +8,7 @@ import Dashboard from "~/pages/Dashboard/Dashboard";
 import Login from "~/pages/Auth/Login/Login";
 import ForgotPassword from "~/pages/Auth/ForgotPassword/ForgotPassword";
 import NewPassword from "~/pages/Auth/NewPassword/NewPassword";
+import SignUp from "~/pages/Auth/SignUp/SignUp";
 
 export default function AppRouter() {
   // routes
@@ -25,6 +26,7 @@ export default function AppRouter() {
             { path: "login", element: <Login /> },
             { path: "forgot-password", element: <ForgotPassword /> },
             { path: "reset-password", element: <NewPassword /> },
+            { path: "signup", element: <SignUp /> },
           ],
         },
         // Dashboard Pages

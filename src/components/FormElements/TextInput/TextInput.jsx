@@ -22,7 +22,7 @@ const TextInput = ({
 
   return (
     <div className="w-full">
-      <label htmlFor={label} className="block mb-1 text-sm font-medium text-black">
+      <label htmlFor={label} className="block mb-1 text-sm font-semibold text-black">
         {title || convertToCapitalizedWords(label)}
         {required ? <span className="text-error ml-px">*</span> : null}
       </label>
@@ -32,7 +32,7 @@ const TextInput = ({
           id={label}
           name={name || label}
           className={classNames(
-            "bg-primary-light border border-gray placeholder:text-gray rounded-md block w-full text-sm p-3 h-12",
+            "bg-white border border-[#E9E8E9] placeholder:text-[#999798] placeholder:text-xs rounded-md block w-full text-sm p-3 h-12",
             "focus:ring focus:ring-primary/20 focus:outline-none focus:bg-white focus:border-transparent transition-all",
             errors?.[label]?.message && "border-error",
             type === "password" ? "pr-8" : "pr-3",

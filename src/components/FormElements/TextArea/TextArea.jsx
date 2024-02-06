@@ -17,7 +17,7 @@ const TextArea = ({
 }) => {
   return (
     <div>
-      <label htmlFor={label} className="block mb-1 text-sm font-medium text-black">
+      <label htmlFor={label} className="block mb-1 text-sm font-semibold text-black">
         {title || convertToCapitalizedWords(label)}
         {required ? <span className="text-error">*</span> : null}
       </label>
@@ -27,7 +27,7 @@ const TextArea = ({
         name={name || label}
         rows={rows}
         className={classNames(
-          "bg-primary-light border border-gray placeholder:text-gray rounded-lg block w-full text-sm p-3",
+          "bg-white border border-[#E9E8E9] placeholder:text-[#999798] placeholder:text-xs rounded-lg block w-full text-sm p-3",
           "focus:ring focus:ring-primary/25 focus:outline-none focus:bg-white focus:border-transparent transition-all",
           errors?.[label]?.message && "border-error",
           className
