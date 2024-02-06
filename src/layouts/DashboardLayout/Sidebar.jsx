@@ -33,7 +33,7 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
                     className={({ isActive }) =>
                       classNames(
                         "flex items-center gap-2.5 px-4 py-3 cursor-pointer text-sm font-medium",
-                        isActive ? "bg-primary text-white" : "bg-transparent text-primary hover:bg-primary-light"
+                        isActive ? "bg-primary text-white" : "bg-transparent text-primary hover:bg-onPrimary"
                       )
                     }
                   >
