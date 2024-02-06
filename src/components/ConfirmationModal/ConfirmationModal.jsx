@@ -26,7 +26,7 @@ const ConfirmationModal = ({
           <span
             className={classNames(
               "text-3xl rounded-full w-14 h-14 inline-flex justify-center items-center mx-auto p-2",
-              "bg-primary-light text-primary"
+              "bg-onPrimary text-primary"
             )}
           >
             {icon}

@@ -11,7 +11,7 @@ const Header = ({ onToggleSidebar }) => {
       <nav className="h-full w-full max-w-screen-xl mx-auto flex items-center gap-4 py-5">
         {/* Sidebar Toggle Button */}
         <button
-          className="text-primary text-2xl focus:outline-none hover:bg-primary-light rounded-md transition-all p-1 lg:hidden"
+          className="text-primary text-2xl focus:outline-none hover:bg-onPrimary rounded-md transition-all p-1 lg:hidden"
           onClick={onToggleSidebar}
         >
           {icons.menu}
@@ -21,7 +21,7 @@ const Header = ({ onToggleSidebar }) => {
 
         <div className="flex-1" />
         {/* Notification Icon */}
-        <button className="text-primary text-xl focus:outline-none hover:bg-primary-light rounded-md transition-all p-1.5">
+        <button className="text-primary text-xl focus:outline-none hover:bg-onPrimary rounded-md transition-all p-1.5">
           {icons.bell}
         </button>
         {/* Avatar Dropdown */}
@@ -32,13 +32,13 @@ const Header = ({ onToggleSidebar }) => {
               <p className="text-xs text-gray">somebody@gmail.com</p>
             </li>
             <li
-              className="flex gap-3 items-center cursor-pointer px-5 py-2 border-t hover:bg-primary-light text-gray-dark"
+              className="flex gap-3 items-center cursor-pointer px-5 py-2 border-t hover:bg-onPrimary text-gray-dark"
               onClick={() => alert("Account")}
             >
               <span className="text-lg">{icons.settings}</span> Account
             </li>
             <li
-              className="flex gap-3 items-center text-gray-dark cursor-pointer border-t px-5 py-2 hover:bg-primary-light"
+              className="flex gap-3 items-center text-gray-dark cursor-pointer border-t px-5 py-2 hover:bg-onPrimary"
               onClick={handleLogout}
             >
               <span className="text-lg">{icons.logout}</span> Logout

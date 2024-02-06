@@ -165,8 +165,8 @@ const Table = ({
                 <tr
                   key={row.id}
                   className={classNames(
-                    "hover:bg-primary-light border-b last:border-0",
-                    row.getIsSelected() && "bg-primary-light"
+                    "hover:bg-onPrimary border-b last:border-0",
+                    row.getIsSelected() && "bg-onPrimary"
                   )}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -186,7 +186,7 @@ const Table = ({
               </tr>
             )}
             {loading && (
-              <tr className="absolute top-0 h-full w-full bg-primary-light/60">
+              <tr className="absolute top-0 h-full w-full bg-onPrimary/60">
                 <td className="h-full w-full flex items-center justify-center">
                   <Loading className="text-primary" height={48} width={48} />
                 </td>
@@ -206,7 +206,7 @@ const Table = ({
                 table.setPageSize(Number(e.target.value));
               }}
               className={classNames(
-                "bg-primary-light border border-gray rounded-md block min-w-max text-sm font-normal px-2 py-1.5 cursor-pointer",
+                "bg-onPrimary border border-gray rounded-md block min-w-max text-sm font-normal px-2 py-1.5 cursor-pointer",
                 "focus:ring focus:ring-primary/20 focus:outline-none focus:bg-white focus:border-transparent transition-all"
               )}
             >
@@ -224,8 +224,8 @@ const Table = ({
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
               className={classNames(
-                "inline-flex h-8 w-8 justify-center items-center text-sm font-medium rounded border bg-primary-light transition-all",
-                "hover:bg-primary hover:text-white disabled:hover:bg-primary-light disabled:hover:text-primary disabled:opacity-40"
+                "inline-flex h-8 w-8 justify-center items-center text-sm font-medium rounded border bg-onPrimary transition-all",
+                "hover:bg-primary hover:text-white disabled:hover:bg-onPrimary disabled:hover:text-primary disabled:opacity-40"
               )}
             >
               {"<<"}
@@ -234,8 +234,8 @@ const Table = ({
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
               className={classNames(
-                "inline-flex h-8 w-8 justify-center items-center text-sm font-medium rounded border bg-primary-light transition-all",
-                "hover:bg-primary hover:text-white disabled:hover:bg-primary-light disabled:hover:text-primary disabled:opacity-40"
+                "inline-flex h-8 w-8 justify-center items-center text-sm font-medium rounded border bg-onPrimary transition-all",
+                "hover:bg-primary hover:text-white disabled:hover:bg-onPrimary disabled:hover:text-primary disabled:opacity-40"
               )}
             >
               {"<"}
@@ -247,8 +247,8 @@ const Table = ({
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
               className={classNames(
-                "inline-flex h-8 w-8 justify-center items-center text-sm font-medium rounded border bg-primary-light transition-all",
-                "hover:bg-primary hover:text-white disabled:hover:bg-primary-light disabled:hover:text-primary disabled:opacity-40"
+                "inline-flex h-8 w-8 justify-center items-center text-sm font-medium rounded border bg-onPrimary transition-all",
+                "hover:bg-primary hover:text-white disabled:hover:bg-onPrimary disabled:hover:text-primary disabled:opacity-40"
               )}
             >
               {">"}
@@ -257,8 +257,8 @@ const Table = ({
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
               className={classNames(
-                "inline-flex h-8 w-8 justify-center items-center text-sm font-medium rounded border bg-primary-light transition-all",
-                "hover:bg-primary hover:text-white disabled:hover:bg-primary-light disabled:hover:text-primary disabled:opacity-40"
+                "inline-flex h-8 w-8 justify-center items-center text-sm font-medium rounded border bg-onPrimary transition-all",
+                "hover:bg-primary hover:text-white disabled:hover:bg-onPrimary disabled:hover:text-primary disabled:opacity-40"
               )}
             >
               {">>"}

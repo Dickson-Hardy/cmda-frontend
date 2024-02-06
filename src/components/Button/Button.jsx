@@ -20,9 +20,9 @@ const Button = ({
       className={classNames(
         "inline-flex justify-center items-center gap-2.5 rounded-md font-medium py-4 px-8 text-sm",
         large ? "h-12" : "h-12",
-        variant === "filled" && "bg-primary text-white hover:bg-primary-dark",
-        variant === "outlined" && "bg-transparent text-primary border-2 border-primary hover:bg-primary-light",
-        variant === "text" && "bg-tranparent text-primary hover:bg-primary-light",
+        variant === "filled" && "bg-primary text-white hover:bg-primaryContainer",
+        variant === "outlined" && "bg-transparent text-primary border-2 border-primary hover:bg-onPrimary",
+        variant === "text" && "bg-tranparent text-primary hover:bg-onPrimary",
         "disabled:cursor-not-allowed",
         disabled && "bg-opacity-50",
         "focus:ring-4 focus:ring-primary/20 focus:outline-none hover:bg-opacity-90 transition-all duration-150",

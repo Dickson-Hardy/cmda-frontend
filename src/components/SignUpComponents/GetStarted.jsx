@@ -17,7 +17,7 @@ const GetStarted = () => {
     },
     {
       title: "doctor",
-      bg: "bg-primary-light",
+      bg: "bg-onPrimary",
       border: "ring ring-primary",
     },
     {

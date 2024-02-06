@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import TextInput from "~/components/FormElements/TextInput/TextInput";
 import Button from "~/components/Button/Button";
 import { useNavigate } from "react-router-dom";
-import Checkbox from "~/components/FormElements/Checkbox/Checkbox";
 import { Link } from "react-router-dom";
 import { useLoginMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
@@ -13,7 +12,6 @@ import { setTokens } from "~/redux/features/auth/tokenSlice";
 
 const Login = () => {
   const {
-    control,
     register,
     formState: { errors },
     handleSubmit,

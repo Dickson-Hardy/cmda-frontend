@@ -7,7 +7,9 @@ export default {
         sans: ["Raleway", "sans-serif"],
       },
       colors: {
-        primary: { light: "#F5ECF2", DEFAULT: "#994279", dark: "#2C1323" },
+        primary: "#994279",
+        onPrimary: "#F5ECF2",
+        primaryContainer: "#2C1323",
         onPrimaryContainer: "#E0C6D7",
         secondary: "#117E45",
         onSecondary: "#E7F2EC",
