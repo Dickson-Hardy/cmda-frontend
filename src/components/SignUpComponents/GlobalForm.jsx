@@ -44,7 +44,7 @@ const GlobalForm = () => {
   return (
     <div>
       <div className="mb-4 text-center">
-        <h2 className="md:text-3xl text-xl font-bold">Create a global member account</h2>
+        <h2 className="md:text-2xl text-xl font-bold">Create a global member account</h2>
       </div>
       <form onSubmit={handleSubmit(handleSignUp)} className="grid grid-cols-1 gap-4">
         <div>
