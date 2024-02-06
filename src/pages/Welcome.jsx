@@ -149,7 +149,7 @@ const WelcomePage = () => {
         <Dropdown
           toggleElement={
             <div className="text-center">
-              <button className="p-2 rounded-full bg-primary-light">{icons.verticalDots}</button>
+              <button className="p-2 rounded-full bg-onPrimary">{icons.verticalDots}</button>
             </div>
           }
         >

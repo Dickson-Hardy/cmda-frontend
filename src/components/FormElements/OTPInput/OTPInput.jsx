@@ -48,7 +48,7 @@ const OTPInput = ({
           onKeyDown={(e) => handleKeyDown(e, index)}
           maxLength="1"
           className={classNames(
-            "bg-primary-light border border-gray rounded-md w-12 h-12 text-base font-medium text-center",
+            "bg-onPrimary border border-gray rounded-md w-12 h-12 text-base font-medium text-center",
             "focus:ring focus:ring-primary/20 focus:outline-none focus:bg-white focus:border-transparent transition-all"
           )}
         />

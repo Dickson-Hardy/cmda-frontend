@@ -31,7 +31,7 @@ const FileUploader = ({
         {required ? <span className="text-error ml-px">*</span> : null}
       </label>
       <div
-        className="w-full border-2 border-dashed border-gray text-center px-4 py-6 rounded-lg bg-primary-light h-36 flex flex-col justify-center items-center"
+        className="w-full border-2 border-dashed border-gray text-center px-4 py-6 rounded-lg bg-onPrimary h-36 flex flex-col justify-center items-center"
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >

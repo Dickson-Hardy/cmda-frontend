@@ -66,7 +66,7 @@ const Select = ({
                   state.isSelected
                     ? "bg-primary text-white"
                     : state.isFocused
-                      ? "bg-primary-light text-black"
+                      ? "bg-onPrimary text-black"
                       : "bg-transparent text-black"
                 ),
             }}

@@ -20,7 +20,7 @@ const SearchBar = ({
       <input
         value={inputValue}
         className={classNames(
-          "bg-primary-light border border-gray placeholder:text-gray rounded-lg block w-full text-sm p-3 h-12 pr-24",
+          "bg-onPrimary border border-gray placeholder:text-gray rounded-lg block w-full text-sm p-3 h-12 pr-24",
           "focus:ring focus:ring-primary/20 focus:bg-white focus:outline-none focus:border-transparent transition-all"
         )}
         placeholder={placeholder}
@@ -41,7 +41,7 @@ const SearchBar = ({
       )}
       <button
         type="submit"
-        className="text-white absolute top-0 right-0 bg-primary hover:bg-primary-dark h-12 font-medium rounded-e-lg text-sm px-6"
+        className="text-white absolute top-0 right-0 bg-primary hover:bg-primaryContainer h-12 font-medium rounded-e-lg text-sm px-6"
       >
         <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
           <path
