@@ -13,7 +13,7 @@ const PhoneInput = ({
   name,
   placeholder = "000 000 0000",
   className,
-  required = "Phone Number is required", // set to true or pass custom error message as string if field is required
+  required,
   min,
   max,
   watch,

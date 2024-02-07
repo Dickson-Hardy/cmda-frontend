@@ -77,7 +77,6 @@ const DoctorForm = () => {
             label="phoneNumber"
             register={register}
             errors={errors}
-            required
             watch={watch}
             setValue={setValue}
           />
