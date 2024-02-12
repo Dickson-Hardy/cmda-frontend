@@ -24,7 +24,12 @@ const PhoneInput = ({
 
   //   a useEffect watches the value of the countryCode and the phone number so as to joined them together to get the phone number as a single value
   useEffect(() => {
-    if (countryCode && number) return setValue(label, `${countryCode}${number}`);
+    if (countryCode && number)
+      return setValue(label, `${countryCode}${number}`, {
+        shouldDirty: true,
+        shouldTouch: true,
+        shouldValidate: true,
+      });
   }, [countryCode, label, number, setValue]);
 
   const { uniqueCountryCodes } = useCountry();

@@ -2,18 +2,6 @@ import { useMemo } from "react";
 import { Country, State } from "country-state-city";
 
 const useCountry = () => {
-  // getting all countries
-  const allCountries = useMemo(() => {
-    return [
-      ...new Set(
-        Country.getAllCountries().map((country) => ({
-          label: country.name,
-          value: country.name,
-        }))
-      ),
-    ];
-  }, []);
-
   // getting all unique country codes
   const uniqueCountryCodes = useMemo(() => {
     return [
@@ -27,12 +15,10 @@ const useCountry = () => {
   }, []);
 
   // get all states by country code
-  const getAllStatesByCountryCode = (countryName) => {
-    const countryCode = Country.getAllCountries().find((country) => country.name == countryName);
-
+  const getAllStatesByCountryCode = (countryCode) => {
     return [
       ...new Set(
-        State.getStatesOfCountry(countryCode?.isoCode).map((state) => ({
+        State.getStatesOfCountry(countryCode).map((state) => ({
           label: state.name,
           value: state.name,
         }))
@@ -40,7 +26,7 @@ const useCountry = () => {
     ];
   };
 
-  return { uniqueCountryCodes, allCountries, getAllStatesByCountryCode };
+  return { uniqueCountryCodes, getAllStatesByCountryCode };
 };
 
 export default useCountry;

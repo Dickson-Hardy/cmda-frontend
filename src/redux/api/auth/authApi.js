@@ -10,6 +10,14 @@ const authApi = api.injectEndpoints({
       // Pick out error and prevent nested properties when displaying error
       transformErrorResponse: (response) => response.data?.message,
     }),
+    // Sign Up
+    signUp: build.mutation({
+      query: (payload) => ({ url: "/create", method: "POST", body: payload }),
+      // Pick out data and prevent nested properties in a hook or selector
+      transformResponse: (response) => response.data,
+      // Pick out error and prevent nested properties when displaying error
+      transformErrorResponse: (response) => response.data?.message,
+    }),
     // FORGOT PASSWORD
     passwordForgot: build.mutation({
       query: (body) => ({ url: "/password/forgot", method: "POST", body }),
@@ -23,6 +31,6 @@ const authApi = api.injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, usePasswordForgotMutation, usePasswordResetMutation } = authApi;
+export const { useLoginMutation, useSignUpMutation, usePasswordForgotMutation, usePasswordResetMutation } = authApi;
 
 export default authApi;
