@@ -5,6 +5,8 @@ import TextInput from "../FormElements/TextInput/TextInput";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 import Select from "../FormElements/Select/Select";
 import PhoneInput from "../FormElements/phoneInput/PhoneInput";
+import { useSignUpMutation } from "~/redux/api/auth/authApi";
+import { toast } from "react-toastify";
 
 const DoctorForm = () => {
   const {
@@ -16,12 +18,33 @@ const DoctorForm = () => {
     handleSubmit,
   } = useForm({ mode: "all" });
 
+  const [signUp, { isLoading }] = useSignUpMutation();
+
   const handleSignUp = (payload) => {
     // removing the rememberMe checkbox from payload cos it is not used
-    const { uid, firstName, middleName, lastName, phoneNumber, gender, licenseNumber, specialty, chapter } = payload;
-    console.log(uid, firstName, middleName, lastName, phoneNumber, gender, licenseNumber, specialty, chapter);
+    const { uid, password, firstName, middleName, lastName, phoneNumber, gender, licenseNumber, specialty, chapter } =
+      payload;
 
     // TODO make request using signUp() from RTK Query
+    // making request using signUp() from RTK Query
+    signUp({
+      uid,
+      password,
+      firstName,
+      middleName,
+      lastName,
+      phoneNumber,
+      gender,
+      licenseNumber,
+      specialty,
+      chapter,
+      role: "doctor",
+    })
+      .unwrap()
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => toast.error(error));
   };
 
   //   gender options
@@ -95,16 +118,17 @@ const DoctorForm = () => {
             }}
           />
         </div>
-        {/* <div>
+        <div>
           <TextInput
             type="password"
-            label="Create password"
+            label="password"
             required={true}
             register={register}
             errors={errors}
             placeholder="Set a password"
+            title="Create Password"
           />
-        </div> */}
+        </div>
 
         <div className="w-full">
           <Select
@@ -153,7 +177,7 @@ const DoctorForm = () => {
         </div>
 
         <div className="grid gap-6">
-          <Button label="Get Started" className="w-full" type="submit" />
+          <Button label="Get Started" loading={isLoading} className="w-full" type="submit" />
           <div className="text-center font-bold text-black ">
             Already have an account?
             <Link to="/login" className="ml-2 text-primary font-medium text-sm hover:underline">

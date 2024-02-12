@@ -17,3 +17,14 @@
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+
+
+  
+  /* country with flags custom styling */
+  .ReactFlagsSelect-module_selectValue__152eS {
+    /* display: none */
+  }
+  .ReactFlagsSelect-module_selectBtn__19wW7[aria-expanded="true"]:after,
+  .ReactFlagsSelect-module_selectBtn__19wW7:after  {
+    display: none;
+  }

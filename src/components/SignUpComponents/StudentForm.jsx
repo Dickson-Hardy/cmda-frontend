@@ -5,6 +5,9 @@ import TextInput from "../FormElements/TextInput/TextInput";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 import Select from "../FormElements/Select/Select";
 import PhoneInput from "../FormElements/phoneInput/PhoneInput";
+import { useMemo } from "react";
+import { useSignUpMutation } from "~/redux/api/auth/authApi";
+import { toast } from "react-toastify";
 
 const StudentForm = () => {
   const {
@@ -16,18 +19,71 @@ const StudentForm = () => {
     setValue,
   } = useForm({ mode: "all" });
 
+  const [signUp, { isLoading }] = useSignUpMutation();
+
   const handleSignUp = (payload) => {
     // removing the rememberMe checkbox from payload cos it is not used
-    const { uid, password, firstName, middleName, lastName, phoneNumber, gender, chapter, yearOfStudy } = payload;
-    console.log(uid, password, firstName, middleName, lastName, phoneNumber, gender, chapter, yearOfStudy);
+    const { uid, password, firstName, middleName, lastName, phoneNumber, gender, chapter, admissionYear, currentYear } =
+      payload;
 
     // TODO make request using signUp() from RTK Query
+    // making request using signUp() from RTK Query
+    signUp({
+      uid,
+      password,
+      firstName,
+      middleName,
+      lastName,
+      phoneNumber,
+      gender,
+      chapter,
+      admissionYear,
+      currentYear,
+      role: "student",
+    })
+      .unwrap()
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => toast.error(error));
   };
 
   //   gender options
   const genderOptions = [
     { value: "male", label: "Male" },
     { value: "female", label: "Female" },
+  ];
+
+  // admission year select option
+  const admissionYearOptions = useMemo(() => {
+    // Get the current year
+    const currentYear = new Date().getFullYear();
+
+    // Initialize an array to hold the year options
+    let yearOptions = [];
+
+    // Generate the array with the last  10 years
+    for (let i = 0; i < 10; i++) {
+      const year = currentYear - i;
+      yearOptions.push({
+        label: `${year}`,
+        value: `${year}`,
+      });
+    }
+
+    return yearOptions;
+  }, []);
+
+  // current year select option
+  const currentYearOptions = [
+    { value: "1st Year", label: "1st Year" },
+    { value: "2nd Year", label: "2nd Year" },
+    { value: "3rd Year", label: "3rd Year" },
+    { value: "4th Year", label: "4th Year" },
+    { value: "5th Year", label: "5th Year" },
+    { value: "6th Year", label: "6th Year" },
+    { value: "7th Year", label: "7th Year" },
+    { value: "8th Year", label: "8th Year" },
   ];
 
   return (
@@ -103,6 +159,7 @@ const StudentForm = () => {
             register={register}
             errors={errors}
             placeholder="Set a password"
+            title="Create Password"
           />
         </div>
 
@@ -131,18 +188,30 @@ const StudentForm = () => {
 
         <div className="w-full">
           <Select
-            label="yearOfStudy"
+            label="admissionYear"
             control={control}
-            options={genderOptions}
+            options={admissionYearOptions}
             errors={errors}
             required
-            title="Year of study"
-            placeholder="Choose your year of study"
+            title="Admission Year"
+            placeholder="year of admission"
+          />
+        </div>
+
+        <div className="w-full">
+          <Select
+            label="currentYear"
+            control={control}
+            options={currentYearOptions}
+            errors={errors}
+            required
+            title="Current year of study"
+            placeholder="Enter current level/year"
           />
         </div>
 
         <div className="grid gap-6">
-          <Button label="Get Started" className="w-full" type="submit" />
+          <Button label="Get Started" loading={isLoading} className="w-full" type="submit" />
           <div className="text-center font-bold text-black ">
             Already have an account?
             <Link to="/login" className="ml-2 text-primary font-medium text-sm hover:underline">

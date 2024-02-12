@@ -7,6 +7,9 @@ import Select from "../FormElements/Select/Select";
 import PhoneInput from "../FormElements/phoneInput/PhoneInput";
 import useCountry from "~/hooks/useCountry ";
 import { useMemo } from "react";
+import CountryFlags from "../FormElements/CountryWithFlagsInput/CountyFlags";
+import { useSignUpMutation } from "~/redux/api/auth/authApi";
+import { toast } from "react-toastify";
 
 const GlobalForm = () => {
   const {
@@ -20,14 +23,44 @@ const GlobalForm = () => {
 
   // watching the country field so as to updates the state field
   const selectedCountry = watch("country", "");
+  const [signUp, { isLoading }] = useSignUpMutation();
 
   const handleSignUp = (payload) => {
     // removing the rememberMe checkbox from payload cos it is not used
-    const { uid, firstName, middleName, lastName, phoneNumber, gender, licenseNumber, specialty, country, state } =
-      payload;
-    console.log(uid, firstName, middleName, lastName, phoneNumber, gender, licenseNumber, specialty, country, state);
+    const {
+      uid,
+      firstName,
+      middleName,
+      lastName,
+      phoneNumber,
+      password,
+      gender,
+      licenseNumber,
+      specialty,
+      country,
+      state,
+    } = payload;
 
     // TODO make request using signUp() from RTK Query
+    signUp({
+      uid,
+      firstName,
+      middleName,
+      lastName,
+      phoneNumber,
+      password,
+      gender,
+      licenseNumber,
+      specialty,
+      country,
+      state,
+      role: "global",
+    })
+      .unwrap()
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => toast.error(error));
   };
 
   //   gender options
@@ -36,11 +69,12 @@ const GlobalForm = () => {
     { value: "female", label: "Female" },
   ];
 
-  const { allCountries, getAllStatesByCountryCode } = useCountry();
+  const { getAllStatesByCountryCode } = useCountry();
 
   const allStates = useMemo(() => {
     return getAllStatesByCountryCode(selectedCountry);
   }, [getAllStatesByCountryCode, selectedCountry]);
+
   return (
     <div>
       <div className="mb-4 text-center">
@@ -106,16 +140,17 @@ const GlobalForm = () => {
             }}
           />
         </div>
-        {/* <div>
+        <div>
           <TextInput
             type="password"
-            label="Create password"
+            label="password"
             required={true}
             register={register}
             errors={errors}
             placeholder="Set a password"
+            title="Create Password"
           />
-        </div> */}
+        </div>
 
         <div className="w-full">
           <Select
@@ -129,14 +164,15 @@ const GlobalForm = () => {
         </div>
 
         <div className="w-full">
-          <Select
-            label="country"
-            control={control}
-            options={allCountries}
-            errors={errors}
-            required
-            title="Country/Region"
-            placeholder="choose your country/region"
+          <CountryFlags
+            selected={selectedCountry}
+            setSelected={(code) =>
+              setValue("country", code, {
+                shouldDirty: true,
+                shouldTouch: true,
+                shouldValidate: true,
+              })
+            }
           />
         </div>
 
@@ -176,7 +212,7 @@ const GlobalForm = () => {
         </div>
 
         <div className="grid gap-6">
-          <Button label="Get Started" className="w-full" type="submit" />
+          <Button label="Get Started" loading={isLoading} className="w-full" type="submit" />
           <div className="text-center font-bold text-black ">
             Already have an account?
             <Link to="/login" className="ml-2 text-primary font-medium text-sm hover:underline">
