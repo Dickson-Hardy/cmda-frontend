@@ -28,11 +28,11 @@ const GlobalForm = () => {
   const handleSignUp = (payload) => {
     // removing the rememberMe checkbox from payload cos it is not used
     const {
-      uid,
+      email,
       firstName,
       middleName,
       lastName,
-      phoneNumber,
+      phone,
       password,
       gender,
       licenseNumber,
@@ -43,11 +43,11 @@ const GlobalForm = () => {
 
     // TODO make request using signUp() from RTK Query
     signUp({
-      uid,
+      email,
       firstName,
       middleName,
       lastName,
-      phoneNumber,
+      phone,
       password,
       gender,
       licenseNumber,
@@ -58,6 +58,7 @@ const GlobalForm = () => {
     })
       .unwrap()
       .then((data) => {
+        toast.success("Sign Up successful, Confirm your email to continue");
         console.log(data);
       })
       .catch((error) => toast.error(error));
@@ -119,7 +120,7 @@ const GlobalForm = () => {
         <div>
           <PhoneInput
             title="Phone number (optional)"
-            label="phoneNumber"
+            label="phone"
             register={register}
             errors={errors}
             watch={watch}
@@ -129,7 +130,7 @@ const GlobalForm = () => {
         <div>
           <TextInput
             title="Email"
-            label="uid"
+            label="email"
             type="email"
             register={register}
             errors={errors}
@@ -192,7 +193,6 @@ const GlobalForm = () => {
           <TextInput
             title="License number"
             label="licenseNumber"
-            type="number"
             register={register}
             errors={errors}
             required

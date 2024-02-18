@@ -30,8 +30,6 @@ const ForgotPassword = () => {
         setOpenModal(true);
       })
       .catch((error) => toast.error(error));
-
-    setOpenModal(true);
   };
 
   return (
@@ -51,7 +49,7 @@ const ForgotPassword = () => {
           <div className=" w-full">
             <div className="mb-6">
               <TextInput
-                label="uid"
+                label="email"
                 title="Email Address"
                 type="email"
                 required={true}

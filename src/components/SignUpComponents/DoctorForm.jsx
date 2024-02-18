@@ -22,22 +22,22 @@ const DoctorForm = () => {
 
   const handleSignUp = (payload) => {
     // removing the rememberMe checkbox from payload cos it is not used
-    const { uid, password, firstName, middleName, lastName, phoneNumber, gender, licenseNumber, specialty, chapter } =
+    const { email, password, firstName, middleName, lastName, phone, gender, licenseNumber, specialty, region } =
       payload;
 
     // TODO make request using signUp() from RTK Query
     // making request using signUp() from RTK Query
     signUp({
-      uid,
+      email,
       password,
       firstName,
       middleName,
       lastName,
-      phoneNumber,
+      phone,
       gender,
       licenseNumber,
       specialty,
-      chapter,
+      region,
       role: "doctor",
     })
       .unwrap()
@@ -97,7 +97,7 @@ const DoctorForm = () => {
         <div>
           <PhoneInput
             title="Phone number (optional)"
-            label="phoneNumber"
+            label="phone"
             register={register}
             errors={errors}
             watch={watch}
@@ -107,7 +107,7 @@ const DoctorForm = () => {
         <div>
           <TextInput
             title="Email"
-            label="uid"
+            label="email"
             type="email"
             register={register}
             errors={errors}
@@ -143,7 +143,7 @@ const DoctorForm = () => {
 
         <div className="w-full">
           <Select
-            label="chapter"
+            label="region"
             control={control}
             options={genderOptions}
             errors={errors}
@@ -157,7 +157,6 @@ const DoctorForm = () => {
           <TextInput
             title="License number"
             label="licenseNumber"
-            type="number"
             register={register}
             errors={errors}
             required

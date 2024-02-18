@@ -23,26 +23,27 @@ const StudentForm = () => {
 
   const handleSignUp = (payload) => {
     // removing the rememberMe checkbox from payload cos it is not used
-    const { uid, password, firstName, middleName, lastName, phoneNumber, gender, chapter, admissionYear, currentYear } =
+    const { email, password, firstName, middleName, lastName, phone, gender, region, admissionYear, currentYear } =
       payload;
 
     // TODO make request using signUp() from RTK Query
     // making request using signUp() from RTK Query
     signUp({
-      uid,
+      email,
       password,
       firstName,
       middleName,
       lastName,
-      phoneNumber,
+      phone,
       gender,
-      chapter,
+      region,
       admissionYear,
       currentYear,
       role: "student",
     })
       .unwrap()
       .then((data) => {
+        toast.success("Sign Up successful, Confirm your email to continue");
         console.log(data);
       })
       .catch((error) => toast.error(error));
@@ -130,7 +131,7 @@ const StudentForm = () => {
         <div>
           <PhoneInput
             title="Phone number (optional)"
-            label="phoneNumber"
+            label="phone"
             register={register}
             errors={errors}
             watch={watch}
@@ -140,7 +141,7 @@ const StudentForm = () => {
         <div>
           <TextInput
             title="Email"
-            label="uid"
+            label="email"
             type="email"
             register={register}
             errors={errors}
@@ -176,7 +177,7 @@ const StudentForm = () => {
 
         <div className="w-full">
           <Select
-            label="chapter"
+            label="region"
             control={control}
             options={genderOptions}
             errors={errors}

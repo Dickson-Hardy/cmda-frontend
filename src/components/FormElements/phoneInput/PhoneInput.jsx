@@ -82,7 +82,7 @@ const PhoneInput = ({
           placeholder={placeholder}
           min={min}
           max={max}
-          disabled={!countryCode}
+          // disabled={!countryCode}
         />
       </div>
       <FormError error={errors?.[label]?.message} />
