@@ -1,9 +1,9 @@
 import { classNames } from "~/utilities/classNames";
 import studentImg from "~/assets/images/auth/student.svg";
 import { useState } from "react";
-import Button from "../Button/Button";
+import Button from "../Global/Button/Button";
 import { useSearchParams } from "react-router-dom";
-import Logo from "../Logo/Logo";
+import Logo from "../Global/Logo/Logo";
 
 const GetStarted = () => {
   const [accountType, setAccountType] = useState(""); //to get the selected account type

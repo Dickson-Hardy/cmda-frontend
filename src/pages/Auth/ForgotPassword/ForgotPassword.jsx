@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import TextInput from "~/components/FormElements/TextInput/TextInput";
-import Button from "~/components/Button/Button";
+import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
+import Button from "~/components/Global/Button/Button";
 import { Link } from "react-router-dom";
 import { usePasswordForgotMutation } from "~/redux/api/auth/authApi";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 import { toast } from "react-toastify";
-import ConfirmationModal from "~/components/ConfirmationModal/ConfirmationModal";
+import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import icons from "~/assets/js/icons";
-import Logo from "~/components/Logo/Logo";
+import Logo from "~/components/Global/Logo/Logo";
 
 const ForgotPassword = () => {
   const {

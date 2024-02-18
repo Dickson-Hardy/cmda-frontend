@@ -1,4 +1,4 @@
-import Logo from "~/components/Logo/Logo";
+import Logo from "~/components/Global/Logo/Logo";
 import { Outlet, useLocation } from "react-router-dom";
 import loginImg from "~/assets/images/auth/login-img.png";
 import doctorImg from "~/assets/images/auth/signup-doctor-img.png";

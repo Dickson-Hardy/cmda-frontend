@@ -1,7 +1,7 @@
 import icons from "~/assets/js/icons";
-import Dropdown from "~/components/Dropdown/DropDown";
-import Logo from "~/components/Logo/Logo";
-import Button from "~/components/Button/Button";
+import Dropdown from "~/components/Global/Dropdown/DropDown";
+import Logo from "~/components/Global/Logo/Logo";
+import Button from "~/components/Global/Button/Button";
 
 const Header = ({ onToggleSidebar }) => {
   const handleLogout = () => {};
