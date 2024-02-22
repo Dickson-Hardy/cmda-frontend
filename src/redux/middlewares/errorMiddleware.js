@@ -6,6 +6,7 @@ const errorMiddleware = () => (next) => (action) => {
 
   // check for error message
   const errorMessage =
+    action.payload?.data?.error ||
     action.payload?.data?.message ||
     action.error?.message ||
     action?.error ||

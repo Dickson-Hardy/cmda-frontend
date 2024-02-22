@@ -1,15 +1,15 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import Button from "../Button/Button";
-import TextInput from "../FormElements/TextInput/TextInput";
+import { Link, useNavigate } from "react-router-dom";
+import Button from "../Global/Button/Button";
+import TextInput from "../Global/FormElements/TextInput/TextInput";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
-import Select from "../FormElements/Select/Select";
-import PhoneInput from "../FormElements/phoneInput/PhoneInput";
-import { useMemo } from "react";
+import Select from "../Global/FormElements/Select/Select";
+import PhoneInput from "../Global/FormElements/phoneInput/PhoneInput";
 import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
 
 const StudentForm = () => {
+  const navigate = useNavigate();
   const {
     control,
     register,
@@ -22,57 +22,27 @@ const StudentForm = () => {
   const [signUp, { isLoading }] = useSignUpMutation();
 
   const handleSignUp = (payload) => {
-    // removing the rememberMe checkbox from payload cos it is not used
-    const { uid, password, firstName, middleName, lastName, phoneNumber, gender, chapter, admissionYear, currentYear } =
-      payload;
-
-    // TODO make request using signUp() from RTK Query
-    // making request using signUp() from RTK Query
-    signUp({
-      uid,
-      password,
-      firstName,
-      middleName,
-      lastName,
-      phoneNumber,
-      gender,
-      chapter,
-      admissionYear,
-      currentYear,
-      role: "student",
-    })
+    delete payload.numbers;
+    delete payload.countryCode;
+    //
+    signUp({ ...payload, role: "student" })
       .unwrap()
       .then((data) => {
         console.log(data);
+        toast.success("Student account created successfully, Check email for token");
+        navigate("/verify-email");
       })
-      .catch((error) => toast.error(error));
+      .catch((error) => console.log("Error ", error));
   };
 
   //   gender options
-  const genderOptions = [
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-  ];
+  const genderOptions = ["Male", "Female"].map((y) => ({ label: y, value: y.toLowerCase() }));
 
   // admission year select option
-  const admissionYearOptions = useMemo(() => {
-    // Get the current year
-    const currentYear = new Date().getFullYear();
-
-    // Initialize an array to hold the year options
-    let yearOptions = [];
-
-    // Generate the array with the last  10 years
-    for (let i = 0; i < 10; i++) {
-      const year = currentYear - i;
-      yearOptions.push({
-        label: `${year}`,
-        value: `${year}`,
-      });
-    }
-
-    return yearOptions;
-  }, []);
+  // const admissionYearOptions = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((x) => ({
+  //   label: x,
+  //   value: x,
+  // }));
 
   // current year select option
   const currentYearOptions = [
@@ -85,6 +55,11 @@ const StudentForm = () => {
     { value: "7th Year", label: "7th Year" },
     { value: "8th Year", label: "8th Year" },
   ];
+
+  const studentChapterOptions = ["FUTA", "FUNAAB", "LASU", "UNILAG"].map((x) => ({
+    label: x + " Chapter",
+    value: x + " Chapter",
+  }));
 
   return (
     <div>
@@ -130,7 +105,7 @@ const StudentForm = () => {
         <div>
           <PhoneInput
             title="Phone number (optional)"
-            label="phoneNumber"
+            label="phone"
             register={register}
             errors={errors}
             watch={watch}
@@ -139,15 +114,14 @@ const StudentForm = () => {
         </div>
         <div>
           <TextInput
-            title="Email"
-            label="uid"
-            type="email"
+            title="Email Address"
+            label="email"
             register={register}
             errors={errors}
             required
             placeholder="Enter email address"
             rules={{
-              pattern: { value: EMAIL_PATTERN, message: "Invalid email address" },
+              pattern: { value: EMAIL_PATTERN, message: "Enter a valid email address" },
             }}
           />
         </div>
@@ -176,9 +150,9 @@ const StudentForm = () => {
 
         <div className="w-full">
           <Select
-            label="chapter"
+            label="region"
             control={control}
-            options={genderOptions}
+            options={studentChapterOptions}
             errors={errors}
             required
             title="Chapter/Region"
@@ -186,7 +160,7 @@ const StudentForm = () => {
           />
         </div>
 
-        <div className="w-full">
+        {/* <div className="w-full">
           <Select
             label="admissionYear"
             control={control}
@@ -196,11 +170,11 @@ const StudentForm = () => {
             title="Admission Year"
             placeholder="year of admission"
           />
-        </div>
+        </div> */}
 
         <div className="w-full">
           <Select
-            label="currentYear"
+            label="yearOfStudy"
             control={control}
             options={currentYearOptions}
             errors={errors}

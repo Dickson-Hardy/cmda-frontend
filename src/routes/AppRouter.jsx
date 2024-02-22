@@ -9,6 +9,7 @@ import Login from "~/pages/Auth/Login/Login";
 import ForgotPassword from "~/pages/Auth/ForgotPassword/ForgotPassword";
 import NewPassword from "~/pages/Auth/NewPassword/NewPassword";
 import SignUp from "~/pages/Auth/SignUp/SignUp";
+import EmailVerification from "~/pages/Auth/EmailVerification/EmailVerification";
 
 export default function AppRouter() {
   // routes
@@ -19,30 +20,36 @@ export default function AppRouter() {
       children: [
         { path: "", element: <WelcomePage /> },
         { path: "welcome", element: <WelcomePage /> },
-        // Auth pages
-        {
-          element: <AuthLayout />,
-          children: [
-            { path: "login", element: <Login /> },
-            { path: "forgot-password", element: <ForgotPassword /> },
-            { path: "reset-password", element: <NewPassword /> },
-            { path: "signup", element: <SignUp /> },
-          ],
-        },
-        // Dashboard Pages
-        {
-          element: <DashboardLayout />,
-          children: [
-            { path: "dashboard", element: <Dashboard /> },
-            { path: "events", element: <h1>All Events</h1> },
-          ],
-        },
       ],
       errorElement: (
         <EmptyLayout>
           <ErrorElement />,
         </EmptyLayout>
       ),
+    },
+    // Auth pages
+    {
+      element: <AuthLayout />,
+      children: [
+        { path: "login", element: <Login /> },
+        { path: "forgot-password", element: <ForgotPassword /> },
+        { path: "reset-password", element: <NewPassword /> },
+        { path: "signup", element: <SignUp /> },
+        { path: "verify-email", element: <EmailVerification /> },
+      ],
+      errorElement: (
+        <AuthLayout>
+          <ErrorElement />
+        </AuthLayout>
+      ),
+    },
+    // Dashboard Pages
+    {
+      element: <DashboardLayout />,
+      children: [
+        { path: "dashboard", element: <Dashboard /> },
+        { path: "events", element: <h1>All Events</h1> },
+      ],
     },
   ]);
 

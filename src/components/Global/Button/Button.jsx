@@ -31,7 +31,7 @@ const Button = ({
       onClick={onClick}
     >
       {loading ? <Loading height={20} width={20} /> : children || label}
-      {loadingText ? loadingText : null}
+      {loading && loadingText ? loadingText : null}
     </button>
   );
 };

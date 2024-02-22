@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import Button from "../Button/Button";
-import TextInput from "../FormElements/TextInput/TextInput";
+import Button from "../Global/Button/Button";
+import TextInput from "../Global/FormElements/TextInput/TextInput";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
-import Select from "../FormElements/Select/Select";
-import PhoneInput from "../FormElements/phoneInput/PhoneInput";
+import Select from "../Global/FormElements/Select/Select";
+import PhoneInput from "../Global/FormElements/phoneInput/PhoneInput";
 import useCountry from "~/hooks/useCountry ";
 import { useMemo } from "react";
-import CountryFlags from "../FormElements/CountryWithFlagsInput/CountyFlags";
+import CountryFlags from "../Global/FormElements/CountryWithFlagsInput/CountyFlags";
 import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
 
@@ -136,7 +136,7 @@ const GlobalForm = () => {
             required
             placeholder="Enter email address"
             rules={{
-              pattern: { value: EMAIL_PATTERN, message: "Invalid email address" },
+              pattern: { value: EMAIL_PATTERN, message: "Enter a valid email address" },
             }}
           />
         </div>
