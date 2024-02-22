@@ -51,7 +51,7 @@ const PhoneInput = ({
             ...rules,
           })}
           className={classNames(
-            "bg-white border border-[#E9E8E9] placeholder:text-[#999798] placeholder:text-xs rounded-md block w-full py-3 px-1 text-sm h-12",
+            "bg-white border border-[gray-light] placeholder:text-[gray] placeholder:text-xs rounded-md block w-full py-3 px-1 text-sm h-12",
             "focus:ring focus:ring-primary/20 focus:outline-none focus:bg-white focus:border-transparent transition-all flex-1",
             errors?.[label]?.message && "border-error",
             className
@@ -70,7 +70,7 @@ const PhoneInput = ({
           id="number"
           name={name}
           className={classNames(
-            "bg-white border border-[#E9E8E9] placeholder:text-[#999798] placeholder:text-xs rounded-md block w-full text-sm p-3 h-12 flex-[5]",
+            "bg-white border border-[gray-light] placeholder:text-[gray] placeholder:text-xs rounded-md block w-full text-sm p-3 h-12 flex-[5]",
             "focus:ring focus:ring-primary/20 focus:outline-none focus:bg-white focus:border-transparent transition-all",
             errors?.[label]?.message && "border-error",
             className

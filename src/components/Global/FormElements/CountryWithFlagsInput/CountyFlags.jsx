@@ -26,7 +26,7 @@ const CountryFlags = ({
           searchPlaceholder="Select a Country"
           className="p-0"
           selectButtonClassName={classNames(
-            "bg-white border border-[#E9E8E9] placeholder:text-[#999798] placeholder:text-xs rounded-md block w-full text-sm p-3 h-12 pr-3",
+            "bg-white border border-gray-light placeholder:text-gray placeholder:text-xs rounded-md block w-full text-sm p-3 h-12 pr-3",
             "focus:ring focus:ring-primary/20 focus:outline-none focus:bg-white focus:border-transparent transition-all",
             errors?.[label]?.message && "border-error",
             className

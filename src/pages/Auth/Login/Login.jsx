@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
-import TextInput from "~/components/FormElements/TextInput/TextInput";
-import Button from "~/components/Button/Button";
+import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
+import Button from "~/components/Global/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useLoginMutation } from "~/redux/api/auth/authApi";
@@ -23,20 +23,18 @@ const Login = () => {
   const dispatch = useDispatch();
 
   const handleLogin = (payload) => {
-    // removing the rememberMe checkbox from payload cos it is not used
-    const { uid, password } = payload;
-    // making request using login() from RTK Query
-    login({ uid, password })
+    login(payload)
       .unwrap()
       .then((data) => {
-        dispatch(setUser(data));
-        const { accessToken, refreshToken } = data;
-        dispatch(setTokens({ accessToken, refreshToken }));
-        toast.success("Login successful");
-        const isGlobal = data.menu.some((x) => x.parent == "global-admin");
-        navigate(isGlobal ? "/global-admin" : "/system-admin");
+        console.log("DATA ", data);
+        // dispatch(setUser(data));
+        // const { accessToken, refreshToken } = data;
+        // dispatch(setTokens({ accessToken, refreshToken }));
+        // toast.success("Login successful");
       })
-      .catch((error) => toast.error(error));
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -48,22 +46,21 @@ const Login = () => {
       <form onSubmit={handleSubmit(handleLogin)} className="grid grid-cols-1 gap-4">
         <div>
           <TextInput
-            title="Email"
-            label="uid"
+            label="email"
             type="email"
             register={register}
             errors={errors}
             required
             placeholder="Enter email address"
             rules={{
-              pattern: { value: EMAIL_PATTERN, message: "Invalid email address" },
+              pattern: { value: EMAIL_PATTERN, message: "Enter a valid email address" },
             }}
           />
         </div>
         <div>
           <TextInput
             type="password"
-            label="Password"
+            label="password"
             required={true}
             register={register}
             errors={errors}

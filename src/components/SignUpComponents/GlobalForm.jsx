@@ -136,7 +136,7 @@ const GlobalForm = () => {
             required
             placeholder="Enter email address"
             rules={{
-              pattern: { value: EMAIL_PATTERN, message: "Invalid email address" },
+              pattern: { value: EMAIL_PATTERN, message: "Enter a valid email address" },
             }}
           />
         </div>
