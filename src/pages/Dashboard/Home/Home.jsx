@@ -142,7 +142,7 @@ const DashboardHomePage = () => {
               inActiveText="Post as anonymous"
               showTitleLabel={false}
             />
-            <Button type="submit" label={"Submit " + (shareTestimony ? "Testimony" : "Prayer Request")} />
+            <Button large type="submit" label={"Submit " + (shareTestimony ? "Testimony" : "Prayer Request")} />
           </form>
         </div>
       </section>
