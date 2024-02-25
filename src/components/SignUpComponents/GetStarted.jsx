@@ -48,7 +48,7 @@ const GetStarted = () => {
       </div>
 
       <div className="flex items-center justify-center mt-12">
-        <Button label="Continue" onClick={handleSelectedAccount} />
+        <Button large label="Continue" onClick={handleSelectedAccount} />
       </div>
     </>
   );

@@ -1,7 +1,28 @@
-import { MdMenu, MdKeyboardArrowUp, MdClose, MdLogout, MdOutlineSettings } from "react-icons/md";
+import {
+  MdMenu,
+  MdKeyboardArrowUp,
+  MdClose,
+  MdLogout,
+  MdOutlineSettings,
+  MdStore,
+  MdMessage,
+  MdGroups2,
+  MdPlayArrow,
+  MdPerson,
+} from "react-icons/md";
 import { FiBell, FiDownloadCloud } from "react-icons/fi";
-import { HiDotsVertical, HiOutlineHome } from "react-icons/hi";
-import { FaPlus, FaMinus, FaCheck, FaCheckCircle, FaEye, FaEyeSlash, FaRegCalendarAlt } from "react-icons/fa";
+import { HiBadgeCheck, HiDotsVertical, HiOutlineHome } from "react-icons/hi";
+import {
+  FaPlus,
+  FaMinus,
+  FaCheck,
+  FaCheckCircle,
+  FaEye,
+  FaEyeSlash,
+  FaRegCalendarAlt,
+  FaCaretDown,
+  FaChevronRight,
+} from "react-icons/fa";
 import { AiOutlineDelete, AiOutlineFileText } from "react-icons/ai";
 import {
   BsFileEarmarkImage,
@@ -39,6 +60,14 @@ const icons = {
   settings: <MdOutlineSettings />,
   home: <HiOutlineHome />,
   calendar: <FaRegCalendarAlt />,
+  store: <MdStore />,
+  message: <MdMessage />,
+  group: <MdGroups2 />,
+  play: <MdPlayArrow />,
+  caretDown: <FaCaretDown />,
+  person: <MdPerson />,
+  chevronRight: <FaChevronRight />,
+  verified: <HiBadgeCheck />,
 };
 
 export default icons;

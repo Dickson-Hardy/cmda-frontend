@@ -7,7 +7,7 @@ import globalImg from "~/assets/images/auth/signup-global-img.png";
 import { useEffect, useState } from "react";
 import { classNames } from "~/utilities/classNames";
 
-const AuthLayout = () => {
+const AuthLayout = ({ withOutlet = true, children }) => {
   const location = useLocation();
   const pathname = location.pathname;
   const [currentPage, setCurrentPage] = useState("getStarted");
@@ -69,7 +69,7 @@ const AuthLayout = () => {
             pathname === "/signup" && currentPage == "getStarted" ? "max-w-3xl" : "max-w-md"
           )}
         >
-          <Outlet />
+          {withOutlet ? <Outlet /> : children}
         </div>
         <p className="text-gray-500 text-sm">&copy;{new Date().getFullYear()} CMDA Nigeria</p>
       </div>

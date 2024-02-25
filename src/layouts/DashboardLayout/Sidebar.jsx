@@ -1,5 +1,6 @@
 import { classNames } from "~/utilities/classNames";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import icons from "~/assets/js/icons";
 
 const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
   return (
@@ -11,37 +12,49 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
       <aside
         className={classNames(
           isOpen ? "translate-x-0 animate-slidein" : "-translate-x-full",
-          "shadow-md lg:shadow-none lg:border-r",
-          "transition-all duration-200 fixed inset-y-0 left-0 w-72 bg-background overflow-y-auto ease-in-out transform z-10 lg:z-[1]"
+          "shadow-md lg:shadow-none lg:border-r p-6 pt-20",
+          "transition-all duration-200 fixed inset-y-0 left-0 w-60 bg-white overflow-y-auto ease-in-out transform z-10 lg:z-[1]"
         )}
       >
-        <nav className="h-full w-full flex flex-col gap-6 pt-24">
-          {/* Navigation Links */}
-          <ul className="flex-1 mt-4 ml-20">
-            {navLinks.map((navItem) =>
-              navItem.header ? (
-                <li
-                  key={navItem.header}
-                  className="border-t mt-2 uppercase pt-4 pb-2 px-3 text-xs font-semibold text-black"
+        <div className="flex items-center gap-4 my-6">
+          {/* <img src="" className="bg-onPrimary rounded-full h-14 w-14" /> */}
+          <span className="h-14 w-14 bg-onPrimary rounded-full inline-flex items-center justify-center text-4xl text-primary">
+            {icons.person}
+          </span>
+          <div>
+            <h5 className="font-bold text-base mb-">Matthew Ola</h5>
+            <Link to="/profile" className="text-primary text-sm">
+              View Profile
+            </Link>
+          </div>
+        </div>
+        {/* Navigation Links */}
+        <nav>
+          <ul className="flex-1 space-y-4">
+            {navLinks.map((navItem) => (
+              <li key={navItem.title}>
+                <NavLink
+                  to={navItem.link}
+                  className={({ isActive }) =>
+                    classNames(
+                      "flex items-center gap-4 px-4 py-3 cursor-pointer text-sm font-semibold rounded-lg transition-all",
+                      isActive ? "bg-primary text-white" : "bg-transparent text-black hover:bg-onPrimary"
+                    )
+                  }
                 >
-                  {navItem.header}
-                </li>
-              ) : (
-                <li key={navItem.title}>
-                  <NavLink
-                    to={navItem.link}
-                    className={({ isActive }) =>
-                      classNames(
-                        "flex items-center gap-2.5 px-4 py-3 cursor-pointer text-sm font-medium",
-                        isActive ? "bg-primary text-white" : "bg-transparent text-primary hover:bg-onPrimary"
-                      )
-                    }
-                  >
-                    <span className="text-xl">{navItem.icon}</span> {navItem.title}
-                  </NavLink>
-                </li>
-              )
-            )}
+                  <span className="text-xl">{navItem.icon}</span> {navItem.title}
+                </NavLink>
+              </li>
+            ))}
+            <li
+              className={classNames(
+                "flex items-center gap-4 px-4 py-3 cursor-pointer text-sm font-semibold rounded-lg",
+                "bg-transparent text-black hover:bg-onPrimary transition-all"
+              )}
+              onClick={() => alert("Logging out")}
+            >
+              <span className="text-xl">{icons.logout}</span> Logout
+            </li>
           </ul>
         </nav>
       </aside>

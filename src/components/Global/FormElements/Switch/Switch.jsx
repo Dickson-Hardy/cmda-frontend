@@ -22,7 +22,6 @@ const Switch = ({
       <Controller
         control={control}
         name={name || label}
-        defaultValue={false}
         render={({ field }) => (
           <label className="flex items-center space-x-2">
             <input
@@ -33,6 +32,7 @@ const Switch = ({
                 "before:bg-white before:shadow-[0_2px_5px_rgba(0,_0,_0,_.2)] before:transition before:content-['']|",
                 "checked:before:translate-x-6 hover:cursor-pointer checked:bg-primary "
               )}
+              checked={!!field.value}
               {...field}
             />
             {showStatusText && <span className="text-sm">{field.value ? activeText : inActiveText}</span>}

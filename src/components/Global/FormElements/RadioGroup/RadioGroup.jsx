@@ -13,13 +13,16 @@ const RadioGroup = ({
   required = "This field is required", // set to false if not required or pass custom error message as string
   rules,
   errors,
+  showTitleLabel = true, // whether to show label or title of input above the component
 }) => {
   return (
     <div>
-      <label className="block mb-1 text-sm font-medium text-black">
-        {title || convertToCapitalizedWords(label)}
-        {required ? <span className="text-error ml-px">*</span> : null}
-      </label>
+      {showTitleLabel && (
+        <label className="block mb-1 text-sm font-medium text-black">
+          {title || convertToCapitalizedWords(label)}
+          {required ? <span className="text-error ml-px">*</span> : null}
+        </label>
+      )}
       <div className={classNames("flex flex-wrap gap-4", orientation === "vertical" ? "flex-col" : "flex-row")}>
         {options.map((option) => (
           <Controller

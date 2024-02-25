@@ -60,7 +60,7 @@ const NewPassword = () => {
           </div>
 
           <div className="grid w-full">
-            <Button type="submit" loading={isLoading}>
+            <Button type="submit" large loading={isLoading}>
               Change Password
             </Button>
           </div>

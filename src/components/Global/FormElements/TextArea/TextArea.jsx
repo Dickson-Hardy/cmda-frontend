@@ -14,13 +14,16 @@ const TextArea = ({
   className,
   rows = 4,
   required = "This field is required", // set to false if not required or pass custom error message as string
+  showTitleLabel = true, // whether to show label or title of input above the component
 }) => {
   return (
     <div>
-      <label htmlFor={label} className="block mb-1 text-sm font-semibold text-black">
-        {title || convertToCapitalizedWords(label)}
-        {required ? <span className="text-error">*</span> : null}
-      </label>
+      {showTitleLabel && (
+        <label htmlFor={label} className="block mb-1 text-sm font-semibold text-black">
+          {title || convertToCapitalizedWords(label)}
+          {required ? <span className="text-error">*</span> : null}
+        </label>
+      )}
       <textarea
         type={type}
         id={label}

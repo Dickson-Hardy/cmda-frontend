@@ -30,7 +30,7 @@ const EmailVerification = () => {
           <Button variant="text" loadin loadingText="Resending..." label="Resend" className="px-[8px] h-[32px]" />
         </div>
       </div>
-      <Button label="Verify Account" loading={isLoading} loadingText="Verifying..." onClick={handleVerify} />
+      <Button large label="Verify Account" loading={isLoading} loadingText="Verifying..." onClick={handleVerify} />
     </div>
   );
 };

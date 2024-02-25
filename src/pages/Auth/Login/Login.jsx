@@ -76,7 +76,7 @@ const Login = () => {
         </div>
 
         <div className="grid gap-6">
-          <Button label="Login" loading={isLoading} className="w-full" type="submit" />
+          <Button large label="Login" loading={isLoading} className="w-full" type="submit" />
           <div className="text-center font-bold text-black ">
             Don&apos;t have an account?
             <Link to="/signup" className="ml-2 text-primary font-medium text-sm hover:underline">

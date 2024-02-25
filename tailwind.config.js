@@ -22,7 +22,7 @@ export default {
         background: "#FDFBFC",
         error: "#FF4040",
         success: "#117E45",
-        gray: { DEFAULT: "#999798", light: "#E9E8E9", dark: "#999798" },
+        gray: { DEFAULT: "#999798", light: "#E9E8E9", dark: "#4D494C" },
       },
       animation: {
         slidein: "slidein 0.3s ease-in-out",
