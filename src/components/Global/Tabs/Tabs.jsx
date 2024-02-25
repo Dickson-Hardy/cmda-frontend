@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { classNames } from "~/utilities/classNames";
 
-const Tabs = ({ tabs }) => {
+const Tabs = ({ tabs, equalTab = true }) => {
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabClick = (index) => {
@@ -10,16 +11,16 @@ const Tabs = ({ tabs }) => {
   return (
     <div className="w-full mx-auto">
       {/* Tab Buttons */}
-      <div className="flex border-b border-gray w-full">
+      <div className="flex border-b">
         {tabs.map((tab, index) => (
           <button
             key={index}
             onClick={() => handleTabClick(index)}
-            className={`${
-              index === activeTab
-                ? "border-b-2 border-primary text-primary"
-                : "border-b border-transparent text-gray-dark/80"
-            } px-4 py-2 focus:outline-none flex-1 text-base font-semibold`}
+            className={classNames(
+              index === activeTab ? "border-b-2 border-primary text-primary" : "border-b border-transparent text-gray",
+              "px-4 py-2 focus:outline-none text-base font-semibold",
+              equalTab && "flex-1"
+            )}
           >
             {tab.label}
           </button>
