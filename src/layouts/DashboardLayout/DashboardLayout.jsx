@@ -5,7 +5,7 @@ import Header from "./Header";
 import { Outlet } from "react-router-dom";
 import { NAV_LINKS } from "./constants";
 
-const DashboardLayout = () => {
+const DashboardLayout = ({ withOutlet = true, children }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
@@ -13,7 +13,7 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div>
+    <div className="bg-background">
       {/* Header */}
       <Header onToggleSidebar={toggleSidebar} />
 
@@ -23,12 +23,14 @@ const DashboardLayout = () => {
         {/* Main content */}
         <div
           className={classNames(
-            isSidebarOpen && "lg:ml-64",
+            isSidebarOpen && "lg:ml-60",
             "flex-1 flex flex-col overflow-hidden transition-all duration-300"
           )}
         >
           {/* Content */}
-          <main className="flex-1 overflow-x-hidden overflow-y-auto bg-background">{<Outlet />}</main>
+          <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 mt-20">
+            {withOutlet ? <Outlet /> : children}
+          </main>
         </div>
       </div>
     </div>
