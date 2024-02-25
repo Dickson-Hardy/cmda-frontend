@@ -212,7 +212,7 @@ const GlobalForm = () => {
         </div>
 
         <div className="grid gap-6">
-          <Button label="Get Started" loading={isLoading} className="w-full" type="submit" />
+          <Button large label="Get Started" loading={isLoading} className="w-full" type="submit" />
           <div className="text-center font-bold text-black ">
             Already have an account?
             <Link to="/login" className="ml-2 text-primary font-medium text-sm hover:underline">

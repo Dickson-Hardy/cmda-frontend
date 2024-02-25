@@ -177,7 +177,7 @@ const DoctorForm = () => {
         </div>
 
         <div className="grid gap-6">
-          <Button label="Get Started" loading={isLoading} className="w-full" type="submit" />
+          <Button label="Get Started" large loading={isLoading} className="w-full" type="submit" />
           <div className="text-center font-bold text-black ">
             Already have an account?
             <Link to="/login" className="ml-2 text-primary font-medium text-sm hover:underline">

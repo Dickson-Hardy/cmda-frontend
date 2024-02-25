@@ -69,7 +69,7 @@ const ForgotPassword = () => {
         </div>
 
         <div className="flex flex-col">
-          <Button type="submit" className="mb-4" loading={isLoading}>
+          <Button type="submit" large className="mb-4" loading={isLoading}>
             Send OTP
           </Button>
 
