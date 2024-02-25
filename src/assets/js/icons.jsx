@@ -11,7 +11,7 @@ import {
   MdPerson,
 } from "react-icons/md";
 import { FiBell, FiDownloadCloud } from "react-icons/fi";
-import { HiDotsVertical, HiOutlineHome } from "react-icons/hi";
+import { HiBadgeCheck, HiDotsVertical, HiOutlineHome } from "react-icons/hi";
 import {
   FaPlus,
   FaMinus,
@@ -67,6 +67,7 @@ const icons = {
   caretDown: <FaCaretDown />,
   person: <MdPerson />,
   chevronRight: <FaChevronRight />,
+  verified: <HiBadgeCheck />,
 };
 
 export default icons;
