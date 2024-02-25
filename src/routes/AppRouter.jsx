@@ -4,28 +4,41 @@ import AuthLayout from "~/layouts/AuthLayout/AuthLayout";
 import DashboardLayout from "~/layouts/DashboardLayout/DashboardLayout";
 import EmptyLayout from "~/layouts/EmptyLayout/EmptyLayout";
 import WelcomePage from "~/pages/Welcome";
-import Dashboard from "~/pages/Dashboard/Dashboard";
 import Login from "~/pages/Auth/Login/Login";
 import ForgotPassword from "~/pages/Auth/ForgotPassword/ForgotPassword";
 import NewPassword from "~/pages/Auth/NewPassword/NewPassword";
 import SignUp from "~/pages/Auth/SignUp/SignUp";
 import EmailVerification from "~/pages/Auth/EmailVerification/EmailVerification";
+import DashboardHomePage from "~/pages/Dashboard/Home/Home";
+import DashboardEventsPage from "~/pages/Dashboard/Events/Events";
 
 export default function AppRouter() {
-  // routes
+  const isAuthenticated = true;
+
+  // Use different layout to display error depending on authentication status
+  const ErrorDisplay = () => {
+    return isAuthenticated ? (
+      <DashboardLayout withOutlet={false}>
+        <ErrorElement />
+      </DashboardLayout>
+    ) : (
+      <AuthLayout withOutlet={false}>
+        <ErrorElement />
+      </AuthLayout>
+    );
+  };
+
+  // ================= ROUTES ======================= //
   const router = createBrowserRouter([
+    // Dashboard Pages
     {
       path: "/",
-      element: <EmptyLayout />,
+      element: <DashboardLayout />,
       children: [
-        { path: "", element: <WelcomePage /> },
-        { path: "welcome", element: <WelcomePage /> },
+        { path: "", element: <DashboardHomePage /> },
+        { path: "events", element: <DashboardEventsPage /> },
       ],
-      errorElement: (
-        <EmptyLayout>
-          <ErrorElement />,
-        </EmptyLayout>
-      ),
+      errorElement: <ErrorDisplay />,
     },
     // Auth pages
     {
@@ -37,19 +50,11 @@ export default function AppRouter() {
         { path: "signup", element: <SignUp /> },
         { path: "verify-email", element: <EmailVerification /> },
       ],
-      errorElement: (
-        <AuthLayout>
-          <ErrorElement />
-        </AuthLayout>
-      ),
     },
-    // Dashboard Pages
+    // Others
     {
-      element: <DashboardLayout />,
-      children: [
-        { path: "dashboard", element: <Dashboard /> },
-        { path: "events", element: <h1>All Events</h1> },
-      ],
+      element: <EmptyLayout />,
+      children: [{ path: "welcome", element: <WelcomePage /> }],
     },
   ]);
 
