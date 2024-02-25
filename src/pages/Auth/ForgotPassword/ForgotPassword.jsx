@@ -39,10 +39,10 @@ const ForgotPassword = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit(handleForgotPassword)} className="space-y-4">
+      <form onSubmit={handleSubmit(handleForgotPassword)} className="space-y-6">
         <div className="text-center">
           <h2 className="text-3xl md:text-4xl font-bold">Forgot password?</h2>
-          <p className="text-gray-dark mt-1">Enter the OTP sent to your email</p>
+          <p className="text-gray-dark mt-1">Enter your email to get a reset OTP</p>
         </div>
 
         <TextInput
@@ -56,7 +56,7 @@ const ForgotPassword = () => {
           rules={{ pattern: { value: EMAIL_PATTERN, message: "Enter a valid email address" } }}
         />
 
-        <div className="flex items-center gap-2 mt-3 text-sm">
+        <div className="flex items-center gap-2 text-sm">
           Didn&apos;t get email?
           <Button
             variant="text"
