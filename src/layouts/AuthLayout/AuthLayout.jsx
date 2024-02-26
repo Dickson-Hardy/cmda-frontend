@@ -1,4 +1,4 @@
-import Logo from "~/components/Logo/Logo";
+import Logo from "~/components/Global/Logo/Logo";
 import { Outlet, useLocation } from "react-router-dom";
 import loginImg from "~/assets/images/auth/login-img.png";
 import doctorImg from "~/assets/images/auth/signup-doctor-img.png";
@@ -7,10 +7,10 @@ import globalImg from "~/assets/images/auth/signup-global-img.png";
 import { useEffect, useState } from "react";
 import { classNames } from "~/utilities/classNames";
 
-const AuthLayout = () => {
+const AuthLayout = ({ withOutlet = true, children }) => {
   const location = useLocation();
   const pathname = location.pathname;
-  const [currentPage, setCurrentPage] = useState("");
+  const [currentPage, setCurrentPage] = useState("getStarted");
 
   useEffect(() => {
     if (pathname === "/login") {
@@ -42,9 +42,8 @@ const AuthLayout = () => {
     <div className="h-screen flex w-full">
       <div
         className={classNames(
-          "h-full w-full hidden lg:flex flex-col bg-gradient-to-r from-[#DEFCF3] to-[#F6F6F6] relative",
-          currentPage == "getStarted" && "lg:hidden",
-          pathname == "/forgot-password" && "lg:hidden"
+          "h-full w-full hidden lg:flex flex-col relative",
+          ["/login", "/signup"].includes(pathname) && currentPage !== "getStarted" ? "lg:flex" : "lg:hidden"
         )}
       >
         <div className="p-8 relative z-30 ">
@@ -55,19 +54,24 @@ const AuthLayout = () => {
         {/* an overlay to make the logo show */}
         <div className="bg-gradient-to-r from-white/30 to-black/10 absolute inset-0 w-full h-full z-20" />
       </div>
-      <div className="h-full w-full flex flex-col  items-center p-4 lg:p-8 gap-4 overflow-y-auto">
-        <div className="lg:hidden">
+      <div
+        className={classNames(
+          "h-full w-full flex flex-col items-center p-4 lg:p-8 gap-4 overflow-y-auto",
+          (pathname !== "/signup" || currentPage === "getStarted") && "justify-center"
+        )}
+      >
+        <div className={["/login", "/signup"].includes(pathname) && currentPage !== "getStarted" ? "lg:hidden" : ""}>
           <Logo />
         </div>
         <div
           className={classNames(
-            "w-full px-4 md:px-8 py-8 bg-white  rounded-lg  ",
-            currentPage == "getStarted" ? "max-w-3xl" : "max-w-md "
+            "w-full px-4 md:px-8 py-8 bg-white  rounded-lg",
+            pathname === "/signup" && currentPage == "getStarted" ? "max-w-3xl" : "max-w-md"
           )}
         >
-          <Outlet />
+          {withOutlet ? <Outlet /> : children}
         </div>
-        <p className="text-gray-dark text-sm">&copy;{new Date().getFullYear()} CMDA Nigeria</p>
+        <p className="text-gray-500 text-sm">&copy;{new Date().getFullYear()} CMDA Nigeria</p>
       </div>
     </div>
   );

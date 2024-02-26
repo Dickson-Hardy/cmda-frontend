@@ -1,15 +1,17 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import Button from "../Button/Button";
-import TextInput from "../FormElements/TextInput/TextInput";
+import { Link, useNavigate } from "react-router-dom";
+import Button from "../Global/Button/Button";
+import TextInput from "../Global/FormElements/TextInput/TextInput";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
-import Select from "../FormElements/Select/Select";
-import PhoneInput from "../FormElements/phoneInput/PhoneInput";
-import { useMemo } from "react";
+import Select from "../Global/FormElements/Select/Select";
+import PhoneInput from "../Global/FormElements/phoneInput/PhoneInput";
 import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setVerifyEmail } from "~/redux/features/auth/authSlice";
 
 const StudentForm = () => {
+  const navigate = useNavigate();
   const {
     control,
     register,
@@ -20,60 +22,32 @@ const StudentForm = () => {
   } = useForm({ mode: "all" });
 
   const [signUp, { isLoading }] = useSignUpMutation();
+  const dispatch = useDispatch();
 
   const handleSignUp = (payload) => {
-    // removing the rememberMe checkbox from payload cos it is not used
-    const { email, password, firstName, middleName, lastName, phone, gender, region, admissionYear, currentYear } =
-      payload;
-
-    // TODO make request using signUp() from RTK Query
-    // making request using signUp() from RTK Query
-    signUp({
-      email,
-      password,
-      firstName,
-      middleName,
-      lastName,
-      phone,
-      gender,
-      region,
-      admissionYear,
-      currentYear,
-      role: "student",
-    })
+    delete payload.numbers;
+    delete payload.countryCode;
+    //
+    signUp({ ...payload, role: "student" })
       .unwrap()
       .then((data) => {
         toast.success("Sign Up successful, Confirm your email to continue");
-        console.log(data);
+        // console.log(data);
+        toast.success("Student account created successfully, Check email for token");
+        dispatch(setVerifyEmail(payload.email));
+        navigate("/verify-email");
       })
-      .catch((error) => toast.error(error));
+      .catch((error) => console.log("Error ", error));
   };
 
   //   gender options
-  const genderOptions = [
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-  ];
+  const genderOptions = ["Male", "Female"].map((y) => ({ label: y, value: y.toLowerCase() }));
 
   // admission year select option
-  const admissionYearOptions = useMemo(() => {
-    // Get the current year
-    const currentYear = new Date().getFullYear();
-
-    // Initialize an array to hold the year options
-    let yearOptions = [];
-
-    // Generate the array with the last  10 years
-    for (let i = 0; i < 10; i++) {
-      const year = currentYear - i;
-      yearOptions.push({
-        label: `${year}`,
-        value: `${year}`,
-      });
-    }
-
-    return yearOptions;
-  }, []);
+  // const admissionYearOptions = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((x) => ({
+  //   label: x,
+  //   value: x,
+  // }));
 
   // current year select option
   const currentYearOptions = [
@@ -86,6 +60,49 @@ const StudentForm = () => {
     { value: "7th Year", label: "7th Year" },
     { value: "8th Year", label: "8th Year" },
   ];
+
+  const studentChapterOptions = [
+    "AAU/ISTH",
+    "ABUADTH",
+    "BUTH",
+    "DELSUTH",
+    "EKSUTH",
+    "IUTH",
+    "UITH",
+    "LTH",
+    "LUTH",
+    "UNIMEDTH",
+    "LASUTH",
+    "UCH",
+    "OAUTHc",
+    "OOUTH",
+    "UBTH",
+    "ABSUTH",
+    "COOUTH",
+    "EBSUTH",
+    "ESUTH",
+    "GUTH",
+    "IMSUTH",
+    "UPTH",
+    "NAUTH",
+    "UCTH",
+    "UNTH",
+    "UUTH",
+    "NDUTH",
+    "ABUTH",
+    "AKTH",
+    "BDTH/KASU",
+    "BHUTH",
+    "BSUTH",
+    "GSUTH",
+    "JUTH",
+    "UDUTH",
+    "UMTH",
+    "UATH",
+  ].map((x) => ({
+    label: x + " Chapter",
+    value: x + " Chapter",
+  }));
 
   return (
     <div>
@@ -140,15 +157,14 @@ const StudentForm = () => {
         </div>
         <div>
           <TextInput
-            title="Email"
+            title="Email Address"
             label="email"
-            type="email"
             register={register}
             errors={errors}
             required
             placeholder="Enter email address"
             rules={{
-              pattern: { value: EMAIL_PATTERN, message: "Invalid email address" },
+              pattern: { value: EMAIL_PATTERN, message: "Enter a valid email address" },
             }}
           />
         </div>
@@ -179,7 +195,7 @@ const StudentForm = () => {
           <Select
             label="region"
             control={control}
-            options={genderOptions}
+            options={studentChapterOptions}
             errors={errors}
             required
             title="Chapter/Region"
@@ -187,7 +203,7 @@ const StudentForm = () => {
           />
         </div>
 
-        <div className="w-full">
+        {/* <div className="w-full">
           <Select
             label="admissionYear"
             control={control}
@@ -197,11 +213,11 @@ const StudentForm = () => {
             title="Admission Year"
             placeholder="year of admission"
           />
-        </div>
+        </div> */}
 
         <div className="w-full">
           <Select
-            label="currentYear"
+            label="yearOfStudy"
             control={control}
             options={currentYearOptions}
             errors={errors}
@@ -212,7 +228,7 @@ const StudentForm = () => {
         </div>
 
         <div className="grid gap-6">
-          <Button label="Get Started" loading={isLoading} className="w-full" type="submit" />
+          <Button large label="Get Started" loading={isLoading} className="w-full" type="submit" />
           <div className="text-center font-bold text-black ">
             Already have an account?
             <Link to="/login" className="ml-2 text-primary font-medium text-sm hover:underline">

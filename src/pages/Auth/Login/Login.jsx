@@ -1,12 +1,12 @@
 import { useForm } from "react-hook-form";
-import TextInput from "~/components/FormElements/TextInput/TextInput";
-import Button from "~/components/Button/Button";
+import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
+import Button from "~/components/Global/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useLoginMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { setUser } from "~/redux/features/auth/authSlice";
+import { setUser, setVerifyEmail } from "~/redux/features/auth/authSlice";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 import { setTokens } from "~/redux/features/auth/tokenSlice";
 
@@ -23,20 +23,21 @@ const Login = () => {
   const dispatch = useDispatch();
 
   const handleLogin = (payload) => {
-    // removing the rememberMe checkbox from payload cos it is not used
-    const { uid, password } = payload;
-    // making request using login() from RTK Query
-    login({ uid, password })
+    login(payload)
       .unwrap()
-      .then((data) => {
+      .then(({ accessToken, data }) => {
         dispatch(setUser(data));
-        const { accessToken, refreshToken } = data;
-        dispatch(setTokens({ accessToken, refreshToken }));
+        dispatch(setTokens({ accessToken }));
         toast.success("Login successful");
-        const isGlobal = data.menu.some((x) => x.parent == "global-admin");
-        navigate(isGlobal ? "/global-admin" : "/system-admin");
+        navigate("/");
       })
-      .catch((error) => toast.error(error));
+      .catch((error) => {
+        const message = error?.data?.message;
+        if (message && message.includes("not verified")) {
+          dispatch(setVerifyEmail(payload.email));
+          navigate("/verify-email");
+        }
+      });
   };
 
   return (
@@ -48,22 +49,21 @@ const Login = () => {
       <form onSubmit={handleSubmit(handleLogin)} className="grid grid-cols-1 gap-4">
         <div>
           <TextInput
-            title="Email"
-            label="uid"
+            label="email"
             type="email"
             register={register}
             errors={errors}
             required
             placeholder="Enter email address"
             rules={{
-              pattern: { value: EMAIL_PATTERN, message: "Invalid email address" },
+              pattern: { value: EMAIL_PATTERN, message: "Enter a valid email address" },
             }}
           />
         </div>
         <div>
           <TextInput
             type="password"
-            label="Password"
+            label="password"
             required={true}
             register={register}
             errors={errors}
@@ -79,7 +79,7 @@ const Login = () => {
         </div>
 
         <div className="grid gap-6">
-          <Button label="Login" loading={isLoading} className="w-full" type="submit" />
+          <Button large label="Login" loading={isLoading} className="w-full" type="submit" />
           <div className="text-center font-bold text-black ">
             Don&apos;t have an account?
             <Link to="/signup" className="ml-2 text-primary font-medium text-sm hover:underline">

@@ -1,14 +1,17 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import Button from "../Button/Button";
-import TextInput from "../FormElements/TextInput/TextInput";
+import { Link, useNavigate } from "react-router-dom";
+import Button from "../Global/Button/Button";
+import TextInput from "../Global/FormElements/TextInput/TextInput";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
-import Select from "../FormElements/Select/Select";
-import PhoneInput from "../FormElements/phoneInput/PhoneInput";
+import Select from "../Global/FormElements/Select/Select";
+import PhoneInput from "../Global/FormElements/phoneInput/PhoneInput";
 import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
+import { setVerifyEmail } from "~/redux/features/auth/authSlice";
+import { useDispatch } from "react-redux";
 
 const DoctorForm = () => {
+  const navigate = useNavigate();
   const {
     control,
     register,
@@ -19,13 +22,13 @@ const DoctorForm = () => {
   } = useForm({ mode: "all" });
 
   const [signUp, { isLoading }] = useSignUpMutation();
+  const dispatch = useDispatch();
 
   const handleSignUp = (payload) => {
     // removing the rememberMe checkbox from payload cos it is not used
     const { email, password, firstName, middleName, lastName, phone, gender, licenseNumber, specialty, region } =
       payload;
 
-    // TODO make request using signUp() from RTK Query
     // making request using signUp() from RTK Query
     signUp({
       email,
@@ -42,9 +45,13 @@ const DoctorForm = () => {
     })
       .unwrap()
       .then((data) => {
+        toast.success("Sign Up successful, Confirm your email to continue");
         console.log(data);
+        toast.success("Doctor account created successfully, Check email for token");
+        dispatch(setVerifyEmail(email));
+        navigate("/verify-email");
       })
-      .catch((error) => toast.error(error));
+      .catch((error) => console.log("Error ", error));
   };
 
   //   gender options
@@ -52,6 +59,57 @@ const DoctorForm = () => {
     { value: "male", label: "Male" },
     { value: "female", label: "Female" },
   ];
+
+  const doctorsRegionLists = [
+    "Abia - Umahia",
+    "Adamawa",
+    "Akwa Ibom",
+    "Anambra (NAUTH)",
+    "Bauchi",
+    "Bayelsa",
+    "Benue",
+    "Borno",
+    "CMDA Uyo",
+    "Delta",
+    "Delta - DELSUTH, Oghara",
+    "Delta FMC, Asaba",
+    "Ebonyi",
+    "Edo-Benin",
+    "Edo-SHMB",
+    "Edo-Irrua",
+    "Ekiti - Ido",
+    "Ekiti-Ado",
+    "Enugu",
+    "FCT Gwagwalada",
+    "FCT Municipal",
+    "Gombe",
+    "Imo",
+    "Kaduna - Kaduna",
+    "Kaduna - Zaria",
+    "Kano",
+    "Kogi",
+    "Kwara",
+    "Lagos-Lasuth",
+    "Lagos-Luth",
+    "Nasarawa - Keffi",
+    "Nasarawa - Lafiya",
+    "Niger-Bida",
+    "Ogun - Abeokuta",
+    "Ogun - Shagamu",
+    "Ondo - Owo",
+    "ONDO – UNIMEDTH",
+    "Osun-Ife",
+    "Osun-Osogbo",
+    "Oyo",
+    "Plateau",
+    "Rivers",
+    "Sokoto",
+    "Taraba",
+    "Kebbi",
+  ].map((x) => ({
+    label: x,
+    value: x,
+  }));
 
   return (
     <div>
@@ -114,7 +172,7 @@ const DoctorForm = () => {
             required
             placeholder="Enter email address"
             rules={{
-              pattern: { value: EMAIL_PATTERN, message: "Invalid email address" },
+              pattern: { value: EMAIL_PATTERN, message: "Enter a valid email address" },
             }}
           />
         </div>
@@ -145,7 +203,7 @@ const DoctorForm = () => {
           <Select
             label="region"
             control={control}
-            options={genderOptions}
+            options={doctorsRegionLists}
             errors={errors}
             required
             title="Chapter/Region"
@@ -176,7 +234,7 @@ const DoctorForm = () => {
         </div>
 
         <div className="grid gap-6">
-          <Button label="Get Started" loading={isLoading} className="w-full" type="submit" />
+          <Button label="Get Started" large loading={isLoading} className="w-full" type="submit" />
           <div className="text-center font-bold text-black ">
             Already have an account?
             <Link to="/login" className="ml-2 text-primary font-medium text-sm hover:underline">

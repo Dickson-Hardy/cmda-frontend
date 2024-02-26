@@ -16,13 +16,16 @@ const Select = ({
   placeholder,
   required = "This field is required", // set to false if not required or pass custom error message as string
   disabled,
+  showTitleLabel = true, // whether to show label or title of input above the component
 }) => {
   return (
     <div>
-      <label htmlFor={label} className="block mb-2 text-sm font-semibold text-black">
-        {title || convertToCapitalizedWords(label)}
-        {required ? <span className="text-error ml-px">*</span> : null}
-      </label>
+      {showTitleLabel && (
+        <label htmlFor={label} className="block mb-2 text-sm font-semibold text-black">
+          {title || convertToCapitalizedWords(label)}
+          {required ? <span className="text-error ml-px">*</span> : null}
+        </label>
+      )}
       <Controller
         control={control}
         name={name || label}
@@ -44,7 +47,7 @@ const Select = ({
             classNames={{
               control: (state) =>
                 classNames(
-                  "bg-white border-[#E9E8E9] placeholder:text-[#999798] placeholder:text-xs border rounded-lg block w-full text-sm p-3 h-12 cursor-pointer",
+                  "bg-white border-gray-light placeholder:text-gray placeholder:text-xs border rounded-lg block w-full text-sm p-3 h-12 cursor-pointer",
                   state.isFocused
                     ? "ring ring-primary/25 outline-none border-transparent bg-white"
                     : errors?.[label]?.message

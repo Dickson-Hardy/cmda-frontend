@@ -1,17 +1,21 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import Button from "../Button/Button";
-import TextInput from "../FormElements/TextInput/TextInput";
-import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
-import Select from "../FormElements/Select/Select";
-import PhoneInput from "../FormElements/phoneInput/PhoneInput";
+import { Link, useNavigate } from "react-router-dom";
+
 import useCountry from "~/hooks/useCountry ";
 import { useMemo } from "react";
-import CountryFlags from "../FormElements/CountryWithFlagsInput/CountyFlags";
 import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
+import TextInput from "../Global/FormElements/TextInput/TextInput";
+import PhoneInput from "../Global/FormElements/phoneInput/PhoneInput";
+import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
+import Select from "../Global/FormElements/Select/Select";
+import CountryFlags from "../Global/FormElements/CountryWithFlagsInput/CountyFlags";
+import Button from "../Global/Button/Button";
+import { setVerifyEmail } from "~/redux/features/auth/authSlice";
+import { useDispatch } from "react-redux";
 
 const GlobalForm = () => {
+  const navigate = useNavigate();
   const {
     control,
     register,
@@ -24,6 +28,7 @@ const GlobalForm = () => {
   // watching the country field so as to updates the state field
   const selectedCountry = watch("country", "");
   const [signUp, { isLoading }] = useSignUpMutation();
+  const dispatch = useDispatch();
 
   const handleSignUp = (payload) => {
     // removing the rememberMe checkbox from payload cos it is not used
@@ -41,7 +46,6 @@ const GlobalForm = () => {
       state,
     } = payload;
 
-    // TODO make request using signUp() from RTK Query
     signUp({
       email,
       firstName,
@@ -60,8 +64,11 @@ const GlobalForm = () => {
       .then((data) => {
         toast.success("Sign Up successful, Confirm your email to continue");
         console.log(data);
+        toast.success("Global account created successfully, Check email for token");
+        dispatch(setVerifyEmail(email));
+        navigate("/verify-email");
       })
-      .catch((error) => toast.error(error));
+      .catch((error) => console.log("Error ", error));
   };
 
   //   gender options

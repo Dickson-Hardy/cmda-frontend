@@ -2,22 +2,22 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import Button from "~/components/Button/Button";
-import Select from "~/components/FormElements/Select/Select";
-import TextArea from "~/components/FormElements/TextArea/TextArea";
-import TextInput from "~/components/FormElements/TextInput/TextInput";
-import RadioGroup from "~/components/FormElements/RadioGroup/RadioGroup";
-import Switch from "~/components/FormElements/Switch/Switch";
-import SearchBar from "~/components/SearchBar/SearchBar";
-import Modal from "~/components/Modal/Modal";
-import Checkbox from "~/components/FormElements/Checkbox/Checkbox";
-import ConfirmationModal from "~/components/ConfirmationModal/ConfirmationModal";
+import Button from "~/components/Global/Button/Button";
+import Select from "~/components/Global/FormElements/Select/Select";
+import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
+import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
+import RadioGroup from "~/components/Global/FormElements/RadioGroup/RadioGroup";
+import Switch from "~/components/Global/FormElements/Switch/Switch";
+import SearchBar from "~/components/Global/SearchBar/SearchBar";
+import Modal from "~/components/Global/Modal/Modal";
+import Checkbox from "~/components/Global/FormElements/Checkbox/Checkbox";
+import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import icons from "~/assets/js/icons";
-import Dropdown from "~/components/Dropdown/DropDown";
-import StepperWizard from "~/components/StepperWizard/StepperWizard";
-import FileUploader from "~/components/FormElements/FileUploader/FileUploader";
-import Table from "~/components/Table/Table";
-import OTPInput from "~/components/FormElements/OTPInput/OTPInput";
+import Dropdown from "~/components/Global/Dropdown/DropDown";
+import StepperWizard from "~/components/Global/StepperWizard/StepperWizard";
+import FileUploader from "~/components/Global/FormElements/FileUploader/FileUploader";
+import Table from "~/components/Global/Table/Table";
+import OTPInput from "~/components/Global/FormElements/OTPInput/OTPInput";
 
 const WelcomePage = () => {
   const {

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import TextInput from "~/components/FormElements/TextInput/TextInput";
-import Button from "~/components/Button/Button";
+import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
+import Button from "~/components/Global/Button/Button";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import ConfirmationModal from "~/components/ConfirmationModal/ConfirmationModal";
+import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import icons from "~/assets/js/icons";
 import { usePasswordResetMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
@@ -60,7 +60,7 @@ const NewPassword = () => {
           </div>
 
           <div className="grid w-full">
-            <Button type="submit" loading={isLoading}>
+            <Button type="submit" large loading={isLoading}>
               Change Password
             </Button>
           </div>
