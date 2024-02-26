@@ -136,7 +136,7 @@ const GlobalForm = () => {
         </div>
         <div>
           <TextInput
-            title="Email"
+            title="Email Address"
             label="email"
             type="email"
             register={register}

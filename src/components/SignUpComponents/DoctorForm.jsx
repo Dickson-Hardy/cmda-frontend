@@ -46,7 +46,7 @@ const DoctorForm = () => {
       .unwrap()
       .then((data) => {
         toast.success("Sign Up successful, Confirm your email to continue");
-        console.log(data);
+        // console.log(data);
         toast.success("Doctor account created successfully, Check email for token");
         dispatch(setVerifyEmail(email));
         navigate("/verify-email");
@@ -164,7 +164,7 @@ const DoctorForm = () => {
         </div>
         <div>
           <TextInput
-            title="Email"
+            title="Email Address"
             label="email"
             type="email"
             register={register}
