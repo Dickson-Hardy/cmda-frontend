@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { useLoginMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { setUser } from "~/redux/features/auth/authSlice";
+import { setUser, setVerifyEmail } from "~/redux/features/auth/authSlice";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 import { setTokens } from "~/redux/features/auth/tokenSlice";
 
@@ -25,15 +25,18 @@ const Login = () => {
   const handleLogin = (payload) => {
     login(payload)
       .unwrap()
-      .then((data) => {
-        console.log("DATA ", data);
-        // dispatch(setUser(data));
-        // const { accessToken, refreshToken } = data;
-        // dispatch(setTokens({ accessToken, refreshToken }));
-        // toast.success("Login successful");
+      .then(({ accessToken, data }) => {
+        dispatch(setUser(data));
+        dispatch(setTokens({ accessToken }));
+        toast.success("Login successful");
+        navigate("/");
       })
       .catch((error) => {
-        console.log(error);
+        const message = error?.data?.message;
+        if (message && message.includes("not verified")) {
+          dispatch(setVerifyEmail(payload.email));
+          navigate("/verify-email");
+        }
       });
   };
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
@@ -35,6 +36,7 @@ const ResourceCard = () => {
 };
 
 const DashboardHomePage = () => {
+  const user = useSelector((state) => state.auth.user);
   const [shareTestimony, setShareTestimony] = useState(false);
 
   const {
@@ -44,10 +46,12 @@ const DashboardHomePage = () => {
     formState: { errors },
   } = useForm({ mode: "all" });
 
+  const fullName = user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name";
+
   return (
     <div>
       <h2 className="font-bold text-2xl text-primary mb-1">
-        Welcome, <span className="text-black">Matthew Ola</span>
+        Welcome, <span className="text-black">{fullName}</span>
       </h2>
       <p>You have no upcoming events</p>
 

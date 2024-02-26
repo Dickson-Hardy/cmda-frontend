@@ -12,6 +12,7 @@ import EmailVerification from "~/pages/Auth/EmailVerification/EmailVerification"
 import DashboardHomePage from "~/pages/Dashboard/Home/Home";
 import DashboardEventsPage from "~/pages/Dashboard/Events/Events";
 import DashboardProfilePage from "~/pages/Dashboard/Profile/Profile";
+import ProtectedRoutes from "./ProtectedRoutes";
 
 export default function AppRouter() {
   const isAuthenticated = true;
@@ -34,11 +35,17 @@ export default function AppRouter() {
     // Dashboard Pages
     {
       path: "/",
-      element: <DashboardLayout />,
+      element: <ProtectedRoutes />,
       children: [
-        { path: "", element: <DashboardHomePage /> },
-        { path: "events", element: <DashboardEventsPage /> },
-        { path: "profile", element: <DashboardProfilePage /> },
+        {
+          path: "",
+          element: <DashboardLayout />,
+          children: [
+            { path: "", element: <DashboardHomePage /> },
+            { path: "events", element: <DashboardEventsPage /> },
+            { path: "profile", element: <DashboardProfilePage /> },
+          ],
+        },
       ],
       errorElement: <ErrorDisplay />,
     },
