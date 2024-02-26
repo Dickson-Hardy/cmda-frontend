@@ -13,6 +13,7 @@ import DashboardHomePage from "~/pages/Dashboard/Home/Home";
 import DashboardEventsPage from "~/pages/Dashboard/Events/Events";
 import DashboardProfilePage from "~/pages/Dashboard/Profile/Profile";
 import ProtectedRoutes from "./ProtectedRoutes";
+import DashboardResources from "~/pages/Dashboard/Resources/Resources";
 
 export default function AppRouter() {
   const isAuthenticated = true;
@@ -44,6 +45,7 @@ export default function AppRouter() {
             { path: "", element: <DashboardHomePage /> },
             { path: "events", element: <DashboardEventsPage /> },
             { path: "profile", element: <DashboardProfilePage /> },
+            { path: "resources", element: <DashboardResources /> },
           ],
         },
       ],
