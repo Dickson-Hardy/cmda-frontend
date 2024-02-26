@@ -1,8 +1,20 @@
 import { classNames } from "~/utilities/classNames";
 import { Link, NavLink } from "react-router-dom";
 import icons from "~/assets/js/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "~/redux/features/auth/authSlice";
+import { clearTokens } from "~/redux/features/auth/tokenSlice";
 
 const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+
+  const handleLogout = () => {
+    window.location.href = "/login";
+    dispatch(clearTokens());
+    dispatch(setUser(null));
+  };
+
   return (
     <>
       {/* Overlay */}
@@ -18,11 +30,13 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
       >
         <div className="flex items-center gap-4 my-6">
           {/* <img src="" className="bg-onPrimary rounded-full h-14 w-14" /> */}
-          <span className="h-14 w-14 bg-onPrimary rounded-full inline-flex items-center justify-center text-4xl text-primary">
+          <span className="h-14 w-14 flex-shrink-0 bg-onPrimary rounded-full inline-flex items-center justify-center text-4xl text-primary">
             {icons.person}
           </span>
           <div>
-            <h5 className="font-bold text-base mb-">Matthew Ola</h5>
+            <h5 className="font-bold text-base truncate">
+              {user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name"}
+            </h5>
             <Link to="/profile" className="text-primary text-sm">
               View Profile
             </Link>
@@ -51,7 +65,7 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
                 "flex items-center gap-4 px-4 py-3 cursor-pointer text-sm font-semibold rounded-lg",
                 "bg-transparent text-black hover:bg-onPrimary transition-all"
               )}
-              onClick={() => alert("Logging out")}
+              onClick={handleLogout}
             >
               <span className="text-xl">{icons.logout}</span> Logout
             </li>

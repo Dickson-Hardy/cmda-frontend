@@ -1,12 +1,20 @@
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import Dropdown from "~/components/Global/Dropdown/DropDown";
 import Logo from "~/components/Global/Logo/Logo";
+import { setUser } from "~/redux/features/auth/authSlice";
+import { clearTokens } from "~/redux/features/auth/tokenSlice";
 import { classNames } from "~/utilities/classNames";
 
 const Header = ({ onToggleSidebar }) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+
   const handleLogout = () => {
-    alert("logging out");
+    window.location.href = "/login";
+    dispatch(clearTokens());
+    dispatch(setUser(null));
   };
 
   return (
@@ -41,8 +49,10 @@ const Header = ({ onToggleSidebar }) => {
         >
           <ul className="w-56 rounded-2xl text-sm pt-2 pb-2 bg-white shadow-lg border border-gray/20">
             <li className="py-2 px-4 truncate">
-              <p className="font-semibold truncate">Person Papa</p>
-              <p className="text-xs text-gray truncate">somebody@gmail.com</p>
+              <p className="font-semibold truncate">
+                {user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name"}
+              </p>
+              <p className="text-xs text-gray truncate">{user?.email || "----"}</p>
             </li>
             <li>
               <NavLink
