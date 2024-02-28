@@ -44,10 +44,10 @@ const StudentForm = () => {
   const genderOptions = ["Male", "Female"].map((y) => ({ label: y, value: y.toLowerCase() }));
 
   // admission year select option
-  // const admissionYearOptions = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((x) => ({
-  //   label: x,
-  //   value: x,
-  // }));
+  const admissionYearOptions = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((x) => ({
+    label: x,
+    value: x,
+  }));
 
   // current year select option
   const currentYearOptions = [
@@ -203,7 +203,7 @@ const StudentForm = () => {
           />
         </div>
 
-        {/* <div className="w-full">
+        <div className="w-full">
           <Select
             label="admissionYear"
             control={control}
@@ -213,7 +213,7 @@ const StudentForm = () => {
             title="Admission Year"
             placeholder="year of admission"
           />
-        </div> */}
+        </div>
 
         <div className="w-full">
           <Select
