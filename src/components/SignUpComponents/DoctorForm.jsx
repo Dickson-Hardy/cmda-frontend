@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../Global/Button/Button";
 import TextInput from "../Global/FormElements/TextInput/TextInput";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
@@ -7,8 +7,11 @@ import Select from "../Global/FormElements/Select/Select";
 import PhoneInput from "../Global/FormElements/phoneInput/PhoneInput";
 import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
+import { setVerifyEmail } from "~/redux/features/auth/authSlice";
+import { useDispatch } from "react-redux";
 
 const DoctorForm = () => {
+  const navigate = useNavigate();
   const {
     control,
     register,
@@ -19,32 +22,36 @@ const DoctorForm = () => {
   } = useForm({ mode: "all" });
 
   const [signUp, { isLoading }] = useSignUpMutation();
+  const dispatch = useDispatch();
 
   const handleSignUp = (payload) => {
     // removing the rememberMe checkbox from payload cos it is not used
-    const { uid, password, firstName, middleName, lastName, phoneNumber, gender, licenseNumber, specialty, chapter } =
+    const { email, password, firstName, middleName, lastName, phone, gender, licenseNumber, specialty, region } =
       payload;
 
-    // TODO make request using signUp() from RTK Query
     // making request using signUp() from RTK Query
     signUp({
-      uid,
+      email,
       password,
       firstName,
       middleName,
       lastName,
-      phoneNumber,
+      phone,
       gender,
       licenseNumber,
       specialty,
-      chapter,
+      region,
       role: "doctor",
     })
       .unwrap()
       .then((data) => {
-        console.log(data);
+        toast.success("Sign Up successful, Confirm your email to continue");
+        // console.log(data);
+        toast.success("Doctor account created successfully, Check email for token");
+        dispatch(setVerifyEmail(email));
+        navigate("/verify-email");
       })
-      .catch((error) => toast.error(error));
+      .catch((error) => console.log("Error ", error));
   };
 
   //   gender options
@@ -52,6 +59,57 @@ const DoctorForm = () => {
     { value: "male", label: "Male" },
     { value: "female", label: "Female" },
   ];
+
+  const doctorsRegionLists = [
+    "Abia - Umahia",
+    "Adamawa",
+    "Akwa Ibom",
+    "Anambra (NAUTH)",
+    "Bauchi",
+    "Bayelsa",
+    "Benue",
+    "Borno",
+    "CMDA Uyo",
+    "Delta",
+    "Delta - DELSUTH, Oghara",
+    "Delta FMC, Asaba",
+    "Ebonyi",
+    "Edo-Benin",
+    "Edo-SHMB",
+    "Edo-Irrua",
+    "Ekiti - Ido",
+    "Ekiti-Ado",
+    "Enugu",
+    "FCT Gwagwalada",
+    "FCT Municipal",
+    "Gombe",
+    "Imo",
+    "Kaduna - Kaduna",
+    "Kaduna - Zaria",
+    "Kano",
+    "Kogi",
+    "Kwara",
+    "Lagos-Lasuth",
+    "Lagos-Luth",
+    "Nasarawa - Keffi",
+    "Nasarawa - Lafiya",
+    "Niger-Bida",
+    "Ogun - Abeokuta",
+    "Ogun - Shagamu",
+    "Ondo - Owo",
+    "ONDO – UNIMEDTH",
+    "Osun-Ife",
+    "Osun-Osogbo",
+    "Oyo",
+    "Plateau",
+    "Rivers",
+    "Sokoto",
+    "Taraba",
+    "Kebbi",
+  ].map((x) => ({
+    label: x,
+    value: x,
+  }));
 
   return (
     <div>
@@ -97,7 +155,7 @@ const DoctorForm = () => {
         <div>
           <PhoneInput
             title="Phone number (optional)"
-            label="phoneNumber"
+            label="phone"
             register={register}
             errors={errors}
             watch={watch}
@@ -106,8 +164,8 @@ const DoctorForm = () => {
         </div>
         <div>
           <TextInput
-            title="Email"
-            label="uid"
+            title="Email Address"
+            label="email"
             type="email"
             register={register}
             errors={errors}
@@ -143,9 +201,9 @@ const DoctorForm = () => {
 
         <div className="w-full">
           <Select
-            label="chapter"
+            label="region"
             control={control}
-            options={genderOptions}
+            options={doctorsRegionLists}
             errors={errors}
             required
             title="Chapter/Region"
@@ -157,7 +215,6 @@ const DoctorForm = () => {
           <TextInput
             title="License number"
             label="licenseNumber"
-            type="number"
             register={register}
             errors={errors}
             required

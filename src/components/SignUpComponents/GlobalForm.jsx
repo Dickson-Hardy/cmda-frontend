@@ -1,17 +1,21 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import Button from "../Global/Button/Button";
-import TextInput from "../Global/FormElements/TextInput/TextInput";
-import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
-import Select from "../Global/FormElements/Select/Select";
-import PhoneInput from "../Global/FormElements/phoneInput/PhoneInput";
+import { Link, useNavigate } from "react-router-dom";
+
 import useCountry from "~/hooks/useCountry ";
 import { useMemo } from "react";
-import CountryFlags from "../Global/FormElements/CountryWithFlagsInput/CountyFlags";
 import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
+import TextInput from "../Global/FormElements/TextInput/TextInput";
+import PhoneInput from "../Global/FormElements/phoneInput/PhoneInput";
+import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
+import Select from "../Global/FormElements/Select/Select";
+import CountryFlags from "../Global/FormElements/CountryWithFlagsInput/CountyFlags";
+import Button from "../Global/Button/Button";
+import { setVerifyEmail } from "~/redux/features/auth/authSlice";
+import { useDispatch } from "react-redux";
 
 const GlobalForm = () => {
+  const navigate = useNavigate();
   const {
     control,
     register,
@@ -24,15 +28,16 @@ const GlobalForm = () => {
   // watching the country field so as to updates the state field
   const selectedCountry = watch("country", "");
   const [signUp, { isLoading }] = useSignUpMutation();
+  const dispatch = useDispatch();
 
   const handleSignUp = (payload) => {
     // removing the rememberMe checkbox from payload cos it is not used
     const {
-      uid,
+      email,
       firstName,
       middleName,
       lastName,
-      phoneNumber,
+      phone,
       password,
       gender,
       licenseNumber,
@@ -41,13 +46,12 @@ const GlobalForm = () => {
       state,
     } = payload;
 
-    // TODO make request using signUp() from RTK Query
     signUp({
-      uid,
+      email,
       firstName,
       middleName,
       lastName,
-      phoneNumber,
+      phone,
       password,
       gender,
       licenseNumber,
@@ -58,9 +62,13 @@ const GlobalForm = () => {
     })
       .unwrap()
       .then((data) => {
+        toast.success("Sign Up successful, Confirm your email to continue");
         console.log(data);
+        toast.success("Global account created successfully, Check email for token");
+        dispatch(setVerifyEmail(email));
+        navigate("/verify-email");
       })
-      .catch((error) => toast.error(error));
+      .catch((error) => console.log("Error ", error));
   };
 
   //   gender options
@@ -119,7 +127,7 @@ const GlobalForm = () => {
         <div>
           <PhoneInput
             title="Phone number (optional)"
-            label="phoneNumber"
+            label="phone"
             register={register}
             errors={errors}
             watch={watch}
@@ -128,15 +136,15 @@ const GlobalForm = () => {
         </div>
         <div>
           <TextInput
-            title="Email"
-            label="uid"
+            title="Email Address"
+            label="email"
             type="email"
             register={register}
             errors={errors}
             required
             placeholder="Enter email address"
             rules={{
-              pattern: { value: EMAIL_PATTERN, message: "Enter a valid email address" },
+              pattern: { value: EMAIL_PATTERN, message: "Invalid email address" },
             }}
           />
         </div>
@@ -192,7 +200,6 @@ const GlobalForm = () => {
           <TextInput
             title="License number"
             label="licenseNumber"
-            type="number"
             register={register}
             errors={errors}
             required
@@ -212,7 +219,7 @@ const GlobalForm = () => {
         </div>
 
         <div className="grid gap-6">
-          <Button large label="Get Started" loading={isLoading} className="w-full" type="submit" />
+          <Button label="Get Started" loading={isLoading} className="w-full" type="submit" />
           <div className="text-center font-bold text-black ">
             Already have an account?
             <Link to="/login" className="ml-2 text-primary font-medium text-sm hover:underline">

@@ -7,6 +7,8 @@ import Select from "../Global/FormElements/Select/Select";
 import PhoneInput from "../Global/FormElements/phoneInput/PhoneInput";
 import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setVerifyEmail } from "~/redux/features/auth/authSlice";
 
 const StudentForm = () => {
   const navigate = useNavigate();
@@ -20,6 +22,7 @@ const StudentForm = () => {
   } = useForm({ mode: "all" });
 
   const [signUp, { isLoading }] = useSignUpMutation();
+  const dispatch = useDispatch();
 
   const handleSignUp = (payload) => {
     delete payload.numbers;
@@ -28,8 +31,10 @@ const StudentForm = () => {
     signUp({ ...payload, role: "student" })
       .unwrap()
       .then((data) => {
-        console.log(data);
+        toast.success("Sign Up successful, Confirm your email to continue");
+        // console.log(data);
         toast.success("Student account created successfully, Check email for token");
+        dispatch(setVerifyEmail(payload.email));
         navigate("/verify-email");
       })
       .catch((error) => console.log("Error ", error));
@@ -39,10 +44,10 @@ const StudentForm = () => {
   const genderOptions = ["Male", "Female"].map((y) => ({ label: y, value: y.toLowerCase() }));
 
   // admission year select option
-  // const admissionYearOptions = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((x) => ({
-  //   label: x,
-  //   value: x,
-  // }));
+  const admissionYearOptions = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((x) => ({
+    label: x,
+    value: x,
+  }));
 
   // current year select option
   const currentYearOptions = [
@@ -56,7 +61,45 @@ const StudentForm = () => {
     { value: "8th Year", label: "8th Year" },
   ];
 
-  const studentChapterOptions = ["FUTA", "FUNAAB", "LASU", "UNILAG"].map((x) => ({
+  const studentChapterOptions = [
+    "AAU/ISTH",
+    "ABUADTH",
+    "BUTH",
+    "DELSUTH",
+    "EKSUTH",
+    "IUTH",
+    "UITH",
+    "LTH",
+    "LUTH",
+    "UNIMEDTH",
+    "LASUTH",
+    "UCH",
+    "OAUTHc",
+    "OOUTH",
+    "UBTH",
+    "ABSUTH",
+    "COOUTH",
+    "EBSUTH",
+    "ESUTH",
+    "GUTH",
+    "IMSUTH",
+    "UPTH",
+    "NAUTH",
+    "UCTH",
+    "UNTH",
+    "UUTH",
+    "NDUTH",
+    "ABUTH",
+    "AKTH",
+    "BDTH/KASU",
+    "BHUTH",
+    "BSUTH",
+    "GSUTH",
+    "JUTH",
+    "UDUTH",
+    "UMTH",
+    "UATH",
+  ].map((x) => ({
     label: x + " Chapter",
     value: x + " Chapter",
   }));
@@ -160,7 +203,7 @@ const StudentForm = () => {
           />
         </div>
 
-        {/* <div className="w-full">
+        <div className="w-full">
           <Select
             label="admissionYear"
             control={control}
@@ -170,7 +213,7 @@ const StudentForm = () => {
             title="Admission Year"
             placeholder="year of admission"
           />
-        </div> */}
+        </div>
 
         <div className="w-full">
           <Select
