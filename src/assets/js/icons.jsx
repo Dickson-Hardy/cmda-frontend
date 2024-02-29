@@ -22,6 +22,7 @@ import {
   FaRegCalendarAlt,
   FaCaretDown,
   FaChevronRight,
+  FaArrowLeft,
 } from "react-icons/fa";
 import { AiOutlineDelete, AiOutlineFileText } from "react-icons/ai";
 import {
@@ -68,6 +69,7 @@ const icons = {
   person: <MdPerson />,
   chevronRight: <FaChevronRight />,
   verified: <HiBadgeCheck />,
+  arrowLeft: <FaArrowLeft />,
 };
 
 export default icons;

@@ -24,7 +24,7 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
       <aside
         className={classNames(
           isOpen ? "translate-x-0 animate-slidein" : "-translate-x-full",
-          "shadow-md lg:shadow-none lg:border-r p-6 pt-20",
+          "shadow-md lg:shadow-none p-5 pt-20",
           "transition-all duration-200 fixed inset-y-0 left-0 w-60 bg-white overflow-y-auto ease-in-out transform z-10 lg:z-[1]"
         )}
       >
@@ -33,11 +33,11 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
           <span className="h-14 w-14 flex-shrink-0 bg-onPrimary rounded-full inline-flex items-center justify-center text-4xl text-primary">
             {icons.person}
           </span>
-          <div>
+          <div className="truncate">
             <h5 className="font-bold text-base truncate">
               {user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name"}
             </h5>
-            <Link to="/profile" className="text-primary text-sm">
+            <Link to="/profile" className="text-primary text-sm hover:underline">
               View Profile
             </Link>
           </div>

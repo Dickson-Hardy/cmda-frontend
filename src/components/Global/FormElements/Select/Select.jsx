@@ -47,7 +47,7 @@ const Select = ({
             classNames={{
               control: (state) =>
                 classNames(
-                  "bg-white border-gray-light placeholder:text-gray placeholder:text-xs border rounded-lg block w-full text-sm p-3 h-12 cursor-pointer",
+                  "bg-white border-gray placeholder:text-gray placeholder:text-xs border rounded-lg block w-full text-sm p-3 h-12 cursor-pointer",
                   state.isFocused
                     ? "ring ring-primary/25 outline-none border-transparent bg-white"
                     : errors?.[label]?.message
