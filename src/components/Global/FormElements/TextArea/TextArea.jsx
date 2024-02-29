@@ -30,7 +30,7 @@ const TextArea = ({
         name={name || label}
         rows={rows}
         className={classNames(
-          "bg-white border border-[gray-light] placeholder:text-[gray] placeholder:text-xs rounded-lg block w-full text-sm p-3",
+          "bg-white border border-gray placeholder:text-[gray] placeholder:text-xs rounded-lg block w-full text-sm p-3",
           "focus:ring focus:ring-primary/25 focus:outline-none focus:bg-white focus:border-transparent transition-all",
           errors?.[label]?.message && "border-error",
           className
