@@ -48,8 +48,8 @@ const ProfileTabAbout = () => {
         <div>
           <h3 className="text-base font-bold mb-2">Security</h3>
           <Link
-            to="/change-password"
-            className="text-sm inline-flex gap-2 items-center hover:underline hover:text-primary font-medium"
+            to="/update-password"
+            className="text-sm inline-flex gap-2 items-center hover:underline text-primary font-medium"
           >
             <span>{icons.logout}</span>
             Change Password
