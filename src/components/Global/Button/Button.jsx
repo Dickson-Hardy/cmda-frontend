@@ -44,11 +44,11 @@ const Button = ({
           text: "bg-tranparent text-error hover:bg-error/20",
         };
       default:
-        // Default to primary color styles if an invalid color is provided
+        // Default to black color styles if an invalid color is provided
         return {
-          filled: "bg-primary text-white hover:bg-primaryContainer",
-          outlined: "bg-transparent text-primary border-2 border-primary hover:bg-onPrimary",
-          text: "bg-tranparent text-primary hover:bg-onPrimary",
+          filled: "bg-black text-white hover:bg-black",
+          outlined: "bg-transparent text-black border-2 border-black hover:bg-black/10",
+          text: "bg-tranparent text-black hover:bg-black/10",
         };
     }
   };
