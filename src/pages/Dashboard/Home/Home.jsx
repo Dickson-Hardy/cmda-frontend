@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import icons from "~/assets/js/icons";
+import ResourceCard from "~/components/DashboardComponents/ResourceCard";
 import Button from "~/components/Global/Button/Button";
 import Switch from "~/components/Global/FormElements/Switch/Switch";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
@@ -16,21 +17,6 @@ const EventCard = () => {
       <h4 className="text-sm font-bold truncate my-2">Medical Problems in West Africa And How to Solve them</h4>
       <p className="text-gray-dark text-xs">{formatDate(new Date()).date + ", " + formatDate(new Date()).time}</p>
       <p className="text-gray-dark text-xs mt-2 truncate">Gbagada, Lagos</p>
-    </div>
-  );
-};
-
-const ResourceCard = () => {
-  return (
-    <div className="bg-white rounded-2xl w-72">
-      <img src="/vite.svg" className="bg-onPrimary h-32 w-full rounded-t-lg" />
-      <div className="p-4">
-        <h4 className="text-sm font-bold truncate">Medical Problems in West Africa And How to Solve them</h4>
-        <p className="text-gray-dark text-xs mt-2 line-clamp-2">
-          Learn the 5 best way to practice medicine in 2024. Learn the 5 best way to practice medicine in 2024. Learn
-          the 5 best way to practice medicine in 2024.
-        </p>
-      </div>
     </div>
   );
 };
@@ -91,8 +77,14 @@ const DashboardHomePage = () => {
         </div>
         <div className="flex space-x-4 py-2 overflow-x-auto scrollbar-hide">
           {[...Array(10)].map((_, v) => (
-            <Link to={`/resources/${v + 1}`} key={v + 1}>
-              <ResourceCard />
+            <Link to={`/resources/${v % 2 ? "audios" : v % 3 ? "videos" : "articles"}/${v + 1}`} key={v + 1}>
+              <ResourceCard
+                image="/vite.svg"
+                title="Medical Problems in West Africa And How to Solve them"
+                type={v % 2 ? "audio" : v % 3 ? "video" : "article"}
+                subtitle={`Learn the 5 best way to practice medicine in 2024. Learn the 5 best way to practice medicine in 2024. Learn
+                the 5 best way to practice medicine in 2024.`}
+              />
             </Link>
           ))}
         </div>
