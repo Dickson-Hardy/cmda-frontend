@@ -1,5 +1,5 @@
-import Button from "../Global/Button/Button";
-import Table from "../Global/Table/Table";
+import Button from "../../Global/Button/Button";
+import Table from "../../Global/Table/Table";
 
 const ProfileTabManageSubscriptions = () => {
   const COLUMNS = [

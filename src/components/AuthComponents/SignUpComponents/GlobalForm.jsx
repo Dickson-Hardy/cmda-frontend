@@ -5,12 +5,12 @@ import useCountry from "~/hooks/useCountry ";
 import { useMemo } from "react";
 import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
-import TextInput from "../Global/FormElements/TextInput/TextInput";
-import PhoneInput from "../Global/FormElements/phoneInput/PhoneInput";
+import TextInput from "../../Global/FormElements/TextInput/TextInput";
+import PhoneInput from "../../Global/FormElements/phoneInput/PhoneInput";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
-import Select from "../Global/FormElements/Select/Select";
-import CountryFlags from "../Global/FormElements/CountryWithFlagsInput/CountyFlags";
-import Button from "../Global/Button/Button";
+import Select from "../../Global/FormElements/Select/Select";
+import CountryFlags from "../../Global/FormElements/CountryWithFlagsInput/CountyFlags";
+import Button from "../../Global/Button/Button";
 import { setVerifyEmail } from "~/redux/features/auth/authSlice";
 import { useDispatch } from "react-redux";
 

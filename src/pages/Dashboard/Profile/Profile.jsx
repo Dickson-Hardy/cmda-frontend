@@ -1,9 +1,9 @@
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import Tabs from "~/components/Global/Tabs/Tabs";
-import ProfileTabAbout from "~/components/ProfileTabContents/About";
-import ProfileTabManageSubscriptions from "~/components/ProfileTabContents/ManageSubscriptions";
-import ProfileTabNotificationSettings from "~/components/ProfileTabContents/NotificationSettings";
+import ProfileTabAbout from "~/components/DashboardComponents/ProfileTabContents/About";
+import ProfileTabManageSubscriptions from "~/components/DashboardComponents/ProfileTabContents/ManageSubscriptions";
+import ProfileTabNotificationSettings from "~/components/DashboardComponents/ProfileTabContents/NotificationSettings";
 
 const DashboardProfilePage = () => {
   const profileTabs = [

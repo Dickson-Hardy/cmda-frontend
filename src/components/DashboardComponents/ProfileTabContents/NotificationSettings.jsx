@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import Switch from "../Global/FormElements/Switch/Switch";
+import Switch from "../../Global/FormElements/Switch/Switch";
 
 const ProfileTabNotificationSettings = () => {
   const { control } = useForm({ mode: "all" });

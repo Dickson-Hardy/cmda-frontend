@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import ResourceCard from "~/components/DashboardComponents/ResourceCard";
+import ResourceCard from "~/components/DashboardComponents/Resources/ResourceCard";
 import Chip from "~/components/Global/Chip/Chip";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
 
