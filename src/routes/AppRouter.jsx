@@ -1,4 +1,4 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
 import ErrorElement from "./ErrorElement/ErrorElement";
 import AuthLayout from "~/layouts/AuthLayout/AuthLayout";
 import DashboardLayout from "~/layouts/DashboardLayout/DashboardLayout";
@@ -15,6 +15,7 @@ import DashboardProfilePage from "~/pages/Dashboard/Profile/Profile";
 import ProtectedRoutes from "./ProtectedRoutes";
 import DashboardResources from "~/pages/Dashboard/Resources/Resources";
 import DashboardUpdatePassword from "~/pages/Dashboard/Profile/UpdatePassword/UpdatePassword";
+import DashboardResourceDetails from "~/pages/Dashboard/Resources/ResourceDetails/ResourceDetails";
 
 export default function AppRouter() {
   const isAuthenticated = true;
@@ -43,10 +44,12 @@ export default function AppRouter() {
           path: "",
           element: <DashboardLayout />,
           children: [
-            { path: "", element: <DashboardHomePage /> },
+            { index: true, element: <DashboardHomePage /> },
             { path: "events", element: <DashboardEventsPage /> },
             { path: "profile", element: <DashboardProfilePage /> },
             { path: "resources", element: <DashboardResources /> },
+            { path: "resources/:category", element: <Navigate to="/resources" /> },
+            { path: "resources/:category/:id", element: <DashboardResourceDetails /> },
             { path: "update-password", element: <DashboardUpdatePassword /> },
           ],
         },
