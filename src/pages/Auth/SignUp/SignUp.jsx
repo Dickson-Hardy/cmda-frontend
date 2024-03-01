@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import DoctorForm from "~/components/SignUpComponents/DoctorForm";
-import GetStarted from "~/components/SignUpComponents/GetStarted";
-import StudentForm from "~/components/SignUpComponents/StudentForm";
-import GlobalForm from "~/components/SignUpComponents/GlobalForm";
+import DoctorForm from "~/components/AuthComponents/SignUpComponents/DoctorForm";
+import GetStarted from "~/components/AuthComponents/SignUpComponents/GetStarted";
+import StudentForm from "~/components/AuthComponents/SignUpComponents/StudentForm";
+import GlobalForm from "~/components/AuthComponents/SignUpComponents/GlobalForm";
 
 const SignUp = () => {
   const location = useLocation();

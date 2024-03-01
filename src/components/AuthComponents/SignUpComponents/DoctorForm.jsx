@@ -1,113 +1,120 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import Button from "../Global/Button/Button";
-import TextInput from "../Global/FormElements/TextInput/TextInput";
+import Button from "../../Global/Button/Button";
+import TextInput from "../../Global/FormElements/TextInput/TextInput";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
-import Select from "../Global/FormElements/Select/Select";
-import PhoneInput from "../Global/FormElements/phoneInput/PhoneInput";
+import Select from "../../Global/FormElements/Select/Select";
+import PhoneInput from "../../Global/FormElements/phoneInput/PhoneInput";
 import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
 import { setVerifyEmail } from "~/redux/features/auth/authSlice";
+import { useDispatch } from "react-redux";
 
-const StudentForm = () => {
+const DoctorForm = () => {
   const navigate = useNavigate();
   const {
     control,
     register,
-    formState: { errors },
-    handleSubmit,
     watch,
     setValue,
+    formState: { errors },
+    handleSubmit,
   } = useForm({ mode: "all" });
 
   const [signUp, { isLoading }] = useSignUpMutation();
   const dispatch = useDispatch();
 
   const handleSignUp = (payload) => {
-    delete payload.numbers;
-    delete payload.countryCode;
-    //
-    signUp({ ...payload, role: "student" })
+    // removing the rememberMe checkbox from payload cos it is not used
+    const { email, password, firstName, middleName, lastName, phone, gender, licenseNumber, specialty, region } =
+      payload;
+
+    // making request using signUp() from RTK Query
+    signUp({
+      email,
+      password,
+      firstName,
+      middleName,
+      lastName,
+      phone,
+      gender,
+      licenseNumber,
+      specialty,
+      region,
+      role: "doctor",
+    })
       .unwrap()
       .then((data) => {
         toast.success("Sign Up successful, Confirm your email to continue");
         // console.log(data);
-        toast.success("Student account created successfully, Check email for token");
-        dispatch(setVerifyEmail(payload.email));
+        toast.success("Doctor account created successfully, Check email for token");
+        dispatch(setVerifyEmail(email));
         navigate("/verify-email");
       })
       .catch((error) => console.log("Error ", error));
   };
 
   //   gender options
-  const genderOptions = ["Male", "Female"].map((y) => ({ label: y, value: y.toLowerCase() }));
-
-  // admission year select option
-  const admissionYearOptions = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((x) => ({
-    label: x,
-    value: x,
-  }));
-
-  // current year select option
-  const currentYearOptions = [
-    { value: "1st Year", label: "1st Year" },
-    { value: "2nd Year", label: "2nd Year" },
-    { value: "3rd Year", label: "3rd Year" },
-    { value: "4th Year", label: "4th Year" },
-    { value: "5th Year", label: "5th Year" },
-    { value: "6th Year", label: "6th Year" },
-    { value: "7th Year", label: "7th Year" },
-    { value: "8th Year", label: "8th Year" },
+  const genderOptions = [
+    { value: "male", label: "Male" },
+    { value: "female", label: "Female" },
   ];
 
-  const studentChapterOptions = [
-    "AAU/ISTH",
-    "ABUADTH",
-    "BUTH",
-    "DELSUTH",
-    "EKSUTH",
-    "IUTH",
-    "UITH",
-    "LTH",
-    "LUTH",
-    "UNIMEDTH",
-    "LASUTH",
-    "UCH",
-    "OAUTHc",
-    "OOUTH",
-    "UBTH",
-    "ABSUTH",
-    "COOUTH",
-    "EBSUTH",
-    "ESUTH",
-    "GUTH",
-    "IMSUTH",
-    "UPTH",
-    "NAUTH",
-    "UCTH",
-    "UNTH",
-    "UUTH",
-    "NDUTH",
-    "ABUTH",
-    "AKTH",
-    "BDTH/KASU",
-    "BHUTH",
-    "BSUTH",
-    "GSUTH",
-    "JUTH",
-    "UDUTH",
-    "UMTH",
-    "UATH",
+  const doctorsRegionLists = [
+    "Abia - Umahia",
+    "Adamawa",
+    "Akwa Ibom",
+    "Anambra (NAUTH)",
+    "Bauchi",
+    "Bayelsa",
+    "Benue",
+    "Borno",
+    "CMDA Uyo",
+    "Delta",
+    "Delta - DELSUTH, Oghara",
+    "Delta FMC, Asaba",
+    "Ebonyi",
+    "Edo-Benin",
+    "Edo-SHMB",
+    "Edo-Irrua",
+    "Ekiti - Ido",
+    "Ekiti-Ado",
+    "Enugu",
+    "FCT Gwagwalada",
+    "FCT Municipal",
+    "Gombe",
+    "Imo",
+    "Kaduna - Kaduna",
+    "Kaduna - Zaria",
+    "Kano",
+    "Kogi",
+    "Kwara",
+    "Lagos-Lasuth",
+    "Lagos-Luth",
+    "Nasarawa - Keffi",
+    "Nasarawa - Lafiya",
+    "Niger-Bida",
+    "Ogun - Abeokuta",
+    "Ogun - Shagamu",
+    "Ondo - Owo",
+    "ONDO – UNIMEDTH",
+    "Osun-Ife",
+    "Osun-Osogbo",
+    "Oyo",
+    "Plateau",
+    "Rivers",
+    "Sokoto",
+    "Taraba",
+    "Kebbi",
   ].map((x) => ({
-    label: x + " Chapter",
-    value: x + " Chapter",
+    label: x,
+    value: x,
   }));
 
   return (
     <div>
       <div className="mb-4 text-center">
-        <h2 className="md:text-3xl text-2xl font-bold">Create a Student account</h2>
+        <h2 className="md:text-3xl text-2xl font-bold">Create a Doctor account</h2>
       </div>
       <form onSubmit={handleSubmit(handleSignUp)} className="grid grid-cols-1 gap-4">
         <div>
@@ -135,7 +142,7 @@ const StudentForm = () => {
 
         <div>
           <TextInput
-            title="Last name"
+            title="Last name/Surname"
             label="lastName"
             type="text"
             register={register}
@@ -159,6 +166,7 @@ const StudentForm = () => {
           <TextInput
             title="Email Address"
             label="email"
+            type="email"
             register={register}
             errors={errors}
             required
@@ -195,7 +203,7 @@ const StudentForm = () => {
           <Select
             label="region"
             control={control}
-            options={studentChapterOptions}
+            options={doctorsRegionLists}
             errors={errors}
             required
             title="Chapter/Region"
@@ -203,32 +211,30 @@ const StudentForm = () => {
           />
         </div>
 
-        <div className="w-full">
-          <Select
-            label="admissionYear"
-            control={control}
-            options={admissionYearOptions}
+        <div>
+          <TextInput
+            title="License number"
+            label="licenseNumber"
+            register={register}
             errors={errors}
             required
-            title="Admission Year"
-            placeholder="year of admission"
+            placeholder="Enter your license number"
           />
         </div>
 
-        <div className="w-full">
-          <Select
-            label="yearOfStudy"
-            control={control}
-            options={currentYearOptions}
+        <div>
+          <TextInput
+            label="specialty"
+            type="text"
+            register={register}
             errors={errors}
             required
-            title="Current year of study"
-            placeholder="Enter current level/year"
+            placeholder="professional Cadre"
           />
         </div>
 
         <div className="grid gap-6">
-          <Button large label="Get Started" loading={isLoading} className="w-full" type="submit" />
+          <Button label="Get Started" large loading={isLoading} className="w-full" type="submit" />
           <div className="text-center font-bold text-black ">
             Already have an account?
             <Link to="/login" className="ml-2 text-primary font-medium text-sm hover:underline">
@@ -241,4 +247,4 @@ const StudentForm = () => {
   );
 };
 
-export default StudentForm;
+export default DoctorForm;

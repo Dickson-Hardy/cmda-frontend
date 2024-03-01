@@ -1,7 +1,7 @@
 import { classNames } from "~/utilities/classNames";
 import studentImg from "~/assets/images/auth/student.svg";
 import { useState } from "react";
-import Button from "../Global/Button/Button";
+import Button from "../../Global/Button/Button";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 

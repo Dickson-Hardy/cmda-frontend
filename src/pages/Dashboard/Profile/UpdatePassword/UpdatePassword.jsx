@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
@@ -10,9 +11,13 @@ const DashboardUpdatePassword = () => {
     formState: { errors },
   } = useForm({ mode: "all" });
 
+  const navigate = useNavigate();
+
   return (
     <div>
-      <Button variant="text">{icons.arrowLeft} Back</Button>
+      <Button variant="text" onClick={() => navigate(-1)}>
+        {icons.arrowLeft} Back
+      </Button>
       <div className="mt-6 h-[70vh] flex items-center justify-center">
         <div className="bg-white w-full max-w-md max-auto p-8 rounded-lg">
           <h2 className="text-lg font-bold mb-4">Update Password</h2>

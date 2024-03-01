@@ -9,6 +9,7 @@ import {
   MdGroups2,
   MdPlayArrow,
   MdPerson,
+  MdAudiotrack,
 } from "react-icons/md";
 import { FiBell, FiDownloadCloud } from "react-icons/fi";
 import { HiBadgeCheck, HiDotsVertical, HiOutlineHome } from "react-icons/hi";
@@ -23,6 +24,7 @@ import {
   FaCaretDown,
   FaChevronRight,
   FaArrowLeft,
+  FaRegNewspaper,
 } from "react-icons/fa";
 import { AiOutlineDelete, AiOutlineFileText } from "react-icons/ai";
 import {
@@ -70,6 +72,8 @@ const icons = {
   chevronRight: <FaChevronRight />,
   verified: <HiBadgeCheck />,
   arrowLeft: <FaArrowLeft />,
+  audio: <MdAudiotrack />,
+  newspaper: <FaRegNewspaper />,
 };
 
 export default icons;

@@ -1,16 +1,12 @@
 import { classNames } from "~/utilities/classNames";
-import Loading from "../Loading/Loading";
 
-const Button = ({
+const Chip = ({
   children,
   label,
-  loading,
-  loadingText,
-  type = "button",
-  variant = "filled", // outlined, text
+  variant = "filled", // outlined
   large, // for larger size
   disabled,
-  color = "primary", // primary, tertiary, secondary, error
+  color = "primary", // primary, tertiary, secondary, error, defaults to black if none or invalid color
   className,
   onClick = () => {},
 }) => {
@@ -20,35 +16,30 @@ const Button = ({
         return {
           filled: "bg-primary text-white hover:bg-primaryContainer",
           outlined: "bg-transparent text-primary border-2 border-primary hover:bg-onPrimary",
-          text: "bg-tranparent text-primary hover:bg-onPrimary",
         };
       case "tertiary":
         // Define styles for tertiary color
         return {
           filled: "bg-tertiary text-white hover:bg-tertiaryContainer",
           outlined: "bg-transparent text-tertiary border-2 border-tertiary hover:bg-onTertiary",
-          text: "bg-tranparent text-tertiary hover:bg-onTertiary",
         };
       case "secondary":
         // Define styles for secondary color
         return {
           filled: "bg-secondary text-white hover:bg-secondaryContainer",
           outlined: "bg-transparent text-secondary border-2 border-secondary hover:bg-onSecondary",
-          text: "bg-tranparent text-secondary hover:bg-onSecondary",
         };
       case "error":
         // Define styles for error color
         return {
           filled: "bg-error text-white hover:bg-error",
           outlined: "bg-transparent text-error border-2 border-error hover:bg-error/20",
-          text: "bg-tranparent text-error hover:bg-error/20",
         };
       default:
         // Default to black color styles if an invalid color is provided
         return {
-          filled: "bg-black text-white hover:bg-black",
+          filled: "bg-black text-white hover:bg-blackContainer",
           outlined: "bg-transparent text-black border-2 border-black hover:bg-black/10",
-          text: "bg-tranparent text-black hover:bg-black/10",
         };
     }
   };
@@ -57,14 +48,13 @@ const Button = ({
 
   return (
     <button
-      type={type}
-      disabled={disabled || loading}
+      type="button"
+      disabled={disabled}
       className={classNames(
-        "inline-flex justify-center items-center gap-2.5 rounded-md font-medium py-4 px-8 text-sm",
-        large ? "h-12" : "h-10",
+        "inline-flex justify-center items-center gap-2.5 rounded-xl font-medium py-2 px-4 text-sm",
+        large ? "h-11" : "h-9",
         variant === "filled" && colorStyles.filled,
         variant === "outlined" && colorStyles.outlined,
-        variant === "text" && colorStyles.text,
         "disabled:cursor-not-allowed",
         disabled && "bg-opacity-50",
         "focus:ring-4 focus:outline-none hover:bg-opacity-90 transition-all duration-150",
@@ -74,15 +64,16 @@ const Button = ({
             ? "focus:ring-secondary/20"
             : color === "tertiary"
               ? "focus:ring-tertiary/20"
-              : "focus:ring-primary/20",
+              : color === "primary"
+                ? "focus:ring-primary/20"
+                : "focus:ring-black/10", // Default to black focus ring for unknown colors
         className
       )}
       onClick={onClick}
     >
-      {loading ? <Loading height={20} width={20} /> : children || label}
-      {loading && loadingText ? loadingText : null}
+      {children || label}
     </button>
   );
 };
 
-export default Button;
+export default Chip;
