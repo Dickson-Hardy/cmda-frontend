@@ -33,13 +33,13 @@ const DashboardStorePage = () => {
         <div className="w-1/4">
           <div className="sticky top-0 right-0 left-0 flex flex-col gap-8">
             <div className="bg-onPrimary flex items-center gap-4 font-bold rounded-lg p-4 text-sm">
-              <span className="text-primary text-2xl">{icons.store}</span>
+              <span className="text-primary text-2xl">{icons.cart}</span>
               Cart
               <span className="ml-auto">{icons.chevronRight}</span>
             </div>
 
             <div className="bg-onPrimary flex items-center gap-4 font-bold rounded-lg p-4 text-sm">
-              <span className="text-primary text-2xl">{icons.calendar}</span>
+              <span className="text-primary text-2xl">{icons.clockCounter}</span>
               Order History
               <span className="ml-auto">{icons.chevronRight}</span>
             </div>

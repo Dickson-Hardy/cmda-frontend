@@ -5,7 +5,7 @@ import ProductCard from "~/components/DashboardComponents/Store/ProductCard";
 import Button from "~/components/Global/Button/Button";
 
 const DashboardStoreSingleProductPage = () => {
-  const [quantity, setQuantity] = useState(5);
+  const [quantity, setQuantity] = useState(1);
 
   return (
     <div className="bg-white p-6 rounded-3xl">
@@ -30,23 +30,21 @@ const DashboardStoreSingleProductPage = () => {
             <div className="flex gap-3">
               <Button
                 variant="outlined"
-                label="-"
-                className="text-[32px] px-[16px]"
+                className="px-[16px]"
                 onClick={() => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))}
-              />
+              >
+                {icons.minus}
+              </Button>
               <span className="border px-4 border-gray inline-flex text-2xl font-semibold rounded-lg">{quantity}</span>
-              <Button
-                variant="outlined"
-                label="+"
-                className="text-[32px] px-[16px]"
-                onClick={() => setQuantity((prev) => prev + 1)}
-              />
+              <Button variant="outlined" className="px-[16px]" onClick={() => setQuantity((prev) => prev + 1)}>
+                {icons.plus}
+              </Button>
             </div>
           </div>
           <div className="flex gap-6 mt-8">
             <Button label="Buy Now" large />
             <Button variant="outlined" large>
-              <span className="text-xl">{icons.store}</span>
+              <span className="text-xl">{icons.cartAdd}</span>
               Add to Cart
             </Button>
           </div>
