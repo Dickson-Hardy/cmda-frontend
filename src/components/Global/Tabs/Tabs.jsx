@@ -11,7 +11,7 @@ const Tabs = ({ tabs, equalTab = true }) => {
   return (
     <div className="w-full mx-auto">
       {/* Tab Buttons */}
-      <div className="flex border-b">
+      <div className="flex border-b sticky">
         {tabs.map((tab, index) => (
           <button
             key={index}
