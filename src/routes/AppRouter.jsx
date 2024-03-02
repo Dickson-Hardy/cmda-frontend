@@ -16,6 +16,9 @@ import ProtectedRoutes from "./ProtectedRoutes";
 import DashboardResources from "~/pages/Dashboard/Resources/Resources";
 import DashboardUpdatePassword from "~/pages/Dashboard/Profile/UpdatePassword/UpdatePassword";
 import DashboardResourceDetails from "~/pages/Dashboard/Resources/ResourceDetails/ResourceDetails";
+import DashboardMessagingPage from "~/pages/Dashboard/Messaging/Messaging";
+import DashboardStorePage from "~/pages/Dashboard/Store/Store";
+import DashboardStoreSingleProductPage from "~/pages/Dashboard/Store/SingleProduct/SingleProduct";
 
 export default function AppRouter() {
   const isAuthenticated = true;
@@ -50,6 +53,9 @@ export default function AppRouter() {
             { path: "resources", element: <DashboardResources /> },
             { path: "resources/:category", element: <Navigate to="/resources" /> },
             { path: "resources/:category/:id", element: <DashboardResourceDetails /> },
+            { path: "messaging", element: <DashboardMessagingPage /> },
+            { path: "store", element: <DashboardStorePage /> },
+            { path: "store/:id", element: <DashboardStoreSingleProductPage /> },
             { path: "update-password", element: <DashboardUpdatePassword /> },
           ],
         },
