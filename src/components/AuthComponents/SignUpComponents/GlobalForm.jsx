@@ -57,13 +57,11 @@ const GlobalForm = () => {
       licenseNumber,
       specialty,
       country,
-      state,
+      region: state,
       role: "global",
     })
       .unwrap()
-      .then((data) => {
-        toast.success("Sign Up successful, Confirm your email to continue");
-        console.log(data);
+      .then(() => {
         toast.success("Global account created successfully, Check email for token");
         dispatch(setVerifyEmail(email));
         navigate("/verify-email");
