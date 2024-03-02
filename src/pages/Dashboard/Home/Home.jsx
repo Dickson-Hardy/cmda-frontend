@@ -3,23 +3,11 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import icons from "~/assets/js/icons";
+import EventCard from "~/components/DashboardComponents/Events/EventCard";
 import ResourceCard from "~/components/DashboardComponents/Resources/ResourceCard";
 import Button from "~/components/Global/Button/Button";
 import Switch from "~/components/Global/FormElements/Switch/Switch";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
-import formatDate from "~/utilities/fomartDate";
-
-const EventCard = () => {
-  return (
-    <div className="bg-white border p-4 rounded-2xl w-72">
-      <img src="/atmosphere.png" className="bg-onPrimary h-32 w-full rounded-lg mb-2" />
-      <span className="px-2 py-1 text-tertiary text-xs font-semibold bg-onTertiary rounded-3xl">Conference</span>
-      <h4 className="text-sm font-bold truncate my-2">Medical Problems in West Africa And How to Solve them</h4>
-      <p className="text-gray-dark text-xs">{formatDate(new Date()).date + ", " + formatDate(new Date()).time}</p>
-      <p className="text-gray-dark text-xs mt-2 truncate">Gbagada, Lagos</p>
-    </div>
-  );
-};
 
 const DashboardHomePage = () => {
   const user = useSelector((state) => state.auth.user);
