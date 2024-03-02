@@ -30,9 +30,7 @@ const StudentForm = () => {
     //
     signUp({ ...payload, role: "student" })
       .unwrap()
-      .then((data) => {
-        toast.success("Sign Up successful, Confirm your email to continue");
-        // console.log(data);
+      .then(() => {
         toast.success("Student account created successfully, Check email for token");
         dispatch(setVerifyEmail(payload.email));
         navigate("/verify-email");

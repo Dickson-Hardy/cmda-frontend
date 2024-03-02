@@ -44,9 +44,7 @@ const DoctorForm = () => {
       role: "doctor",
     })
       .unwrap()
-      .then((data) => {
-        toast.success("Sign Up successful, Confirm your email to continue");
-        // console.log(data);
+      .then(() => {
         toast.success("Doctor account created successfully, Check email for token");
         dispatch(setVerifyEmail(email));
         navigate("/verify-email");
