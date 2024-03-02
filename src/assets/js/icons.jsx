@@ -10,6 +10,8 @@ import {
   MdPlayArrow,
   MdPerson,
   MdAudiotrack,
+  MdAddShoppingCart,
+  MdShoppingCart,
 } from "react-icons/md";
 import { FiBell, FiDownloadCloud } from "react-icons/fi";
 import { HiBadgeCheck, HiDotsVertical, HiOutlineHome } from "react-icons/hi";
@@ -32,10 +34,14 @@ import {
   BsFiletypeDoc,
   BsFiletypePdf,
   BsFillFileEarmarkPdfFill,
+  BsPaperclip,
+  BsPencil,
+  BsSendFill,
   BsSortAlphaDownAlt,
   BsSortAlphaUp,
 } from "react-icons/bs";
 import { BiSortAlt2 } from "react-icons/bi";
+import { RxCounterClockwiseClock } from "react-icons/rx";
 
 const icons = {
   bell: <FiBell />,
@@ -74,6 +80,12 @@ const icons = {
   arrowLeft: <FaArrowLeft />,
   audio: <MdAudiotrack />,
   newspaper: <FaRegNewspaper />,
+  cart: <MdShoppingCart />,
+  cartAdd: <MdAddShoppingCart />,
+  pencil: <BsPencil />,
+  clockCounter: <RxCounterClockwiseClock />,
+  send: <BsSendFill />,
+  clip: <BsPaperclip />,
 };
 
 export default icons;
