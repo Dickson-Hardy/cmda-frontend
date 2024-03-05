@@ -1,54 +1,56 @@
-import icons from "~/assets/js/icons";
+import { useState } from "react";
 import EventCard from "~/components/DashboardComponents/Events/EventCard";
 import Tabs from "~/components/Global/Tabs/Tabs";
+import { FaRegCalendar } from "react-icons/fa";
+import Drawer from "~/components/Global/Drawer/Drawer";
+import EventsCalender from "~/components/DashboardComponents/Events/EventsCalender";
 
 const DashboardEventsPage = () => {
-  //
-  const AvailableEvents = () => {
+  const [activeView, setActiveView] = useState("list");
+  const [openMobileCalender, setOpenMobileCalender] = useState(false);
+
+  const AvailableEvents = ({ row }) => {
     return (
-      <div className="flex flex-col gap-8">
+      <div className={`flex gap-8  ${row ? "flex-col" : "flex-row flex-wrap"}`}>
         {[...Array(10)].map((_, i) => (
-          <EventCard key={i} row width="auto" />
+          <EventCard key={i} row={row} width={row ? "auto" : 330} />
         ))}
       </div>
     );
   };
 
   const eventTabs = [
-    { label: "Upcoming events", content: <AvailableEvents /> },
-    { label: "Past events", content: <AvailableEvents /> },
+    { label: "Upcoming events", content: <AvailableEvents row={activeView === "list"} /> },
+    { label: "Past events", content: <AvailableEvents row={activeView === "list"} /> },
   ];
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-primary mb-6">Events</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-primary">Events</h2>
+        <div
+          className="lg:hidden flex items-center justify-center p-4 cursor-pointer bg-gray-light rounded-full shadow-md"
+          onClick={() => setOpenMobileCalender(true)}
+        >
+          <FaRegCalendar />
+        </div>
+      </div>
 
       <section className="flex gap-10">
-        <div className="w-2/3">
-          <Tabs tabs={eventTabs} equalTab={false} />
+        <div className="w-full lg:w-2/3 ">
+          <Tabs tabs={eventTabs} equalTab={false} activeView={activeView} setActiveView={setActiveView} />
         </div>
-        <div className="w-1/3">
-          <div className="sticky top-0">
-            <div className="bg-white rounded-xl p-4 h-80 shadow">Calender</div>
-
-            <div className="mt-6">
-              <h3 className="text-xl font-semibold mb-4">Today, 8</h3>
-              <ul className="space-y-3">
-                {[...Array(3)].map((_, i) => (
-                  <li key={i} className="bg-white border rounded-xl p-4 space-y-4">
-                    <div>
-                      <p className="text-gray-dark text-xs mb-2 truncate flex items-center gap-2">
-                        <span>{icons.clockCounter}</span> 10:00 AM - 10:30AM
-                      </p>
-                      <h4 className="text-sm font-bold truncate">Medical Problems in West Africa</h4>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+        <div className="hidden lg:block lg:w-1/3">
+          <EventsCalender />
         </div>
       </section>
+
+      {/* mobile calender */}
+      <Drawer active={openMobileCalender} setActive={setOpenMobileCalender}>
+        <div className="px-4 mt-16 mb-10">
+          <EventsCalender />
+        </div>
+      </Drawer>
     </div>
   );
 };
