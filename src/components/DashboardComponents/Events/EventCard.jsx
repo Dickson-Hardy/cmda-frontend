@@ -5,7 +5,7 @@ const EventCard = ({ width = 288, row }) => {
   return (
     <div
       className={classNames(
-        "bg-white border p-4 rounded-2xl flex",
+        "bg-white border p-4 rounded-2xl flex overflow-hidden",
         row ? "flex-row gap-4 items-center" : "flex-col gap-2"
       )}
       style={{ width }}
