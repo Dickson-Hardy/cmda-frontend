@@ -12,6 +12,7 @@ import {
   MdAudiotrack,
   MdAddShoppingCart,
   MdShoppingCart,
+  MdViewModule,
 } from "react-icons/md";
 import { FiBell, FiDownloadCloud } from "react-icons/fi";
 import { HiBadgeCheck, HiDotsVertical, HiOutlineHome } from "react-icons/hi";
@@ -42,7 +43,8 @@ import {
 } from "react-icons/bs";
 import { BiSortAlt2 } from "react-icons/bi";
 import { RxCounterClockwiseClock } from "react-icons/rx";
-
+import { IoList } from "react-icons/io5";
+import { GoDotFill } from "react-icons/go";
 const icons = {
   bell: <FiBell />,
   download: <FiDownloadCloud />,
@@ -86,6 +88,9 @@ const icons = {
   clockCounter: <RxCounterClockwiseClock />,
   send: <BsSendFill />,
   clip: <BsPaperclip />,
+  list: <IoList />,
+  grid: <MdViewModule />,
+  dot: <GoDotFill />,
 };
 
 export default icons;
