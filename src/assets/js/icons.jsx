@@ -28,6 +28,7 @@ import {
   FaChevronRight,
   FaArrowLeft,
   FaRegNewspaper,
+  FaFacebookF,
 } from "react-icons/fa";
 import { AiOutlineDelete, AiOutlineFileText } from "react-icons/ai";
 import {
@@ -91,6 +92,7 @@ const icons = {
   list: <IoList />,
   grid: <MdViewModule />,
   dot: <GoDotFill />,
+  facebook: <FaFacebookF />,
 };
 
 export default icons;

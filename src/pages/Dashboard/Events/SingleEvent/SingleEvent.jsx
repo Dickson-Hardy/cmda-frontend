@@ -41,7 +41,7 @@ const DashboardStoreSingleEventPage = () => {
             <div className="flex flex-wrap gap-x-5">
               {[...Array(4)].map((_, i) => (
                 <span key={i} className="text-2xl inline-flex items-center">
-                  {icons.bell}
+                  {icons.facebook}
                 </span>
               ))}
             </div>
