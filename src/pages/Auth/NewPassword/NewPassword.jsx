@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import Button from "~/components/Global/Button/Button";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import icons from "~/assets/js/icons";
 import { usePasswordResetMutation } from "~/redux/api/auth/authApi";
@@ -16,14 +16,13 @@ const NewPassword = () => {
   } = useForm({ mode: "all" });
 
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const token = searchParams.get("token");
 
   const [confirm, setConfirm] = useState(false);
   const [passwordReset, { isLoading }] = usePasswordResetMutation();
 
   const handleResetPassword = async (payload) => {
-    const resetData = { ...payload, token };
+    delete payload.confirmNewPassword;
+    const resetData = { ...payload };
     passwordReset(resetData)
       .unwrap()
       .then(() => setConfirm(true))
@@ -38,6 +37,18 @@ const NewPassword = () => {
         <div className="max-w-[480px] w-full">
           <div className="mb-4  text-gray-500">
             <TextInput
+              type="tel"
+              label="token"
+              required={true}
+              register={register}
+              errors={errors}
+              placeholder="Enter token sent to your email"
+              className="text-gray-500"
+            />
+          </div>
+
+          <div className="mb-4  text-gray-500">
+            <TextInput
               type="password"
               label="newPassword"
               required={true}
@@ -47,6 +58,7 @@ const NewPassword = () => {
               className="text-gray-500"
             />
           </div>
+
           <div className="mb-4  text-gray-500">
             <TextInput
               type="password"
@@ -59,10 +71,14 @@ const NewPassword = () => {
             />
           </div>
 
-          <div className="grid w-full">
+          <div className="grid w-full gap-y-4">
             <Button type="submit" large loading={isLoading}>
               Change Password
             </Button>
+
+            <Link to="/login" className="mx-auto text-primary font-semibold text-sm hover:underline">
+              Back to Login
+            </Link>
           </div>
         </div>
       </form>
