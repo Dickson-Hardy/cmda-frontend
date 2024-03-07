@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { classNames } from "~/utilities/classNames";
-import { IoList } from "react-icons/io5";
-import { MdViewModule } from "react-icons/md";
+import icons from "~/assets/js/icons";
 
 const Tabs = ({ tabs, equalTab = true, activeView, setActiveView }) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -37,16 +36,18 @@ const Tabs = ({ tabs, equalTab = true, activeView, setActiveView }) => {
         </div>
         {/* toggle view mode */}
         <div className="hidden lg:flex items-center gap-x-4">
-          <IoList
-            size={24}
+          <div
             className={classNames(activeView === "list" && "p-1 bg-[#f5f5f5] rounded-full", "cursor-pointer")}
             onClick={() => handleViewClick("list")}
-          />
-          <MdViewModule
-            size={24}
+          >
+            {icons.list}
+          </div>
+          <div
             className={classNames(activeView === "grid" && "p-1 bg-[#f5f5f5] rounded-full", "cursor-pointer")}
             onClick={() => handleViewClick("grid")}
-          />
+          >
+            {icons.grid}
+          </div>
         </div>
       </div>
 

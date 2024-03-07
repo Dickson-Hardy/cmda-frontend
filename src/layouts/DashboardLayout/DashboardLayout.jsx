@@ -1,16 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { classNames } from "~/utilities/classNames";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import { Outlet } from "react-router-dom";
 import { NAV_LINKS } from "./constants";
+import { useIsSmallScreen } from "~/hooks/useIsSmallScreen";
 
 const DashboardLayout = ({ withOutlet = true, children }) => {
+  const isSmallScreen = useIsSmallScreen();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
+
+  useEffect(() => {
+    !isSmallScreen && setSidebarOpen(true);
+  }, [isSmallScreen]);
 
   return (
     <div className="bg-background">

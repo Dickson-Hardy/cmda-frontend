@@ -1,27 +1,32 @@
 import { useState } from "react";
 import EventCard from "~/components/DashboardComponents/Events/EventCard";
 import Tabs from "~/components/Global/Tabs/Tabs";
-import { FaRegCalendar } from "react-icons/fa";
 import Drawer from "~/components/Global/Drawer/Drawer";
 import EventsCalender from "~/components/DashboardComponents/Events/EventsCalender";
+import { useIsSmallScreen } from "~/hooks/useIsSmallScreen";
+import icons from "~/assets/js/icons";
 
 const DashboardEventsPage = () => {
   const [activeView, setActiveView] = useState("list");
   const [openMobileCalender, setOpenMobileCalender] = useState(false);
 
+  const isSmallScreen = useIsSmallScreen();
+
+  const isRowView = activeView === "list";
+
   const AvailableEvents = ({ row }) => {
     return (
-      <div className={`flex gap-8  ${row ? "flex-col" : "flex-row flex-wrap"}`}>
+      <div className={`flex gap-8  ${row || isSmallScreen ? "flex-col" : "flex-row flex-wrap"}`}>
         {[...Array(10)].map((_, i) => (
-          <EventCard key={i} row={row} width={row ? "auto" : 330} />
+          <EventCard key={i} row={row && !isSmallScreen} width={row ? "auto" : isSmallScreen ? "100%" : 330} />
         ))}
       </div>
     );
   };
 
   const eventTabs = [
-    { label: "Upcoming events", content: <AvailableEvents row={activeView === "list"} /> },
-    { label: "Past events", content: <AvailableEvents row={activeView === "list"} /> },
+    { label: "Upcoming events", content: <AvailableEvents row={isRowView} /> },
+    { label: "Past events", content: <AvailableEvents row={isRowView} /> },
   ];
 
   return (
@@ -32,7 +37,7 @@ const DashboardEventsPage = () => {
           className="lg:hidden flex items-center justify-center p-4 cursor-pointer bg-gray-light rounded-full shadow-md"
           onClick={() => setOpenMobileCalender(true)}
         >
-          <FaRegCalendar />
+          {icons.calendar}
         </div>
       </div>
 
@@ -47,7 +52,7 @@ const DashboardEventsPage = () => {
 
       {/* mobile calender */}
       <Drawer active={openMobileCalender} setActive={setOpenMobileCalender}>
-        <div className="px-4 mt-16 mb-10">
+        <div className="px-4 mt-16 mb-10 max-w-md ml-auto">
           <EventsCalender />
         </div>
       </Drawer>

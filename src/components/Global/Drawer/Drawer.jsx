@@ -1,4 +1,4 @@
-import { AiFillCloseCircle } from "react-icons/ai";
+import icons from "~/assets/js/icons";
 import { classNames } from "~/utilities/classNames";
 
 const Drawer = ({ active, children, setActive, containerClassName, side = "right" }) => {
@@ -18,11 +18,12 @@ const Drawer = ({ active, children, setActive, containerClassName, side = "right
         )}
       >
         {children}
-        <AiFillCloseCircle
-          className="text-primary absolute top-3 right-5 cursor-pointer"
-          size={35}
+        <div
+          className="text-white bg-primary p-2 flex justify-center items-center absolute top-3 right-5 cursor-pointer rounded-full"
           onClick={() => setActive(false)}
-        />
+        >
+          {icons.close}
+        </div>
       </div>
     </div>
   );

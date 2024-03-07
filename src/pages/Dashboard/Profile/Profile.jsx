@@ -4,8 +4,11 @@ import Tabs from "~/components/Global/Tabs/Tabs";
 import ProfileTabAbout from "~/components/DashboardComponents/ProfileTabContents/About";
 import ProfileTabManageSubscriptions from "~/components/DashboardComponents/ProfileTabContents/ManageSubscriptions";
 import ProfileTabNotificationSettings from "~/components/DashboardComponents/ProfileTabContents/NotificationSettings";
+import { useNavigate } from "react-router-dom";
 
 const DashboardProfilePage = () => {
+  const navigate = useNavigate();
+
   const profileTabs = [
     { label: "About", content: <ProfileTabAbout /> },
     { label: "Manage subscriptions", content: <ProfileTabManageSubscriptions /> },
@@ -27,7 +30,7 @@ const DashboardProfilePage = () => {
             <span className="underline text-primary text-sm">Kogi Chapter</span>
           </div>
         </div>
-        <Button label="Edit profile" variant="outlined" />
+        <Button label="Edit profile" variant="outlined" onClick={() => navigate("/edit-profile")} />
         <Button label="Transit" color="secondary" />
       </section>
 

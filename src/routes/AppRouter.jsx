@@ -19,6 +19,8 @@ import DashboardResourceDetails from "~/pages/Dashboard/Resources/ResourceDetail
 import DashboardMessagingPage from "~/pages/Dashboard/Messaging/Messaging";
 import DashboardStorePage from "~/pages/Dashboard/Store/Store";
 import DashboardStoreSingleProductPage from "~/pages/Dashboard/Store/SingleProduct/SingleProduct";
+import DashboardStoreSingleEventPage from "~/pages/Dashboard/Events/SingleEvent/SingleEvent";
+import DashboardEditProfile from "~/pages/Dashboard/Profile/EditProfile/EditProfile";
 
 export default function AppRouter() {
   const isAuthenticated = true;
@@ -49,6 +51,7 @@ export default function AppRouter() {
           children: [
             { index: true, element: <DashboardHomePage /> },
             { path: "events", element: <DashboardEventsPage /> },
+            { path: "events/:id", element: <DashboardStoreSingleEventPage /> },
             { path: "profile", element: <DashboardProfilePage /> },
             { path: "resources", element: <DashboardResources /> },
             { path: "resources/:category", element: <Navigate to="/resources" /> },
@@ -57,6 +60,7 @@ export default function AppRouter() {
             { path: "store", element: <DashboardStorePage /> },
             { path: "store/:id", element: <DashboardStoreSingleProductPage /> },
             { path: "update-password", element: <DashboardUpdatePassword /> },
+            { path: "edit-profile", element: <DashboardEditProfile /> },
           ],
         },
       ],
