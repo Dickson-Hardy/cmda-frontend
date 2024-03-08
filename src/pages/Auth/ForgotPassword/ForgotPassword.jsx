@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import Button from "~/components/Global/Button/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { usePasswordForgotMutation } from "~/redux/api/auth/authApi";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 import { toast } from "react-toastify";
@@ -16,26 +16,29 @@ const ForgotPassword = () => {
     formState: { errors },
   } = useForm({ mode: "all" });
 
+  const navigate = useNavigate();
+
   const [openModal, setOpenModal] = useState(false);
   const [message, setMessage] = useState("");
 
   const [passwordForgot, { isLoading }] = usePasswordForgotMutation();
-  const [resendOtp, { isLoading: isResending }] = usePasswordForgotMutation();
+  // const [resendOtp, { isLoading: isResending }] = usePasswordForgotMutation();
 
   const handleForgotPassword = (payload) => {
     passwordForgot(payload)
       .unwrap()
       .then((data) => {
         setMessage(data?.message);
-        setOpenModal(true);
+        toast.success("OTP resent successfully");
+        navigate("/reset-password");
       });
   };
 
-  const handleResend = () => {
-    resendOtp()
-      .unwrap()
-      .then(() => toast.success("OTP resent successfully"));
-  };
+  // const handleResend = () => {
+  //   resendOtp()
+  //     .unwrap()
+  //     .then(() => toast.success("OTP resent successfully"));
+  // };
 
   return (
     <>
@@ -56,7 +59,7 @@ const ForgotPassword = () => {
           rules={{ pattern: { value: EMAIL_PATTERN, message: "Enter a valid email address" } }}
         />
 
-        <div className="flex items-center gap-2 text-sm">
+        {/* <div className="flex items-center gap-2 text-sm">
           Didn&apos;t get email?
           <Button
             variant="text"
@@ -66,7 +69,7 @@ const ForgotPassword = () => {
             className="px-[8px] h-[32px]"
             onClick={handleResend}
           />
-        </div>
+        </div> */}
 
         <div className="flex flex-col">
           <Button type="submit" large className="mb-4" loading={isLoading}>

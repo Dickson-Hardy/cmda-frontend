@@ -25,7 +25,7 @@ const authApi = api.injectEndpoints({
     }),
     // RESET PASSWORD
     passwordReset: build.mutation({
-      query: (body) => ({ url: "/password/reset", method: "POST", body }),
+      query: (body) => ({ url: "/users/reset-password", method: "POST", body }),
       transformErrorResponse: (response) => response.data?.message,
     }),
   }),
