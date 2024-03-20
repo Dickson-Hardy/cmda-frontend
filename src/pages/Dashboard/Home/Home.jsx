@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import EventCard from "~/components/DashboardComponents/Events/EventCard";
 import ResourceCard from "~/components/DashboardComponents/Resources/ResourceCard";
+import Volunteer from "~/components/DashboardComponents/Volunteer/Volunteer";
 import Button from "~/components/Global/Button/Button";
 import Switch from "~/components/Global/FormElements/Switch/Switch";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
@@ -82,21 +83,15 @@ const DashboardHomePage = () => {
         <div className="w-full md:w-1/2">
           <div className="flex justify-between items-center gap-2 mb-2">
             <h3 className="text-lg font-bold">Volunteer Positions</h3>
-            <Link to="/resources" className="text-sm text-primary font-semibold">
+            <Link to="/volunteers" className="text-sm text-primary font-semibold">
               See more
             </Link>
           </div>
-          <ul className="space-y-3">
+          <div className="space-y-3">
             {[...Array(3)].map((_, i) => (
-              <li key={i} className="bg-white border rounded-xl p-4 flex justify-between items-center gap-4">
-                <div>
-                  <h4 className="text-sm font-bold truncate">Head of Doctor</h4>
-                  <p className="text-gray-dark text-xs mt-1 truncate">Gbagada, Lagos</p>
-                </div>
-                <span className="text-base">{icons.chevronRight}</span>
-              </li>
+              <Volunteer key={i} />
             ))}
-          </ul>
+          </div>
         </div>
 
         <div className="w-full md:w-1/2">

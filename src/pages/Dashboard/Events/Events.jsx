@@ -3,14 +3,15 @@ import EventCard from "~/components/DashboardComponents/Events/EventCard";
 import Tabs from "~/components/Global/Tabs/Tabs";
 import Drawer from "~/components/Global/Drawer/Drawer";
 import EventsCalender from "~/components/DashboardComponents/Events/EventsCalender";
-import { useIsSmallScreen } from "~/hooks/useIsSmallScreen";
 import icons from "~/assets/js/icons";
+import { useIsSmallScreen } from "~/hooks/useIsSmallScreen";
 
 const DashboardEventsPage = () => {
   const [activeView, setActiveView] = useState("list");
   const [openMobileCalender, setOpenMobileCalender] = useState(false);
 
-  const isSmallScreen = useIsSmallScreen();
+  const isSmallScreen = useIsSmallScreen("750px");
+  // console.log(isSmallScreen);
 
   const isRowView = activeView === "list";
 
@@ -43,7 +44,7 @@ const DashboardEventsPage = () => {
 
       <section className="flex gap-10">
         <div className="w-full lg:w-2/3 ">
-          <Tabs tabs={eventTabs} equalTab={false} activeView={activeView} setActiveView={setActiveView} />
+          <Tabs tabs={eventTabs} equalTab={false} activeView={activeView} setActiveView={setActiveView} page="events" />
         </div>
         <div className="hidden lg:block lg:w-1/3">
           <EventsCalender />

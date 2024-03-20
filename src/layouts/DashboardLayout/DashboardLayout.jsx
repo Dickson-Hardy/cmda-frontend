@@ -7,7 +7,7 @@ import { NAV_LINKS } from "./constants";
 import { useIsSmallScreen } from "~/hooks/useIsSmallScreen";
 
 const DashboardLayout = ({ withOutlet = true, children }) => {
-  const isSmallScreen = useIsSmallScreen();
+  const isSmallScreen = useIsSmallScreen("750px");
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
   const toggleSidebar = () => {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { classNames } from "~/utilities/classNames";
 import icons from "~/assets/js/icons";
 
-const Tabs = ({ tabs, equalTab = true, activeView, setActiveView }) => {
+const Tabs = ({ tabs, equalTab = true, activeView, setActiveView, page }) => {
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabClick = (index) => {
@@ -35,20 +35,22 @@ const Tabs = ({ tabs, equalTab = true, activeView, setActiveView }) => {
           ))}
         </div>
         {/* toggle view mode */}
-        <div className="hidden lg:flex items-center gap-x-4">
-          <div
-            className={classNames(activeView === "list" && "p-1 bg-[#f5f5f5] rounded-full", "cursor-pointer")}
-            onClick={() => handleViewClick("list")}
-          >
-            {icons.list}
+        {page === "events" && (
+          <div className="hidden lg:flex items-center gap-x-4">
+            <div
+              className={classNames(activeView === "list" && "p-1 bg-[#f5f5f5] rounded-full", "cursor-pointer")}
+              onClick={() => handleViewClick("list")}
+            >
+              {icons.list}
+            </div>
+            <div
+              className={classNames(activeView === "grid" && "p-1 bg-[#f5f5f5] rounded-full", "cursor-pointer")}
+              onClick={() => handleViewClick("grid")}
+            >
+              {icons.grid}
+            </div>
           </div>
-          <div
-            className={classNames(activeView === "grid" && "p-1 bg-[#f5f5f5] rounded-full", "cursor-pointer")}
-            onClick={() => handleViewClick("grid")}
-          >
-            {icons.grid}
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Tab Content */}
