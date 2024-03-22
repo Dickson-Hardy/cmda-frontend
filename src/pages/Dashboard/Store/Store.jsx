@@ -15,14 +15,14 @@ const DashboardStorePage = () => {
 
   return (
     <div>
-      <div className="flex justify-between gap-2 items-center mb-6">
+      <div className="flex flex-col md:flex-row justify-center gap-y-3 md:justify-between items-center">
         <h2 className="text-2xl font-bold text-primary">Store</h2>
         <SearchBar />
       </div>
 
-      <section className="flex gap-10">
-        <div className="w-3/4">
-          <div className="grid grid-cols-3 gap-6">
+      <section className="flex flex-col md:flex-row justify-center gap-10 mt-8 ">
+        <div className="w-full lg:w-3/4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(12)].map((_, i) => (
               <Link to={`/store/${i + 1}`} key={i + 1}>
                 <ProductCard width="240" />
@@ -30,13 +30,13 @@ const DashboardStorePage = () => {
             ))}
           </div>
         </div>
-        <div className="w-1/4">
+        <div className="w-full lg:w-1/4">
           <div className="sticky top-0 right-0 left-0 flex flex-col gap-8">
-            <div className="bg-onPrimary flex items-center gap-4 font-bold rounded-lg p-4 text-sm">
+            <Link to="/cart" className="bg-onPrimary flex items-center gap-4 font-bold rounded-lg p-4 text-sm">
               <span className="text-primary text-2xl">{icons.cart}</span>
               Cart
               <span className="ml-auto">{icons.chevronRight}</span>
-            </div>
+            </Link>
 
             <div className="bg-onPrimary flex items-center gap-4 font-bold rounded-lg p-4 text-sm">
               <span className="text-primary text-2xl">{icons.clockCounter}</span>
