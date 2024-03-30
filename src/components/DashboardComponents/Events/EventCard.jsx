@@ -1,11 +1,12 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { classNames } from "~/utilities/classNames";
 import formatDate from "~/utilities/fomartDate";
 
 const EventCard = ({ width = 288, row }) => {
+  const navigate = useNavigate();
   return (
-    <Link
-      to="/events/1"
+    <div
+      onClick={() => navigate("/events/1")}
       className={classNames(
         "bg-white border p-4 rounded-2xl flex overflow-hidden cursor-pointer hover:shadow-md transition-shadow duration-300",
         row ? "flex-row gap-4 items-center" : "flex-col gap-2"
@@ -22,7 +23,7 @@ const EventCard = ({ width = 288, row }) => {
         <p className="text-gray-dark text-xs">{formatDate(new Date()).date + ", " + formatDate(new Date()).time}</p>
         <p className="text-gray-dark text-xs mt-2 truncate">Gbagada, Lagos</p>
       </div>
-    </Link>
+    </div>
   );
 };
 

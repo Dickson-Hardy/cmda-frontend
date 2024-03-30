@@ -29,6 +29,8 @@ import {
   FaArrowLeft,
   FaRegNewspaper,
   FaFacebookF,
+  FaInstagram,
+  FaLinkedin,
 } from "react-icons/fa";
 import { AiOutlineDelete, AiOutlineFileText } from "react-icons/ai";
 import {
@@ -46,6 +48,7 @@ import { BiSortAlt2 } from "react-icons/bi";
 import { RxCounterClockwiseClock } from "react-icons/rx";
 import { IoList } from "react-icons/io5";
 import { GoDotFill } from "react-icons/go";
+import { FaXTwitter } from "react-icons/fa6";
 const icons = {
   bell: <FiBell />,
   download: <FiDownloadCloud />,
@@ -93,6 +96,9 @@ const icons = {
   grid: <MdViewModule />,
   dot: <GoDotFill />,
   facebook: <FaFacebookF />,
+  twitter: <FaXTwitter />,
+  instagram: <FaInstagram />,
+  linkedIn: <FaLinkedin />,
 };
 
 export default icons;

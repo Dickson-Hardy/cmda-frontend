@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import icons from "~/assets/js/icons";
 import EventCard from "~/components/DashboardComponents/Events/EventCard";
 import ResourceCard from "~/components/DashboardComponents/Resources/ResourceCard";
 import Volunteer from "~/components/DashboardComponents/Volunteer/Volunteer";
 import Button from "~/components/Global/Button/Button";
 import Switch from "~/components/Global/FormElements/Switch/Switch";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
+import Loading from "~/components/Global/Loading/Loading";
+import { useGetAllVersesQuery } from "~/redux/api/verse/verseApi";
 
 const DashboardHomePage = () => {
   const user = useSelector((state) => state.auth.user);
@@ -21,6 +22,24 @@ const DashboardHomePage = () => {
     formState: { errors },
   } = useForm({ mode: "all" });
 
+  // get all verses
+  const { data: versesData, isLoading: versesLoading } = useGetAllVersesQuery();
+
+  // get the verse of the day at random
+  const verseOfTheDay = useMemo(() => {
+    if (!versesData || !versesData?.data || versesData.data.length < 1) {
+      return [
+        "John 3: 15",
+        "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.",
+      ];
+    }
+    const randomIndex = Math.floor(Math.random() * versesData.data.length);
+    const { content } = versesData.data[randomIndex];
+    const [verse, text] = content.split("“");
+
+    return [verse, text];
+  }, []);
+
   const fullName = user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name";
 
   return (
@@ -31,14 +50,15 @@ const DashboardHomePage = () => {
       <p>You have no upcoming events</p>
 
       <section className="bg-secondary/90 text-white rounded-2xl p-6 my-6">
-        <div className="w-full md:w-1/2">
-          <h3 className="text-lg font-bold">Verse of the Day</h3>
-          <p className="text-sm my-4 font-semibold">
-            For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish
-            but have eternal life.
-          </p>
-          <span className="text-sm">John 3: 15 KJV</span>
-        </div>
+        {versesLoading ? (
+          <Loading />
+        ) : (
+          <div className="w-full md:w-1/2">
+            <h3 className="text-lg font-bold">Verse of the Day</h3>
+            <p className="text-sm my-4 font-semibold">{verseOfTheDay[1]}</p>
+            <span className="text-sm">{verseOfTheDay[0]} KJV</span>
+          </div>
+        )}
       </section>
 
       <section className="mb-6">
