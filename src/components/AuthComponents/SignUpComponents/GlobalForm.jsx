@@ -13,6 +13,7 @@ import CountryFlags from "../../Global/FormElements/CountryWithFlagsInput/County
 import Button from "../../Global/Button/Button";
 import { setVerifyEmail } from "~/redux/features/auth/authSlice";
 import { useDispatch } from "react-redux";
+import { genderOptions } from "~/utilities/reusableVariables";
 
 const GlobalForm = () => {
   const navigate = useNavigate();
@@ -68,12 +69,6 @@ const GlobalForm = () => {
       })
       .catch((error) => console.log("Error ", error));
   };
-
-  //   gender options
-  const genderOptions = [
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-  ];
 
   const { getAllStatesByCountryCode } = useCountry();
 

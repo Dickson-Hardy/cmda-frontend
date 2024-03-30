@@ -9,6 +9,12 @@ import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setVerifyEmail } from "~/redux/features/auth/authSlice";
+import {
+  admissionYearOptions,
+  currentYearOptions,
+  genderOptions,
+  studentChapterOptions,
+} from "~/utilities/reusableVariables";
 
 const StudentForm = () => {
   const navigate = useNavigate();
@@ -37,70 +43,6 @@ const StudentForm = () => {
       })
       .catch((error) => console.log("Error ", error));
   };
-
-  //   gender options
-  const genderOptions = ["Male", "Female"].map((y) => ({ label: y, value: y.toLowerCase() }));
-
-  // admission year select option
-  const admissionYearOptions = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map((x) => ({
-    label: x,
-    value: x,
-  }));
-
-  // current year select option
-  const currentYearOptions = [
-    { value: "1st Year", label: "1st Year" },
-    { value: "2nd Year", label: "2nd Year" },
-    { value: "3rd Year", label: "3rd Year" },
-    { value: "4th Year", label: "4th Year" },
-    { value: "5th Year", label: "5th Year" },
-    { value: "6th Year", label: "6th Year" },
-    { value: "7th Year", label: "7th Year" },
-    { value: "8th Year", label: "8th Year" },
-  ];
-
-  const studentChapterOptions = [
-    "AAU/ISTH",
-    "ABUADTH",
-    "BUTH",
-    "DELSUTH",
-    "EKSUTH",
-    "IUTH",
-    "UITH",
-    "LTH",
-    "LUTH",
-    "UNIMEDTH",
-    "LASUTH",
-    "UCH",
-    "OAUTHc",
-    "OOUTH",
-    "UBTH",
-    "ABSUTH",
-    "COOUTH",
-    "EBSUTH",
-    "ESUTH",
-    "GUTH",
-    "IMSUTH",
-    "UPTH",
-    "NAUTH",
-    "UCTH",
-    "UNTH",
-    "UUTH",
-    "NDUTH",
-    "ABUTH",
-    "AKTH",
-    "BDTH/KASU",
-    "BHUTH",
-    "BSUTH",
-    "GSUTH",
-    "JUTH",
-    "UDUTH",
-    "UMTH",
-    "UATH",
-  ].map((x) => ({
-    label: x + " Chapter",
-    value: x + " Chapter",
-  }));
 
   return (
     <div>

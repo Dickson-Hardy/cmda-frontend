@@ -1,15 +1,41 @@
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import icons from "~/assets/js/icons";
+import AddSocials from "~/components/DashboardComponents/ProfileTabContents/AddSocials";
 import Button from "~/components/Global/Button/Button";
 import CountryFlags from "~/components/Global/FormElements/CountryWithFlagsInput/CountyFlags";
 import Select from "~/components/Global/FormElements/Select/Select";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
-import PhoneInput from "~/components/Global/FormElements/phoneInput/PhoneInput";
+// import PhoneInput from "~/components/Global/FormElements/phoneInput/PhoneInput";
+import useCountry from "~/hooks/useCountry ";
+import { useEditProfileMutation } from "~/redux/api/profile/editProfile";
+import { setUser } from "~/redux/features/auth/authSlice";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
+import {
+  admissionYearOptions,
+  currentYearOptions,
+  doctorsRegionLists,
+  genderOptions,
+  studentChapterOptions,
+} from "~/utilities/reusableVariables";
 
 const DashboardEditProfile = () => {
+  const user = useSelector((state) => state.auth.user);
+  const navigate = useNavigate();
+  const [socials, setSocials] = useState(user?.socials || []);
+  const [addSocialVisible, setAddSocialVisible] = useState(false);
+
+  if (!user) {
+    navigate("/login");
+  }
+
+  // console.log(user)
+  const [editProfile, { isLoading }] = useEditProfileMutation();
+  const dispatch = useDispatch();
   const {
     control,
     register,
@@ -17,15 +43,55 @@ const DashboardEditProfile = () => {
     handleSubmit,
     watch,
     setValue,
-  } = useForm({ mode: "all" });
-
-  const navigate = useNavigate();
+  } = useForm({
+    mode: "all",
+    defaultValues: {
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
+      middleName: user?.middleName || "",
+      phone: user?.phone || "",
+      email: user?.email || "",
+      gender: user?.gender || "",
+      region: user?.region || "",
+      bio: user?.bio || "",
+      admissionYear: Number(user?.admissionYear) || "",
+      yearOfStudy: user?.yearOfStudy || "",
+      licenseNumber: user?.licenseNumber || "",
+      specialty: user?.specialty || "",
+      country: user?.country || "",
+      state: user?.state || "",
+    },
+  });
 
   // watching the country field so as to updates the state field
   const selectedCountry = watch("country", "");
 
-  //   gender options
-  const genderOptions = ["Male", "Female"].map((y) => ({ label: y, value: y.toLowerCase() }));
+  const { getAllStatesByCountryCode } = useCountry();
+
+  const allStates = useMemo(() => {
+    return getAllStatesByCountryCode(selectedCountry);
+  }, [getAllStatesByCountryCode, selectedCountry]);
+
+  // Function to remove a social
+  const removeSocial = (indexToRemove) => {
+    setSocials(socials.filter((_, index) => index !== indexToRemove));
+  };
+
+  const handleUpdateProfile = (payload) => {
+    const data = { ...payload, socials };
+    editProfile({ id: user?._id, data })
+      .unwrap()
+      .then((data) => {
+        // dispatch(setUser(data));
+        // toast.success("Login successful");
+        // navigate("/");
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(error);
+      });
+  };
 
   return (
     <div>
@@ -34,10 +100,10 @@ const DashboardEditProfile = () => {
       </Button>
       <div className="mt-6 flex items-center justify-center">
         <div className="bg-white w-full max-w-2xl max-auto p-8 rounded-lg">
-          <form onSubmit={handleSubmit(console.log)}>
+          <form onSubmit={handleSubmit(handleUpdateProfile)}>
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold mb-4">Edit Profile</h2>
-              <Button label="Save Changes" color="secondary" type="submit" />
+              <Button label="Save Changes" color="secondary" type="submit" disabled={isLoading} />
             </div>
             <div className="flex flex-col gap-6 px-2 lg:px-5">
               <div>
@@ -75,7 +141,8 @@ const DashboardEditProfile = () => {
                 />
               </div>
 
-              <div>
+              {/* TODO: add the phone number */}
+              {/* <div>
                 <PhoneInput
                   title="Phone number (optional)"
                   label="phone"
@@ -84,7 +151,7 @@ const DashboardEditProfile = () => {
                   watch={watch}
                   setValue={setValue}
                 />
-              </div>
+              </div> */}
               <div>
                 <TextInput
                   title="Email Address"
@@ -99,6 +166,21 @@ const DashboardEditProfile = () => {
                 />
               </div>
 
+              {/* roles similar to doctors and students */}
+              {user.role !== "global" && (
+                <div className="w-full">
+                  <Select
+                    label="region"
+                    control={control}
+                    options={user.role === "doctor" ? doctorsRegionLists : studentChapterOptions}
+                    errors={errors}
+                    required
+                    title="Chapter/Region"
+                    placeholder="choose your chapter/region"
+                  />
+                </div>
+              )}
+
               <div className="w-full">
                 <Select
                   label="gender"
@@ -107,31 +189,6 @@ const DashboardEditProfile = () => {
                   errors={errors}
                   required={"Select your gender"}
                   placeholder="Male or Female"
-                />
-              </div>
-
-              <div className="w-full">
-                <CountryFlags
-                  selected={selectedCountry}
-                  setSelected={(code) =>
-                    setValue("country", code, {
-                      shouldDirty: true,
-                      shouldTouch: true,
-                      shouldValidate: true,
-                    })
-                  }
-                />
-              </div>
-
-              <div>
-                <TextInput
-                  title="Professional Cadre"
-                  label="professional_cadre"
-                  type="text"
-                  register={register}
-                  errors={errors}
-                  required
-                  placeholder="Professional Cadre"
                 />
               </div>
 
@@ -145,28 +202,129 @@ const DashboardEditProfile = () => {
                   placeholder="About you"
                 />
               </div>
+              {/* students only roles */}
+              {user.role === "student" && (
+                <>
+                  <div className="w-full">
+                    <Select
+                      label="admissionYear"
+                      control={control}
+                      options={admissionYearOptions}
+                      errors={errors}
+                      required
+                      title="Admission Year"
+                      placeholder="year of admission"
+                    />
+                  </div>
+
+                  <div className="w-full">
+                    <Select
+                      label="yearOfStudy"
+                      control={control}
+                      options={currentYearOptions}
+                      errors={errors}
+                      required
+                      title="Current year of study"
+                      placeholder="Enter current level/year"
+                    />
+                  </div>
+                </>
+              )}
+              {/* doctors and global only roles */}
+              {user.role !== "student" && (
+                <>
+                  <div>
+                    <TextInput
+                      title="License number"
+                      label="licenseNumber"
+                      register={register}
+                      errors={errors}
+                      required
+                      placeholder="Enter your license number"
+                    />
+                  </div>
+
+                  <div>
+                    <TextInput
+                      label="specialty"
+                      type="text"
+                      register={register}
+                      errors={errors}
+                      required
+                      placeholder="professional Cadre"
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* global */}
+              {user.role === "global" && (
+                <>
+                  <div className="w-full">
+                    <CountryFlags
+                      selected={selectedCountry}
+                      setSelected={(code) =>
+                        setValue("country", code, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                          shouldValidate: true,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="w-full">
+                    <Select
+                      label="state"
+                      control={control}
+                      options={allStates}
+                      errors={errors}
+                      required
+                      placeholder="choose your state"
+                      disabled={!selectedCountry}
+                    />
+                  </div>
+                </>
+              )}
             </div>
           </form>
 
           {/* socials */}
-          <div className="mt-12">
+          <div className="mt-12 px-2 lg:px-5">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold mb-4">Socials</h2>
-              <div className="p-2 flex gap-2 border rounded-full text-black justify-center items-center text-sm cursor-pointer">
+              <div
+                className="p-2 flex gap-2 border rounded-full text-black justify-center items-center text-sm cursor-pointer"
+                onClick={() => setAddSocialVisible(true)}
+              >
                 {icons.plus}
                 Add
               </div>
             </div>
+
+            {/* add  social form */}
+            {addSocialVisible && (
+              <AddSocials
+                onSave={(name, link) => {
+                  setSocials([...socials, { name, link }]);
+                  setAddSocialVisible(false);
+                }}
+              />
+            )}
             <div className="px-2 lg:px-5">
-              {[...Array(2)].map((_, i) => (
-                <div key={i} className="max-w-sm flex justify-between items-center my-3 ">
+              {socials.map((social, index) => (
+                <div key={index} className="w-full flex justify-between items-center my-3 ">
                   <div className="flex items-center gap-x-4">
                     <span className="bg-gray-light p-3 flex justify-center items-center rounded-full">
-                      {icons.facebook}
+                      {social.name === "facebook" && icons.facebook}
+                      {social.name === "instagram" && icons.instagram}
+                      {social.name === "twitter" && icons.twitter}
+                      {social.name === "linkedIn" && icons.linkedIn}
                     </span>
-                    <p className="text-primaryContainer font-semibold text-sm">Facebook.com/kingSolomon</p>
+                    <p className="text-primaryContainer font-semibold text-sm">{social.link}</p>
                   </div>
-                  <p className="text-primary font-semibold cursor-pointer text-sm">Remove</p>
+                  <p className="text-primary font-semibold cursor-pointer text-sm" onClick={() => removeSocial(index)}>
+                    Remove
+                  </p>
                 </div>
               ))}
             </div>

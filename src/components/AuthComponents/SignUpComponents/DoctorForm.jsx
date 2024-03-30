@@ -9,6 +9,7 @@ import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
 import { setVerifyEmail } from "~/redux/features/auth/authSlice";
 import { useDispatch } from "react-redux";
+import { doctorsRegionLists, genderOptions } from "~/utilities/reusableVariables";
 
 const DoctorForm = () => {
   const navigate = useNavigate();
@@ -51,63 +52,6 @@ const DoctorForm = () => {
       })
       .catch((error) => console.log("Error ", error));
   };
-
-  //   gender options
-  const genderOptions = [
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-  ];
-
-  const doctorsRegionLists = [
-    "Abia - Umahia",
-    "Adamawa",
-    "Akwa Ibom",
-    "Anambra (NAUTH)",
-    "Bauchi",
-    "Bayelsa",
-    "Benue",
-    "Borno",
-    "CMDA Uyo",
-    "Delta",
-    "Delta - DELSUTH, Oghara",
-    "Delta FMC, Asaba",
-    "Ebonyi",
-    "Edo-Benin",
-    "Edo-SHMB",
-    "Edo-Irrua",
-    "Ekiti - Ido",
-    "Ekiti-Ado",
-    "Enugu",
-    "FCT Gwagwalada",
-    "FCT Municipal",
-    "Gombe",
-    "Imo",
-    "Kaduna - Kaduna",
-    "Kaduna - Zaria",
-    "Kano",
-    "Kogi",
-    "Kwara",
-    "Lagos-Lasuth",
-    "Lagos-Luth",
-    "Nasarawa - Keffi",
-    "Nasarawa - Lafiya",
-    "Niger-Bida",
-    "Ogun - Abeokuta",
-    "Ogun - Shagamu",
-    "Ondo - Owo",
-    "ONDO – UNIMEDTH",
-    "Osun-Ife",
-    "Osun-Osogbo",
-    "Oyo",
-    "Plateau",
-    "Rivers",
-    "Sokoto",
-    "Taraba",
-    "Kebbi",
-  ].map((x) => ({
-    label: x,
-    value: x,
-  }));
 
   return (
     <div>

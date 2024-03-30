@@ -13,7 +13,7 @@ const TextArea = ({
   placeholder,
   className,
   rows = 4,
-  required = "This field is required", // set to false if not required or pass custom error message as string
+  required, // set to false if not required or pass custom error message as string
   showTitleLabel = true, // whether to show label or title of input above the component
 }) => {
   return (
@@ -35,7 +35,10 @@ const TextArea = ({
           errors?.[label]?.message && "border-error",
           className
         )}
-        {...register(label, { required, ...rules })}
+        {...register(label, {
+          required: required && typeof required === "boolean" ? "This field is required" : required,
+          ...rules,
+        })}
         placeholder={placeholder}
       />
       <FormError error={errors?.[label]?.message} />

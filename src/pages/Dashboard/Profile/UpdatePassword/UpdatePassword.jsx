@@ -1,8 +1,10 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
+import { useUpdatePasswordMutation } from "~/redux/api/profile/editProfile";
 
 const DashboardUpdatePassword = () => {
   const {
@@ -12,6 +14,25 @@ const DashboardUpdatePassword = () => {
   } = useForm({ mode: "all" });
 
   const navigate = useNavigate();
+  const [updatePassword, { isLoading }] = useUpdatePasswordMutation();
+
+  const handleUpdatePassword = (payload) => {
+    const { oldPassword, newPassword, confirmNewPassword } = payload;
+    if (newPassword !== confirmNewPassword) {
+      toast.error("Password do not match");
+      return;
+    }
+
+    updatePassword({ oldPassword, newPassword })
+      .unwrap()
+      .then((data) => {
+        toast.success(data.message);
+      })
+      .catch((error) => {
+        toast.error(error);
+      });
+  };
+
 
   return (
     <div>
@@ -21,8 +42,8 @@ const DashboardUpdatePassword = () => {
       <div className="mt-6 h-[70vh] flex items-center justify-center">
         <div className="bg-white w-full max-w-md max-auto p-8 rounded-lg">
           <h2 className="text-lg font-bold mb-4">Update Password</h2>
-          <form className="flex flex-col gap-6" onSubmit={handleSubmit(console.log)}>
-            <TextInput label="currentPassword" type="password" register={register} errors={errors} required />
+          <form className="flex flex-col gap-6" onSubmit={handleSubmit(handleUpdatePassword)}>
+            <TextInput label="oldPassword" type="password" register={register} errors={errors} required />
             <TextInput
               label="newPassword"
               title="Create New Password"
@@ -39,7 +60,7 @@ const DashboardUpdatePassword = () => {
               errors={errors}
               required
             />
-            <Button type="submit" label="Update Password" large />
+            <Button type="submit" label="Update Password" large disabled={isLoading} />
           </form>
         </div>
       </div>
