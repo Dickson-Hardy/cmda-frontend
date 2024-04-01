@@ -9,6 +9,7 @@ import Button from "~/components/Global/Button/Button";
 import Switch from "~/components/Global/FormElements/Switch/Switch";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
 import Loading from "~/components/Global/Loading/Loading";
+import { useGetAllPostsQuery } from "~/redux/api/external/wordPressApi";
 import { useGetAllVersesQuery } from "~/redux/api/verse/verseApi";
 
 const DashboardHomePage = () => {
@@ -38,9 +39,42 @@ const DashboardHomePage = () => {
     const [verse, text] = content.split("“");
 
     return [verse, text];
-  }, []);
+  }, [versesData]);
 
   const fullName = user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name";
+
+  // const [totalItems, setTotalItems] = useState(0);
+
+  // useEffect(() => {
+  //   const fetchPosts = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const baseUrl = `https://blog-admin.wetalksound.co/wp-json/wp/v2/posts?page=${page}&per_page=${perPage}&_fields=title,slug,categories,date,yoast_head_json.description,yoast_head_json.og_image`;
+
+  //       //
+  //       const response = await fetch(baseUrl);
+  //       if (!response.ok) {
+  //         throw new Error("Network response was not ok");
+  //       }
+  //       const data = await response.json();
+  //       setPosts(data);
+  //       // Access pagination information from the response headers
+  //       const totalPagesHeader = response.headers.get("x-wp-totalpages");
+  //       // const totalItemsHeader = response.headers.get("x-wp-total");
+  //       // Update state with pagination information
+  //       setTotalPages(+totalPagesHeader);
+  //       // setTotalItems(+totalItemsHeader);
+  //     } catch (error) {
+  //       console.error("Error fetching WordPress posts:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchPosts();
+  // }, [page, perPage]);
+
+  const { data: blog } = useGetAllPostsQuery({ perPage: 10, page: 1 }, { refetchOnMountOrArgChange: true });
 
   return (
     <div>
@@ -85,14 +119,13 @@ const DashboardHomePage = () => {
           </Link>
         </div>
         <div className="flex space-x-4 py-2 overflow-x-auto scrollbar-hide">
-          {[...Array(10)].map((_, v) => (
-            <Link to={`/resources/${v % 2 ? "audios" : v % 3 ? "videos" : "articles"}/${v + 1}`} key={v + 1}>
+          {blog?.posts.map((post, v) => (
+            <Link to={`/resources/articles/${post.slug}`} key={v + 1}>
               <ResourceCard
-                image="/vite.svg"
-                title="Medical Problems in West Africa And How to Solve them"
-                type={v % 2 ? "audio" : v % 3 ? "video" : "article"}
-                subtitle={`Learn the 5 best way to practice medicine in 2024. Learn the 5 best way to practice medicine in 2024. Learn
-                the 5 best way to practice medicine in 2024.`}
+                image={post?.yoast_head_json?.og_image?.[0]?.url}
+                title={post?.title?.rendered}
+                type={"article"}
+                subtitle={post.yoast_head_json?.description}
               />
             </Link>
           ))}
@@ -107,9 +140,11 @@ const DashboardHomePage = () => {
               See more
             </Link>
           </div>
-          <div className="space-y-3">
+          <div className="flex flex-col gap-6">
             {[...Array(3)].map((_, i) => (
-              <Volunteer key={i} />
+              <Link to={`/volunteer/${i + 1}`} key={i}>
+                <Volunteer />
+              </Link>
             ))}
           </div>
         </div>

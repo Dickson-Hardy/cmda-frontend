@@ -4,16 +4,16 @@ import ResourceSingleAudio from "~/components/DashboardComponents/Resources/Reso
 import ResourceSingleVideo from "~/components/DashboardComponents/Resources/ResourceSingleVideo";
 
 const DashboardResourceDetails = () => {
-  const { category, id } = useParams();
-  console.log({ category, id });
+  const { category, slug } = useParams();
+  console.log({ category, slug });
 
   switch (category) {
     case "videos":
-      return <ResourceSingleVideo />;
+      return <ResourceSingleVideo slug={slug} />;
     case "audios":
-      return <ResourceSingleAudio />;
+      return <ResourceSingleAudio slug={slug} />;
     case "articles":
-      return <ResourceSingleArticle />;
+      return <ResourceSingleArticle slug={slug} />;
     default:
       return <Navigate to="/resources" />;
   }

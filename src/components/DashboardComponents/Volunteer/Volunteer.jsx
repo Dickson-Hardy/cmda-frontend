@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import icons from "~/assets/js/icons";
 
 const Volunteer = () => {
@@ -8,9 +7,7 @@ const Volunteer = () => {
         <h4 className="text-sm font-bold truncate">Head of Doctor</h4>
         <p className="text-gray-dark text-xs mt-1 truncate">Gbagada, Lagos</p>
       </div>
-      <Link to="/volunteer/1" className="text-base">
-        {icons.chevronRight}
-      </Link>
+      <span className="text-base">{icons.chevronRight}</span>
     </div>
   );
 };

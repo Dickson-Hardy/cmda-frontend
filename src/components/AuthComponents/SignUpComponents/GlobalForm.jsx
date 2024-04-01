@@ -79,7 +79,7 @@ const GlobalForm = () => {
   return (
     <div>
       <div className="mb-4 text-center">
-        <h2 className="md:text-2xl text-xl font-bold">Create a global member account</h2>
+        <h2 className="md:text-2xl text-xl font-bold">Create a Global Network Member Account</h2>
       </div>
       <form onSubmit={handleSubmit(handleSignUp)} className="grid grid-cols-1 gap-4">
         <div>
@@ -212,7 +212,7 @@ const GlobalForm = () => {
         </div>
 
         <div className="grid gap-6">
-          <Button label="Get Started" loading={isLoading} className="w-full" type="submit" />
+          <Button label="Create Account" loading={isLoading} className="w-full" type="submit" />
           <div className="text-center font-bold text-black ">
             Already have an account?
             <Link to="/login" className="ml-2 text-primary font-medium text-sm hover:underline">

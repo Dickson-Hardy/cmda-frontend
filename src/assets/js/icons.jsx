@@ -31,6 +31,7 @@ import {
   FaFacebookF,
   FaInstagram,
   FaLinkedin,
+  FaWhatsapp,
 } from "react-icons/fa";
 import { AiOutlineDelete, AiOutlineFileText } from "react-icons/ai";
 import {
@@ -99,6 +100,7 @@ const icons = {
   twitter: <FaXTwitter />,
   instagram: <FaInstagram />,
   linkedIn: <FaLinkedin />,
+  whatsapp: <FaWhatsapp />,
 };
 
 export default icons;

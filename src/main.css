@@ -48,3 +48,7 @@
   background: #994279;
   color: white;
 }
+
+.blogpost img {
+  margin: 2rem auto;
+}
