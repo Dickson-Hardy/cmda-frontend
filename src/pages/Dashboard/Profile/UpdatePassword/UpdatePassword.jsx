@@ -33,7 +33,6 @@ const DashboardUpdatePassword = () => {
       });
   };
 
-
   return (
     <div>
       <Button variant="text" onClick={() => navigate(-1)}>
