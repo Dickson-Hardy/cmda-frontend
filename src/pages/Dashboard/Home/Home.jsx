@@ -11,6 +11,7 @@ import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
 import Loading from "~/components/Global/Loading/Loading";
 import { useGetAllPostsQuery } from "~/redux/api/external/wordPressApi";
 import { useGetAllVersesQuery } from "~/redux/api/verse/verseApi";
+import Slider from "react-slick";
 
 const DashboardHomePage = () => {
   const user = useSelector((state) => state.auth.user);
@@ -43,38 +44,15 @@ const DashboardHomePage = () => {
 
   const fullName = user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name";
 
-  // const [totalItems, setTotalItems] = useState(0);
-
-  // useEffect(() => {
-  //   const fetchPosts = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const baseUrl = `https://blog-admin.wetalksound.co/wp-json/wp/v2/posts?page=${page}&per_page=${perPage}&_fields=title,slug,categories,date,yoast_head_json.description,yoast_head_json.og_image`;
-
-  //       //
-  //       const response = await fetch(baseUrl);
-  //       if (!response.ok) {
-  //         throw new Error("Network response was not ok");
-  //       }
-  //       const data = await response.json();
-  //       setPosts(data);
-  //       // Access pagination information from the response headers
-  //       const totalPagesHeader = response.headers.get("x-wp-totalpages");
-  //       // const totalItemsHeader = response.headers.get("x-wp-total");
-  //       // Update state with pagination information
-  //       setTotalPages(+totalPagesHeader);
-  //       // setTotalItems(+totalItemsHeader);
-  //     } catch (error) {
-  //       console.error("Error fetching WordPress posts:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchPosts();
-  // }, [page, perPage]);
-
   const { data: blog } = useGetAllPostsQuery({ perPage: 10, page: 1 }, { refetchOnMountOrArgChange: true });
+
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+  };
 
   return (
     <div>
@@ -102,13 +80,13 @@ const DashboardHomePage = () => {
             View all
           </Link>
         </div>
-        <div className="flex space-x-4 py-2 overflow-x-auto scrollbar-hide">
+        <Slider {...sliderSettings}>
           {[...Array(10)].map((_, x) => (
             <Link to={`/events/${x + 1}`} key={x + 1}>
               <EventCard />
             </Link>
           ))}
-        </div>
+        </Slider>
       </section>
 
       <section className="mb-6">
