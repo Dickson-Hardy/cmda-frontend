@@ -37,10 +37,10 @@ const useMediaQuery = (query) => {
       setIsMatched(event.matches);
     };
 
-    mediaQueryList.addListener(handleChange);
+    mediaQueryList.addEventListener(handleChange);
 
     return () => {
-      mediaQueryList.removeListener(handleChange);
+      mediaQueryList.removeEventListener(handleChange);
     };
   }, [query]);
 

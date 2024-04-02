@@ -4,11 +4,14 @@ import ResourceCard from "./ResourceCard";
 import formatDate from "~/utilities/fomartDate";
 import { useGetAllPostsQuery, useGetSinglePostQuery } from "~/redux/api/external/wordPressApi";
 import { useMemo } from "react";
+import Slider from "react-slick";
+import Loading from "~/components/Global/Loading/Loading";
+import { responsiveSliderSettings } from "~/assets/js/constants/sliderConstants";
 
 const ResourceSingleArticle = ({ slug }) => {
   const { data: post } = useGetSinglePostQuery({ slug });
 
-  const { data: allPosts } = useGetAllPostsQuery({ perPage: 11, page: 1 });
+  const { data: allPosts, isLoading: loadingOthers } = useGetAllPostsQuery({ perPage: 11, page: 1 });
 
   const OTHERS = useMemo(() => {
     const posts = allPosts?.posts || [];
@@ -70,19 +73,24 @@ const ResourceSingleArticle = ({ slug }) => {
       </div>
 
       <section className="mt-8">
-        <h3 className="text-lg font-bold">Read Other Articles</h3>
-        <div className="flex space-x-4 py-2 overflow-x-auto scrollbar-hide">
-          {OTHERS.map((item, v) => (
-            <Link to={`/resources/articles/${item.slug}`} key={v + 1}>
-              <ResourceCard
-                image={item?.yoast_head_json?.og_image?.[0]?.url}
-                title={item?.title?.rendered}
-                type={"article"}
-                subtitle={item.yoast_head_json?.description}
-              />
-            </Link>
-          ))}
-        </div>
+        <h3 className="text-lg font-bold mb-2">Read Other Articles</h3>
+        {loadingOthers ? (
+          <Loading height={48} width={48} className="text-primary" />
+        ) : (
+          <Slider {...responsiveSliderSettings}>
+            {OTHERS.map((item, v) => (
+              <Link to={`/resources/articles/${item.slug}`} key={v + 1}>
+                <ResourceCard
+                  image={item?.yoast_head_json?.og_image?.[0]?.url}
+                  title={item?.title?.rendered}
+                  type={"article"}
+                  subtitle={item.yoast_head_json?.description}
+                  width="auto"
+                />
+              </Link>
+            ))}
+          </Slider>
+        )}
       </section>
     </div>
   );

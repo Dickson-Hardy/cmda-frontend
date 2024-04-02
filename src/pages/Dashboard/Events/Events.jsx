@@ -1,33 +1,23 @@
 import { useState } from "react";
-import EventCard from "~/components/DashboardComponents/Events/EventCard";
 import Tabs from "~/components/Global/Tabs/Tabs";
 import Drawer from "~/components/Global/Drawer/Drawer";
 import EventsCalender from "~/components/DashboardComponents/Events/EventsCalender";
 import icons from "~/assets/js/icons";
 import { useIsSmallScreen } from "~/hooks/useIsSmallScreen";
+import UpcomingEvents from "~/components/DashboardComponents/Events/UpcomingEvents";
+import PastEvents from "~/components/DashboardComponents/Events/PastEvents";
 
 const DashboardEventsPage = () => {
   const [activeView, setActiveView] = useState("list");
   const [openMobileCalender, setOpenMobileCalender] = useState(false);
 
   const isSmallScreen = useIsSmallScreen("750px");
-  // console.log(isSmallScreen);
 
   const isRowView = activeView === "list";
 
-  const AvailableEvents = ({ row }) => {
-    return (
-      <div className={`flex gap-8  ${row || isSmallScreen ? "flex-col" : "flex-row flex-wrap"}`}>
-        {[...Array(10)].map((_, i) => (
-          <EventCard key={i} row={row && !isSmallScreen} width={row ? "auto" : isSmallScreen ? "100%" : 330} />
-        ))}
-      </div>
-    );
-  };
-
   const eventTabs = [
-    { label: "Upcoming events", content: <AvailableEvents row={isRowView} /> },
-    { label: "Past events", content: <AvailableEvents row={isRowView} /> },
+    { label: "Upcoming events", content: <UpcomingEvents row={isRowView} isSmallScreen={isSmallScreen} /> },
+    { label: "Past events", content: <PastEvents row={isRowView} isSmallScreen={isSmallScreen} /> },
   ];
 
   return (

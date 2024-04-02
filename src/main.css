@@ -49,6 +49,29 @@
   color: white;
 }
 
+/* resource articles single */
 .blogpost img {
   margin: 2rem auto;
+}
+
+/* the slides */
+.slick-slide {
+  padding: 4px 8px;
+}
+
+/* the arrows */
+.slick-prev:before,
+.slick-next:before {
+  font-size: 22px;
+  line-height: 1;
+  opacity: 1;
+  background: white;
+  color: #994279;
+}
+
+.slick-next {
+  right: -18px;
+}
+.slick-prev {
+  left: -18px;
 }
