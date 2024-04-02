@@ -33,14 +33,14 @@ const DashboardHomePage = () => {
 
   // get the verse of the day at random
   const verseOfTheDay = useMemo(() => {
-    if (!versesData || versesData.length < 1) {
+    if (!versesData || versesData?.length < 1) {
       return [
         "John 3: 15",
         "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.",
       ];
     }
     const randomIndex = Math.floor(Math.random() * versesData.length);
-    const { content } = versesData[randomIndex];
+    const content = versesData?.[randomIndex]?.content;
     const [verse, text] = content.split("“");
 
     return [verse, text];
