@@ -30,7 +30,7 @@ const GetStarted = () => {
         <h2 className="text-3xl md:text-4xl font-bold">Get Started</h2>
         <p className="text-gray-dark mt-2">Select account type to create</p>
       </div>
-      <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 place-items-center gap-6 cursor-pointer">
+      <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 place-items-center gap-4 cursor-pointer">
         {getStartedList.map(({ title, bg, border }) => (
           <div
             key={title}
@@ -41,8 +41,10 @@ const GetStarted = () => {
             )}
             onClick={() => setAccountType(title)}
           >
-            <img src={studentImg} alt="Student Icon" className="size-[3.2rem] object-contain" />
-            <p className="text-black font-bold capitalize">I&apos;m a {title}</p>
+            <img src={studentImg} alt="Student Icon" className="size-[3rem] object-contain" />
+            <p className="text-black text-sm font-bold capitalize">
+              {title === "global member" ? "Global Network Member" : title}
+            </p>
           </div>
         ))}
       </div>

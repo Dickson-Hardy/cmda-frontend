@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ResourceCard from "~/components/DashboardComponents/Resources/ResourceCard";
+import Button from "~/components/Global/Button/Button";
 import Chip from "~/components/Global/Chip/Chip";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
+import { useGetAllPostsQuery } from "~/redux/api/external/wordPressApi";
 
 const DashboardResources = () => {
   const CATEGORIES = ["Articles", "Videos", "Audios", "Presentations"];
@@ -16,6 +18,30 @@ const DashboardResources = () => {
       setSelectedCategory((prev) => prev.concat(category));
     }
   };
+
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const { data: allPosts, isLoading: loadingPosts } = useGetAllPostsQuery(
+    { perPage: 12, page },
+    { refetchOnMountOrArgChange: true }
+  );
+
+  useEffect(() => {
+    if (allPosts) {
+      setPosts((prevPosts) => {
+        const combinedPosts = [...prevPosts, ...allPosts.posts];
+        // Use Set to remove duplicate objects based on their IDs
+        const uniquePosts = Array.from(new Set(combinedPosts.map((post) => post.id))).map((id) =>
+          combinedPosts.find((post) => post.id === id)
+        );
+        return uniquePosts;
+      });
+
+      setTotalPages(allPosts.totalPages);
+    }
+  }, [allPosts]);
 
   return (
     <div>
@@ -33,24 +59,34 @@ const DashboardResources = () => {
             />
           ))}
         </div>
+
         <SearchBar />
       </div>
 
       <section className="my-8">
         <h3 className="text-lg font-bold mb-4">Recent Resources </h3>
         <div className="grid grid-cols-3 gap-8">
-          {[...Array(12)].map((_, v) => (
-            <Link to={`/resources/${v % 2 ? "audios" : v % 3 ? "videos" : "articles"}/${v + 1}`} key={v + 1}>
+          {posts.map((post, v) => (
+            <Link to={`/resources/articles/${post.slug}`} key={v + 1}>
               <ResourceCard
                 width="auto"
-                image="/atmosphere.png"
-                title="Medical Problems in West Africa And How to Solve them"
-                type={v % 2 ? "audio" : v % 3 ? "video" : "article"}
-                subtitle={`Learn the 5 best way to practice medicine in 2024. Learn the 5 best way to practice medicine in 2024. Learn
-                the 5 best way to practice medicine in 2024.`}
+                image={post?.yoast_head_json?.og_image?.[0]?.url}
+                title={post?.title?.rendered}
+                type={"article"}
+                subtitle={post.yoast_head_json?.description}
               />
             </Link>
           ))}
+        </div>
+        <div className="flex justify-center p-2 mt-6">
+          <Button
+            large
+            disabled={page === totalPages}
+            label={"Load More"}
+            className={"md:w-1/3 w-full"}
+            loading={loadingPosts}
+            onClick={() => setPage((prev) => prev + 1)}
+          />
         </div>
       </section>
     </div>

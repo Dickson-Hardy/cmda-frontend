@@ -1,11 +1,39 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import ProductCard from "~/components/DashboardComponents/Store/ProductCard";
 import Button from "~/components/Global/Button/Button";
+import { useGetAllProductsQuery, useGetSingleProductQuery } from "~/redux/api/products/productsApi";
+import { formatPrice } from "~/utilities/others";
+import Slider from "react-slick";
+import Loading from "~/components/Global/Loading/Loading";
+import { responsiveSliderSettings } from "~/assets/js/constants/sliderConstants";
 
 const DashboardStoreSingleProductPage = () => {
   const [quantity, setQuantity] = useState(1);
+  const { id } = useParams();
+  const { data: product, isLoading } = useGetSingleProductQuery(id, { refetchOnMountOrArgChange: true, skip: !id });
+
+  const { data: otherProducts, isLoading: loadingOthers } = useGetAllProductsQuery(
+    { page: 1, limit: 10 },
+    { refetchOnMountOrArgChange: true }
+  );
+
+  const settings = {
+    customPaging: function (i) {
+      return (
+        <a>
+          <img src={product?.productImages[i]?.Url} />
+        </a>
+      );
+    },
+    dots: true,
+    dotsClass: "slick-dots slick-thumb",
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
 
   return (
     <div className="bg-white p-6 rounded-3xl">
@@ -14,16 +42,30 @@ const DashboardStoreSingleProductPage = () => {
       </Link>
 
       <div className="flex gap-10 mt-8">
-        <img src="/product.png" className="w-1/2 object-cover max-h-[500px]" />
         <div className="w-1/2">
-          <h2 className="text-3xl font-bold mb-4">The Dandy Super Chair</h2>
-          <p className="text-2xl font-medium">&#8358; 15,000.00</p>
+          {isLoading ? (
+            <div className="h-96 flex items-center justify-center">
+              <Loading width={64} height={64} className="text-primary" />
+            </div>
+          ) : product?.productImages?.length < 2 ? (
+            <img src={product?.productImages[0]?.Url} className="w-full object-cover max-h-[500px]" />
+          ) : (
+            <Slider {...settings}>
+              {product?.productImages?.map((img, i) => (
+                <div key={i}>
+                  <img src={img?.Url} className="w-full object-cover max-h-[500px]" />
+                </div>
+              ))}
+            </Slider>
+          )}
+        </div>
+
+        <div className="w-1/2">
+          <h2 className="text-3xl font-bold mb-4 capitalize">{product?.productName || "---"}</h2>
+          <p className="text-2xl font-medium">&#8358;{formatPrice(product?.salePrice)}</p>
           <div className="my-8">
             <h4 className="font-bold mb-1 text-sm">Product Description</h4>
-            <p className="font-light">
-              A timeless design, with premium materials features as one of our most popular and iconic pieces. The dandy
-              chair is perfect for any stylish living space with beech legs and lambskin leather upholstery.
-            </p>
+            <p className="font-light">{product?.description || "--- -- ---"}</p>
           </div>
           <div className="my-8">
             <h4 className="font-bold mb-1 text-sm">Quantity</h4>
@@ -52,14 +94,24 @@ const DashboardStoreSingleProductPage = () => {
       </div>
 
       <section className="mt-8">
-        <h3 className="text-lg font-bold">You might also like</h3>
-        <div className="flex space-x-4 py-2 overflow-x-auto scrollbar-hide">
-          {[...Array(10)].map((_, v) => (
-            <Link to={`/store/${v + 1}`} key={v + 1}>
-              <ProductCard width={280} />
-            </Link>
-          ))}
-        </div>
+        <h3 className="text-lg font-bold mb-2">You might also like</h3>
+        {loadingOthers ? (
+          <Loading height={48} width={48} className="text-primary" />
+        ) : (
+          <Slider {...responsiveSliderSettings}>
+            {otherProducts?.data?.map((prod, i) => (
+              <Link to={`/store/${prod?._id}`} key={i + 1}>
+                <ProductCard
+                  width="auto"
+                  name={prod?.productName}
+                  description={prod?.description}
+                  price={prod?.salePrice}
+                  image={prod?.productImages[0]?.Url}
+                />
+              </Link>
+            ))}
+          </Slider>
+        )}
       </section>
     </div>
   );

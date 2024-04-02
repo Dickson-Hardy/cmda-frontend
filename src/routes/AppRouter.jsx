@@ -58,7 +58,7 @@ export default function AppRouter() {
             { path: "profile", element: <DashboardProfilePage /> },
             { path: "resources", element: <DashboardResources /> },
             { path: "resources/:category", element: <Navigate to="/resources" /> },
-            { path: "resources/:category/:id", element: <DashboardResourceDetails /> },
+            { path: "resources/:category/:slug", element: <DashboardResourceDetails /> },
             { path: "messaging", element: <DashboardMessagingPage /> },
             { path: "store", element: <DashboardStorePage /> },
             { path: "store/:id", element: <DashboardStoreSingleProductPage /> },

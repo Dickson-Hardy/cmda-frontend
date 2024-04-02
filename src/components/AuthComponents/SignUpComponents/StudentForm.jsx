@@ -47,7 +47,7 @@ const StudentForm = () => {
   return (
     <div>
       <div className="mb-4 text-center">
-        <h2 className="md:text-3xl text-2xl font-bold">Create a Student account</h2>
+        <h2 className="md:text-3xl text-2xl font-bold">Create a Student Account</h2>
       </div>
       <form onSubmit={handleSubmit(handleSignUp)} className="grid grid-cols-1 gap-4">
         <div>
@@ -168,7 +168,7 @@ const StudentForm = () => {
         </div>
 
         <div className="grid gap-6">
-          <Button large label="Get Started" loading={isLoading} className="w-full" type="submit" />
+          <Button large label="Create Account" loading={isLoading} className="w-full" type="submit" />
           <div className="text-center font-bold text-black ">
             Already have an account?
             <Link to="/login" className="ml-2 text-primary font-medium text-sm hover:underline">

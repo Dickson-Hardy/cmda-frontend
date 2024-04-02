@@ -9,7 +9,11 @@ import Button from "~/components/Global/Button/Button";
 import Switch from "~/components/Global/FormElements/Switch/Switch";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
 import Loading from "~/components/Global/Loading/Loading";
+import { useGetAllPostsQuery } from "~/redux/api/external/wordPressApi";
 import { useGetAllVersesQuery } from "~/redux/api/verse/verseApi";
+import Slider from "react-slick";
+import { useGetAllEventsQuery } from "~/redux/api/events/eventsApi";
+import { responsiveSliderSettings } from "~/assets/js/constants/sliderConstants";
 
 const DashboardHomePage = () => {
   const user = useSelector((state) => state.auth.user);
@@ -23,7 +27,9 @@ const DashboardHomePage = () => {
   } = useForm({ mode: "all" });
 
   // get all verses
-  const { data: versesData, isLoading: versesLoading } = useGetAllVersesQuery();
+  const { data: versesData, isLoading: versesLoading } = useGetAllVersesQuery(null, {
+    refetchOnMountOrArgChange: true,
+  });
 
   // get the verse of the day at random
   const verseOfTheDay = useMemo(() => {
@@ -38,9 +44,19 @@ const DashboardHomePage = () => {
     const [verse, text] = content.split("“");
 
     return [verse, text];
-  }, []);
+  }, [versesData]);
 
   const fullName = user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name";
+
+  const { data: blog, isLoading: loadingPosts } = useGetAllPostsQuery(
+    { perPage: 10, page: 1 },
+    { refetchOnMountOrArgChange: true }
+  );
+
+  const { data: events, isLoading: loadingEvents } = useGetAllEventsQuery(
+    { page: 1, limit: 10, status: null },
+    { refetchOnMountOrArgChange: true }
+  );
 
   return (
     <div>
@@ -68,13 +84,25 @@ const DashboardHomePage = () => {
             View all
           </Link>
         </div>
-        <div className="flex space-x-4 py-2 overflow-x-auto scrollbar-hide">
-          {[...Array(10)].map((_, x) => (
-            <Link to={`/events/${x + 1}`} key={x + 1}>
-              <EventCard />
-            </Link>
-          ))}
-        </div>
+
+        {loadingEvents ? (
+          <Loading height={48} width={48} className="text-primary" />
+        ) : (
+          <Slider {...responsiveSliderSettings}>
+            {events?.data?.map((evt) => (
+              <Link key={evt._id} to={`/events/${evt._id}`}>
+                <EventCard
+                  width="auto"
+                  title={evt.title}
+                  date={evt.eventDateTime}
+                  image={evt.eventImageUrl}
+                  tag={evt.eventTag}
+                  location={evt.eventType === "physical" ? evt.physicalLocation : evt.virtualLink}
+                />
+              </Link>
+            ))}
+          </Slider>
+        )}
       </section>
 
       <section className="mb-6">
@@ -84,19 +112,23 @@ const DashboardHomePage = () => {
             View all
           </Link>
         </div>
-        <div className="flex space-x-4 py-2 overflow-x-auto scrollbar-hide">
-          {[...Array(10)].map((_, v) => (
-            <Link to={`/resources/${v % 2 ? "audios" : v % 3 ? "videos" : "articles"}/${v + 1}`} key={v + 1}>
-              <ResourceCard
-                image="/vite.svg"
-                title="Medical Problems in West Africa And How to Solve them"
-                type={v % 2 ? "audio" : v % 3 ? "video" : "article"}
-                subtitle={`Learn the 5 best way to practice medicine in 2024. Learn the 5 best way to practice medicine in 2024. Learn
-                the 5 best way to practice medicine in 2024.`}
-              />
-            </Link>
-          ))}
-        </div>
+        {loadingPosts ? (
+          <Loading height={48} width={48} className="text-primary" />
+        ) : (
+          <Slider {...responsiveSliderSettings}>
+            {blog?.posts.map((post, v) => (
+              <Link to={`/resources/articles/${post.slug}`} key={v + 1}>
+                <ResourceCard
+                  image={post?.yoast_head_json?.og_image?.[0]?.url}
+                  title={post?.title?.rendered}
+                  type={"article"}
+                  subtitle={post.yoast_head_json?.description}
+                  width="auto"
+                />
+              </Link>
+            ))}
+          </Slider>
+        )}
       </section>
 
       <section className="flex flex-col md:flex-row gap-10 mb-6">
@@ -107,9 +139,11 @@ const DashboardHomePage = () => {
               See more
             </Link>
           </div>
-          <div className="space-y-3">
+          <div className="flex flex-col gap-6">
             {[...Array(3)].map((_, i) => (
-              <Volunteer key={i} />
+              <Link to={`/volunteer/${i + 1}`} key={i}>
+                <Volunteer />
+              </Link>
             ))}
           </div>
         </div>
