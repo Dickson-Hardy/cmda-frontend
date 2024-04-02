@@ -10,7 +10,7 @@ const ProfileTabAbout = () => {
     return {
       Phone: user?.phone,
       Email: user?.email,
-      "Date of Birth": user?.gender,
+      "Date of Birth": user?.dateOfBirth,
     };
   }, [user]);
 
@@ -21,11 +21,7 @@ const ProfileTabAbout = () => {
   return (
     <div className="p-4 pt-0 flex gap-10">
       <div className="w-2/3">
-        <p className="text-sm font-medium">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque alias molestias, ducimus excepturi natus
-          incidunt doloremque modi debitis autem, aspernatur aperiam a rem? Nemo ratione neque consequuntur. Ratione,
-          obcaecati repellendus?
-        </p>
+        <p className="text-sm font-medium">{user?.bio}</p>
 
         <div className="my-8">
           <h3 className="text-base font-bold mb-2">Contact Details</h3>
@@ -36,21 +32,27 @@ const ProfileTabAbout = () => {
                 <p>{value || "---"}</p>
               </div>
             ))}
-            <div>
-              <h5 className="text-gray-dark font-semibold mb-1 text-sm">Social Links</h5>
-              <div className="flex flex-wrap gap-2">
-                {["facebook", "twitter", "linkedIn", "instagram"].map((item) => (
-                  <button
-                    key={item}
-                    type="button"
-                    className="bg-gray-light rounded-full text-xl h-10 w-10 inline-flex justify-center items-center hover:text-primary"
-                    onClick={() => handleSocialClick(item)}
-                  >
-                    {icons[item]}
-                  </button>
-                ))}
+
+            {!!user?.socials && (
+              <div>
+                <h5 className="text-gray-dark font-semibold mb-1 text-sm">Social Links</h5>
+                <div className="flex flex-wrap gap-2">
+                  {user?.socials.map((item) => (
+                    <a
+                      key={item}
+                      href={item.link}
+                      // type="button"
+                      className="bg-gray-light rounded-full text-xl h-10 w-10 inline-flex justify-center items-center hover:text-primary cursor-pointer"
+                      // onClick={() => handleSocialClick(item)}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {icons[item.name]}
+                    </a>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
@@ -67,7 +69,7 @@ const ProfileTabAbout = () => {
       </div>
 
       <div className="w-1/3 bg-white border px-6 py-4 rounded-xl">
-        <h3 className="text-base font-bold mb-2">Community Statitics</h3>
+        <h3 className="text-base font-bold mb-2">Community Statistics</h3>
         <ul className="space-y-4 capitalize">
           <li className="flex items-center gap-4">
             <span className="h-14 w-14 rounded-xl inline-flex items-center justify-center bg-black/10 text-black text-2xl">

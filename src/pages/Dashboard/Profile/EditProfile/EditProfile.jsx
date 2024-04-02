@@ -54,6 +54,7 @@ const DashboardEditProfile = () => {
       gender: user?.gender || "",
       region: user?.region || "",
       bio: user?.bio || "",
+      dateOfBirth: user?.dateOfBirth || "",
       admissionYear: Number(user?.admissionYear) || "",
       yearOfStudy: user?.yearOfStudy || "",
       licenseNumber: user?.licenseNumber || "",
@@ -76,21 +77,48 @@ const DashboardEditProfile = () => {
   const removeSocial = (indexToRemove) => {
     setSocials(socials.filter((_, index) => index !== indexToRemove));
   };
-
   const handleUpdateProfile = (payload) => {
-    const data = { ...payload, socials };
-    editProfile({ id: user?._id, data })
+    // const data = { ...payload, socials };
+
+    const data = {
+      firstName: payload.firstName,
+      middleName: payload.middleName,
+      lastName: payload.lastName,
+      email: payload.email,
+      // gender: payload.gender,
+      dateOfBirth: payload.dateOfBirth,
+      bio: payload?.bio,
+      socials: socials,
+      ...(user?.role === "student" && {
+        admissionYear: payload.admissionYear,
+        yearOfStudy: payload.yearOfStudy,
+      }),
+      ...(user?.role !== "global" && {
+        region: payload.region,
+      }),
+      ...(user?.role !== "student" && {
+        licenseNumber: payload.licenseNumber,
+        specialty: payload.specialty,
+      }),
+      ...(user?.role === "global" && {
+        country: payload.country,
+        state: payload.specialty,
+      }),
+    };
+    // console.log(payload.gender);
+    editProfile({ id: user?._id, payload: data })
       .unwrap()
       .then((data) => {
-        // dispatch(setUser(data));
-        // toast.success("Login successful");
-        // navigate("/");
-        console.log(data);
+        dispatch(setUser(data.data));
+        toast.success(data?.message);
+        navigate("/profile");
+        // console.log(data);
       })
       .catch((error) => {
         console.log(error);
         toast.error(error);
       });
+    // console.log(data);
   };
 
   return (
@@ -98,10 +126,10 @@ const DashboardEditProfile = () => {
       <Button variant="text" onClick={() => navigate(-1)}>
         {icons.arrowLeft} Back
       </Button>
-      <div className="mt-6 flex items-center justify-center">
-        <div className="bg-white w-full max-w-2xl max-auto p-8 rounded-lg">
+      <div className="mt-6 flex items-center justify-center relative">
+        <div className="bg-white w-full max-w-2xl max-auto p-8 rounded-lg ">
           <form onSubmit={handleSubmit(handleUpdateProfile)}>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-7">
               <h2 className="text-lg font-bold mb-4">Edit Profile</h2>
               <Button label="Save Changes" color="secondary" type="submit" disabled={isLoading} />
             </div>

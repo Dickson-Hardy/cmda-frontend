@@ -24,7 +24,7 @@ const DashboardStoreSingleEventPage = () => {
       <div className="mt-4">
         <img
           src={singleEvent?.eventImageUrl}
-          className={classNames("bg-onPrimary h-auto w-full rounded-lg object-cover")}
+          className={classNames("bg-onPrimary h-auto max-h-[300px] md:max-h-[350px] w-full rounded-lg object-cover")}
         />
 
         <span className="inline-block mt-6 px-4 py-2 capitalize text-tertiary text-sm font-semibold bg-onTertiary rounded-3xl">

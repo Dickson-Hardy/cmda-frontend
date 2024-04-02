@@ -10,6 +10,7 @@ const DashboardUpdatePassword = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({ mode: "all" });
 
@@ -27,6 +28,7 @@ const DashboardUpdatePassword = () => {
       .unwrap()
       .then((data) => {
         toast.success(data.message);
+        reset();
       })
       .catch((error) => {
         toast.error(error);

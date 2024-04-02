@@ -31,7 +31,7 @@ const ResourceSingleArticle = ({ slug }) => {
       <img
         src={post?.yoast_head_json?.og_image?.[0]?.url}
         alt={slug}
-        className="rounded-2xl h-auto w-full mx-auto my-8"
+        className="rounded-2xl h-auto max-h-[300px] md:max-h-[350px] object-contain w-full mx-auto my-8"
       />
 
       <h2 className="text-3xl font-bold mb-4" dangerouslySetInnerHTML={{ __html: post?.title?.rendered }} />
