@@ -192,6 +192,17 @@ const DashboardEditProfile = () => {
                 />
               </div>
 
+              <div>
+                <TextInput
+                  title="Date of Birth"
+                  label="dateOfBirth"
+                  register={register}
+                  errors={errors}
+                  placeholder="Enter email address"
+                  type="date"
+                />
+              </div>
+
               <div className="">
                 <TextArea
                   title="Bio"
