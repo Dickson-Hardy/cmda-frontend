@@ -10,7 +10,8 @@ const wordPressApi = api.injectEndpoints({
         params: {
           page,
           per_page: perPage,
-          _fields: "id,title,slug,date,yoast_head_json.description,yoast_head_json.og_image",
+          _embed: 1,
+          _fields: "id,title,slug,excerpt,date,_links.wp:featuredmedia",
         },
       }),
       transformResponse: (posts, meta) => {

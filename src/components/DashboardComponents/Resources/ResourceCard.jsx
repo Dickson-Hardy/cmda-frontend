@@ -9,7 +9,7 @@ const ResourceCard = ({ title, subtitle, type = "article" /* audio, video */, im
           <span>{type === "audio" ? icons.audio : type === "video" ? icons.play : icons.newspaper}</span>
           <h4 className="text-sm font-bold truncate">{title}</h4>
         </div>
-        <p className="text-gray-dark text-xs mt-2 line-clamp-2">{subtitle}</p>
+        <p className="text-gray-dark text-xs mt-2 line-clamp-2" dangerouslySetInnerHTML={{ __html: subtitle }} />
       </div>
     </div>
   );

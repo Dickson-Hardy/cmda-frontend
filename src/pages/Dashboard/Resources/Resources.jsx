@@ -9,24 +9,26 @@ import { useGetAllPostsQuery } from "~/redux/api/external/wordPressApi";
 const DashboardResources = () => {
   const CATEGORIES = ["Articles", "Videos", "Audios", "Presentations"];
 
-  const [selectedCategory, setSelectedCategory] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(["Articles"]);
 
   const handleSelectCategory = (category) => {
-    if (selectedCategory.includes(category)) {
-      setSelectedCategory((prev) => prev.filter((item) => item !== category));
-    } else {
-      setSelectedCategory((prev) => prev.concat(category));
-    }
+    setSelectedCategory([category]);
+    // if (selectedCategory.includes(category)) {
+    //   setSelectedCategory((prev) => prev.filter((item) => item !== category));
+    // } else {
+    //   setSelectedCategory((prev) => prev.concat(category));
+    // }
   };
 
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
-  const { data: allPosts, isLoading: loadingPosts } = useGetAllPostsQuery(
-    { perPage: 12, page },
-    { refetchOnMountOrArgChange: true }
-  );
+  const {
+    data: allPosts,
+    isLoading: loadingPosts,
+    isFetching,
+  } = useGetAllPostsQuery({ perPage: 12, page }, { refetchOnMountOrArgChange: true });
 
   useEffect(() => {
     if (allPosts) {
@@ -49,7 +51,7 @@ const DashboardResources = () => {
 
       <div className="flex justify-between items-center">
         <div className="inline-flex gap-2">
-          {CATEGORIES.map((category) => (
+          {CATEGORIES.slice(0, 1).map((category) => (
             <Chip
               key={category}
               label={category}
@@ -69,11 +71,11 @@ const DashboardResources = () => {
           {posts.map((post, v) => (
             <Link to={`/resources/articles/${post.slug}`} key={v + 1}>
               <ResourceCard
-                width="auto"
-                image={post?.yoast_head_json?.og_image?.[0]?.url}
+                image={post?._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
                 title={post?.title?.rendered}
-                type={"article"}
-                subtitle={post.yoast_head_json?.description}
+                type="article"
+                subtitle={post?.excerpt?.rendered}
+                width="auto"
               />
             </Link>
           ))}
@@ -84,7 +86,7 @@ const DashboardResources = () => {
             disabled={page === totalPages}
             label={"Load More"}
             className={"md:w-1/3 w-full"}
-            loading={loadingPosts}
+            loading={loadingPosts || isFetching}
             onClick={() => setPage((prev) => prev + 1)}
           />
         </div>

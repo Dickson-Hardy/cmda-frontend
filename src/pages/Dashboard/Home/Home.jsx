@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -10,7 +10,7 @@ import Switch from "~/components/Global/FormElements/Switch/Switch";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
 import Loading from "~/components/Global/Loading/Loading";
 import { useGetAllPostsQuery } from "~/redux/api/external/wordPressApi";
-import { useGetAllVersesQuery } from "~/redux/api/verse/verseApi";
+import { useGetRandomVerseQuery } from "~/redux/api/verse/verseApi";
 import Slider from "react-slick";
 import { useGetAllEventsQuery } from "~/redux/api/events/eventsApi";
 import { responsiveSliderSettings } from "~/assets/js/constants/sliderConstants";
@@ -26,25 +26,10 @@ const DashboardHomePage = () => {
     formState: { errors },
   } = useForm({ mode: "all" });
 
-  // get all verses
-  const { data: versesData, isLoading: versesLoading } = useGetAllVersesQuery(null, {
+  // get verse of the day
+  const { data: randomVerse, isLoading: loadingVerse } = useGetRandomVerseQuery(null, {
     refetchOnMountOrArgChange: true,
   });
-
-  // get the verse of the day at random
-  const verseOfTheDay = useMemo(() => {
-    if (!versesData || versesData?.length < 1) {
-      return [
-        "John 3: 15",
-        "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.",
-      ];
-    }
-    const randomIndex = Math.floor(Math.random() * versesData.length);
-    const content = versesData?.[randomIndex]?.content;
-    const [verse, text] = content.split("“");
-
-    return [verse, text];
-  }, [versesData]);
 
   const fullName = user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name";
 
@@ -52,6 +37,7 @@ const DashboardHomePage = () => {
     { perPage: 10, page: 1 },
     { refetchOnMountOrArgChange: true }
   );
+  console.log("BLOG ", blog);
 
   const { data: events, isLoading: loadingEvents } = useGetAllEventsQuery(
     { page: 1, limit: 10, status: null },
@@ -66,13 +52,13 @@ const DashboardHomePage = () => {
       <p>You have no upcoming events</p>
 
       <section className="bg-secondary/90 text-white rounded-2xl p-6 my-6">
-        {versesLoading ? (
+        {loadingVerse ? (
           <Loading />
         ) : (
           <div className="w-full md:w-1/2">
             <h3 className="text-lg font-bold">Verse of the Day</h3>
-            <p className="text-sm my-4 font-semibold">{verseOfTheDay[1]}</p>
-            <span className="text-sm">{verseOfTheDay[0]} KJV</span>
+            <p className="text-sm my-4 font-semibold">{randomVerse?.content}</p>
+            <span className="text-sm">- {randomVerse?.verse}</span>
           </div>
         )}
       </section>
@@ -119,10 +105,10 @@ const DashboardHomePage = () => {
             {blog?.posts.map((post, v) => (
               <Link to={`/resources/articles/${post.slug}`} key={v + 1}>
                 <ResourceCard
-                  image={post?.yoast_head_json?.og_image?.[0]?.url}
+                  image={post?._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
                   title={post?.title?.rendered}
                   type={"article"}
-                  subtitle={post.yoast_head_json?.description}
+                  subtitle={post?.excerpt?.rendered}
                   width="auto"
                 />
               </Link>
