@@ -14,10 +14,6 @@ const ProfileTabAbout = () => {
     };
   }, [user]);
 
-  // const handleSocialClick = (item) => {
-  //   alert("Visiting " + item);
-  // };
-
   return (
     <div className="p-4 pt-0 flex gap-10">
       <div className="w-2/3">
@@ -41,9 +37,7 @@ const ProfileTabAbout = () => {
                     <a
                       key={item}
                       href={item.link}
-                      // type="button"
                       className="bg-gray-light rounded-full text-xl h-10 w-10 inline-flex justify-center items-center hover:text-primary cursor-pointer"
-                      // onClick={() => handleSocialClick(item)}
                       target="_blank"
                       rel="noreferrer"
                     >
