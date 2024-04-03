@@ -5,7 +5,6 @@ import ResourceSingleVideo from "~/components/DashboardComponents/Resources/Reso
 
 const DashboardResourceDetails = () => {
   const { category, slug } = useParams();
-  console.log({ category, slug });
 
   switch (category) {
     case "videos":

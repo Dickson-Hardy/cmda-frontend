@@ -37,7 +37,6 @@ const DashboardHomePage = () => {
     { perPage: 10, page: 1 },
     { refetchOnMountOrArgChange: true }
   );
-  console.log("BLOG ", blog);
 
   const { data: events, isLoading: loadingEvents } = useGetAllEventsQuery(
     { page: 1, limit: 10, status: null },

@@ -33,7 +33,6 @@ const DashboardEditProfile = () => {
     navigate("/login");
   }
 
-  // console.log(user)
   const [editProfile, { isLoading }] = useEditProfileMutation();
   const dispatch = useDispatch();
   const {
