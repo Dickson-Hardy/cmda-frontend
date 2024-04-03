@@ -11,7 +11,10 @@ import { responsiveSliderSettings } from "~/assets/js/constants/sliderConstants"
 const ResourceSingleArticle = ({ slug }) => {
   const { data: post } = useGetSinglePostQuery({ slug });
 
-  const { data: allPosts, isLoading: loadingOthers } = useGetAllPostsQuery({ perPage: 11, page: 1 });
+  const { data: allPosts, isLoading: loadingOthers } = useGetAllPostsQuery(
+    { perPage: 11, page: 1 },
+    { refetchOnMountOrArgChange: true }
+  );
 
   const OTHERS = useMemo(() => {
     const posts = allPosts?.posts || [];
@@ -29,9 +32,9 @@ const ResourceSingleArticle = ({ slug }) => {
         {icons.arrowLeft} Back to Resources
       </Link>
       <img
-        src={post?.yoast_head_json?.og_image?.[0]?.url}
+        src={post?._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
         alt={slug}
-        className="rounded-2xl h-auto max-h-[300px] md:max-h-[350px] object-contain w-full mx-auto my-8"
+        className="rounded-2xl h-auto w-full mx-auto my-8"
       />
 
       <h2 className="text-3xl font-bold mb-4" dangerouslySetInnerHTML={{ __html: post?.title?.rendered }} />
@@ -81,10 +84,10 @@ const ResourceSingleArticle = ({ slug }) => {
             {OTHERS.map((item, v) => (
               <Link to={`/resources/articles/${item.slug}`} key={v + 1}>
                 <ResourceCard
-                  image={item?.yoast_head_json?.og_image?.[0]?.url}
+                  image={item?._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
                   title={item?.title?.rendered}
                   type={"article"}
-                  subtitle={item.yoast_head_json?.description}
+                  subtitle={item?.excerpt?.rendered}
                   width="auto"
                 />
               </Link>
