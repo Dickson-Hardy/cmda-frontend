@@ -14,9 +14,9 @@ const ProfileTabAbout = () => {
     };
   }, [user]);
 
-  const handleSocialClick = (item) => {
-    alert("Visiting " + item);
-  };
+  // const handleSocialClick = (item) => {
+  //   alert("Visiting " + item);
+  // };
 
   return (
     <div className="p-4 pt-0 flex gap-10">
