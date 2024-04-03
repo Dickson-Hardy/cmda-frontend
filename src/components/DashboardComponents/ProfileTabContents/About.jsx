@@ -62,7 +62,7 @@ const ProfileTabAbout = () => {
         </div>
       </div>
 
-      <div className="w-1/3 bg-white border px-6 py-4 rounded-xl">
+      <div className="w-1/3 bg-white border px-6 py-4 rounded-xl hidden lg:block">
         <h3 className="text-base font-bold mb-2">Community Statistics</h3>
         <ul className="space-y-4 capitalize">
           <li className="flex items-center gap-4">
