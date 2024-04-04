@@ -68,7 +68,7 @@ const ProfileImageUpdate = () => {
       <Modal isOpen={openModal} className="max-w-3xl px-3 md:px-6" onClose={() => setOpenModal(false)}>
         <div className="p-2 sm:p-7">
           <div className="flex items-center justify-between mb-7 w-full">
-            <h2 className="text-lg font-bold mb-4">Edit Profile Photo</h2>
+            <h2 className="text-lg font-bold">Edit Profile Photo</h2>
             <span className="text-2xl text-black cursor-pointer" onClick={() => setOpenModal(false)}>
               {icons.close}
             </span>
