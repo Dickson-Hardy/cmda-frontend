@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
@@ -71,6 +71,7 @@ const SendNewMessage = ({ userId }) => {
                 <Loading />
               </div>
             ) : (
+              allUsers &&
               allUsers.data &&
               allUsers?.data?.length > 1 &&
               allUsers.data.map(

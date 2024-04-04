@@ -1,4 +1,3 @@
-import React, { useEffect, useRef } from "react";
 import { format } from "timeago.js";
 
 const Message = ({ message, userId }) => {
