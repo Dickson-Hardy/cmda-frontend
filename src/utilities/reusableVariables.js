@@ -112,3 +112,42 @@ export const doctorsRegionLists = [
   label: x,
   value: x,
 }));
+
+// get full name
+export function getFullName(recipientData) {
+  // Use optional chaining to access properties and handle potential 'undefined'
+  const firstName = recipientData?.firstName;
+  const middleName = recipientData?.middleName;
+  const lastName = recipientData?.lastName;
+
+  // Build the full name string with conditional checks
+  if (firstName && lastName) {
+    // Include middle name with space separators if it exists
+    return `${firstName} ${middleName ? middleName + " " : ""}${lastName}`;
+  } else if (firstName) {
+    return firstName;
+  } else if (lastName) {
+    return lastName;
+  } else {
+    return "No Name";
+  }
+}
+
+export function getCombinedId(id1, id2) {
+  // Sort the IDs for consistent ordering
+  if (id1 > id2) {
+    [id1, id2] = [id2, id1];
+  }
+  // Combine the IDs with a separator (e.g., "-")
+  return `${id1}-${id2}`;
+}
+
+export function extractTime(dateString) {
+  const date = new Date(dateString);
+  const hours = padZero(date.getHours());
+  const minutes = padZero(date.getMinutes());
+  return `${hours}:${minutes}`;
+}
+function padZero(number) {
+  return number.toString().padStart(2, "0");
+}

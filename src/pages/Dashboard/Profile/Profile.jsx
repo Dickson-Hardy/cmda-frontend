@@ -19,13 +19,11 @@ const DashboardProfilePage = () => {
 
   const user = useSelector((state) => state.auth.user);
 
-  const userUrl = true;
-
   return (
     <div>
       <section className="flex items-center gap-6 flex-col md:flex-row">
         <div className="inline-flex gap-5 sm:gap-6 items-center flex-1">
-          {!userUrl ? (
+          {!user?.profileImageUrl ? (
             <span className="size-28 bg-onPrimary rounded-full inline-flex items-center justify-center text-6xl text-primary">
               {icons.person}
             </span>
