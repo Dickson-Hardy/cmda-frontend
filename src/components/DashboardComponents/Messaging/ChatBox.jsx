@@ -78,13 +78,13 @@ const ChatBox = ({ user, recipientId }) => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [allMessages]);
 
-  // console.log(allMessages);
   // update the lists of messages in the messages array with the new message
   useEffect(() => {
     if (lastJsonMessage !== null) {
       setAllMessages((prevMessages) => [lastJsonMessage, ...prevMessages]);
     }
   }, [lastJsonMessage]);
+
   return (
     <div className="w-3/4 flex flex-col">
       <div className="bg-white rounded-t-xl">

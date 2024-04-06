@@ -5,7 +5,7 @@ import MessagesLists from "~/components/DashboardComponents/Messaging/MessagesLi
 import SendNewMessage from "~/components/DashboardComponents/Messaging/SendNewMessage";
 const DashboardMessagingPage = () => {
   const user = useSelector((state) => state.auth.user);
-  let [searchParams, setSearchParams] = useSearchParams();
+  let [searchParams] = useSearchParams();
 
   const recipientId = searchParams.get("id");
   // console.log(recipientId)
@@ -22,7 +22,6 @@ const DashboardMessagingPage = () => {
         <MessagesLists userId={user?._id} />
 
         {/* Chatbox */}
-
         {recipientId ? (
           <ChatBox user={user} recipientId={recipientId} />
         ) : (

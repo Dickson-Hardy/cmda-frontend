@@ -3,7 +3,7 @@ import { format } from "timeago.js";
 const Message = ({ message, userId }) => {
   return (
     <div
-      className={`flex  my-2 mx-7 ${(message?.sender?._id || message?.sender) !== userId ? "justify-end" : "justify-start"}`}
+      className={`flex  my-2 mx-7 ${(message?.sender?._id || message?.sender) !== userId ? "justify-start" : "justify-end"}`}
     >
       <div>
         <div
