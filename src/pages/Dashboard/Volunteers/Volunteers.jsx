@@ -1,20 +1,53 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import icons from "~/assets/js/icons";
 import Volunteer from "~/components/DashboardComponents/Volunteer/Volunteer";
+import Button from "~/components/Global/Button/Button";
+import { useGetVolunteerJobsQuery } from "~/redux/api/volunteer/volunteerApi";
 
 const DashboardVolunteersPage = () => {
+  const [volunteerships, setVolunteerships] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const { data: volunteerJobs, isLoading } = useGetVolunteerJobsQuery(
+    { page, limit: 10 },
+    { refetchOnMountOrArgChange: true }
+  );
+
+  useEffect(() => {
+    if (volunteerJobs) {
+      setVolunteerships((prevVols) => {
+        const combinedVols = [...prevVols, ...volunteerJobs.data];
+        const uniqueVols = Array.from(new Set(combinedVols.map((vol) => vol._id))).map((_id) =>
+          combinedVols.find((vol) => vol._id === _id)
+        );
+        return uniqueVols;
+      });
+
+      setTotalPages(volunteerJobs.pagination?.totalPages);
+    }
+  }, [volunteerJobs]);
+
   return (
     <div>
-      <div className="flex justify-between items-center text-black">
-        <h3 className="font-bold leading-10 text-2xl  md:text-4xl">Volunteer Positions</h3>
-        <Link to="/">
-          <span>{icons.close}</span>
-        </Link>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 place-items-center gap-x-5 gap-y-3 mt-6">
-        {[...Array(7)].map((_, i) => (
-          <Volunteer key={i} />
+      <h2 className="text-2xl font-bold text-primary mb-6">Volunteer Positions</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2  gap-6 mt-6">
+        {volunteerships?.map((vol, i) => (
+          <Link to={`/volunteer/${vol._id}`} key={i}>
+            <Volunteer position={vol?.position} location={vol?.location} />
+          </Link>
         ))}
+      </div>
+      <div className="flex justify-center p-2 mt-6">
+        <Button
+          large
+          disabled={page === totalPages}
+          label={page === totalPages ? "The End" : "Load More"}
+          className={"md:w-1/3 w-full"}
+          loading={isLoading}
+          onClick={() => setPage((prev) => prev + 1)}
+        />
       </div>
     </div>
   );

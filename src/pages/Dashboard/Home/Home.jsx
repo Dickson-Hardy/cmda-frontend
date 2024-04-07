@@ -14,6 +14,9 @@ import { useGetRandomVerseQuery } from "~/redux/api/verse/verseApi";
 import Slider from "react-slick";
 import { useGetAllEventsQuery } from "~/redux/api/events/eventsApi";
 import { responsiveSliderSettings } from "~/assets/js/constants/sliderConstants";
+import { useCreatePrayerTestimonyMutation } from "~/redux/api/prayerTestimonies/prayerTestimoniesApi";
+import { toast } from "react-toastify";
+import { useGetVolunteerJobsQuery } from "~/redux/api/volunteer/volunteerApi";
 
 const DashboardHomePage = () => {
   const user = useSelector((state) => state.auth.user);
@@ -23,6 +26,7 @@ const DashboardHomePage = () => {
     register,
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({ mode: "all" });
 
@@ -42,6 +46,27 @@ const DashboardHomePage = () => {
     { page: 1, limit: 10, status: null },
     { refetchOnMountOrArgChange: true }
   );
+
+  const { data: volunteerJobs, isLoading: loadingVolunteers } = useGetVolunteerJobsQuery(
+    { page: 1, limit: 3 },
+    { refetchOnMountOrArgChange: true }
+  );
+
+  const [createPrayerTestimony, { isLoading: isCreatingPrayer }] = useCreatePrayerTestimonyMutation();
+
+  const handleCreatePrayer = (data) => {
+    const payload = {
+      ...data,
+      isAnonymous: String(data.isAnonymous),
+      type: shareTestimony ? "testimony" : "prayer",
+    };
+    createPrayerTestimony(payload)
+      .unwrap()
+      .then(() => {
+        toast.success(`Your ${payload.type} has been submitted successfully`);
+        reset();
+      });
+  };
 
   return (
     <div>
@@ -124,13 +149,18 @@ const DashboardHomePage = () => {
               See more
             </Link>
           </div>
-          <div className="flex flex-col gap-6">
-            {[...Array(3)].map((_, i) => (
-              <Link to={`/volunteer/${i + 1}`} key={i}>
-                <Volunteer />
-              </Link>
-            ))}
-          </div>
+
+          {loadingVolunteers ? (
+            <Loading height={48} width={48} className="text-primary" />
+          ) : (
+            <div className="flex flex-col gap-4">
+              {volunteerJobs?.data?.map((vol, i) => (
+                <Link to={`/volunteer/${vol._id}`} key={i}>
+                  <Volunteer position={vol?.position} location={vol?.location} />
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="w-full md:w-1/2">
@@ -144,23 +174,28 @@ const DashboardHomePage = () => {
               {shareTestimony ? "Make prayer request" : "Share a testimony"}
             </button>
           </div>
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit(console.log)}>
+          <form className="flex flex-col gap-5" onSubmit={handleSubmit(handleCreatePrayer)}>
             <TextArea
               register={register}
-              label="message"
+              label="content"
               showTitleLabel={false}
               placeholder={"Share your " + (shareTestimony ? "testimony" : "prayer request")}
               errors={errors}
               rows={6}
             />
             <Switch
-              label="anonymous"
+              label="isAnonymous"
               control={control}
               activeText="Post as anonymous"
               inActiveText="Post as anonymous"
               showTitleLabel={false}
             />
-            <Button large type="submit" label={"Submit " + (shareTestimony ? "Testimony" : "Prayer Request")} />
+            <Button
+              large
+              loading={isCreatingPrayer}
+              type="submit"
+              label={"Submit " + (shareTestimony ? "Testimony" : "Prayer Request")}
+            />
           </form>
         </div>
       </section>
