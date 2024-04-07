@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import icons from "~/assets/js/icons";
+import formatDate from "~/utilities/fomartDate";
 
 const ProfileTabAbout = () => {
   const user = useSelector((state) => state.auth.user);
@@ -10,21 +11,21 @@ const ProfileTabAbout = () => {
     return {
       Phone: user?.phone,
       Email: user?.email,
-      "Date of Birth": user?.dateOfBirth,
+      "Date of Birth": user?.dateOfBirth ? formatDate(user.dateOfBirth).date : "--/--/----",
     };
   }, [user]);
 
   return (
     <div className="p-4 pt-0 flex gap-10">
       <div className="w-2/3">
-        <p className="text-sm font-medium">{user?.bio}</p>
+        <p className="text-base font-medium">{user?.bio}</p>
 
         <div className="my-8">
           <h3 className="text-base font-bold mb-2">Contact Details</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Object.entries(INFO).map(([key, value]) => (
               <div key={key}>
-                <h5 className="text-gray-dark font-semibold mb-0.5 text-sm">{key}</h5>
+                <h5 className="font-semibold mb-0.5 text-sm">{key}</h5>
                 <p>{value || "---"}</p>
               </div>
             ))}

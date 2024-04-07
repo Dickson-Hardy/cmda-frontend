@@ -13,6 +13,7 @@ import {
   MdAddShoppingCart,
   MdShoppingCart,
   MdViewModule,
+  MdOutlineLocationOn,
 } from "react-icons/md";
 import { FiBell, FiDownloadCloud } from "react-icons/fi";
 import { HiBadgeCheck, HiDotsVertical, HiOutlineHome } from "react-icons/hi";
@@ -39,6 +40,7 @@ import {
   BsFiletypeDoc,
   BsFiletypePdf,
   BsFillFileEarmarkPdfFill,
+  BsGlobe,
   BsPaperclip,
   BsPencil,
   BsSendFill,
@@ -101,6 +103,8 @@ const icons = {
   instagram: <FaInstagram />,
   linkedIn: <FaLinkedin />,
   whatsapp: <FaWhatsapp />,
+  location: <MdOutlineLocationOn />,
+  globe: <BsGlobe />,
 };
 
 export default icons;

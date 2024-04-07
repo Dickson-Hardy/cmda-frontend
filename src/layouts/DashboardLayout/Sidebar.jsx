@@ -29,10 +29,13 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
         )}
       >
         <div className="flex items-center gap-4 my-6">
-          {/* <img src="" className="bg-onPrimary rounded-full h-14 w-14" /> */}
-          <span className="h-14 w-14 flex-shrink-0 bg-onPrimary rounded-full inline-flex items-center justify-center text-4xl text-primary">
-            {icons.person}
-          </span>
+          {user?.profileImageUrl ? (
+            <img src={user.profileImageUrl} className="bg-onPrimary rounded-full h-14 w-14" />
+          ) : (
+            <span className="h-14 w-14 flex-shrink-0 bg-onPrimary rounded-full inline-flex items-center justify-center text-4xl text-primary">
+              {icons.person}
+            </span>
+          )}
           <div className="truncate">
             <h5 className="font-bold text-base truncate">
               {user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name"}

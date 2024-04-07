@@ -23,19 +23,13 @@ const DashboardProfilePage = () => {
     <div>
       <section className="flex items-center gap-6 flex-col md:flex-row">
         <div className="inline-flex gap-5 sm:gap-6 items-center flex-1">
-          {!user?.profileImageUrl ? (
-            <span className="size-28 bg-onPrimary rounded-full inline-flex items-center justify-center text-6xl text-primary">
-              {icons.person}
-            </span>
-          ) : (
-            <ProfileImageUpdate />
-          )}
+          <ProfileImageUpdate />
           <div>
             <h4 className="text-lg sm:text-xl font-bold flex items-center gap-3">
               {user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name"}{" "}
               <span className="text-secondary">{icons.verified}</span>
             </h4>
-            <p className="text-xs sm:text-sm font-semibold my-1 capitalize">CMDA10001 // {user?.role}</p>
+            <p className="text-xs sm:text-sm font-semibold my-1 capitalize">{user?.role}</p>
             <span className="text-primary text-sm">{user?.region || "--"}</span>
           </div>
         </div>
