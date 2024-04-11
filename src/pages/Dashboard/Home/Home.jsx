@@ -17,6 +17,10 @@ import { responsiveSliderSettings } from "~/assets/js/constants/sliderConstants"
 import { useCreatePrayerTestimonyMutation } from "~/redux/api/prayerTestimonies/prayerTestimoniesApi";
 import { toast } from "react-toastify";
 import { useGetVolunteerJobsQuery } from "~/redux/api/volunteer/volunteerApi";
+import Chip from "~/components/Global/Chip/Chip";
+import icons from "~/assets/js/icons";
+import formatDate from "~/utilities/fomartDate";
+import { classNames } from "~/utilities/classNames";
 
 const DashboardHomePage = () => {
   const user = useSelector((state) => state.auth.user);
@@ -54,6 +58,15 @@ const DashboardHomePage = () => {
 
   const [createPrayerTestimony, { isLoading: isCreatingPrayer }] = useCreatePrayerTestimonyMutation();
 
+  const {
+    data: eventsOnThisDay,
+    isLoading,
+    isFetching,
+  } = useGetAllEventsQuery(
+    { page: 1, limit: 10, date: new Date().toISOString().slice(0, 10) },
+    { refetchOnMountOrArgChange: true }
+  );
+
   const handleCreatePrayer = (data) => {
     const payload = {
       ...data,
@@ -68,14 +81,87 @@ const DashboardHomePage = () => {
       });
   };
 
+  console.log("USER", user);
+
   return (
     <div>
-      <h2 className="font-bold text-2xl text-primary mb-1">
-        Welcome, <span className="text-black">{fullName}</span>
+      <h2 className="font-bold text-2xl text-primary mb-4">
+        Welcome, <span className="text-black">{user?.firstName}</span>
       </h2>
-      <p>You have no upcoming events</p>
 
-      <section className="bg-secondary/90 text-white rounded-2xl p-6 my-6">
+      <section className="flex gap-4 flex-col md:flex-row">
+        <div className="w-full md:w-3/5 bg-white rounded-lg p-4 md:px-6 shadow">
+          <div className="flex items-center gap-6 md:gap-10">
+            <img src={user?.profileImageUrl} className="size-40 rounded-full" />
+            <div>
+              <h3 className="capitalize font-semibold text-lg mb-4">{fullName}</h3>
+              <p className="text-sm mb-4 font-medium flex items-center gap-2">
+                <span className="text-gray">Membership Type:</span>
+                <Chip
+                  className="capitalize text-xs h-7"
+                  color={user?.role === "student" ? "secondary" : user?.role === "doctor" ? "primary" : "tertiary"}
+                  label={user?.role}
+                />
+              </p>
+              <p className="text-sm font-medium mb-4">
+                <span className="text-gray">Chapter/Region: </span> {user?.region}
+              </p>
+              <p className="text-sm font-medium mb-4">
+                <span className="text-gray">Email: </span> {user?.email}
+              </p>
+              <p className="text-sm font-medium mb-4">
+                <span className="text-gray">Phone: </span> {user?.phone || "---"}
+              </p>
+              <div className="flex gap-2">
+                {user?.socials.map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.link?.startsWith("http") ? item.link : "https://" + item.link}
+                    className="bg-gray-light rounded-full text-lg h-9 w-9 inline-flex justify-center items-center hover:text-primary cursor-pointer"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {icons[item.name]}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="w-full md:w-2/5 bg-white shadow p-4 rounded-lg">
+          <h3 className="text-base font-bold mb-2">
+            {"Upcoming Events - Today, " + " " + formatDate(new Date()).date}
+          </h3>
+          {isLoading || isFetching ? (
+            <div className="h-52 flex justify-center items-center">
+              <Loading className="text-primary w-12 h-12" />
+            </div>
+          ) : (
+            <ul className="space-y-2 h-52 overflow-y-auto py-2">
+              {[...eventsOnThisDay.data, ...eventsOnThisDay.data, ...eventsOnThisDay.data].map((evt, i) => (
+                <li key={i}>
+                  <Link to={`/events/${evt?._id}`} className="block bg-white border rounded-xl p-4 space-y-2">
+                    <h4 className="text-sm font-bold truncate capitalize">{evt?.title}</h4>
+                    <div className="text-gray-dark text-xs mb-2 truncate flex items-center gap-2">
+                      <span>{evt?.eventType === "physical" ? icons.location : icons.globe}</span>
+                      <p className="truncate">
+                        {evt?.eventType === "physical" ? evt.physicalLocation : evt.virtualLink}
+                      </p>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </section>
+
+      <section
+        className={classNames(
+          user?.role === "student" ? "bg-secondary" : user?.role === "doctor" ? "bg-primary" : "bg-tertiary",
+          "text-white rounded-2xl p-6 my-6"
+        )}
+      >
         {loadingVerse ? (
           <Loading />
         ) : (
