@@ -1,9 +1,21 @@
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import icons from "~/assets/js/icons";
 import DashboardCartItems from "~/components/DashboardComponents/Cart/CartItems";
 import Button from "~/components/Global/Button/Button";
+import { clearCart } from "~/redux/features/cart/cartSlice";
+import { formatPrice } from "~/utilities/others";
 
 const DashboardCartPage = () => {
+  const { cartItems, totalPrice } = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+
+  const handleClearAll = () => {
+    dispatch(clearCart());
+    toast.success("Cart cleared!");
+  };
+
   return (
     <div>
       <div className="flex flex-col md:flex-row justify-center gap-y-3 md:justify-between items-center">
@@ -22,15 +34,26 @@ const DashboardCartPage = () => {
         </div>
 
         {/* cart items */}
-        <DashboardCartItems />
-        <DashboardCartItems />
+
+        {cartItems.length ? (
+          cartItems.map((item) => <DashboardCartItems key={item._id} item={item} />)
+        ) : (
+          <div className="p-10 text-center w-full">
+            <p className="text-gray-dark mb-6">You currently have no item in your shopping cart</p>
+            <Link to="/store" className="text-primary font-semibold text-sm hover:underline">
+              Go to Store
+            </Link>
+          </div>
+        )}
 
         <hr />
-        <div className="text-right text-2xl font-bold my-4">&#8358; 20000</div>
+        <div className="text-right text-2xl font-bold my-4">&#8358; {formatPrice(totalPrice)}</div>
 
         <div className="flex justify-between items-center">
-          <button className="text-primary hover:underline text-sm font-medium">Clear Cart</button>
-          <Button large>Go to Checkout</Button>
+          <button className="text-primary hover:underline text-sm font-medium" onClick={handleClearAll}>
+            Clear Cart
+          </button>
+          {cartItems.length ? <Button large>Go to Checkout</Button> : null}
         </div>
       </div>
     </div>

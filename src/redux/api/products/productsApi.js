@@ -14,7 +14,7 @@ const productsApi = api.injectEndpoints({
       }),
     }),
     getSingleProduct: build.query({
-      query: (id) => `/products/${id}`,
+      query: ({ id }) => ({ url: `/products/${id}`, cache: "no-cache" }),
       transformResponse: (response) => response.data,
     }),
   }),

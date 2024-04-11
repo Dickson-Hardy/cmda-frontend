@@ -11,6 +11,7 @@ const Header = ({ onToggleSidebar }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
+  const { cartItems } = useSelector((state) => state.cart);
 
   const handleLogout = () => {
     window.location.href = "/login";
@@ -33,16 +34,18 @@ const Header = ({ onToggleSidebar }) => {
 
         <div className="flex-1" />
         {/* Shopping Cart */}
-        <button
-          type="button"
-          className="relative inline-flex items-center p-1.5 text-2xl font-medium text-center text-primary rounded-lg hover:bg-onPrimary focus:outline-none"
-          onClick={() => navigate("/store/cart")}
-        >
-          {icons.cart}
-          <span className="absolute inline-flex items-center justify-center w-6 h-6 text-[10px] font-bold text-white bg-secondary border-2 border-white rounded-full -top-2 -end-2">
-            20
-          </span>
-        </button>
+        {cartItems.length ? (
+          <button
+            type="button"
+            className="relative inline-flex items-center p-1.5 text-2xl font-medium text-center text-primary rounded-lg hover:bg-onPrimary focus:outline-none"
+            onClick={() => navigate("/store/cart")}
+          >
+            {icons.cart}
+            <span className="absolute inline-flex items-center justify-center w-6 h-6 text-[10px] font-bold text-white bg-secondary border-2 border-white rounded-full -top-2 -end-2">
+              {cartItems.length}
+            </span>
+          </button>
+        ) : null}
         {/* Notification Icon */}
         <button
           type="button"
