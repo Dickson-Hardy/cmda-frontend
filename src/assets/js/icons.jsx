@@ -33,6 +33,9 @@ import {
   FaInstagram,
   FaLinkedin,
   FaWhatsapp,
+  FaChevronLeft,
+  FaAngleDoubleRight,
+  FaAngleDoubleLeft,
 } from "react-icons/fa";
 import { AiOutlineDelete, AiOutlineFileText } from "react-icons/ai";
 import {
@@ -85,6 +88,9 @@ const icons = {
   caretDown: <FaCaretDown />,
   person: <MdPerson />,
   chevronRight: <FaChevronRight />,
+  chevronRightDouble: <FaAngleDoubleRight />,
+  chevronLeft: <FaChevronLeft />,
+  chevronLeftDouble: <FaAngleDoubleLeft />,
   verified: <HiBadgeCheck />,
   arrowLeft: <FaArrowLeft />,
   audio: <MdAudiotrack />,

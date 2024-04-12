@@ -21,6 +21,8 @@ import Chip from "~/components/Global/Chip/Chip";
 import icons from "~/assets/js/icons";
 import formatDate from "~/utilities/fomartDate";
 import { classNames } from "~/utilities/classNames";
+import Calendar from "~/components/Global/Calendar/Calendar";
+// import Calendar from "react-calendar";
 
 const DashboardHomePage = () => {
   const user = useSelector((state) => state.auth.user);
@@ -58,12 +60,14 @@ const DashboardHomePage = () => {
 
   const [createPrayerTestimony, { isLoading: isCreatingPrayer }] = useCreatePrayerTestimonyMutation();
 
+  const [date, setDate] = useState(new Date());
+
   const {
     data: eventsOnThisDay,
     isLoading,
     isFetching,
   } = useGetAllEventsQuery(
-    { page: 1, limit: 10, date: new Date().toISOString().slice(0, 10) },
+    { page: 1, limit: 5, date: date.toISOString().slice(0, 10) },
     { refetchOnMountOrArgChange: true }
   );
 
@@ -81,8 +85,6 @@ const DashboardHomePage = () => {
       });
   };
 
-  console.log("USER", user);
-
   return (
     <div>
       <h2 className="font-bold text-2xl text-primary mb-4">
@@ -90,10 +92,10 @@ const DashboardHomePage = () => {
       </h2>
 
       <section className="flex gap-4 flex-col md:flex-row">
-        <div className="w-full md:w-3/5 bg-white rounded-lg p-4 md:px-6 shadow">
-          <div className="flex items-center gap-6 md:gap-10">
+        <div className="w-full md:w-[45%] bg-white rounded-lg p-4 md:px-4 md:py-8 shadow">
+          <div className="flex h-full items-center gap-6 md:gap-6">
             <img src={user?.profileImageUrl} className="size-40 rounded-full" />
-            <div>
+            <div className="flex flex-col justify-between h-full">
               <h3 className="capitalize font-semibold text-lg mb-4">{fullName}</h3>
               <p className="text-sm mb-4 font-medium flex items-center gap-2">
                 <span className="text-gray">Membership Type:</span>
@@ -128,9 +130,16 @@ const DashboardHomePage = () => {
             </div>
           </div>
         </div>
-        <div className="w-full md:w-2/5 bg-white shadow p-4 rounded-lg">
+        <div className="w-1/2 md:w-[27.5%]">
+          {/* <Calendar onChange={setDate} value={date} className="w-full h-full" /> */}
+          <Calendar defaultDate={date} onDateSelect={setDate} />
+        </div>
+        <div className="w-1/2 md:w-[27.5%] bg-white shadow p-4 rounded-lg">
           <h3 className="text-base font-bold mb-2">
-            {"Upcoming Events - Today, " + " " + formatDate(new Date()).date}
+            {"Upcoming Events - " +
+              (date?.toDateString() === new Date().toDateString() ? "Today, " : "") +
+              " " +
+              formatDate(date).date}
           </h3>
           {isLoading || isFetching ? (
             <div className="h-52 flex justify-center items-center">
@@ -138,7 +147,7 @@ const DashboardHomePage = () => {
             </div>
           ) : (
             <ul className="space-y-2 h-52 overflow-y-auto py-2">
-              {[...eventsOnThisDay.data, ...eventsOnThisDay.data, ...eventsOnThisDay.data].map((evt, i) => (
+              {eventsOnThisDay?.data?.map((evt, i) => (
                 <li key={i}>
                   <Link to={`/events/${evt?._id}`} className="block bg-white border rounded-xl p-4 space-y-2">
                     <h4 className="text-sm font-bold truncate capitalize">{evt?.title}</h4>
