@@ -100,7 +100,7 @@ const DashboardHomePage = () => {
               <p className="text-sm mb-4 font-medium flex items-center gap-2">
                 <span className="text-gray">Membership Type:</span>
                 <Chip
-                  className="capitalize text-xs h-7"
+                  className="capitalize text-xs !h-7 !rounded-full"
                   color={user?.role === "student" ? "secondary" : user?.role === "doctor" ? "primary" : "tertiary"}
                   label={user?.role}
                 />
