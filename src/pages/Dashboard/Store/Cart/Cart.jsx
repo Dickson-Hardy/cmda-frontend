@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import icons from "~/assets/js/icons";
 import DashboardCartItems from "~/components/DashboardComponents/Cart/CartItems";
@@ -10,6 +10,7 @@ import { formatPrice } from "~/utilities/others";
 const DashboardCartPage = () => {
   const { cartItems, totalPrice } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleClearAll = () => {
     dispatch(clearCart());
@@ -20,9 +21,9 @@ const DashboardCartPage = () => {
     <div>
       <div className="flex flex-col md:flex-row justify-center gap-y-3 md:justify-between items-center">
         <h2 className="text-2xl font-bold text-primary">Store Cart</h2>
-        <Link to="/store">
-          <span className="text-lg text-primary">{icons.close}</span>
-        </Link>
+        <button type="button" onClick={() => navigate(-1)} className="text-xl text-primary">
+          {icons.close}
+        </button>
       </div>
 
       <div className="bg-white shadow rounded-md p-5 lg:p-10 mt-6">
@@ -53,7 +54,11 @@ const DashboardCartPage = () => {
           <button className="text-primary hover:underline text-sm font-medium" onClick={handleClearAll}>
             Clear Cart
           </button>
-          {cartItems.length ? <Button large>Go to Checkout</Button> : null}
+          {cartItems.length ? (
+            <Button onClick={() => navigate("/store/checkout")} large>
+              Proceed to Payment
+            </Button>
+          ) : null}
         </div>
       </div>
     </div>

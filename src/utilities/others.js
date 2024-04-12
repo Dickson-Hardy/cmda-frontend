@@ -6,3 +6,7 @@ export const formatPrice = (price) => {
       })
     : "0.00";
 };
+
+export function parseCurrency(amount) {
+  return new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(amount || 0);
+}

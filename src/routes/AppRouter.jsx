@@ -21,9 +21,10 @@ import DashboardStorePage from "~/pages/Dashboard/Store/Store";
 import DashboardStoreSingleProductPage from "~/pages/Dashboard/Store/SingleProduct/SingleProduct";
 import DashboardStoreSingleEventPage from "~/pages/Dashboard/Events/SingleEvent/SingleEvent";
 import DashboardEditProfile from "~/pages/Dashboard/Profile/EditProfile/EditProfile";
-import DashboardCartPage from "~/pages/Dashboard/Cart/Cart";
+import DashboardCartPage from "~/pages/Dashboard/Store/Cart/Cart";
 import DashboardVolunteersPage from "~/pages/Dashboard/Volunteers/Volunteers";
 import DashboardVolunteerDetailsPage from "~/pages/Dashboard/Volunteers/VolunteerDetails/VolunteerDetails";
+import DashboardCheckoutPage from "~/pages/Dashboard/Store/Cart/Checkout";
 
 export default function AppRouter() {
   const isAuthenticated = true;
@@ -62,6 +63,7 @@ export default function AppRouter() {
             { path: "messaging", element: <DashboardMessagingPage /> },
             { path: "store", element: <DashboardStorePage /> },
             { path: "store/cart", element: <DashboardCartPage /> },
+            { path: "store/checkout", element: <DashboardCheckoutPage /> },
             { path: "store/:id", element: <DashboardStoreSingleProductPage /> },
             { path: "volunteers", element: <DashboardVolunteersPage /> },
             { path: "volunteer/:id", element: <DashboardVolunteerDetailsPage /> },
