@@ -9,7 +9,7 @@ import { useGetSingleVolunteerJobQuery } from "~/redux/api/volunteer/volunteerAp
 import { classNames } from "~/utilities/classNames";
 import formatDate from "~/utilities/fomartDate";
 
-const DashboardVolunteerDetailsPage = () => {
+const DashboardMemberDetailsPage = () => {
   const { id } = useParams();
 
   const { data: volunteerJob, isLoading } = useGetSingleVolunteerJobQuery(id, {
@@ -85,4 +85,4 @@ const DashboardVolunteerDetailsPage = () => {
   );
 };
 
-export default DashboardVolunteerDetailsPage;
+export default DashboardMemberDetailsPage;

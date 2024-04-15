@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import Dropdown from "~/components/Global/Dropdown/DropDown";
 import Logo from "~/components/Global/Logo/Logo";
@@ -7,9 +7,11 @@ import { setUser } from "~/redux/features/auth/authSlice";
 import { clearTokens } from "~/redux/features/auth/tokenSlice";
 import { classNames } from "~/utilities/classNames";
 
-const Header = ({ onToggleSidebar }) => {
+const Header = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
+  const { cartItems } = useSelector((state) => state.cart);
 
   const handleLogout = () => {
     window.location.href = "/login";
@@ -18,22 +20,41 @@ const Header = ({ onToggleSidebar }) => {
   };
 
   return (
-    <header className="bg-white fixed top-0 inset-x-0 z-[2] gap-4">
-      <nav className="h-full w-full flex items-center gap-4 p-6 py-3">
+    <header className="bg-white fixed top-0 inset-x-0 z-[2] shadow">
+      <nav className="h-full w-full flex items-center gap-2 md:gap-4 p-6 px-3 md:px-6 py-3">
         {/* Sidebar Toggle Button */}
-        <button
+        {/* <button
           className="text-primary text-2xl focus:outline-none hover:bg-onPrimary rounded-md transition-all p-1 lg:hidden"
           onClick={onToggleSidebar}
         >
           {icons.menu}
-        </button>
+        </button> */}
         {/* Logo */}
-        <Logo className="w-auto h-14" />
+        <Logo className="w-auto h-10 sm:h-14 md:hidden" />
 
         <div className="flex-1" />
+        {/* Shopping Cart */}
+        {cartItems.length ? (
+          <button
+            type="button"
+            className="relative inline-flex items-center p-1.5 text-2xl font-medium text-center text-primary rounded-lg hover:bg-onPrimary focus:outline-none"
+            onClick={() => navigate("/store/cart")}
+          >
+            {icons.cart}
+            <span className="absolute inline-flex items-center justify-center w-6 h-6 text-[10px] font-bold text-white bg-secondary border-2 border-white rounded-full -top-2 -end-2">
+              {cartItems.length}
+            </span>
+          </button>
+        ) : null}
         {/* Notification Icon */}
-        <button className="text-primary text-xl focus:outline-none hover:bg-onPrimary rounded-md transition-all p-1.5">
+        <button
+          type="button"
+          className="relative inline-flex items-center p-1.5 text-2xl font-medium text-center text-primary rounded-lg hover:bg-onPrimary focus:outline-none"
+        >
           {icons.bell}
+          {/* <span className="absolute inline-flex items-center justify-center w-6 h-6 text-[10px] font-bold text-white bg-secondary border-2 border-white rounded-full -top-2 -end-2">
+            20
+          </span> */}
         </button>
         {/* Avatar Dropdown */}
         <Dropdown
@@ -43,7 +64,7 @@ const Header = ({ onToggleSidebar }) => {
               <span className="h-10 w-10 bg-onPrimary rounded-full inline-flex items-center justify-center text-2xl text-primary">
                 {icons.person}
               </span>
-              <span className="text-">{icons.caretDown}</span>
+              <span className="hidden md:inline-block">{icons.caretDown}</span>
             </button>
           }
         >

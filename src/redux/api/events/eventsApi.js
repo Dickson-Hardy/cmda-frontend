@@ -3,14 +3,14 @@ import api from "../api";
 const eventsApi = api.injectEndpoints({
   endpoints: (build) => ({
     getAllEvents: build.query({
-      query: ({ page, limit, searchText, eventDate, status }) => ({
+      query: ({ page, limit, searchText, date, status }) => ({
         url: "/events",
         params: {
           page,
           limit,
           ...(searchText ? { searchText } : {}),
           ...(status ? { status } : {}),
-          ...(eventDate ? { eventDate } : {}),
+          ...(date ? { date } : {}),
         },
       }),
     }),

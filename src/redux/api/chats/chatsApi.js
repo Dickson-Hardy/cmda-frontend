@@ -25,7 +25,6 @@ const chatsApi = api.injectEndpoints({
     }),
     addToHistory: build.mutation({
       query: (payload) => ({ url: `/chats/add-to-history`, method: "POST", body: payload }),
-
       transformErrorResponse: (response) => response.data?.message,
     }),
   }),

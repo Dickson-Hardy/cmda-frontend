@@ -73,7 +73,7 @@ const DashboardStorePage = () => {
         </div>
         <div className="w-full sm:w-1/2 md:w-1/3 xl:w-1/4">
           <div className="sticky top-0 right-0 left-0 flex flex-col gap-8">
-            <Link to="/cart" className="bg-onPrimary flex items-center gap-4 font-bold rounded-lg p-4 text-sm">
+            <Link to="/store/cart" className="bg-onPrimary flex items-center gap-4 font-bold rounded-lg p-4 text-sm">
               <span className="text-primary text-2xl">{icons.cart}</span>
               Cart
               <span className="ml-auto">{icons.chevronRight}</span>

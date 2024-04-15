@@ -3,14 +3,14 @@ import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { useUpdateProfilePicture2Mutation } from "~/redux/api/profile/editProfile";
+import { useUpdateProfilePictureMutation } from "~/redux/api/profile/editProfile";
 import { toast } from "react-toastify";
 import { setUser } from "~/redux/features/auth/authSlice";
 
 const ProfileImageUpdate = () => {
   const user = useSelector((state) => state.auth.user);
 
-  const [updateProfilePicture2, { isLoading }] = useUpdateProfilePicture2Mutation();
+  const [updateProfilePicture, { isLoading }] = useUpdateProfilePictureMutation();
   const dispatch = useDispatch();
 
   const [openModal, setOpenModal] = useState(false);
@@ -27,7 +27,7 @@ const ProfileImageUpdate = () => {
     const formData = new FormData();
     formData.append("image", image);
 
-    updateProfilePicture2({ id: user?._id, payload: formData })
+    updateProfilePicture({ id: user?._id, payload: formData })
       .unwrap()
       .then((data) => {
         dispatch(setUser(data.data));
@@ -43,22 +43,18 @@ const ProfileImageUpdate = () => {
   };
 
   return (
-    <div className="">
-      <div className="w-full h-full rounded-full relative">
+    <>
+      <div className="relative flex-shrink-0">
         {!user?.profileImageUrl ? (
-          <span className="w-[6rem] h-[5.5rem] md:h-28 md:w-28 bg-onPrimary rounded-full inline-flex items-center justify-center text-6xl text-primary">
+          <span className="size-32 md:size-40 bg-onPrimary rounded-full inline-flex items-center justify-center text-6xl text-primary">
             {icons.person}
           </span>
         ) : (
-          <img
-            src={user?.profileImageUrl}
-            alt="img"
-            className="w-[6rem] h-[5.5rem] md:h-28 md:w-28  rounded-full object-cntain"
-          />
+          <img src={user?.profileImageUrl} alt="img" className="size-32 md:size-40 rounded-full" />
         )}
 
         <span
-          className="p-1.5 sm:p-3 rounded-full border border-gray-light bg-white cursor-pointer absolute bottom-1 -right-2"
+          className="p-2 sm:p-3 rounded-full border border-gray-light bg-white text-primary cursor-pointer absolute bottom-1 -right-2"
           onClick={() => setOpenModal(true)}
         >
           {icons.pencil}
@@ -66,10 +62,10 @@ const ProfileImageUpdate = () => {
       </div>
 
       <Modal isOpen={openModal} className="max-w-3xl px-3 md:px-6" onClose={() => setOpenModal(false)}>
-        <div className="p-2 sm:p-7">
+        <div className="px-2 mb-2">
           <div className="flex items-center justify-between mb-7 w-full">
             <h2 className="text-lg font-bold">Edit Profile Photo</h2>
-            <span className="text-2xl text-black cursor-pointer" onClick={() => setOpenModal(false)}>
+            <span className="text-xl text-gray-dark cursor-pointer" onClick={() => setOpenModal(false)}>
               {icons.close}
             </span>
           </div>
@@ -91,27 +87,26 @@ const ProfileImageUpdate = () => {
             </div>
 
             <div className="w-full space-y-5 flex flex-col items-center">
-              <Button className="w-full h-full" disabled={isLoading}>
-                <label
-                  htmlFor="image"
-                  className="justify-center items-center w-full h-full border-[#949494] overflow-hidden"
-                >
-                  Change Image
-                  <input
-                    type="file"
-                    name="image"
-                    id="image"
-                    accept=".jpg,.jpeg,.png"
-                    className="sr-only "
-                    onChange={handleImageChange}
-                  />
-                </label>
-              </Button>
+              {/* <Button className="w-full h-full" disabled={isLoading}> */}
+              <label htmlFor="image" className="cursor-pointer text-primary font-semibold hover:underline">
+                Click here to browse image
+                <input
+                  type="file"
+                  name="image"
+                  id="image"
+                  accept=".jpg,.jpeg,.png"
+                  className="sr-only"
+                  disabled={isLoading}
+                  onChange={handleImageChange}
+                />
+              </label>
+              {/* </Button> */}
 
               <Button
                 label="Save Image"
+                large
                 className="w-full"
-                disabled={!image || isLoading}
+                disabled={!image}
                 loading={isLoading}
                 onClick={handleUpdateImage}
               />
@@ -119,7 +114,7 @@ const ProfileImageUpdate = () => {
           </div>
         </div>
       </Modal>
-    </div>
+    </>
   );
 };
 

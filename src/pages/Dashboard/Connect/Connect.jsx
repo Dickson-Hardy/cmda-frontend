@@ -4,7 +4,7 @@ import Volunteer from "~/components/DashboardComponents/Volunteer/Volunteer";
 import Button from "~/components/Global/Button/Button";
 import { useGetVolunteerJobsQuery } from "~/redux/api/volunteer/volunteerApi";
 
-const DashboardVolunteersPage = () => {
+const DashboardConnectPage = () => {
   const [volunteerships, setVolunteerships] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -53,4 +53,4 @@ const DashboardVolunteersPage = () => {
   );
 };
 
-export default DashboardVolunteersPage;
+export default DashboardConnectPage;

@@ -18,6 +18,7 @@ const DashboardStoreSingleEventPage = () => {
     <div className="bg-white py-6 px-2 lg:px-6 rounded-3xl">
       <Link to="/events" className="inline-flex gap-2 text-base items-center font-medium text-primary hover:underline">
         {icons.arrowLeft}
+        Back to Events
       </Link>
 
       {/* content */}

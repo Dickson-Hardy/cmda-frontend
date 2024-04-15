@@ -29,7 +29,9 @@ const Login = () => {
         dispatch(setUser(data));
         dispatch(setTokens({ accessToken }));
         toast.success("Login successful");
-        navigate("/");
+        const redirectUrl = localStorage.getItem("redirectUrl");
+        if (redirectUrl) navigate(redirectUrl);
+        else navigate("/");
       })
       .catch((error) => {
         const message = error?.data?.message;

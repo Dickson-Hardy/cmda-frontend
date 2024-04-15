@@ -13,6 +13,7 @@ import {
   MdAddShoppingCart,
   MdShoppingCart,
   MdViewModule,
+  MdOutlineLocationOn,
 } from "react-icons/md";
 import { FiBell, FiDownloadCloud } from "react-icons/fi";
 import { HiBadgeCheck, HiDotsVertical, HiOutlineHome } from "react-icons/hi";
@@ -32,6 +33,10 @@ import {
   FaInstagram,
   FaLinkedin,
   FaWhatsapp,
+  FaChevronLeft,
+  FaAngleDoubleRight,
+  FaAngleDoubleLeft,
+  FaPray,
 } from "react-icons/fa";
 import { AiOutlineDelete, AiOutlineFileText } from "react-icons/ai";
 import {
@@ -39,6 +44,7 @@ import {
   BsFiletypeDoc,
   BsFiletypePdf,
   BsFillFileEarmarkPdfFill,
+  BsGlobe,
   BsPaperclip,
   BsPencil,
   BsSendFill,
@@ -83,6 +89,9 @@ const icons = {
   caretDown: <FaCaretDown />,
   person: <MdPerson />,
   chevronRight: <FaChevronRight />,
+  chevronRightDouble: <FaAngleDoubleRight />,
+  chevronLeft: <FaChevronLeft />,
+  chevronLeftDouble: <FaAngleDoubleLeft />,
   verified: <HiBadgeCheck />,
   arrowLeft: <FaArrowLeft />,
   audio: <MdAudiotrack />,
@@ -101,6 +110,9 @@ const icons = {
   instagram: <FaInstagram />,
   linkedIn: <FaLinkedin />,
   whatsapp: <FaWhatsapp />,
+  location: <MdOutlineLocationOn />,
+  globe: <BsGlobe />,
+  pray: <FaPray />,
 };
 
 export default icons;

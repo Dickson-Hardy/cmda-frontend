@@ -8,7 +8,7 @@ const Chip = ({
   disabled,
   color = "primary", // primary, tertiary, secondary, error, defaults to black if none or invalid color
   className,
-  onClick = () => {},
+  onClick,
 }) => {
   const getColorStyles = () => {
     switch (color) {
@@ -52,6 +52,7 @@ const Chip = ({
       disabled={disabled}
       className={classNames(
         "inline-flex justify-center items-center gap-2.5 rounded-xl font-medium py-2 px-4 text-sm",
+        onClick ? "cursor-pointer" : "cursor-default",
         large ? "h-11" : "h-9",
         variant === "filled" && colorStyles.filled,
         variant === "outlined" && colorStyles.outlined,
@@ -69,7 +70,7 @@ const Chip = ({
                 : "focus:ring-black/10", // Default to black focus ring for unknown colors
         className
       )}
-      onClick={onClick}
+      onClick={onClick ? onClick : () => {}}
     >
       {children || label}
     </button>
