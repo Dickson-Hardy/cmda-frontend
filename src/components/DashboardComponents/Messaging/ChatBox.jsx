@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import icons from "~/assets/js/icons";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { classNames } from "~/utilities/classNames";
 import ContactListItem from "./ContactListItem";
 import { useAddToHistoryMutation, useGetAllChatsQuery } from "~/redux/api/chats/chatsApi";
@@ -16,7 +16,6 @@ const ChatBox = ({ user, recipientId }) => {
   const [inputHeight, setInputHeight] = useState(48); // Initial height
   const [allMessages, setAllMessages] = useState([]);
   const navigate = useNavigate();
-  let [searchParams] = useSearchParams();
   const maxInputHeight = 160;
 
   // get the room id by combining the two users id
@@ -89,18 +88,18 @@ const ChatBox = ({ user, recipientId }) => {
   }, [lastJsonMessage]);
 
   return (
-    <div className="w-full lg:w-3/4 flex flex-col">
+    <div className="w-full lg:w-3/4 flex flex-col rounded-xl">
       {/* back button mobile screen */}
       <div className="lg:hidden ">
         <div
-          className="flex items-center text-black gap-x-2 my-5 cursor-pointer"
+          className="flex items-center text-black gap-x-2 mt-1 mb-4 cursor-pointer"
           onClick={() => navigate("/messaging")}
         >
           <span className="text-lg">{icons.arrowLeft}</span> <span>Back</span>
         </div>
       </div>
 
-      <div className="bg-white rounded-t-xl max-md:pt-4">
+      <div className="bg-white shadow rounded-t-xl max-md:pt-4">
         {loadingRecipientData ? (
           <div className="flex justify-center items-center w-full h-full">
             <Loading />
@@ -114,30 +113,21 @@ const ChatBox = ({ user, recipientId }) => {
           />
         )}
       </div>
-      <div className="flex-1  bg-white">
+      <div className="w-full bg-onPrimary h-[calc(100vh-400px)] md:h-[calc(100vh-320px)]">
         {loadingChats || isFetching ? (
           <div className="w-full h-full flex items-center justify-center">
-            <Loading />
+            <Loading className="text-primary h-16 w-16" />
           </div>
         ) : (
-          <div className="w-full max-h-[300px] h-full overflow-y-scroll  flex flex-col-reverse " ref={scrollRef}>
+          <div className="w-full h-full overflow-y-scroll flex flex-col-reverse" ref={scrollRef}>
             {allMessages.map(
               (message, id) => message.content && <Message key={id} message={message} userId={user?._id} />
             )}
           </div>
         )}
       </div>
-      <div className="bg-white rounded-b-xl p-4">
+      <div className="bg-white rounded-b-xl p-4 shadow">
         <form onSubmit={handleSend} className="flex gap-4">
-          <button
-            type="button"
-            className={classNames(
-              "py-2 px-3 rounded-lg cursor-pointer hover:text-primary hover:bg-onPrimary",
-              "text-gray-dark text-xl transition-all"
-            )}
-          >
-            {icons.clip}
-          </button>
           <textarea
             className={classNames(
               "bg-white border border-gray placeholder:text-[gray] rounded-lg block w-full text-sm p-3",
@@ -153,7 +143,7 @@ const ChatBox = ({ user, recipientId }) => {
           <button
             type="submit"
             className={classNames(
-              "bg-primary text-white hover:bg-primaryContainer h-12 w-12 p-4 rounded-full",
+              "bg-primary text-white hover:bg-primaryContainer h-12 w-12 p-4 rounded-full shadow-lg",
               "inline-flex justify-center items-center text-2xl cursor-pointer",
               "focus:ring focus:ring-primary/25 focus:outline-none focus:border-transparent transition-all"
             )}

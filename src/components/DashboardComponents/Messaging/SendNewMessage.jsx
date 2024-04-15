@@ -9,7 +9,7 @@ import { useSearchParams } from "react-router-dom";
 import { getFullName } from "~/utilities/reusableVariables";
 
 const SendNewMessage = ({ userId }) => {
-  let [searchParams, setSearchParams] = useSearchParams();
+  let [, setSearchParams] = useSearchParams();
   const [openModal, setOpenModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -18,7 +18,7 @@ const SendNewMessage = ({ userId }) => {
     isLoading: loadingUsers,
     isFetching,
   } = useGetAllUsersQuery({ searchText: searchTerm }, { refetchOnMountOrArgChange: true });
-  // console.log({ allUsers });
+
   return (
     <>
       <Button onClick={() => setOpenModal(true)}>
