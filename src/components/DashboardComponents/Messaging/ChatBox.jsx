@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import icons from "~/assets/js/icons";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { classNames } from "~/utilities/classNames";
 import ContactListItem from "./ContactListItem";
 import { useAddToHistoryMutation, useGetAllChatsQuery } from "~/redux/api/chats/chatsApi";
@@ -14,6 +15,8 @@ const ChatBox = ({ user, recipientId }) => {
   const [inputValue, setInputValue] = useState("");
   const [inputHeight, setInputHeight] = useState(48); // Initial height
   const [allMessages, setAllMessages] = useState([]);
+  const navigate = useNavigate();
+  let [searchParams] = useSearchParams();
   const maxInputHeight = 160;
 
   // get the room id by combining the two users id
@@ -86,8 +89,18 @@ const ChatBox = ({ user, recipientId }) => {
   }, [lastJsonMessage]);
 
   return (
-    <div className="w-3/4 flex flex-col">
-      <div className="bg-white rounded-t-xl">
+    <div className="w-full lg:w-3/4 flex flex-col">
+      {/* back button mobile screen */}
+      <div className="lg:hidden ">
+        <div
+          className="flex items-center text-black gap-x-2 my-5 cursor-pointer"
+          onClick={() => navigate("/messaging")}
+        >
+          <span className="text-lg">{icons.arrowLeft}</span> <span>Back</span>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-t-xl max-md:pt-4">
         {loadingRecipientData ? (
           <div className="flex justify-center items-center w-full h-full">
             <Loading />

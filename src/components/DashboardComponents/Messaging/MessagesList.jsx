@@ -42,7 +42,7 @@ const MessagesLists = ({ userId }) => {
   // }, [searchText, user?._id]);
 
   return (
-    <div className="w-1/4 border-r p-1">
+    <div className="w-full lg:w-1/4 border-r p-1">
       <SearchBar className="mx-2 mb-4" />
 
       <div className="mt-4 h-[calc(100%-160px)] overflow-y-auto">
