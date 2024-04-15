@@ -13,11 +13,12 @@ const DashboardMessagingPage = () => {
   return (
     <div>
       <div className="flex justify-between gap-2 items-center mb-4">
-        <h2 className="text-2xl font-bold text-primary">Messaging</h2>
+        <h2 className="text-xl md:text-2xl font-bold text-primary">Messaging</h2>
         <SendNewMessage userId={user?._id} />
       </div>
 
-      <section className="flex gap-10 h-[calc(100vh-190px)]">
+      {/* large screen */}
+      <section className=" gap-10 h-[calc(100vh-190px)] hidden lg:flex">
         {/* messages Lists */}
         <MessagesLists userId={user?._id} />
 
@@ -29,6 +30,15 @@ const DashboardMessagingPage = () => {
             <p className="font-bold text-lg text-center cursor-not-allowed">Select A User to start chatting with</p>
           </div>
         )}
+      </section>
+
+      {/* small screen  */}
+      <section className=" gap-10 h-[calc(100vh-190px)] lg:hidden flex">
+        {/* messages Lists */}
+        {!recipientId && <MessagesLists userId={user?._id} />}
+
+        {/* Chatbox */}
+        {recipientId && <ChatBox user={user} recipientId={recipientId} />}
       </section>
     </div>
   );
