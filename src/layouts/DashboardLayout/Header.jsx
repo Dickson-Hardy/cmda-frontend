@@ -7,7 +7,7 @@ import { setUser } from "~/redux/features/auth/authSlice";
 import { clearTokens } from "~/redux/features/auth/tokenSlice";
 import { classNames } from "~/utilities/classNames";
 
-const Header = ({ onToggleSidebar }) => {
+const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
@@ -20,17 +20,17 @@ const Header = ({ onToggleSidebar }) => {
   };
 
   return (
-    <header className="bg-white fixed top-0 inset-x-0 z-[2] gap-4">
-      <nav className="h-full w-full flex items-center gap-4 p-6 py-3">
+    <header className="bg-white fixed top-0 inset-x-0 z-[2] shadow">
+      <nav className="h-full w-full flex items-center gap-2 md:gap-4 p-6 px-3 md:px-6 py-3">
         {/* Sidebar Toggle Button */}
-        <button
+        {/* <button
           className="text-primary text-2xl focus:outline-none hover:bg-onPrimary rounded-md transition-all p-1 lg:hidden"
           onClick={onToggleSidebar}
         >
           {icons.menu}
-        </button>
+        </button> */}
         {/* Logo */}
-        <Logo className="w-auto h-14" />
+        <Logo className="w-auto h-10 sm:h-14 md:hidden" />
 
         <div className="flex-1" />
         {/* Shopping Cart */}
@@ -64,7 +64,7 @@ const Header = ({ onToggleSidebar }) => {
               <span className="h-10 w-10 bg-onPrimary rounded-full inline-flex items-center justify-center text-2xl text-primary">
                 {icons.person}
               </span>
-              <span className="text-">{icons.caretDown}</span>
+              <span className="hidden md:inline-block">{icons.caretDown}</span>
             </button>
           }
         >

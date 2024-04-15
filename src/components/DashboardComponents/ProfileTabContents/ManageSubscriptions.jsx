@@ -35,24 +35,25 @@ const ProfileTabManageSubscriptions = () => {
   return (
     <div className="p-4 pt-0">
       <div className="mb-8 flex flex-col md:flex-row gap-10">
-        <div className="border p-4 rounded-2xl flex justify-between items-center w-1/2">
+        <div className="border p-4 rounded-2xl flex flex-col md:flex-row gap-6 justify-between md:items-center w-full md:w-1/2">
           <div>
             <h6 className="text-gray text-sm font-medium">Current Subscription</h6>
-            <p className="font-semibold my-2">Monthly</p>
-            <p className="text-sm">NGN 1,000/month</p>
+            <p className="font-semibold my-2">Annually</p>
+            <p className="text-sm">NGN 12,000/year</p>
           </div>
           <Button label="Manage" variant="outlined" />
         </div>
-        <div className="w-1/2">
-          <h3 className="text-base font-bold mb-2">Payment Method</h3>
+        <div className="w-full md:w-1/2">
+          <h3 className="text-base font-bold mb-2">Payment/Donation Method</h3>
           <p className="bg-white border p-3 rounded-xl">2390 **** ****</p>
           <div className="flex justify-end mt-4">
             <Button variant="text" label="Update payment method" />
           </div>
         </div>
       </div>
+
       <div>
-        <h3 className="text-base font-bold mb-2">Payment History</h3>
+        <h3 className="text-base font-bold mb-2 overflow-x-auto">Payment/Donation History</h3>
         <Table tableData={[]} tableColumns={tableColumns} />
       </div>
     </div>

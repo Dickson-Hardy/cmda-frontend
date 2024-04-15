@@ -4,6 +4,7 @@ import icons from "~/assets/js/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "~/redux/features/auth/authSlice";
 import { clearTokens } from "~/redux/features/auth/tokenSlice";
+import Logo from "~/components/Global/Logo/Logo";
 
 const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
   const dispatch = useDispatch();
@@ -18,16 +19,20 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
   return (
     <>
       {/* Overlay */}
-      {isOpen && <div className="fixed inset-0 bg-black opacity-50 z-[5] lg:hidden" onClick={onToggleSidebar}></div>}
+      {isOpen && <div className="fixed inset-0 bg-black opacity-50 z-[5] hidden" onClick={onToggleSidebar}></div>}
 
       {/* Sidebar */}
       <aside
         className={classNames(
-          isOpen ? "translate-x-0 animate-slidein" : "-translate-x-full",
-          "shadow-md lg:shadow-none p-5 pt-20",
-          "transition-all duration-200 fixed inset-y-0 left-0 w-60 bg-white overflow-y-auto ease-in-out transform z-10 lg:z-[1]"
+          // isOpen ? "translate-x-0 animate-slidein" : "-translate-x-full",
+          "shadow-md md:shadow-none p-5 hidden md:block",
+          "transition-all duration-200 fixed inset-y-0 left-0 w-60 bg-primary overflow-y-auto ease-in-out transform z-10 md:z-[3]"
         )}
       >
+        <div className="bg-white">
+          <Logo className="w-auto h-10 sm:h-14 hidden md:block" />
+        </div>
+
         <div className="flex items-center gap-4 my-6">
           {user?.profileImageUrl ? (
             <img src={user.profileImageUrl} className="bg-onPrimary rounded-full h-14 w-14" />
@@ -37,10 +42,10 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
             </span>
           )}
           <div className="truncate">
-            <h5 className="font-bold text-base truncate">
+            <h5 className="font-bold text-base truncate text-white">
               {user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name"}
             </h5>
-            <Link to="/profile" className="text-primary text-sm hover:underline">
+            <Link to="/profile" className="text-white text-sm hover:underline">
               View Profile
             </Link>
           </div>
@@ -55,7 +60,7 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
                   className={({ isActive }) =>
                     classNames(
                       "flex items-center gap-4 px-4 py-3 cursor-pointer text-sm font-semibold rounded-lg transition-all",
-                      isActive ? "bg-primary text-white" : "bg-transparent text-black hover:bg-onPrimary"
+                      isActive ? "bg-white text-primary" : "bg-transparent text-white hover:bg-onPrimary/20"
                     )
                   }
                 >
@@ -65,8 +70,8 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
             ))}
             <li
               className={classNames(
-                "flex items-center gap-4 px-4 py-3 cursor-pointer text-sm font-semibold rounded-lg",
-                "bg-transparent text-black hover:bg-onPrimary transition-all"
+                "flex items-center gap-4 px-4 py-3 cursor-pointer text-sm font-semibold rounded-lg transition-all",
+                "bg-transparent text-white hover:bg-onPrimary/20"
               )}
               onClick={handleLogout}
             >

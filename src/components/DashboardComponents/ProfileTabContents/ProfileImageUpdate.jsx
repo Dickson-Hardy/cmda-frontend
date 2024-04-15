@@ -43,22 +43,18 @@ const ProfileImageUpdate = () => {
   };
 
   return (
-    <div className="">
-      <div className="w-full h-full rounded-full relative">
+    <>
+      <div className="relative flex-shrink-0">
         {!user?.profileImageUrl ? (
-          <span className="w-[6rem] h-[5.5rem] md:h-28 md:w-28 bg-onPrimary rounded-full inline-flex items-center justify-center text-6xl text-primary">
+          <span className="size-32 md:size-40 bg-onPrimary rounded-full inline-flex items-center justify-center text-6xl text-primary">
             {icons.person}
           </span>
         ) : (
-          <img
-            src={user?.profileImageUrl}
-            alt="img"
-            className="w-[6rem] h-[5.5rem] md:h-28 md:w-28  rounded-full object-cntain"
-          />
+          <img src={user?.profileImageUrl} alt="img" className="size-32 md:size-40 rounded-full" />
         )}
 
         <span
-          className="p-1.5 sm:p-3 rounded-full border border-gray-light bg-white cursor-pointer absolute bottom-1 -right-2"
+          className="p-2 sm:p-3 rounded-full border border-gray-light bg-white text-primary cursor-pointer absolute bottom-1 -right-2"
           onClick={() => setOpenModal(true)}
         >
           {icons.pencil}
@@ -118,7 +114,7 @@ const ProfileImageUpdate = () => {
           </div>
         </div>
       </Modal>
-    </div>
+    </>
   );
 };
 

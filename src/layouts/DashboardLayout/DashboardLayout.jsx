@@ -5,6 +5,7 @@ import Header from "./Header";
 import { Outlet } from "react-router-dom";
 import { NAV_LINKS } from "./constants";
 import { useIsSmallScreen } from "~/hooks/useIsSmallScreen";
+import BottomNav from "./BottomNav";
 
 const DashboardLayout = ({ withOutlet = true, children }) => {
   const isSmallScreen = useIsSmallScreen("750px");
@@ -29,16 +30,18 @@ const DashboardLayout = ({ withOutlet = true, children }) => {
         {/* Main content */}
         <div
           className={classNames(
-            isSidebarOpen && "lg:ml-60",
+            isSidebarOpen && "md:ml-60",
             "flex-1 flex flex-col overflow-hidden transition-all duration-300"
           )}
         >
           {/* Content */}
-          <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 mt-20">
+          <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-6 pb-20 md:pb-6 mt-20">
             {withOutlet ? <Outlet /> : children}
           </main>
         </div>
       </div>
+
+      <BottomNav navLinks={NAV_LINKS} />
     </div>
   );
 };

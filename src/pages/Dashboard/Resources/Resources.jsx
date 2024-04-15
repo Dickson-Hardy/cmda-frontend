@@ -13,11 +13,11 @@ const DashboardResources = () => {
 
   const handleSelectCategory = (category) => {
     setSelectedCategory([category]);
-    // if (selectedCategory.includes(category)) {
-    //   setSelectedCategory((prev) => prev.filter((item) => item !== category));
-    // } else {
-    //   setSelectedCategory((prev) => prev.concat(category));
-    // }
+    if (selectedCategory.includes(category)) {
+      setSelectedCategory((prev) => prev.filter((item) => item !== category));
+    } else {
+      setSelectedCategory((prev) => prev.concat(category));
+    }
   };
 
   const [posts, setPosts] = useState([]);
@@ -49,9 +49,9 @@ const DashboardResources = () => {
     <div>
       <h2 className="text-2xl font-bold text-primary mb-6">Resources</h2>
 
-      <div className="flex justify-between items-center">
-        <div className="inline-flex gap-2">
-          {CATEGORIES.slice(0, 1).map((category) => (
+      <div className="flex flex-col md:flex-row gap-6 justify-between items-center">
+        <div className="inline-flex flex-wrap justify-center gap-2">
+          {CATEGORIES.map((category) => (
             <Chip
               key={category}
               label={category}
@@ -65,9 +65,9 @@ const DashboardResources = () => {
         <SearchBar />
       </div>
 
-      <section className="my-8">
+      <section className="mt-8">
         <h3 className="text-lg font-bold mb-4">Recent Resources </h3>
-        <div className="grid grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
           {posts.map((post, v) => (
             <Link to={`/resources/articles/${post.slug}`} key={v + 1}>
               <ResourceCard

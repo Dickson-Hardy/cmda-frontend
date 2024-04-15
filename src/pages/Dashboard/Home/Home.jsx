@@ -17,11 +17,10 @@ import { responsiveSliderSettings } from "~/assets/js/constants/sliderConstants"
 import { useCreatePrayerTestimonyMutation } from "~/redux/api/prayerTestimonies/prayerTestimoniesApi";
 import { toast } from "react-toastify";
 import { useGetVolunteerJobsQuery } from "~/redux/api/volunteer/volunteerApi";
-import Chip from "~/components/Global/Chip/Chip";
 import icons from "~/assets/js/icons";
-import formatDate from "~/utilities/fomartDate";
 import { classNames } from "~/utilities/classNames";
-import Calendar from "~/components/Global/Calendar/Calendar";
+import { useGetAllUsersQuery } from "~/redux/api/user/userApi";
+import MemberCard from "~/components/DashboardComponents/Members/MemberCard";
 // import Calendar from "react-calendar";
 
 const DashboardHomePage = () => {
@@ -41,8 +40,6 @@ const DashboardHomePage = () => {
     refetchOnMountOrArgChange: true,
   });
 
-  const fullName = user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name";
-
   const { data: blog, isLoading: loadingPosts } = useGetAllPostsQuery(
     { perPage: 10, page: 1 },
     { refetchOnMountOrArgChange: true }
@@ -60,16 +57,12 @@ const DashboardHomePage = () => {
 
   const [createPrayerTestimony, { isLoading: isCreatingPrayer }] = useCreatePrayerTestimonyMutation();
 
-  const [date, setDate] = useState(new Date());
-
-  const {
-    data: eventsOnThisDay,
-    isLoading,
-    isFetching,
-  } = useGetAllEventsQuery(
-    { page: 1, limit: 5, date: date.toISOString().slice(0, 10) },
+  const { data: allUsers, isLoading: loadingUsers } = useGetAllUsersQuery(
+    { page: 1, limit: 10 },
     { refetchOnMountOrArgChange: true }
   );
+
+  console.log("USER", user);
 
   const handleCreatePrayer = (data) => {
     const payload = {
@@ -91,80 +84,6 @@ const DashboardHomePage = () => {
         Welcome, <span className="text-black">{user?.firstName}</span>
       </h2>
 
-      <section className="flex gap-4 flex-col md:flex-row">
-        <div className="w-full md:w-[45%] bg-white rounded-lg p-4 md:px-4 md:py-8 shadow">
-          <div className="flex h-full items-center gap-6 md:gap-6">
-            <img src={user?.profileImageUrl} className="size-40 rounded-full" />
-            <div className="flex flex-col justify-between h-full">
-              <h3 className="capitalize font-semibold text-lg mb-4">{fullName}</h3>
-              <p className="text-sm mb-4 font-medium flex items-center gap-2">
-                <span className="text-gray">Membership Type:</span>
-                <Chip
-                  className="capitalize text-xs !h-7 !rounded-full"
-                  color={user?.role === "student" ? "secondary" : user?.role === "doctor" ? "primary" : "tertiary"}
-                  label={user?.role}
-                />
-              </p>
-              <p className="text-sm font-medium mb-4">
-                <span className="text-gray">Chapter/Region: </span> {user?.region}
-              </p>
-              <p className="text-sm font-medium mb-4">
-                <span className="text-gray">Email: </span> {user?.email}
-              </p>
-              <p className="text-sm font-medium mb-4">
-                <span className="text-gray">Phone: </span> {user?.phone || "---"}
-              </p>
-              <div className="flex gap-2">
-                {user?.socials.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.link?.startsWith("http") ? item.link : "https://" + item.link}
-                    className="bg-gray-light rounded-full text-lg h-9 w-9 inline-flex justify-center items-center hover:text-primary cursor-pointer"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {icons[item.name]}
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="w-1/2 md:w-[27.5%]">
-          {/* <Calendar onChange={setDate} value={date} className="w-full h-full" /> */}
-          <Calendar defaultDate={date} onDateSelect={setDate} />
-        </div>
-        <div className="w-1/2 md:w-[27.5%] bg-white shadow p-4 rounded-lg">
-          <h3 className="text-base font-bold mb-2">
-            {"Upcoming Events - " +
-              (date?.toDateString() === new Date().toDateString() ? "Today, " : "") +
-              " " +
-              formatDate(date).date}
-          </h3>
-          {isLoading || isFetching ? (
-            <div className="h-52 flex justify-center items-center">
-              <Loading className="text-primary w-12 h-12" />
-            </div>
-          ) : (
-            <ul className="space-y-2 h-52 overflow-y-auto py-2">
-              {eventsOnThisDay?.data?.map((evt, i) => (
-                <li key={i}>
-                  <Link to={`/events/${evt?._id}`} className="block bg-white border rounded-xl p-4 space-y-2">
-                    <h4 className="text-sm font-bold truncate capitalize">{evt?.title}</h4>
-                    <div className="text-gray-dark text-xs mb-2 truncate flex items-center gap-2">
-                      <span>{evt?.eventType === "physical" ? icons.location : icons.globe}</span>
-                      <p className="truncate">
-                        {evt?.eventType === "physical" ? evt.physicalLocation : evt.virtualLink}
-                      </p>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </section>
-
       <section
         className={classNames(
           user?.role === "student" ? "bg-secondary" : user?.role === "doctor" ? "bg-primary" : "bg-tertiary",
@@ -174,11 +93,43 @@ const DashboardHomePage = () => {
         {loadingVerse ? (
           <Loading />
         ) : (
-          <div className="w-full md:w-1/2">
-            <h3 className="text-lg font-bold">Verse of the Day</h3>
-            <p className="text-sm my-4 font-semibold">{randomVerse?.content}</p>
-            <span className="text-sm">- {randomVerse?.verse}</span>
+          <div className="flex justify-between gap-1 items-end">
+            <div className="w-5/6 md:w-1/2">
+              <h3 className="text-lg font-bold">Daily Nugget</h3>
+              <p className="text-sm my-4 font-semibold">{randomVerse?.content}</p>
+              <span className="text-sm">- {randomVerse?.verse}</span>
+            </div>
+            <div className="">
+              <a href="#faith-zone" onClick={() => setShareTestimony(false)} className="text-4xl">
+                {icons.pray}
+              </a>
+            </div>
           </div>
+        )}
+      </section>
+
+      <section className="mb-6">
+        <div className="flex justify-between items-center gap-2 mb-2">
+          <h3 className="text-lg font-bold">Connect With Others</h3>
+          <Link to="/events" className="text-sm text-primary font-semibold">
+            View all
+          </Link>
+        </div>
+        {loadingUsers ? (
+          <Loading height={48} width={48} className="text-primary" />
+        ) : (
+          <Slider {...responsiveSliderSettings}>
+            {allUsers?.data?.map((mem) => (
+              <MemberCard
+                key={mem.id}
+                width="auto"
+                fullName={mem.firstName + " " + mem?.middleName + " " + mem?.lastName}
+                avatar={mem.profileImageUrl}
+                role={mem.role}
+                region={mem.region}
+              />
+            ))}
+          </Slider>
         )}
       </section>
 
@@ -189,7 +140,6 @@ const DashboardHomePage = () => {
             View all
           </Link>
         </div>
-
         {loadingEvents ? (
           <Loading height={48} width={48} className="text-primary" />
         ) : (
@@ -258,7 +208,7 @@ const DashboardHomePage = () => {
           )}
         </div>
 
-        <div className="w-full md:w-1/2">
+        <div id="faith-zone" className="w-full md:w-1/2">
           <div className="flex justify-between items-center gap-2 mb-2">
             <h3 className="text-lg font-bold">{shareTestimony ? "Share a Testimony" : "Prayer Request"}</h3>
             <button

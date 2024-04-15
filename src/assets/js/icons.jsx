@@ -36,6 +36,7 @@ import {
   FaChevronLeft,
   FaAngleDoubleRight,
   FaAngleDoubleLeft,
+  FaPray,
 } from "react-icons/fa";
 import { AiOutlineDelete, AiOutlineFileText } from "react-icons/ai";
 import {
@@ -111,6 +112,7 @@ const icons = {
   whatsapp: <FaWhatsapp />,
   location: <MdOutlineLocationOn />,
   globe: <BsGlobe />,
+  pray: <FaPray />,
 };
 
 export default icons;

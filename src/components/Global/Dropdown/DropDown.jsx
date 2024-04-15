@@ -67,6 +67,7 @@ const Dropdown = ({ toggleElement, children, className }) => {
           originClass,
           className
         )}
+        onClick={() => setOpenWrapper(false)}
       >
         {children}
       </div>
