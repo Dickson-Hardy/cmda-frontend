@@ -9,14 +9,14 @@ const DashboardMembersPage = () => {
   const [members, setMembers] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchText, setSearchText] = useState("");
   const { user } = useSelector((state) => state.auth);
 
   const {
     data: allUsers,
     isLoading: loadingUsers,
     isFetching,
-  } = useGetAllUsersQuery({ limit: 12, page, searchTerm }, { refetchOnMountOrArgChange: true });
+  } = useGetAllUsersQuery({ limit: 12, page, searchText }, { refetchOnMountOrArgChange: true });
 
   useEffect(() => {
     if (allUsers) {
@@ -37,7 +37,12 @@ const DashboardMembersPage = () => {
     <div>
       <div className="flex flex-col md:flex-row gap-6 justify-between items-center">
         <h2 className="text-2xl font-bold text-primary">Connect with Members</h2>
-        <SearchBar onSearch={setSearchTerm} />
+        <SearchBar
+          onSearch={(v) => {
+            setMembers([]);
+            setSearchText(v);
+          }}
+        />
       </div>
 
       <section className="mt-8">
