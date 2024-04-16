@@ -15,7 +15,14 @@ const MemberCard = ({ width = 288, fullName, id, avatar, role, region }) => {
         )}
       /> */}
       {avatar ? (
-        <img className="size-20 object-cover bg-white p-1 rounded-full -mot-12 mx-auto" src={avatar} alt="" />
+        <img
+          className={classNames(
+            "size-20 object-cover p-1 rounded-full -mot-12 mx-auto",
+            role === "student" ? "bg-onSecondary" : role.includes("global") ? "bg-onTertiary" : "bg-onPrimary"
+          )}
+          src={avatar}
+          alt=""
+        />
       ) : (
         <div className="text-center -omt-12">
           <span
