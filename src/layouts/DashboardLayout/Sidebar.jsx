@@ -25,7 +25,7 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
       <aside
         className={classNames(
           // isOpen ? "translate-x-0 animate-slidein" : "-translate-x-full",
-          "shadow-md md:shadow-none p-5 hidden md:block",
+          "shadow-md md:shadow-none p-4 hidden md:block",
           "transition-all duration-200 fixed inset-y-0 left-0 w-60 bg-primary overflow-y-auto ease-in-out transform z-10 md:z-[3]"
         )}
       >
@@ -33,7 +33,7 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
           <Logo className="w-auto h-10 sm:h-14 hidden md:block" />
         </div>
 
-        <div className="flex items-center gap-4 my-6">
+        <div className="flex items-center gap-2 my-6">
           {user?.profileImageUrl ? (
             <img src={user.profileImageUrl} className="bg-onPrimary rounded-full h-14 w-14" />
           ) : (

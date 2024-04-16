@@ -35,7 +35,7 @@ const DashboardLayout = ({ withOutlet = true, children }) => {
           )}
         >
           {/* Content */}
-          <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-6 pb-20 md:pb-6 mt-20">
+          <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-6 pb-20 md:pb-6 mt-16">
             {withOutlet ? <Outlet /> : children}
           </main>
         </div>

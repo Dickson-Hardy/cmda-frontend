@@ -17,7 +17,7 @@ const Tabs = ({ tabs, equalTab = true, activeView, setActiveView, page }) => {
     <div className="w-full mx-auto">
       <div className="flex sticky w-full lg:justify-between lg:items-center">
         {/* Tab Buttons */}
-        <div className="flex border-b sticky">
+        <div className="flex w-full border-b sticky">
           {tabs.map((tab, index) => (
             <button
               key={index}

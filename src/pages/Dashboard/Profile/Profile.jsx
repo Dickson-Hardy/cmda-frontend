@@ -44,7 +44,7 @@ const DashboardProfilePage = () => {
         ) : null}
       </div>
 
-      <section className="flex gap-8 flex-col md:flex-row mb-8">
+      <section className="flex gap-6 flex-col md:flex-row mb-6">
         <div className="w-full md:w-1/2 bg-white rounded-xl p-4 md:px-4 md:py-8 shadow">
           <div className="w-full flex flex-col md:flex-row h-full items-center gap-3 md:gap-6">
             <ProfileImageUpdate />
@@ -110,7 +110,7 @@ const DashboardProfilePage = () => {
         </div>
       </section>
 
-      <section className="flex gap-4 flex-col md:flex-row mb-8">
+      <section className="flex gap-6 flex-col md:flex-row mb-6">
         <div className="w-full md:w-1/3 bg-white shadow px-4 py-4 rounded-xl">
           <h3 className="text-base font-bold mb-2">Community Statistics</h3>
           <ul className="space-y-4 capitalize">
@@ -189,7 +189,7 @@ const DashboardProfilePage = () => {
         </div>
       </section>
 
-      <section className="bg-white rounded-2xl mt-6 shadow">
+      <section className="bg-white rounded-2xl mt-8 shadow pt-2">
         <Tabs tabs={profileTabs} equalTab={false} />
       </section>
     </div>
