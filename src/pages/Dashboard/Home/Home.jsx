@@ -143,7 +143,7 @@ const DashboardHomePage = () => {
         {loadingEvents ? (
           <Loading height={48} width={48} className="text-primary" />
         ) : (
-          <Slider {...responsiveSliderSettings}>
+          <Slider {...responsiveSliderSettings} speed={1000} autoplaySpeed={4000}>
             {events?.data?.map((evt) => (
               <Link key={evt._id} to={`/events/${evt._id}`}>
                 <EventCard

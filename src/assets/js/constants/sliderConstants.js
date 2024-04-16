@@ -1,11 +1,14 @@
 export const responsiveSliderSettings = {
   dots: false,
-  infinite: false,
+  infinite: true,
+  autoplay: true,
+  cssEase: "linear",
   swipeToSlide: true,
-  speed: 500,
+  initialSlide: 0,
   slidesToShow: 4,
   slidesToScroll: 1,
-  initialSlide: 0,
+  speed: 500,
+  autoplaySpeed: 2000,
   responsive: [
     {
       breakpoint: 1280,
@@ -30,15 +33,11 @@ export const responsiveSliderSettings = {
 
 export const membersResponsiveSliderSettings = {
   ...responsiveSliderSettings,
+  speed: 3500,
+  autoplaySpeed: 3500,
   responsive: [
     {
       breakpoint: 1280,
-      settings: {
-        slidesToShow: 4,
-      },
-    },
-    {
-      breakpoint: 968,
       settings: {
         slidesToShow: 3,
       },
@@ -46,13 +45,13 @@ export const membersResponsiveSliderSettings = {
     {
       breakpoint: 700,
       settings: {
-        slidesToShow: 3,
+        slidesToShow: 2,
       },
     },
     {
       breakpoint: 480,
       settings: {
-        slidesToShow: 2,
+        slidesToShow: 1,
       },
     },
   ],

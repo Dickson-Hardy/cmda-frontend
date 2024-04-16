@@ -30,7 +30,7 @@ const Header = () => {
           {icons.menu}
         </button> */}
         {/* Logo */}
-        <Logo className="w-auto h-10 sm:h-14 md:hidde" />
+        <Logo className="w-auto h-10 sm:h-12 md:hidde" />
 
         <div className="flex-1" />
         {/* Shopping Cart */}
