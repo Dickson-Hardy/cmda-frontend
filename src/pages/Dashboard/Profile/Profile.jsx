@@ -37,13 +37,14 @@ const DashboardProfilePage = () => {
 
   return (
     <div>
-      {["student", "doctor"].includes(user?.role) ? (
-        <div className="flex justify-end mb-4">
-          <Button label="Transition" color={user?.role === "student" ? "primary" : "tertiary"} />
-        </div>
-      ) : null}
+      <div className="flex justify-end gap-2 mb-4">
+        <Button variant="outlined">Subscribe</Button>
+        {["student", "doctor"].includes(user?.role) ? (
+          <Button label="Transit" color={user?.role === "student" ? "secondary" : "primary"} />
+        ) : null}
+      </div>
 
-      <section className="flex gap-4 flex-col md:flex-row mb-8">
+      <section className="flex gap-8 flex-col md:flex-row mb-8">
         <div className="w-full md:w-1/2 bg-white rounded-xl p-4 md:px-4 md:py-8 shadow">
           <div className="w-full flex flex-col md:flex-row h-full items-center gap-3 md:gap-6">
             <ProfileImageUpdate />
