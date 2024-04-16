@@ -7,17 +7,17 @@ const MemberCard = ({ width = 288, fullName, id, avatar, role, region }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-white border rounded-xl hover:shadow" style={{ width }}>
-      <div
+    <div className="bg-white border rounded-xl hover:shadow pt-4" style={{ width }}>
+      {/* <div
         className={classNames(
           "h-16 overflow-hidden rounded-t-xl",
           role === "student" ? "bg-secondary" : role.includes("global") ? "bg-tertiary" : "bg-primary"
         )}
-      />
+      /> */}
       {avatar ? (
-        <img className="size-20 object-cover bg-white p-1 rounded-full -mt-12 mx-auto" src={avatar} alt="" />
+        <img className="size-20 object-cover bg-white p-1 rounded-full -mot-12 mx-auto" src={avatar} alt="" />
       ) : (
-        <div className="text-center -mt-12">
+        <div className="text-center -omt-12">
           <span
             className={classNames(
               "inline-flex justify-center items-center text-4xl size-20 p-1 rounded-full",
