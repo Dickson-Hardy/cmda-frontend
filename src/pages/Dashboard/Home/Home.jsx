@@ -62,8 +62,6 @@ const DashboardHomePage = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  console.log("USER", user);
-
   const handleCreatePrayer = (data) => {
     const payload = {
       ...data,
