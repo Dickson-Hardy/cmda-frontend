@@ -50,7 +50,7 @@ const ProfileImageUpdate = () => {
             {icons.person}
           </span>
         ) : (
-          <img src={user?.profileImageUrl} alt="img" className="size-32 md:size-40 rounded-full" />
+          <img src={user?.profileImageUrl} alt="img" className="size-32 md:size-40 object-cover rounded-full" />
         )}
 
         <span
@@ -81,7 +81,7 @@ const ProfileImageUpdate = () => {
                 <img
                   src={imagePreview ? imagePreview : user?.profileImageUrl}
                   alt="img"
-                  className=" w-full h-full rounded-full object-conain"
+                  className=" w-full h-full object-cover rounded-full object-conain"
                 />
               </div>
             </div>

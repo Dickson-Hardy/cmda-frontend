@@ -35,7 +35,10 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
 
         <div className="flex items-center gap-2 my-6">
           {user?.profileImageUrl ? (
-            <img src={user.profileImageUrl} className="bg-onPrimary rounded-full h-14 w-14" />
+            <img
+              src={user.profileImageUrl}
+              className="bg-onPrimary object-cover rounded-full h-14 w-14 flex-shrink-0"
+            />
           ) : (
             <span className="h-14 w-14 flex-shrink-0 bg-onPrimary rounded-full inline-flex items-center justify-center text-4xl text-primary">
               {icons.person}
