@@ -61,7 +61,7 @@ const MemberCard = ({ width = 288, fullName, id, avatar, role, region }) => {
         <button
           type="button"
           onClick={() => navigate(`/members/${id}`)}
-          className="text-center w-1/2 p-1.5 px-2 text-xs text-primary hover:bg-onPrimary hover:underline font-semibold"
+          className="text-center w-1/2 py-2 px-2 text-xs text-primary hover:bg-onPrimary hover:underline font-semibold"
         >
           View Profile
         </button>
@@ -69,7 +69,7 @@ const MemberCard = ({ width = 288, fullName, id, avatar, role, region }) => {
         <button
           type="button"
           onClick={() => navigate(`/messaging?id=${id}`)}
-          className="text-center w-1/2 p-1.5 px-2 text-xs text-primary hover:bg-onPrimary hover:underline font-semibold"
+          className="text-center w-1/2 py-2 px-2 text-xs text-primary hover:bg-onPrimary hover:underline font-semibold"
         >
           Message
         </button>
