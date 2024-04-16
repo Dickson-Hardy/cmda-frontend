@@ -38,6 +38,12 @@ export const membersResponsiveSliderSettings = {
       },
     },
     {
+      breakpoint: 968,
+      settings: {
+        slidesToShow: 3,
+      },
+    },
+    {
       breakpoint: 700,
       settings: {
         slidesToShow: 3,

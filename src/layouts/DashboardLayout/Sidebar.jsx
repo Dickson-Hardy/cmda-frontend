@@ -26,14 +26,14 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
         className={classNames(
           // isOpen ? "translate-x-0 animate-slidein" : "-translate-x-full",
           "shadow-md md:shadow-none p-4 hidden md:block",
-          "transition-all duration-200 fixed inset-y-0 left-0 w-60 bg-primary overflow-y-auto ease-in-out transform z-10 md:z-[3]"
+          "transition-all duration-200 fixed inset-y-0 left-0 w-60 bg-primary overflow-y-auto ease-in-out transform z-10 md:z-[1]"
         )}
       >
         <div className="bg-whit">
-          <Logo className="w-auto h-10 sm:h-14 hidden md:block" />
+          <Logo className="w-auto h-10 sm:h-12 hidden md:block" />
         </div>
 
-        <div className="flex items-center gap-2 my-6">
+        <div className="flex items-center gap-2 my-6 mt-2 pt-8">
           {user?.profileImageUrl ? (
             <img
               src={user.profileImageUrl}
