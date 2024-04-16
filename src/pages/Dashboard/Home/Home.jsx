@@ -13,7 +13,7 @@ import { useGetAllPostsQuery } from "~/redux/api/external/wordPressApi";
 import { useGetRandomVerseQuery } from "~/redux/api/verse/verseApi";
 import Slider from "react-slick";
 import { useGetAllEventsQuery } from "~/redux/api/events/eventsApi";
-import { responsiveSliderSettings } from "~/assets/js/constants/sliderConstants";
+import { membersResponsiveSliderSettings, responsiveSliderSettings } from "~/assets/js/constants/sliderConstants";
 import { useCreatePrayerTestimonyMutation } from "~/redux/api/prayerTestimonies/prayerTestimoniesApi";
 import { toast } from "react-toastify";
 import { useGetVolunteerJobsQuery } from "~/redux/api/volunteer/volunteerApi";
@@ -115,7 +115,7 @@ const DashboardHomePage = () => {
         {loadingUsers ? (
           <Loading height={48} width={48} className="text-primary" />
         ) : (
-          <Slider {...responsiveSliderSettings}>
+          <Slider {...membersResponsiveSliderSettings}>
             {allUsers?.data
               ?.filter((x) => x._id !== user?._id)
               .map((mem) => (

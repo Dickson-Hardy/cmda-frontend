@@ -27,3 +27,27 @@ export const responsiveSliderSettings = {
     },
   ],
 };
+
+export const membersResponsiveSliderSettings = {
+  ...responsiveSliderSettings,
+  responsive: [
+    {
+      breakpoint: 1280,
+      settings: {
+        slidesToShow: 4,
+      },
+    },
+    {
+      breakpoint: 700,
+      settings: {
+        slidesToShow: 3,
+      },
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 2,
+      },
+    },
+  ],
+};

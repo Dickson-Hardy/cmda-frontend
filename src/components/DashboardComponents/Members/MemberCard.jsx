@@ -8,11 +8,16 @@ const MemberCard = ({ width = 288, fullName, id, avatar, role, region }) => {
 
   return (
     <div className="bg-white border rounded-xl hover:shadow" style={{ width }}>
-      <div className={classNames("h-12 overflow-hidden rounded-t-xl", "bg-primary")} />
+      <div
+        className={classNames(
+          "h-16 overflow-hidden rounded-t-xl",
+          role === "student" ? "bg-secondary" : role.includes("global") ? "bg-tertiary" : "bg-primary"
+        )}
+      />
       {avatar ? (
-        <img className="size-20 bg-white p-1 rounded-full -mt-8 mx-auto" src={avatar} alt="" />
+        <img className="size-20 object-cover bg-white p-1 rounded-full -mt-12 mx-auto" src={avatar} alt="" />
       ) : (
-        <div className="text-center -mt-8">
+        <div className="text-center -mt-12">
           <span
             className={classNames(
               "inline-flex justify-center items-center text-4xl size-20 p-1 rounded-full",
@@ -28,16 +33,16 @@ const MemberCard = ({ width = 288, fullName, id, avatar, role, region }) => {
         </div>
       )}
 
-      <div className="text-center px-2">
-        <h2 className="text-sm font-bold mb-1 truncate">{fullName}</h2>
+      <div className="text-center px-2 mt-2">
+        <h2 className="text-sm font-bold mb-1.5 truncate">{fullName}</h2>
         <span
           className={classNames(
             "px-2 py-1 capitalize text-xs font-semibold rounded-3xl",
             role === "student"
               ? "bg-onSecondary text-secondary"
-              : role === "doctor"
-                ? "bg-onPrimary text-primary"
-                : "bg-onTertiary text-tertiary"
+              : role.includes("global")
+                ? "bg-onTertiary text-tertiary"
+                : "bg-onPrimary text-primary"
           )}
         >
           {role.includes("global") ? "Global Network Member" : convertToCapitalizedWords(role)}
@@ -45,11 +50,11 @@ const MemberCard = ({ width = 288, fullName, id, avatar, role, region }) => {
         <p className="text-gray-dark text-xs mt-2 capitalize truncate">{region}</p>
       </div>
       <hr className="mt-3" />
-      <div className="flex  bg-gray-50 rounded-b-xl">
+      <div className="flex  bg-gray- rounded-b-xl">
         <button
           type="button"
           onClick={() => navigate(`/members/${id}`)}
-          className="text-center w-1/2 p-1.5 px-2 text-xs text-primary hover:underline font-semibold"
+          className="text-center w-1/2 p-1.5 px-2 text-xs text-primary hover:bg-onPrimary hover:underline font-semibold"
         >
           View Profile
         </button>
@@ -57,7 +62,7 @@ const MemberCard = ({ width = 288, fullName, id, avatar, role, region }) => {
         <button
           type="button"
           onClick={() => navigate(`/messaging?id=${id}`)}
-          className="text-center w-1/2 p-1.5 px-2 text-xs text-primary hover:underline font-semibold"
+          className="text-center w-1/2 p-1.5 px-2 text-xs text-primary hover:bg-onPrimary hover:underline font-semibold"
         >
           Message
         </button>

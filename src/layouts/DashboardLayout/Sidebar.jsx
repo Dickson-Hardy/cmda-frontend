@@ -29,7 +29,7 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
           "transition-all duration-200 fixed inset-y-0 left-0 w-60 bg-primary overflow-y-auto ease-in-out transform z-10 md:z-[3]"
         )}
       >
-        <div className="bg-white">
+        <div className="bg-whit">
           <Logo className="w-auto h-10 sm:h-14 hidden md:block" />
         </div>
 
