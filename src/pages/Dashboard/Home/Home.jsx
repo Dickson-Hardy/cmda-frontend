@@ -21,7 +21,6 @@ import icons from "~/assets/js/icons";
 import { classNames } from "~/utilities/classNames";
 import { useGetAllUsersQuery } from "~/redux/api/user/userApi";
 import MemberCard from "~/components/DashboardComponents/Members/MemberCard";
-// import Calendar from "react-calendar";
 
 const DashboardHomePage = () => {
   const user = useSelector((state) => state.auth.user);

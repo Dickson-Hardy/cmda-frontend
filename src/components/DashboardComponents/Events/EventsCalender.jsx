@@ -1,11 +1,10 @@
 import icons from "~/assets/js/icons";
 import { useState } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
 import { useGetAllEventsQuery } from "~/redux/api/events/eventsApi";
 import { Link } from "react-router-dom";
 import formatDate from "~/utilities/fomartDate";
 import Loading from "~/components/Global/Loading/Loading";
+import Calendar from "~/components/Global/Calendar/Calendar";
 
 const EventsCalender = () => {
   const [date, setDate] = useState(new Date());
@@ -21,9 +20,7 @@ const EventsCalender = () => {
 
   return (
     <div className="sticky top-0">
-      <div className="bg-white rounded-xl p-4 h-80 shadow event-calender">
-        <Calendar onChange={setDate} value={date} className="w-full h-full" />
-      </div>
+      <Calendar defaultDate={date} onDateSelect={setDate} />
 
       <div className="mt-6">
         <h3 className="text-xl font-semibold mb-2">
