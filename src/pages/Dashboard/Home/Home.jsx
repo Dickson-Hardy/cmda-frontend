@@ -21,10 +21,12 @@ import icons from "~/assets/js/icons";
 import { classNames } from "~/utilities/classNames";
 import { useGetAllUsersQuery } from "~/redux/api/user/userApi";
 import MemberCard from "~/components/DashboardComponents/Members/MemberCard";
+import Modal from "~/components/Global/Modal/Modal";
 
 const DashboardHomePage = () => {
   const user = useSelector((state) => state.auth.user);
   const [shareTestimony, setShareTestimony] = useState(false);
+  const [prayerModal, setPrayerModal] = useState(false);
 
   const {
     register,
@@ -96,11 +98,10 @@ const DashboardHomePage = () => {
               <p className="text-sm my-4 font-semibold">{randomVerse?.content}</p>
               <span className="text-sm">- {randomVerse?.verse}</span>
             </div>
-            <div className="">
-              <a href="#faith-zone" onClick={() => setShareTestimony(false)} className="text-4xl">
-                {icons.pray}
-              </a>
-            </div>
+
+            <button type="button" onClick={() => setPrayerModal(true)} className="text-4xl">
+              {icons.pray}
+            </button>
           </div>
         )}
       </section>
@@ -208,7 +209,7 @@ const DashboardHomePage = () => {
           )}
         </div>
 
-        <div id="faith-zone" className="w-full md:w-1/2">
+        <div className="w-full md:w-1/2">
           <div className="flex justify-between items-center gap-2 mb-2">
             <h3 className="text-lg font-bold">{shareTestimony ? "Share a Testimony" : "Prayer Request"}</h3>
             <button
@@ -244,6 +245,24 @@ const DashboardHomePage = () => {
           </form>
         </div>
       </section>
+
+      <Modal isOpen={prayerModal} maxWidth={360} onClose={() => setPrayerModal(false)}>
+        <div className="text-center">
+          <h4 className="font-bold text-base mb-2"> Prayer Point</h4>
+          <p className="mb-4 text-sm">
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Libero sunt magnam repellat accusamus ab cumque
+            obcaecati illum aperiam fugit laudantium aut esse voluptas, tempore reprehenderit maiores! Perferendis
+            labore facere eveniet?
+          </p>
+          <button
+            type="button"
+            className="text-sm text-primary underline font-semibold"
+            onClick={() => setPrayerModal(false)}
+          >
+            Close
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
