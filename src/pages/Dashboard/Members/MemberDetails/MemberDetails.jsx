@@ -45,7 +45,7 @@ const DashboardMemberDetailsPage = () => {
         <div className="flex gap-3 justify-between items-center p-5 mb-5 bg-white rounded-t-lg sticky top-0 right-0 left-0">
           <h2 className="text-black truncate text-xl md:text-2xl font-bold">{member?.firstName}</h2>
           <Button
-            color={member?.role === "student" ? "secondary" : member?.role === "doctor" ? "primary" : "tertiary"}
+            color={member?.role === "student" ? "secondary" : member?.role.includes("global") ? "tertiary" : "primary"}
             onClick={() => navigate("/messaging?id=" + id)}
           >
             Message
@@ -61,9 +61,9 @@ const DashboardMemberDetailsPage = () => {
                 "inline-flex justify-center items-center text-8xl size-40 md:size-52 border bg-white p-1 rounded-full",
                 member?.role === "student"
                   ? "bg-onSecondary text-secondary"
-                  : member?.role === "doctor"
-                    ? "bg-onPrimary text-primary"
-                    : "bg-onTertiary text-tertiary"
+                  : member?.role.includes("global")
+                    ? "bg-onTertiary text-tertiary"
+                    : "bg-onPrimary text-primary"
               )}
             >
               {icons.person}

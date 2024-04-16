@@ -36,7 +36,7 @@ const DashboardMembersPage = () => {
   return (
     <div>
       <div className="flex flex-col md:flex-row gap-6 justify-between items-center">
-        <h2 className="text-2xl font-bold text-primary mb-6">Connect with Members</h2>
+        <h2 className="text-2xl font-bold text-primary">Connect with Members</h2>
         <SearchBar onSearch={setSearchTerm} />
       </div>
 
