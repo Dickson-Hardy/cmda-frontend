@@ -1,0 +1,74 @@
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import MemberCard from "~/components/DashboardComponents/Members/MemberCard";
+import Button from "~/components/Global/Button/Button";
+import SearchBar from "~/components/Global/SearchBar/SearchBar";
+import { useGetAllUsersQuery } from "~/redux/api/user/userApi";
+
+const DashboardMembersPage = () => {
+  const [members, setMembers] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const { user } = useSelector((state) => state.auth);
+
+  const {
+    data: allUsers,
+    isLoading: loadingUsers,
+    isFetching,
+  } = useGetAllUsersQuery({ limit: 12, page, searchTerm }, { refetchOnMountOrArgChange: true });
+
+  useEffect(() => {
+    if (allUsers) {
+      setMembers((prevUsers) => {
+        const combinedUsers = [...prevUsers, ...allUsers.data];
+        // Use Set to remove duplicate objects based on their IDs
+        const uniqueUsers = Array.from(new Set(combinedUsers.map((user) => user._id))).map((_id) =>
+          combinedUsers.find((cUser) => cUser._id === _id)
+        );
+        return uniqueUsers;
+      });
+
+      setTotalPages(allUsers.pagination?.totalPages);
+    }
+  }, [allUsers]);
+
+  return (
+    <div>
+      <div className="flex flex-col md:flex-row gap-6 justify-between items-center">
+        <h2 className="text-2xl font-bold text-primary mb-6">Connect with Members</h2>
+        <SearchBar onSearch={setSearchTerm} />
+      </div>
+
+      <section className="mt-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
+          {members
+            ?.filter((x) => x._id !== user?._id)
+            .map((mem) => (
+              <MemberCard
+                key={mem._id}
+                id={mem._id}
+                width="auto"
+                fullName={mem.firstName + " " + mem?.middleName + " " + mem?.lastName}
+                avatar={mem.profileImageUrl}
+                role={mem.role}
+                region={mem.region}
+              />
+            ))}
+        </div>
+        <div className="flex justify-center p-2 mt-6">
+          <Button
+            large
+            disabled={page === totalPages}
+            label={page === totalPages ? "The End" : "Load More"}
+            className={"md:w-1/3 w-full"}
+            loading={loadingUsers || isFetching}
+            onClick={() => setPage((prev) => prev + 1)}
+          />
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default DashboardMembersPage;

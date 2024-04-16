@@ -84,7 +84,7 @@ const DashboardResources = () => {
           <Button
             large
             disabled={page === totalPages}
-            label={"Load More"}
+            label={page === totalPages ? "The End" : "Load More"}
             className={"md:w-1/3 w-full"}
             loading={loadingPosts || isFetching}
             onClick={() => setPage((prev) => prev + 1)}

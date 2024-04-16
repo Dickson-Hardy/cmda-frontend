@@ -111,7 +111,7 @@ const DashboardHomePage = () => {
       <section className="mb-6">
         <div className="flex justify-between items-center gap-2 mb-2">
           <h3 className="text-lg font-bold">Connect With Others</h3>
-          <Link to="/events" className="text-sm text-primary font-semibold">
+          <Link to="/members" className="text-sm text-primary font-semibold">
             View all
           </Link>
         </div>
@@ -119,16 +119,19 @@ const DashboardHomePage = () => {
           <Loading height={48} width={48} className="text-primary" />
         ) : (
           <Slider {...responsiveSliderSettings}>
-            {allUsers?.data?.map((mem) => (
-              <MemberCard
-                key={mem.id}
-                width="auto"
-                fullName={mem.firstName + " " + mem?.middleName + " " + mem?.lastName}
-                avatar={mem.profileImageUrl}
-                role={mem.role}
-                region={mem.region}
-              />
-            ))}
+            {allUsers?.data
+              ?.filter((x) => x._id !== user?._id)
+              .map((mem) => (
+                <MemberCard
+                  key={mem._id}
+                  id={mem._id}
+                  width="auto"
+                  fullName={mem.firstName + " " + mem?.middleName + " " + mem?.lastName}
+                  avatar={mem.profileImageUrl}
+                  role={mem.role}
+                  region={mem.region}
+                />
+              ))}
           </Slider>
         )}
       </section>

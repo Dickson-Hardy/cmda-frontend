@@ -25,6 +25,8 @@ import DashboardCartPage from "~/pages/Dashboard/Store/Cart/Cart";
 import DashboardVolunteersPage from "~/pages/Dashboard/Volunteers/Volunteers";
 import DashboardVolunteerDetailsPage from "~/pages/Dashboard/Volunteers/VolunteerDetails/VolunteerDetails";
 import DashboardCheckoutPage from "~/pages/Dashboard/Store/Cart/Checkout";
+import DashboardMembersPage from "~/pages/Dashboard/Members/Members";
+import DashboardMemberDetailsPage from "~/pages/Dashboard/Members/MemberDetails/MemberDetails";
 
 export default function AppRouter() {
   const isAuthenticated = true;
@@ -67,6 +69,8 @@ export default function AppRouter() {
             { path: "store/:id", element: <DashboardStoreSingleProductPage /> },
             { path: "volunteers", element: <DashboardVolunteersPage /> },
             { path: "volunteer/:id", element: <DashboardVolunteerDetailsPage /> },
+            { path: "members", element: <DashboardMembersPage /> },
+            { path: "members/:id", element: <DashboardMemberDetailsPage /> },
             { path: "update-password", element: <DashboardUpdatePassword /> },
             { path: "edit-profile", element: <DashboardEditProfile /> },
           ],

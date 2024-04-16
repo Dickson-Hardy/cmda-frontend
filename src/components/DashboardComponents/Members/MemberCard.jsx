@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import { classNames } from "~/utilities/classNames";
+import convertToCapitalizedWords from "~/utilities/convertToCapitalizedWords";
 
 const MemberCard = ({ width = 288, fullName, id, avatar, role, region }) => {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ const MemberCard = ({ width = 288, fullName, id, avatar, role, region }) => {
                 : "bg-onTertiary text-tertiary"
           )}
         >
-          {role}
+          {role.includes("global") ? "Global Network Member" : convertToCapitalizedWords(role)}
         </span>
         <p className="text-gray-dark text-sm mt-2 capitalize truncate">{region}</p>
       </div>
@@ -60,7 +61,7 @@ const MemberCard = ({ width = 288, fullName, id, avatar, role, region }) => {
         <div className="border"></div>
         <button
           type="button"
-          onClick={() => navigate(`/messaging/${id}`)}
+          onClick={() => navigate(`/messaging?id=${id}`)}
           className="text-center w-1/2 p-2 text-sm text-primary hover:underline font-semibold"
         >
           Message

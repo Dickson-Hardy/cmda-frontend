@@ -95,10 +95,10 @@ const DashboardProfilePage = () => {
             <span className="text-gray">Date of Brith: </span>{" "}
             {user?.dateOfBirth ? formatDate(user.dateOfBirth).date : "--/--/----"}
           </p>
-          {/* <p className="text-sm font-medium mb-4">
-            <span className="text-gray">Email: </span> {user?.email}
+          <p className="text-sm font-medium mb-4 capitalize">
+            <span className="text-gray">Gender: </span> {user?.gender}
           </p>
-          <p className="text-sm font-medium mb-4">
+          {/* <p className="text-sm font-medium mb-4">
             <span className="text-gray">Phone: </span> {user?.phone || "---"}
           </p> */}
           <div className="flex justify-end mt-auto text-sm">
