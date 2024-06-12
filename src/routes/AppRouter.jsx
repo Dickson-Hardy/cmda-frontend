@@ -27,32 +27,35 @@ import DashboardVolunteerDetailsPage from "~/pages/Dashboard/Volunteers/Voluntee
 import DashboardCheckoutPage from "~/pages/Dashboard/Store/Cart/Checkout";
 import DashboardMembersPage from "~/pages/Dashboard/Members/Members";
 import DashboardMemberDetailsPage from "~/pages/Dashboard/Members/MemberDetails/MemberDetails";
+import IndexPage from "~/pages/IndexPage/IndexPage";
 
 export default function AppRouter() {
-  const isAuthenticated = true;
-
-  // Use different layout to display error depending on authentication status
-  const ErrorDisplay = () => {
-    return isAuthenticated ? (
-      <DashboardLayout withOutlet={false}>
-        <ErrorElement />
-      </DashboardLayout>
-    ) : (
-      <AuthLayout withOutlet={false}>
-        <ErrorElement />
-      </AuthLayout>
-    );
-  };
-
   // ================= ROUTES ======================= //
   const router = createBrowserRouter([
-    // Dashboard Pages
     {
-      path: "/",
+      element: <EmptyLayout />,
+      children: [
+        { path: "/", element: <IndexPage /> },
+        { path: "/welcome", element: <WelcomePage /> },
+      ],
+      errorElement: <ErrorElement />,
+    },
+    {
+      element: <AuthLayout />,
+      children: [
+        { path: "/login", element: <Login /> },
+        { path: "/forgot-password", element: <ForgotPassword /> },
+        { path: "/reset-password", element: <NewPassword /> },
+        { path: "/signup", element: <SignUp /> },
+        { path: "/verify-email", element: <EmailVerification /> },
+      ],
+      errorElement: <ErrorElement />,
+    },
+    {
       element: <ProtectedRoutes />,
       children: [
         {
-          path: "",
+          path: "/dashboard/",
           element: <DashboardLayout />,
           children: [
             { index: true, element: <DashboardHomePage /> },
@@ -74,25 +77,10 @@ export default function AppRouter() {
             { path: "update-password", element: <DashboardUpdatePassword /> },
             { path: "edit-profile", element: <DashboardEditProfile /> },
           ],
+          errorElement: <ErrorElement />,
         },
       ],
-      errorElement: <ErrorDisplay />,
-    },
-    // Auth pages
-    {
-      element: <AuthLayout />,
-      children: [
-        { path: "login", element: <Login /> },
-        { path: "forgot-password", element: <ForgotPassword /> },
-        { path: "reset-password", element: <NewPassword /> },
-        { path: "signup", element: <SignUp /> },
-        { path: "verify-email", element: <EmailVerification /> },
-      ],
-    },
-    // Others
-    {
-      element: <EmptyLayout />,
-      children: [{ path: "welcome", element: <WelcomePage /> }],
+      errorElement: <ErrorElement />,
     },
   ]);
 
