@@ -30,7 +30,7 @@ const Login = () => {
         dispatch(setTokens({ accessToken }));
         toast.success("Login successful");
         const redirectUrl = localStorage.getItem("redirectUrl");
-        if (redirectUrl) navigate(redirectUrl);
+        if (redirectUrl && redirectUrl.includes("dashboard")) navigate(redirectUrl);
         else navigate("/dashboard");
       })
       .catch((error) => {
