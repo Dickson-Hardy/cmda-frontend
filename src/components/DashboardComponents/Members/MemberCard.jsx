@@ -60,7 +60,7 @@ const MemberCard = ({ width = 288, fullName, id, avatar, role, region }) => {
       <div className="flex  bg-gray- rounded-b-xl">
         <button
           type="button"
-          onClick={() => navigate(`/members/${id}`)}
+          onClick={() => navigate(`/dashboard/members/${id}`)}
           className="text-center w-1/2 py-2 px-2 text-xs text-primary hover:bg-onPrimary hover:underline font-semibold"
         >
           View Profile

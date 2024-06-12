@@ -3,7 +3,7 @@ import { classNames } from "~/utilities/classNames";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import { Outlet } from "react-router-dom";
-import { NAV_LINKS } from "./constants";
+import { NAV_LINKS } from "../../constants/navigation";
 import { useIsSmallScreen } from "~/hooks/useIsSmallScreen";
 import BottomNav from "./BottomNav";
 

@@ -41,7 +41,7 @@ const DashboardCartPage = () => {
         ) : (
           <div className="p-10 text-center w-full">
             <p className="text-gray-dark mb-6">You currently have no item in your shopping cart</p>
-            <Link to="/store" className="text-primary font-semibold text-sm hover:underline">
+            <Link to="/dashboard/store" className="text-primary font-semibold text-sm hover:underline">
               Go to Store
             </Link>
           </div>
@@ -55,7 +55,7 @@ const DashboardCartPage = () => {
             Clear Cart
           </button>
           {cartItems.length ? (
-            <Button onClick={() => navigate("/store/checkout")} large>
+            <Button onClick={() => navigate("/dashboard/store/checkout")} large>
               Proceed to Payment
             </Button>
           ) : null}

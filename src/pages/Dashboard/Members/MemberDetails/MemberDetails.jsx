@@ -33,7 +33,7 @@ const DashboardMemberDetailsPage = () => {
     <div>
       <div className="flex justify-start items-center">
         <Link
-          to="/members"
+          to="/dashboard/members"
           className="inline-flex gap-2 text-base items-center font-medium text-primary hover:underline"
         >
           {icons.arrowLeft}

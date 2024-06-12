@@ -6,7 +6,7 @@ import { useGetAllPostsQuery, useGetSinglePostQuery } from "~/redux/api/external
 import { useMemo } from "react";
 import Slider from "react-slick";
 import Loading from "~/components/Global/Loading/Loading";
-import { responsiveSliderSettings } from "~/assets/js/constants/sliderConstants";
+import { responsiveSliderSettings } from "~/constants/sliderConstants";
 
 const ResourceSingleArticle = ({ slug }) => {
   const { data: post } = useGetSinglePostQuery({ slug });
@@ -26,7 +26,7 @@ const ResourceSingleArticle = ({ slug }) => {
   return (
     <div className="bg-white p-6 rounded-3xl">
       <Link
-        to="/resources"
+        to="/dashboard/resources"
         className="inline-flex gap-2 text-base items-center font-medium text-primary hover:underline"
       >
         {icons.arrowLeft} Back to Resources
@@ -82,7 +82,7 @@ const ResourceSingleArticle = ({ slug }) => {
         ) : (
           <Slider {...responsiveSliderSettings}>
             {OTHERS.map((item, v) => (
-              <Link to={`/resources/articles/${item.slug}`} key={v + 1}>
+              <Link to={`/dashboard/resources/articles/${item.slug}`} key={v + 1}>
                 <ResourceCard
                   image={item?._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
                   title={item?.title?.rendered}

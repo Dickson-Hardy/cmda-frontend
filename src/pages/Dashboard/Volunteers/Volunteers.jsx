@@ -34,7 +34,7 @@ const DashboardVolunteersPage = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2  gap-6 mt-6">
         {volunteerships?.map((vol, i) => (
-          <Link to={`/volunteer/${vol._id}`} key={i}>
+          <Link to={`/dashboard/volunteer/${vol._id}`} key={i}>
             <Volunteer position={vol?.position} location={vol?.location} />
           </Link>
         ))}

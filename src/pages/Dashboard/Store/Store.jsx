@@ -49,7 +49,7 @@ const DashboardStorePage = () => {
         <div className="w-full sm:w-1/2 md:w-2/3 xl:w-3/4">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {products.map((prod, i) => (
-              <Link to={`/store/${prod?._id}`} key={i + 1}>
+              <Link to={`/dashboard/store/${prod?._id}`} key={i + 1}>
                 <ProductCard
                   width="auto"
                   name={prod?.productName}
@@ -73,7 +73,10 @@ const DashboardStorePage = () => {
         </div>
         <div className="w-full sm:w-1/2 md:w-1/3 xl:w-1/4">
           <div className="sticky top-0 right-0 left-0 flex flex-col gap-8">
-            <Link to="/store/cart" className="bg-onPrimary flex items-center gap-4 font-bold rounded-lg p-4 text-sm">
+            <Link
+              to="/dashboard/store/cart"
+              className="bg-onPrimary flex items-center gap-4 font-bold rounded-lg p-4 text-sm"
+            >
               <span className="text-primary text-2xl">{icons.cart}</span>
               Cart
               <span className="ml-auto">{icons.chevronRight}</span>

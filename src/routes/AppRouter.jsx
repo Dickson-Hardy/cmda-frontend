@@ -28,8 +28,25 @@ import DashboardCheckoutPage from "~/pages/Dashboard/Store/Cart/Checkout";
 import DashboardMembersPage from "~/pages/Dashboard/Members/Members";
 import DashboardMemberDetailsPage from "~/pages/Dashboard/Members/MemberDetails/MemberDetails";
 import IndexPage from "~/pages/IndexPage/IndexPage";
+import { useSelector } from "react-redux";
+import { selectAuth } from "~/redux/features/auth/authSlice";
 
 export default function AppRouter() {
+  const { isAuthenticated } = useSelector(selectAuth);
+
+  // Use different layout to display error depending on authentication status
+  const ErrorDisplay = () => {
+    return isAuthenticated ? (
+      <DashboardLayout withOutlet={false}>
+        <ErrorElement />
+      </DashboardLayout>
+    ) : (
+      <AuthLayout withOutlet={false}>
+        <ErrorElement />
+      </AuthLayout>
+    );
+  };
+
   // ================= ROUTES ======================= //
   const router = createBrowserRouter([
     {
@@ -38,7 +55,7 @@ export default function AppRouter() {
         { path: "/", element: <IndexPage /> },
         { path: "/welcome", element: <WelcomePage /> },
       ],
-      errorElement: <ErrorElement />,
+      errorElement: <ErrorDisplay />,
     },
     {
       element: <AuthLayout />,
@@ -49,7 +66,7 @@ export default function AppRouter() {
         { path: "/signup", element: <SignUp /> },
         { path: "/verify-email", element: <EmailVerification /> },
       ],
-      errorElement: <ErrorElement />,
+      errorElement: <ErrorDisplay />,
     },
     {
       element: <ProtectedRoutes />,
@@ -63,7 +80,7 @@ export default function AppRouter() {
             { path: "events/:id", element: <DashboardStoreSingleEventPage /> },
             { path: "profile", element: <DashboardProfilePage /> },
             { path: "resources", element: <DashboardResources /> },
-            { path: "resources/:category", element: <Navigate to="/resources" /> },
+            { path: "resources/:category", element: <Navigate to="/dashboard/resources" /> },
             { path: "resources/:category/:slug", element: <DashboardResourceDetails /> },
             { path: "messaging", element: <DashboardMessagingPage /> },
             { path: "store", element: <DashboardStorePage /> },
@@ -77,10 +94,10 @@ export default function AppRouter() {
             { path: "update-password", element: <DashboardUpdatePassword /> },
             { path: "edit-profile", element: <DashboardEditProfile /> },
           ],
-          errorElement: <ErrorElement />,
+          errorElement: <ErrorDisplay />,
         },
       ],
-      errorElement: <ErrorElement />,
+      errorElement: <ErrorDisplay />,
     },
   ]);
 

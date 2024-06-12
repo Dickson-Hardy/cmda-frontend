@@ -31,7 +31,7 @@ const Login = () => {
         toast.success("Login successful");
         const redirectUrl = localStorage.getItem("redirectUrl");
         if (redirectUrl) navigate(redirectUrl);
-        else navigate("/");
+        else navigate("/dashboard");
       })
       .catch((error) => {
         const message = error?.data?.message;
@@ -84,7 +84,7 @@ const Login = () => {
           <Button large label="Login" loading={isLoading} className="w-full" type="submit" />
           <div className="text-center font-bold text-black ">
             Don&apos;t have an account?
-            <Link to="/signup" className="ml-2 text-primary font-medium text-sm hover:underline">
+            <Link to="/signup" className="ml-2 text-primary font-semibold text-sm hover:underline">
               Sign Up
             </Link>
           </div>

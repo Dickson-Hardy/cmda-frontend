@@ -110,7 +110,7 @@ const DashboardEditProfile = () => {
       .then((data) => {
         dispatch(setUser(data.data));
         toast.success(data?.message);
-        navigate("/profile");
+        navigate("/dashboard/profile");
         // console.log(data);
       })
       .catch((error) => {

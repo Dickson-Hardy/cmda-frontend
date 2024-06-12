@@ -48,7 +48,7 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
             <h5 className="font-bold text-base truncate text-white">
               {user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name"}
             </h5>
-            <Link to="/profile" className="text-white text-sm hover:underline">
+            <Link to="/dashboard/profile" className="text-white text-sm hover:underline">
               View Profile
             </Link>
           </div>
@@ -66,6 +66,7 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
                       isActive ? "bg-white text-primary" : "bg-transparent text-white hover:bg-onPrimary/20"
                     )
                   }
+                  end={navItem.link === "/dashboard"}
                 >
                   <span className="text-xl">{navItem.icon}</span> {navItem.title}
                 </NavLink>

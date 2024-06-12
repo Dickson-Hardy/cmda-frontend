@@ -7,7 +7,7 @@ import { useGetAllProductsQuery, useGetSingleProductQuery } from "~/redux/api/pr
 import { formatPrice } from "~/utilities/others";
 import Slider from "react-slick";
 import Loading from "~/components/Global/Loading/Loading";
-import { responsiveSliderSettings } from "~/assets/js/constants/sliderConstants";
+import { responsiveSliderSettings } from "~/constants/sliderConstants";
 import { useDispatch, useSelector } from "react-redux";
 import { addItemToCart, removeItemFromCart } from "~/redux/features/cart/cartSlice";
 import { toast } from "react-toastify";
@@ -65,7 +65,10 @@ const DashboardStoreSingleProductPage = () => {
 
   return (
     <div className="bg-white p-6 rounded-3xl">
-      <Link to="/store" className="inline-flex gap-2 text-base items-center font-medium text-primary hover:underline">
+      <Link
+        to="/dashboard/store"
+        className="inline-flex gap-2 text-base items-center font-medium text-primary hover:underline"
+      >
         {icons.arrowLeft} Back to Store
       </Link>
 
@@ -153,7 +156,7 @@ const DashboardStoreSingleProductPage = () => {
         ) : (
           <Slider {...responsiveSliderSettings}>
             {otherProducts?.data?.map((prod, i) => (
-              <Link to={`/store/${prod?._id}`} key={i + 1}>
+              <Link to={`/dashboard/store/${prod?._id}`} key={i + 1}>
                 <ProductCard
                   width="auto"
                   name={prod?.productName}

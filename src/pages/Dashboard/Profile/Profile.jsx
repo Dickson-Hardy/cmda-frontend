@@ -173,7 +173,7 @@ const DashboardProfilePage = () => {
             <ul className="space-y-2 h-52 overflow-y-auto py-2">
               {eventsOnThisDay?.data?.map((evt) => (
                 <li key={evt?._id}>
-                  <Link to={`/events/${evt?._id}`} className="block bg-white border rounded-xl p-4 space-y-2">
+                  <Link to={`/dashboard/events/${evt?._id}`} className="block bg-white border rounded-xl p-4 space-y-2">
                     <h4 className="text-sm font-bold truncate capitalize">{evt?.title}</h4>
                     <div className="text-gray-dark text-xs mb-2 truncate flex items-center gap-2">
                       <span>{evt?.eventType === "physical" ? icons.location : icons.globe}</span>

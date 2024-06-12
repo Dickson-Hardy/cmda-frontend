@@ -6,7 +6,7 @@ const ResourceSingleVideo = () => {
   return (
     <div className="bg-white p-6 rounded-3xl">
       <Link
-        to="/resources"
+        to="/dashboard/resources"
         className="inline-flex gap-2 text-base items-center font-medium text-primary hover:underline"
       >
         {icons.arrowLeft} Back to Resources
@@ -24,7 +24,7 @@ const ResourceSingleVideo = () => {
         <h3 className="text-lg font-bold">Watch Other Videos</h3>
         <div className="flex space-x-4 py-2 overflow-x-auto scrollbar-hide">
           {[...Array(10)].map((_, v) => (
-            <Link to={`/resources/videos/${v + 1}`} key={v + 1}>
+            <Link to={`/dashboard/resources/videos/${v + 1}`} key={v + 1}>
               <ResourceCard
                 image="/atmosphere.png"
                 title="Medical Problems in West Africa And How to Solve them"

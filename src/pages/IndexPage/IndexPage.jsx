@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
-import { FAQS } from "~/assets/js/constants/faqs";
-import { FOOTER_LINKS, OFFICES } from "~/assets/js/constants/footer";
+import { FAQS } from "~/constants/faqs";
+import { FOOTER_LINKS, OFFICES } from "~/constants/footer";
 import Button from "~/components/Global/Button/Button";
 import Logo from "~/components/Global/Logo/Logo";
 import doctorPng from "~/assets/images/cheerful-doctor.png";

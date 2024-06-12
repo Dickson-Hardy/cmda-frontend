@@ -69,7 +69,7 @@ const DashboardResources = () => {
         <h3 className="text-lg font-bold mb-4">Recent Resources </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
           {posts.map((post, v) => (
-            <Link to={`/resources/articles/${post.slug}`} key={v + 1}>
+            <Link to={`/dashboard/resources/articles/${post.slug}`} key={v + 1}>
               <ResourceCard
                 image={post?._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
                 title={post?.title?.rendered}

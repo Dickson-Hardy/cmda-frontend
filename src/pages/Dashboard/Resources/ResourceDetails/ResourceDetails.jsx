@@ -14,7 +14,7 @@ const DashboardResourceDetails = () => {
     case "articles":
       return <ResourceSingleArticle slug={slug} />;
     default:
-      return <Navigate to="/resources" />;
+      return <Navigate to="/dashboard/resources" />;
   }
 };
 

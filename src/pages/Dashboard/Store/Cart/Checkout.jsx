@@ -60,7 +60,7 @@ const DashboardCheckoutPage = () => {
     const referenceId = response?.reference;
     toast.success("Payment successful for - " + referenceId);
     dispatch(clearCart());
-    navigate("/store/cart");
+    navigate("/dashboard/store/cart");
   };
 
   return (

@@ -38,7 +38,7 @@ const Header = () => {
           <button
             type="button"
             className="relative inline-flex items-center p-1.5 text-2xl font-medium text-center text-primary rounded-lg hover:bg-onPrimary focus:outline-none"
-            onClick={() => navigate("/store/cart")}
+            onClick={() => navigate("/dashboard/store/cart")}
           >
             {icons.cart}
             <span className="absolute inline-flex items-center justify-center w-6 h-6 text-[10px] font-bold text-white bg-secondary border-2 border-white rounded-full -top-2 -end-2">
@@ -77,7 +77,7 @@ const Header = () => {
             </li>
             <li>
               <NavLink
-                to="/profile"
+                to="/dashboard/profile"
                 className={({ isActive }) =>
                   classNames(
                     "flex items-center gap-3 px-5 py-2 cursor-pointer border-t  font-medium transition-all",

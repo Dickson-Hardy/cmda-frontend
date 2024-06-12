@@ -32,7 +32,7 @@ const UpcomingEvents = ({ row, isSmallScreen }) => {
     <div>
       <div className={`flex gap-8  ${row || isSmallScreen ? "flex-col" : "flex-row flex-wrap"}`}>
         {upcomingEvents.map((evt) => (
-          <Link key={evt._id} to={`/events/${evt._id}`}>
+          <Link key={evt._id} to={`/dashboard/events/${evt._id}`}>
             <EventCard
               row={row && !isSmallScreen}
               width={row ? "auto" : isSmallScreen ? "100%" : 330}

@@ -13,7 +13,7 @@ import { useGetAllPostsQuery } from "~/redux/api/external/wordPressApi";
 import { useGetRandomVerseQuery } from "~/redux/api/verse/verseApi";
 import Slider from "react-slick";
 import { useGetAllEventsQuery } from "~/redux/api/events/eventsApi";
-import { membersResponsiveSliderSettings, responsiveSliderSettings } from "~/assets/js/constants/sliderConstants";
+import { membersResponsiveSliderSettings, responsiveSliderSettings } from "~/constants/sliderConstants";
 import { useCreatePrayerTestimonyMutation } from "~/redux/api/prayerTestimonies/prayerTestimoniesApi";
 import { toast } from "react-toastify";
 import { useGetVolunteerJobsQuery } from "~/redux/api/volunteer/volunteerApi";
@@ -109,7 +109,7 @@ const DashboardHomePage = () => {
       <section className="mb-6">
         <div className="flex justify-between items-center gap-2 mb-2">
           <h3 className="text-lg font-bold">Connect With Others</h3>
-          <Link to="/members" className="text-sm text-primary font-semibold">
+          <Link to="/dashboard/members" className="text-sm text-primary font-semibold">
             View all
           </Link>
         </div>
@@ -137,7 +137,7 @@ const DashboardHomePage = () => {
       <section className="mb-6">
         <div className="flex justify-between items-center gap-2 mb-2">
           <h3 className="text-lg font-bold">Events and Training</h3>
-          <Link to="/events" className="text-sm text-primary font-semibold">
+          <Link to="/dashboard/events" className="text-sm text-primary font-semibold">
             View all
           </Link>
         </div>
@@ -146,7 +146,7 @@ const DashboardHomePage = () => {
         ) : (
           <Slider {...responsiveSliderSettings} speed={1000} autoplaySpeed={4000}>
             {events?.data?.map((evt) => (
-              <Link key={evt._id} to={`/events/${evt._id}`}>
+              <Link key={evt._id} to={`/dashboard/events/${evt._id}`}>
                 <EventCard
                   width="auto"
                   title={evt.title}
@@ -164,7 +164,7 @@ const DashboardHomePage = () => {
       <section className="mb-6">
         <div className="flex justify-between items-center gap-2 mb-2">
           <h3 className="text-lg font-bold">Resource Library</h3>
-          <Link to="/resources" className="text-sm text-primary font-semibold">
+          <Link to="/dashboard/resources" className="text-sm text-primary font-semibold">
             View all
           </Link>
         </div>
@@ -173,7 +173,7 @@ const DashboardHomePage = () => {
         ) : (
           <Slider {...responsiveSliderSettings}>
             {blog?.posts.map((post, v) => (
-              <Link to={`/resources/articles/${post.slug}`} key={v + 1}>
+              <Link to={`/dashboard/resources/articles/${post.slug}`} key={v + 1}>
                 <ResourceCard
                   image={post?._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
                   title={post?.title?.rendered}
@@ -191,7 +191,7 @@ const DashboardHomePage = () => {
         <div className="w-full md:w-1/2">
           <div className="flex justify-between items-center gap-2 mb-2">
             <h3 className="text-lg font-bold">Volunteer Positions</h3>
-            <Link to="/volunteers" className="text-sm text-primary font-semibold">
+            <Link to="/dashboard/volunteers" className="text-sm text-primary font-semibold">
               See more
             </Link>
           </div>
@@ -201,7 +201,7 @@ const DashboardHomePage = () => {
           ) : (
             <div className="flex flex-col gap-4">
               {volunteerJobs?.data?.map((vol, i) => (
-                <Link to={`/volunteer/${vol._id}`} key={i}>
+                <Link to={`/dashboard/volunteer/${vol._id}`} key={i}>
                   <Volunteer position={vol?.position} location={vol?.location} />
                 </Link>
               ))}
