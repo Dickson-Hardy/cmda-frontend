@@ -77,8 +77,6 @@ const DashboardEditProfile = () => {
     setSocials(socials.filter((_, index) => index !== indexToRemove));
   };
   const handleUpdateProfile = (payload) => {
-    // const data = { ...payload, socials };
-
     const data = {
       firstName: payload.firstName,
       middleName: payload.middleName,
@@ -104,20 +102,18 @@ const DashboardEditProfile = () => {
         state: payload.specialty,
       }),
     };
-    // console.log(payload.gender);
+
     editProfile({ id: user?._id, payload: data })
       .unwrap()
       .then((data) => {
         dispatch(setUser(data.data));
         toast.success(data?.message);
         navigate("/dashboard/profile");
-        // console.log(data);
       })
       .catch((error) => {
         console.log(error);
         toast.error(error);
       });
-    // console.log(data);
   };
 
   return (
@@ -130,9 +126,9 @@ const DashboardEditProfile = () => {
           <form onSubmit={handleSubmit(handleUpdateProfile)}>
             <div className="flex items-center justify-between mb-7">
               <h2 className="text-lg font-bold mb-4">Edit Profile</h2>
-              <Button label="Save Changes" color="secondary" type="submit" disabled={isLoading} />
+              <Button label="Save Changes" type="submit" disabled={isLoading} />
             </div>
-            <div className="flex flex-col gap-6 px-2 lg:px-5">
+            <div className="flex flex-col gap-6">
               <div>
                 <TextInput
                   title="First name"
@@ -327,16 +323,16 @@ const DashboardEditProfile = () => {
           </form>
 
           {/* socials */}
-          <div className="mt-12 px-2 lg:px-5">
+          <div className="mt-12">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold mb-4">Socials</h2>
-              <div
-                className="p-2 flex gap-2 border rounded-full text-black justify-center items-center text-sm cursor-pointer"
+              <Button
+                variant="outlined"
+                icon={icons.add}
+                label="Add"
+                className="px-[12px]"
                 onClick={() => setAddSocialVisible(true)}
-              >
-                {icons.plus}
-                Add
-              </div>
+              />
             </div>
 
             {/* add  social form */}
@@ -348,7 +344,7 @@ const DashboardEditProfile = () => {
                 }}
               />
             )}
-            <div className="px-2 lg:px-5">
+            <div>
               {socials.map((social, index) => (
                 <div key={index} className="w-full flex justify-between items-center my-3 ">
                   <div className="flex items-center gap-x-4">
@@ -358,7 +354,7 @@ const DashboardEditProfile = () => {
                       {social.name === "twitter" && icons.twitter}
                       {social.name === "linkedIn" && icons.linkedIn}
                     </span>
-                    <p className="text-primaryContainer font-semibold text-sm">{social.link}</p>
+                    <p className="text-primaryContainer font-medium text-sm">{social.link}</p>
                   </div>
                   <p className="text-primary font-semibold cursor-pointer text-sm" onClick={() => removeSocial(index)}>
                     Remove

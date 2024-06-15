@@ -3,14 +3,19 @@ import EventCard from "./EventCard";
 import { useEffect, useState } from "react";
 import { useGetAllEventsQuery } from "~/redux/api/events/eventsApi";
 import { Link } from "react-router-dom";
+import icons from "~/assets/js/icons";
+import SearchBar from "~/components/Global/SearchBar/SearchBar";
+import EventFilterModal from "./EventFilterModal";
 
 const UpcomingEvents = ({ row, isSmallScreen }) => {
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [searchText, setSearchText] = useState();
+  const [openFilter, setOpenFilter] = useState(false);
 
   const { data: events, isLoading } = useGetAllEventsQuery(
-    { page, limit: 10, status: "true" },
+    { page, limit: 10, status: "true", searchText },
     { refetchOnMountOrArgChange: true }
   );
 
@@ -30,6 +35,21 @@ const UpcomingEvents = ({ row, isSmallScreen }) => {
 
   return (
     <div>
+      <div className="flex justify-between item-center mb-4">
+        <SearchBar
+          onSearch={(v) => {
+            // setUpcomingEvents([]);
+            setSearchText(v);
+          }}
+        />
+        <Button
+          label="Filter"
+          className="ml-auto"
+          onClick={() => setOpenFilter(true)}
+          icon={icons.filter}
+          variant="outlined"
+        />
+      </div>
       <div className={`flex gap-8  ${row || isSmallScreen ? "flex-col" : "flex-row flex-wrap"}`}>
         {upcomingEvents.map((evt) => (
           <Link key={evt._id} to={`/dashboard/events/${evt._id}`}>
@@ -55,6 +75,8 @@ const UpcomingEvents = ({ row, isSmallScreen }) => {
           onClick={() => setPage((prev) => prev + 1)}
         />
       </div>
+
+      <EventFilterModal isOpen={openFilter} onClose={() => setOpenFilter(false)} />
     </div>
   );
 };

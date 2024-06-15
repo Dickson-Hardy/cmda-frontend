@@ -11,7 +11,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import icons from "~/assets/js/icons";
 import { classNames } from "~/utilities/classNames";
 import Loading from "../Loading/Loading";
-import emptyFiles from "~/assets/images/empty-files.jpg";
 
 const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100];
 
@@ -30,7 +29,8 @@ function IndeterminateCheckbox({ indeterminate, className = "", ...rest }) {
 const Table = ({
   tableData,
   tableColumns, // Array of objects ({ header: required, accessor: required }) to use as column title, key, and control the display
-  emptyDataText = "There are no content to display", // Text to display when tableData is empty
+  emptyDataTitle = "No Data Available", //
+  emptyDataSubtitle = "There are currently no data to display under this table", //
   loading, // shows loading state - mostly used during serverSidePagination
   enableRowSelection, // set as true if you need to select rows, use onRowSelectionChange to handle selectedRows
   onRowSelectionChange = console.log, // function to handle selectedRows - contains selectedRows as a parameter
@@ -126,42 +126,42 @@ const Table = ({
 
   return (
     <div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full sm:w-full" border={0}>
-          <thead className="bg-primary text-white">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th key={header.id} colSpan={header.colSpan} className="first:rounded-tl-md  last:rounded-tr-md">
-                    {header.isPlaceholder ? null : (
-                      <span
-                        {...{
-                          className: classNames(
-                            header.column.getCanSort() && "cursor-pointer",
-                            "h-full w-full inline-flex gap-2 items-center py-3 px-4 select-none",
-                            "text-sm font-medium text-capitalize"
-                          ),
-                          onClick: header.column.getToggleSortingHandler(),
-                        }}
-                      >
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                        {header.column.getCanSort()
-                          ? {
-                              asc: icons.ascending,
-                              desc: icons.descending,
-                              false: icons.sort,
-                            }[header.column.getIsSorted()]
-                          : null}
-                      </span>
-                    )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody className="relative">
-            {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
+      {table.getRowModel().rows.length ? (
+        <div className="overflow-x-auto">
+          <table className="min-w-full sm:w-full" border={0}>
+            <thead className="bg-gray-200 text-gray-dark">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <th key={header.id} colSpan={header.colSpan} className="first:rounded-tl-md  last:rounded-tr-md">
+                      {header.isPlaceholder ? null : (
+                        <span
+                          {...{
+                            className: classNames(
+                              header.column.getCanSort() && "cursor-pointer",
+                              "h-full w-full inline-flex gap-2 items-center py-3 px-4 select-none",
+                              "text-sm font-medium text-capitalize"
+                            ),
+                            onClick: header.column.getToggleSortingHandler(),
+                          }}
+                        >
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                          {header.column.getCanSort()
+                            ? {
+                                asc: icons.ascending,
+                                desc: icons.descending,
+                                false: icons.sort,
+                              }[header.column.getIsSorted()]
+                            : null}
+                        </span>
+                      )}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody className="relative">
+              {table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
                   className={classNames(
@@ -175,26 +175,29 @@ const Table = ({
                     </td>
                   ))}
                 </tr>
-              ))
-            ) : (
-              // Empty Table Data
-              <tr>
-                <td colSpan={table.getFlatHeaders().length} className="py-8 px-3 text-center">
-                  <img src={emptyFiles} className="w-40 mx-auto mb-2.5 rounded-full" />
-                  <p className="text-gray-dark text-sm font-medium">{emptyDataText}</p>
-                </td>
-              </tr>
-            )}
-            {loading && (
-              <tr className="absolute top-0 h-full w-full bg-onPrimary/60">
-                <td className="h-full w-full flex items-center justify-center">
-                  <Loading className="text-primary" height={48} width={48} />
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+              ))}
+
+              {loading && (
+                <tr className="absolute top-0 h-full w-full bg-onPrimary/60">
+                  <td className="h-full w-full flex items-center justify-center">
+                    <Loading className="text-primary" height={48} width={48} />
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="p-6 py-8 flex justify-center text-center">
+          <div className="max-w-md">
+            <span className="bg-onPrimaryContainer h-12 w-12 mx-auto rounded-full text-xl text-primary flex items-center justify-center">
+              {icons.file}
+            </span>
+            <h2 className="font-bold text-primary mb-1 text-lg mt-2">{emptyDataTitle}</h2>
+            <p className=" text-sm text-gray-600">{emptyDataSubtitle}</p>
+          </div>
+        </div>
+      )}
 
       {table.getRowModel().rows.length && showPagination ? (
         <div className="mt-3 flex flex-col-reverse md:flex-row justify-between md:items-center gap-3 px-3">

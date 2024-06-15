@@ -8,16 +8,10 @@ const MemberCard = ({ width = 288, fullName, id, avatar, role, region }) => {
 
   return (
     <div className="bg-white border rounded-xl hover:shadow pt-4" style={{ width }}>
-      {/* <div
-        className={classNames(
-          "h-16 overflow-hidden rounded-t-xl",
-          role === "student" ? "bg-secondary" : role.includes("global") ? "bg-tertiary" : "bg-primary"
-        )}
-      /> */}
       {avatar ? (
         <img
           className={classNames(
-            "size-20 object-cover p-1 rounded-full -mot-12 mx-auto",
+            "size-20 object-cover p-1 rounded-full mx-auto",
             role === "student" ? "bg-onSecondary" : role.includes("global") ? "bg-onTertiary" : "bg-onPrimary"
           )}
           src={avatar}

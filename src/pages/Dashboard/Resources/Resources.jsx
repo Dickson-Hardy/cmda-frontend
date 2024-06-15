@@ -7,7 +7,7 @@ import SearchBar from "~/components/Global/SearchBar/SearchBar";
 import { useGetAllPostsQuery } from "~/redux/api/external/wordPressApi";
 
 const DashboardResources = () => {
-  const CATEGORIES = ["Articles", "Videos", "Audios", "Presentations"];
+  const CATEGORIES = ["Articles", "Webinars", "Newsletters", "Others"];
 
   const [selectedCategory, setSelectedCategory] = useState(["Articles"]);
 

@@ -55,7 +55,7 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
         </div>
         {/* Navigation Links */}
         <nav>
-          <ul className="flex-1 space-y-4">
+          <ul className="flex-1 space-y-3">
             {navLinks.map((navItem) => (
               <li key={navItem.title}>
                 <NavLink

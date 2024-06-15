@@ -14,6 +14,8 @@ import {
   MdShoppingCart,
   MdViewModule,
   MdOutlineLocationOn,
+  MdFilterList,
+  MdOutlineAdd,
 } from "react-icons/md";
 import { FiBell, FiDownloadCloud } from "react-icons/fi";
 import { HiBadgeCheck, HiDotsVertical, HiOutlineHome } from "react-icons/hi";
@@ -36,7 +38,8 @@ import {
   FaChevronLeft,
   FaAngleDoubleRight,
   FaAngleDoubleLeft,
-  FaPray,
+  FaPrayingHands,
+  FaCreditCard,
 } from "react-icons/fa";
 import { AiOutlineDelete, AiOutlineFileText } from "react-icons/ai";
 import {
@@ -112,7 +115,10 @@ const icons = {
   whatsapp: <FaWhatsapp />,
   location: <MdOutlineLocationOn />,
   globe: <BsGlobe />,
-  pray: <FaPray />,
+  pray: <FaPrayingHands />,
+  filter: <MdFilterList />,
+  card: <FaCreditCard />,
+  add: <MdOutlineAdd />,
 };
 
 export default icons;

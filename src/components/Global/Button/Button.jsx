@@ -12,6 +12,8 @@ const Button = ({
   disabled,
   color = "primary", // primary, tertiary, secondary, error
   className,
+  icon,
+  iconClassName,
   onClick = () => {},
 }) => {
   const getColorStyles = () => {
@@ -60,7 +62,7 @@ const Button = ({
       type={type}
       disabled={disabled || loading}
       className={classNames(
-        "inline-flex justify-center items-center gap-2.5 rounded-md font-medium py-4 px-8 text-sm",
+        "inline-flex justify-center items-center gap-2 rounded-md font-semibold py-4 px-5 text-sm",
         large ? "h-12" : "h-10",
         variant === "filled" && colorStyles.filled,
         variant === "outlined" && colorStyles.outlined,
@@ -79,7 +81,14 @@ const Button = ({
       )}
       onClick={onClick}
     >
-      {loading ? <Loading height={20} width={20} /> : children || label}
+      {loading ? (
+        <Loading height={20} width={20} />
+      ) : (
+        <>
+          {icon && <span className={classNames("text-lg", iconClassName)}>{icon}</span>}
+          {children || label}
+        </>
+      )}
       {loading && loadingText ? loadingText : null}
     </button>
   );

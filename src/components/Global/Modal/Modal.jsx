@@ -21,7 +21,7 @@ const Modal = ({ isOpen, onClose, className, children, maxWidth = 560 }) => {
         <div className="absolute inset-0 bg-black opacity-40" onClick={onClose} />
         <div
           className={classNames(
-            "bg-white p-8 rounded-lg z-10 transform transition-transform duration-300 shadow-md w-full",
+            "bg-white p-6 rounded-lg z-10 transform transition-transform duration-300 shadow-md w-full",
             isOpen ? "translate-y-0" : "translate-y-full",
             className
           )}

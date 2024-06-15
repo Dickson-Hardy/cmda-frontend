@@ -22,7 +22,6 @@ const ForgotPassword = () => {
   const [message, setMessage] = useState("");
 
   const [passwordForgot, { isLoading }] = usePasswordForgotMutation();
-  // const [resendOtp, { isLoading: isResending }] = usePasswordForgotMutation();
 
   const handleForgotPassword = (payload) => {
     passwordForgot(payload)
@@ -33,12 +32,6 @@ const ForgotPassword = () => {
         navigate("/reset-password");
       });
   };
-
-  // const handleResend = () => {
-  //   resendOtp()
-  //     .unwrap()
-  //     .then(() => toast.success("OTP resent successfully"));
-  // };
 
   return (
     <>
@@ -58,18 +51,6 @@ const ForgotPassword = () => {
           placeholder="Enter your email address"
           rules={{ pattern: { value: EMAIL_PATTERN, message: "Enter a valid email address" } }}
         />
-
-        {/* <div className="flex items-center gap-2 text-sm">
-          Didn&apos;t get email?
-          <Button
-            variant="text"
-            loading={isResending}
-            loadingText="Resending..."
-            label="Resend"
-            className="px-[8px] h-[32px]"
-            onClick={handleResend}
-          />
-        </div> */}
 
         <div className="flex flex-col">
           <Button type="submit" large className="mb-4" loading={isLoading}>

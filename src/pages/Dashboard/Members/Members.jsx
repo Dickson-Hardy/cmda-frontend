@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import icons from "~/assets/js/icons";
 import MemberCard from "~/components/DashboardComponents/Members/MemberCard";
+import MembersFilterModal from "~/components/DashboardComponents/Members/MembersFilterModal";
 import Button from "~/components/Global/Button/Button";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
 import { useGetAllUsersQuery } from "~/redux/api/user/userApi";
@@ -11,6 +13,7 @@ const DashboardMembersPage = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [searchText, setSearchText] = useState("");
   const { user } = useSelector((state) => state.auth);
+  const [openFilter, setOpenFilter] = useState(false);
 
   const {
     data: allUsers,
@@ -35,8 +38,15 @@ const DashboardMembersPage = () => {
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row gap-6 justify-between items-center">
+      <div className="flex flex-col md:flex-row gap-6 items-center">
         <h2 className="text-2xl font-bold text-primary">Connect with Members</h2>
+        <Button
+          label="Filter"
+          className="ml-auto"
+          onClick={() => setOpenFilter(true)}
+          icon={icons.filter}
+          variant="outlined"
+        />
         <SearchBar
           onSearch={(v) => {
             setMembers([]);
@@ -72,6 +82,9 @@ const DashboardMembersPage = () => {
           />
         </div>
       </section>
+
+      {/*  */}
+      <MembersFilterModal isOpen={openFilter} onClose={() => setOpenFilter(false)} />
     </div>
   );
 };

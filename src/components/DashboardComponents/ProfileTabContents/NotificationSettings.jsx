@@ -34,7 +34,7 @@ const ProfileTabNotificationSettings = () => {
       <div className="p-4 mt-6 pb-8">
         <h3 className="text-base font-bold mb-2">Security</h3>
         <Link
-          to="/update-password"
+          to="/dashboard/update-password"
           className="text-sm inline-flex gap-2 items-center hover:underline text-primary font-medium"
         >
           <span>{icons.logout}</span>

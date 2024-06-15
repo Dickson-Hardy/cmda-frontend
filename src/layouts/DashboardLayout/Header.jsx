@@ -22,14 +22,6 @@ const Header = () => {
   return (
     <header className="bg-white fixed top-0 inset-x-0 z-[2] shadow">
       <nav className="h-full w-full flex items-center gap-2 md:gap-4 p-6 px-3 md:px-6 py-3">
-        {/* Sidebar Toggle Button */}
-        {/* <button
-          className="text-primary text-2xl focus:outline-none hover:bg-onPrimary rounded-md transition-all p-1 lg:hidden"
-          onClick={onToggleSidebar}
-        >
-          {icons.menu}
-        </button> */}
-        {/* Logo */}
         <Logo className="w-auto h-10 sm:h-12 md:hidde" />
 
         <div className="flex-1" />
@@ -49,7 +41,7 @@ const Header = () => {
         {/* Notification Icon */}
         <button
           type="button"
-          className="relative inline-flex items-center p-1.5 text-2xl font-medium text-center text-primary rounded-lg hover:bg-onPrimary focus:outline-none"
+          className="relative inline-flex items-center p-1.5 text-xl font-medium text-center text-primary rounded-lg hover:bg-onPrimary focus:outline-none"
         >
           {icons.bell}
           {/* <span className="absolute inline-flex items-center justify-center w-6 h-6 text-[10px] font-bold text-white bg-secondary border-2 border-white rounded-full -top-2 -end-2">
@@ -60,10 +52,16 @@ const Header = () => {
         <Dropdown
           toggleElement={
             <button className="inline-flex items-center gap-2 hover:bg-onPrimary transition rounded-lg">
-              {/* <img src="" className="h-10 w-10 bg-onPrimary rounded-full" /> */}
-              <span className="h-10 w-10 bg-onPrimary rounded-full inline-flex items-center justify-center text-2xl text-primary">
-                {icons.person}
-              </span>
+              {user?.profileImageUrl ? (
+                <img
+                  src={user.profileImageUrl}
+                  className="bg-onPrimary object-cover rounded-full h-10 w-10 flex-shrink-0"
+                />
+              ) : (
+                <span className="h-10 w-10 flex-shrink-0 bg-onPrimary rounded-full inline-flex items-center justify-center text-4xl text-primary">
+                  {icons.person}
+                </span>
+              )}
               <span className="hidden md:inline-block">{icons.caretDown}</span>
             </button>
           }
@@ -86,6 +84,19 @@ const Header = () => {
                 }
               >
                 <span className="text-lg">{icons.person}</span> View profile
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/dashboard/settings"
+                className={({ isActive }) =>
+                  classNames(
+                    "flex items-center gap-3 px-5 py-2 cursor-pointer border-t  font-medium transition-all",
+                    isActive ? "bg-onPrimary text-primary" : "bg-transparent text-black hover:bg-onPrimary"
+                  )
+                }
+              >
+                <span className="text-lg">{icons.settings}</span> Settings
               </NavLink>
             </li>
             <li

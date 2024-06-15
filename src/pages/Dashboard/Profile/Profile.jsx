@@ -1,8 +1,5 @@
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
-import Tabs from "~/components/Global/Tabs/Tabs";
-import ProfileTabManageSubscriptions from "~/components/DashboardComponents/ProfileTabContents/ManageSubscriptions";
-import ProfileTabNotificationSettings from "~/components/DashboardComponents/ProfileTabContents/NotificationSettings";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProfileImageUpdate from "~/components/DashboardComponents/ProfileTabContents/ProfileImageUpdate";
@@ -15,12 +12,6 @@ import Loading from "~/components/Global/Loading/Loading";
 import ProfileTabTrainingRecord from "~/components/DashboardComponents/ProfileTabContents/TrainingRecord";
 
 const DashboardProfilePage = () => {
-  const profileTabs = [
-    { label: "Training Records", content: <ProfileTabTrainingRecord /> },
-    { label: "Manage Payments", content: <ProfileTabManageSubscriptions /> },
-    { label: "Settings", content: <ProfileTabNotificationSettings /> },
-  ];
-
   const user = useSelector((state) => state.auth.user);
   const fullName = user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name";
 
@@ -81,7 +72,7 @@ const DashboardProfilePage = () => {
                 ))}
               </div>
               <div className="flex justify-end text-sm">
-                <Link to="/edit-profile" className="text-primary font-semibold underline">
+                <Link to="/dashboard/edit-profile" className="text-primary font-semibold underline">
                   Edit Profile
                 </Link>
               </div>
@@ -103,11 +94,15 @@ const DashboardProfilePage = () => {
             <span className="text-gray">Phone: </span> {user?.phone || "---"}
           </p> */}
           <div className="flex justify-end mt-auto text-sm">
-            <Link to="/edit-profile" className="text-primary font-semibold underline">
+            <Link to="/dashboard/edit-profile" className="text-primary font-semibold underline">
               Edit Profile
             </Link>
           </div>
         </div>
+      </section>
+
+      <section className="bg-white rounded-2xl my-8 shadow pt-2">
+        <ProfileTabTrainingRecord />
       </section>
 
       <section className="flex gap-6 flex-col md:flex-row mb-6">
@@ -187,10 +182,6 @@ const DashboardProfilePage = () => {
             </ul>
           )}
         </div>
-      </section>
-
-      <section className="bg-white rounded-2xl mt-8 shadow pt-2">
-        <Tabs tabs={profileTabs} equalTab={false} />
       </section>
     </div>
   );

@@ -53,7 +53,11 @@ const DashboardMemberDetailsPage = () => {
         </div>
 
         {member?.profileImageUrl ? (
-          <img className="size-40 md:size-52 bg-white p-1 rounded-full mx-auto" src={member?.profileImageUrl} alt="" />
+          <img
+            className="size-40 md:size-52 bg-cover bg-white p-1 rounded-full mx-auto"
+            src={member?.profileImageUrl}
+            alt=""
+          />
         ) : (
           <div className="text-center">
             <span

@@ -30,6 +30,9 @@ import DashboardMemberDetailsPage from "~/pages/Dashboard/Members/MemberDetails/
 import IndexPage from "~/pages/IndexPage/IndexPage";
 import { useSelector } from "react-redux";
 import { selectAuth } from "~/redux/features/auth/authSlice";
+import DashboardPaymentsPage from "~/pages/Dashboard/Payments/Payments";
+import DashboardStoreOrderHistoryPage from "~/pages/Dashboard/Store/OrderHistory/OrderHistory";
+import DashboardSettingsPage from "~/pages/Dashboard/Settings/Settings";
 
 export default function AppRouter() {
   const { isAuthenticated } = useSelector(selectAuth);
@@ -86,6 +89,7 @@ export default function AppRouter() {
             { path: "store", element: <DashboardStorePage /> },
             { path: "store/cart", element: <DashboardCartPage /> },
             { path: "store/checkout", element: <DashboardCheckoutPage /> },
+            { path: "store/history", element: <DashboardStoreOrderHistoryPage /> },
             { path: "store/:id", element: <DashboardStoreSingleProductPage /> },
             { path: "volunteers", element: <DashboardVolunteersPage /> },
             { path: "volunteer/:id", element: <DashboardVolunteerDetailsPage /> },
@@ -93,6 +97,8 @@ export default function AppRouter() {
             { path: "members/:id", element: <DashboardMemberDetailsPage /> },
             { path: "update-password", element: <DashboardUpdatePassword /> },
             { path: "edit-profile", element: <DashboardEditProfile /> },
+            { path: "payments", element: <DashboardPaymentsPage /> },
+            { path: "settings", element: <DashboardSettingsPage /> },
           ],
           errorElement: <ErrorDisplay />,
         },

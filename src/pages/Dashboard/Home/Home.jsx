@@ -18,10 +18,10 @@ import { useCreatePrayerTestimonyMutation } from "~/redux/api/prayerTestimonies/
 import { toast } from "react-toastify";
 import { useGetVolunteerJobsQuery } from "~/redux/api/volunteer/volunteerApi";
 import icons from "~/assets/js/icons";
-import { classNames } from "~/utilities/classNames";
 import { useGetAllUsersQuery } from "~/redux/api/user/userApi";
 import MemberCard from "~/components/DashboardComponents/Members/MemberCard";
 import Modal from "~/components/Global/Modal/Modal";
+import doctorPng from "~/assets/images/cheerful-doctor.png";
 
 const DashboardHomePage = () => {
   const user = useSelector((state) => state.auth.user);
@@ -79,31 +79,25 @@ const DashboardHomePage = () => {
 
   return (
     <div>
-      <h2 className="font-bold text-2xl text-primary mb-4">
-        Welcome, <span className="text-black">{user?.firstName}</span>
-      </h2>
+      <section className="h-[400px] w-full rounded-3xl mb-8" style={{ backgroundImage: `url(${doctorPng})` }}>
+        <div className="h-full w-full bg-black/50 rounded-3xl text-white p-8 flex flex-col justify-between">
+          <h2 className="font-bold text-2xl">Welcome, {user?.firstName}</h2>
+          {loadingVerse ? (
+            <Loading />
+          ) : (
+            <div className="flex justify-between gap-1 items-end">
+              <div className="w-5/6 md:w-1/2">
+                <h3 className="text-lg font-bold">Daily Nugget</h3>
+                <p className="text-sm my-4 font-semibold">{randomVerse?.content}</p>
+                <span className="text-sm">- {randomVerse?.verse}</span>
+              </div>
 
-      <section
-        className={classNames(
-          user?.role === "student" ? "bg-secondary" : user?.role === "doctor" ? "bg-primary" : "bg-tertiary",
-          "text-white rounded-2xl p-6 my-6"
-        )}
-      >
-        {loadingVerse ? (
-          <Loading />
-        ) : (
-          <div className="flex justify-between gap-1 items-end">
-            <div className="w-5/6 md:w-1/2">
-              <h3 className="text-lg font-bold">Daily Nugget</h3>
-              <p className="text-sm my-4 font-semibold">{randomVerse?.content}</p>
-              <span className="text-sm">- {randomVerse?.verse}</span>
+              <button type="button" onClick={() => setPrayerModal(true)} className="text-4xl animate-bounce">
+                {icons.pray}
+              </button>
             </div>
-
-            <button type="button" onClick={() => setPrayerModal(true)} className="text-4xl">
-              {icons.pray}
-            </button>
-          </div>
-        )}
+          )}
+        </div>
       </section>
 
       <section className="mb-6">
