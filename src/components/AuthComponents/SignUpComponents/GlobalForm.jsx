@@ -1,19 +1,16 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
-import useCountry from "~/hooks/useCountry ";
-import { useMemo } from "react";
 import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
 import TextInput from "../../Global/FormElements/TextInput/TextInput";
 import PhoneInput from "../../Global/FormElements/phoneInput/PhoneInput";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 import Select from "../../Global/FormElements/Select/Select";
-import CountryFlags from "../../Global/FormElements/CountryWithFlagsInput/CountyFlags";
 import Button from "../../Global/Button/Button";
 import { setVerifyEmail } from "~/redux/features/auth/authSlice";
 import { useDispatch } from "react-redux";
-import { genderOptions } from "~/utilities/reusableVariables";
+import { genderOptions, globalRegionsData } from "~/utilities/reusableVariables";
 
 const GlobalForm = () => {
   const navigate = useNavigate();
@@ -26,26 +23,13 @@ const GlobalForm = () => {
     handleSubmit,
   } = useForm({ mode: "all" });
 
-  // watching the country field so as to updates the state field
-  const selectedCountry = watch("country", "");
   const [signUp, { isLoading }] = useSignUpMutation();
   const dispatch = useDispatch();
 
   const handleSignUp = (payload) => {
     // removing the rememberMe checkbox from payload cos it is not used
-    const {
-      email,
-      firstName,
-      middleName,
-      lastName,
-      phone,
-      password,
-      gender,
-      licenseNumber,
-      specialty,
-      country,
-      state,
-    } = payload;
+    const { email, firstName, middleName, lastName, phone, password, gender, licenseNumber, specialty, region } =
+      payload;
 
     signUp({
       email,
@@ -57,9 +41,8 @@ const GlobalForm = () => {
       gender,
       licenseNumber,
       specialty,
-      country,
-      region: state,
-      role: "global",
+      region,
+      role: "GlobalNetwork",
     })
       .unwrap()
       .then(() => {
@@ -67,14 +50,13 @@ const GlobalForm = () => {
         dispatch(setVerifyEmail(email));
         navigate("/verify-email");
       })
-      .catch((error) => console.log("Error ", error));
+      .catch((error) => {
+        if (error?.data?.message[0]) {
+          toast.error(error?.data?.message[0]);
+        }
+        console.log("Error ", error);
+      });
   };
-
-  const { getAllStatesByCountryCode } = useCountry();
-
-  const allStates = useMemo(() => {
-    return getAllStatesByCountryCode(selectedCountry);
-  }, [getAllStatesByCountryCode, selectedCountry]);
 
   return (
     <div>
@@ -165,27 +147,13 @@ const GlobalForm = () => {
         </div>
 
         <div className="w-full">
-          <CountryFlags
-            selected={selectedCountry}
-            setSelected={(code) =>
-              setValue("country", code, {
-                shouldDirty: true,
-                shouldTouch: true,
-                shouldValidate: true,
-              })
-            }
-          />
-        </div>
-
-        <div className="w-full">
           <Select
-            label="state"
+            label="region"
             control={control}
-            options={allStates}
+            options={globalRegionsData}
             errors={errors}
             required
-            placeholder="choose your state"
-            disabled={!selectedCountry}
+            placeholder="choose your region"
           />
         </div>
 

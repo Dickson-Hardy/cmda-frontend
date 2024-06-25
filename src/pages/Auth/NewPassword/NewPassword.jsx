@@ -21,7 +21,6 @@ const NewPassword = () => {
   const [passwordReset, { isLoading }] = usePasswordResetMutation();
 
   const handleResetPassword = async (payload) => {
-    delete payload.confirmNewPassword;
     const resetData = { ...payload };
     passwordReset(resetData)
       .unwrap()
@@ -62,7 +61,7 @@ const NewPassword = () => {
           <div className="mb-4  text-gray-500">
             <TextInput
               type="password"
-              label="confirmNewPassword"
+              label="confirmPassword"
               required={true}
               register={register}
               errors={errors}
