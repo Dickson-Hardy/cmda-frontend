@@ -15,7 +15,7 @@ const EmailVerification = () => {
   const dispatch = useDispatch();
 
   const handleVerify = () => {
-    verifyUser({ token, email: verifyEmail })
+    verifyUser({ code: token, email: verifyEmail })
       .unwrap()
       .then(() => {
         toast.success("Email Verified, Login to continue");
