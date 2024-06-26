@@ -25,9 +25,9 @@ const Login = () => {
   const handleLogin = (payload) => {
     login(payload)
       .unwrap()
-      .then(({ accessToken, data }) => {
-        dispatch(setUser(data));
-        dispatch(setTokens({ accessToken }));
+      .then(({ data }) => {
+        dispatch(setUser(data?.user));
+        dispatch(setTokens({ accessToken: data?.accessToken }));
         toast.success("Login successful");
         const redirectUrl = localStorage.getItem("redirectUrl");
         if (redirectUrl && redirectUrl.includes("dashboard")) navigate(redirectUrl);

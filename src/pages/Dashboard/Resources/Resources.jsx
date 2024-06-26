@@ -4,6 +4,7 @@ import ResourceCard from "~/components/DashboardComponents/Resources/ResourceCar
 import Button from "~/components/Global/Button/Button";
 import Chip from "~/components/Global/Chip/Chip";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
+import { useGetAllResourcesQuery } from "~/redux/api/external/resourceApi";
 import { useGetAllPostsQuery } from "~/redux/api/external/wordPressApi";
 
 const DashboardResources = () => {
@@ -24,19 +25,26 @@ const DashboardResources = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
+  // const {
+  //   data: allPosts,
+  //   isLoading: loadingPosts,
+  //   isFetching,
+  // } = useGetAllPostsQuery({ perPage: 12, page }, { refetchOnMountOrArgChange: true });
+
   const {
     data: allPosts,
     isLoading: loadingPosts,
     isFetching,
-  } = useGetAllPostsQuery({ perPage: 12, page }, { refetchOnMountOrArgChange: true });
+  } = useGetAllResourcesQuery({ page, limit: 10 }, { refetchOnMountOrArgChange: true });
+  console.log({ allPosts });
 
   useEffect(() => {
     if (allPosts) {
       setPosts((prevPosts) => {
-        const combinedPosts = [...prevPosts, ...allPosts.posts];
+        const combinedPosts = [...prevPosts, ...allPosts.items];
         // Use Set to remove duplicate objects based on their IDs
-        const uniquePosts = Array.from(new Set(combinedPosts.map((post) => post.id))).map((id) =>
-          combinedPosts.find((post) => post.id === id)
+        const uniquePosts = Array.from(new Set(combinedPosts.map((post) => post._id))).map((id) =>
+          combinedPosts.find((post) => post._id === id)
         );
         return uniquePosts;
       });
@@ -71,10 +79,10 @@ const DashboardResources = () => {
           {posts.map((post, v) => (
             <Link to={`/dashboard/resources/articles/${post.slug}`} key={v + 1}>
               <ResourceCard
-                image={post?._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
-                title={post?.title?.rendered}
+                image={post?.featuredImage}
+                title={post?.title}
                 type="article"
-                subtitle={post?.excerpt?.rendered}
+                subtitle={post?.description}
                 width="auto"
               />
             </Link>
