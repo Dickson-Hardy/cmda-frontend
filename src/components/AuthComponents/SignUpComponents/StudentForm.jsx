@@ -34,14 +34,20 @@ const StudentForm = () => {
     delete payload.numbers;
     delete payload.countryCode;
     //
-    signUp({ ...payload, role: "student" })
+    signUp({ ...payload, role: "Student" })
       .unwrap()
       .then(() => {
         toast.success("Student account created successfully, Check email for token");
         dispatch(setVerifyEmail(payload.email));
         navigate("/verify-email");
       })
-      .catch((error) => console.log("Error ", error));
+      .catch((error) => {
+        // console.log(error?.data?.message[0])
+        if (error?.data?.message[0]) {
+          toast.error(error?.data?.message[0]);
+        }
+        console.log("Error ", error);
+      });
   };
 
   return (

@@ -4,7 +4,7 @@ const authApi = api.injectEndpoints({
   endpoints: (build) => ({
     // LOGIN
     login: build.mutation({
-      query: (payload) => ({ url: "/users/login", method: "POST", body: payload }),
+      query: (payload) => ({ url: "/auth/login", method: "POST", body: payload }),
       // Pick out data and prevent nested properties in a hook or selector
       // transformResponse: (response) => response.data,
       // Pick out error and prevent nested properties when displaying error
@@ -12,20 +12,20 @@ const authApi = api.injectEndpoints({
     }),
     // Sign Up
     signUp: build.mutation({
-      query: (payload) => ({ url: "/users/create", method: "POST", body: payload }),
+      query: (payload) => ({ url: "/auth/signup", method: "POST", body: payload }),
     }),
     // VERIFY USER
     verifyUser: build.mutation({
-      query: (body) => ({ url: "/users/verify-user", method: "POST", body }),
+      query: (body) => ({ url: "/auth/verify-email", method: "POST", body }),
     }),
     // FORGOT PASSWORD
     passwordForgot: build.mutation({
-      query: (body) => ({ url: "/users/initiate-password-reset", method: "POST", body }),
+      query: (body) => ({ url: "/auth/forgot-password", method: "POST", body }),
       transformErrorResponse: (response) => response.data?.message,
     }),
     // RESET PASSWORD
     passwordReset: build.mutation({
-      query: (body) => ({ url: "/users/reset-password", method: "POST", body }),
+      query: (body) => ({ url: "/auth/reset-password", method: "POST", body }),
       transformErrorResponse: (response) => response.data?.message,
     }),
   }),

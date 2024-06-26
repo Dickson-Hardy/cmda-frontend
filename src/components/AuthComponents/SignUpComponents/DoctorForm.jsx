@@ -42,7 +42,7 @@ const DoctorForm = () => {
       licenseNumber,
       specialty,
       region,
-      role: "doctor",
+      role: "Doctor",
     })
       .unwrap()
       .then(() => {
@@ -50,7 +50,12 @@ const DoctorForm = () => {
         dispatch(setVerifyEmail(email));
         navigate("/verify-email");
       })
-      .catch((error) => console.log("Error ", error));
+      .catch((error) => {
+        if (error?.data?.message[0]) {
+          toast.error(error?.data?.message[0]);
+        }
+        console.log("Error ", error);
+      });
   };
 
   return (
