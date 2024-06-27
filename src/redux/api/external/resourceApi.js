@@ -19,6 +19,10 @@ const resourceApi = api.injectEndpoints({
         return { items, totalItems, totalPages };
       },
     }),
+    getResourceBySlug: build.query({
+      query: (slug) => ({ url: `/resources/${slug}` }),
+      transformResponse: (response) => response.data,
+    }),
     // getSinglePost: build.query({
     //   query: ({ slug }) => wordpressBaseUrl + "/posts?slug=" + slug + "&_embed",
     //   transformResponse: (posts) => posts[0],
@@ -26,6 +30,6 @@ const resourceApi = api.injectEndpoints({
   }),
 });
 
-export const { useGetAllResourcesQuery } = resourceApi;
+export const { useGetAllResourcesQuery, useGetResourceBySlugQuery } = resourceApi;
 
 export default resourceApi;

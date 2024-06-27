@@ -27,15 +27,21 @@ const DashboardStoreSingleEventPage = () => {
       {/* content */}
       <div className="mt-4">
         <img
-          src={singleEvent?.eventImageUrl}
+          src={singleEvent?.featuredImage}
           className={classNames("bg-onPrimary h-auto max-h-[300px] md:max-h-[350px] w-full rounded-lg object-cover")}
         />
 
-        <span className="inline-block mt-6 px-4 py-2 capitalize text-tertiary text-sm font-semibold bg-onTertiary rounded-3xl">
-          {singleEvent?.eventTag}
-        </span>
-
-        <h4 className="text-xl lg:text-2xl font-bold capitalize mt-3">{singleEvent?.title}</h4>
+        <div className="flex gap-2 items-center">
+          {singleEvent?.tag.map((tag, i) => (
+            <span
+              key={i}
+              className="px-2 py-1 capitalize text-tertiary text-xs font-semibold bg-onTertiary rounded-3xl"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+        <h4 className="text-xl lg:text-2xl font-bold capitalize mt-3">{singleEvent?.name}</h4>
 
         {singleEvent?.isActive && (
           <div className="flex flex-wrap gap-2 lg:gap-4 items-center justify-start mt-4 mb-8">
@@ -49,13 +55,11 @@ const DashboardStoreSingleEventPage = () => {
           <div className="space-y-1">
             <h5 className="font-semibold">When and Where</h5>
             <div className="flex gap-x-2 items-center text-sm">
-              <p className="">
+              {/* <p className="">
                 {formatDate(singleEvent?.eventDateTime).date + ", " + formatDate(singleEvent?.eventDateTime).time}
-              </p>
+              </p> */}
               <span className="">{icons.dot}</span>
-              <p className="">
-                {singleEvent?.eventType === "physical" ? singleEvent?.physicalLocation : singleEvent?.virtualLink}
-              </p>
+              <p className="">{singleEvent?.type === "Physical" ? singleEvent?.location : singleEvent?.virtualLink}</p>
             </div>
           </div>
           {/* share */}

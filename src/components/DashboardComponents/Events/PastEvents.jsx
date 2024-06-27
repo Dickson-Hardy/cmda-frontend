@@ -22,7 +22,7 @@ const PastEvents = ({ row, isSmallScreen }) => {
   useEffect(() => {
     if (events) {
       setPastEvents((prevEvts) => {
-        const combinedEvents = [...prevEvts, ...events.data];
+        const combinedEvents = [...prevEvts, ...events.items];
         const uniqueEvents = Array.from(new Set(combinedEvents.map((evt) => evt._id))).map((_id) =>
           combinedEvents.find((evt) => evt._id === _id)
         );
@@ -54,15 +54,16 @@ const PastEvents = ({ row, isSmallScreen }) => {
 
       <div className={`flex gap-8  ${row || isSmallScreen ? "flex-col" : "flex-row flex-wrap"}`}>
         {pastEvents.map((evt) => (
-          <Link key={evt._id} to={`/dashboard/events/${evt._id}`}>
+          <Link key={evt.slug} to={`/dashboard/events/${evt.slug}`}>
             <EventCard
               row={row && !isSmallScreen}
               width={row ? "auto" : isSmallScreen ? "100%" : 330}
-              title={evt.title}
-              date={evt.eventDateTime}
-              image={evt.eventImageUrl}
-              tag={evt.eventTag}
-              location={evt.eventType === "physical" ? evt.physicalLocation : evt.virtualLink}
+              title={evt.name}
+              // date={evt.eventDateTime}
+              image={evt.featuredImage}
+              tag={evt.audience}
+              location={evt.type === "Physical" ? evt.location : evt.virtualLink}
+              description={evt?.description}
             />
           </Link>
         ))}

@@ -5,7 +5,6 @@ import Button from "~/components/Global/Button/Button";
 import Chip from "~/components/Global/Chip/Chip";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
 import { useGetAllResourcesQuery } from "~/redux/api/external/resourceApi";
-import { useGetAllPostsQuery } from "~/redux/api/external/wordPressApi";
 
 const DashboardResources = () => {
   const CATEGORIES = ["Articles", "Webinars", "Newsletters", "Others"];
@@ -36,7 +35,7 @@ const DashboardResources = () => {
     isLoading: loadingPosts,
     isFetching,
   } = useGetAllResourcesQuery({ page, limit: 10 }, { refetchOnMountOrArgChange: true });
-  console.log({ allPosts });
+  // console.log({ allPosts });
 
   useEffect(() => {
     if (allPosts) {
@@ -77,7 +76,7 @@ const DashboardResources = () => {
         <h3 className="text-lg font-bold mb-4">Recent Resources </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
           {posts.map((post, v) => (
-            <Link to={`/dashboard/resources/articles/${post.slug}`} key={v + 1}>
+            <Link to={`/dashboard/resources/${post.slug}`} key={v + 1}>
               <ResourceCard
                 image={post?.featuredImage}
                 title={post?.title}

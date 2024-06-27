@@ -8,11 +8,16 @@ const eventsApi = api.injectEndpoints({
         params: {
           page,
           limit,
-          ...(searchText ? { searchText } : {}),
+          ...(searchText ? { keyword: searchText } : {}),
           ...(status ? { status } : {}),
           ...(date ? { date } : {}),
         },
       }),
+      transformResponse: ({ data: { items, meta } }) => {
+        const totalPages = meta.totalPages;
+        const totalItems = meta.totalItems;
+        return { items, totalItems, totalPages };
+      },
     }),
     getSingleEvent: build.query({
       query: (id) => `/events/${id}`,

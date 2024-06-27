@@ -3,14 +3,16 @@ import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { useUpdateProfilePictureMutation } from "~/redux/api/profile/editProfile";
+import { useEditProfileMutation, useUpdateProfilePictureMutation } from "~/redux/api/profile/editProfile";
 import { toast } from "react-toastify";
 import { setUser } from "~/redux/features/auth/authSlice";
 
 const ProfileImageUpdate = () => {
   const user = useSelector((state) => state.auth.user);
+  // console.log(user);
+  // const [updateProfilePicture, { isLoading }] = useUpdateProfilePictureMutation();
+  const [editProfile, { isLoading }] = useEditProfileMutation();
 
-  const [updateProfilePicture, { isLoading }] = useUpdateProfilePictureMutation();
   const dispatch = useDispatch();
 
   const [openModal, setOpenModal] = useState(false);
@@ -25,9 +27,23 @@ const ProfileImageUpdate = () => {
   const handleUpdateImage = () => {
     if (!image) return;
     const formData = new FormData();
-    formData.append("image", image);
+    formData.append("avatar", image);
 
-    updateProfilePicture({ id: user?._id, payload: formData })
+    // updateProfilePicture({ id: user?._id, payload: formData })
+    //   .unwrap()
+    //   .then((data) => {
+    // dispatch(setUser(data.data));
+    // toast.success(data?.message);
+    // setImagePreview("");
+    // setImage("");
+    // setOpenModal(false);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     toast.error(error);
+    //   });
+
+    editProfile(formData)
       .unwrap()
       .then((data) => {
         dispatch(setUser(data.data));
@@ -38,19 +54,19 @@ const ProfileImageUpdate = () => {
       })
       .catch((error) => {
         console.log(error);
-        toast.error(error);
+        toast.error(error[0]);
       });
   };
 
   return (
     <>
       <div className="relative flex-shrink-0">
-        {!user?.profileImageUrl ? (
+        {!user?.avatarUrl ? (
           <span className="size-32 md:size-40 bg-onPrimary rounded-full inline-flex items-center justify-center text-6xl text-primary">
             {icons.person}
           </span>
         ) : (
-          <img src={user?.profileImageUrl} alt="img" className="size-32 md:size-40 object-cover rounded-full" />
+          <img src={user?.avatarUrl} alt="img" className="size-32 md:size-40 object-cover rounded-full" />
         )}
 
         <span
@@ -73,13 +89,13 @@ const ProfileImageUpdate = () => {
           <div className="flex items-center justify-between w-full gap-x-8">
             <div className="relative">
               <div className="size-[8rem] sm:size-[12rem] overflow-hidden rounded-full relative">
-                {!imagePreview && !user?.profileImageUrl && (
+                {!imagePreview && !user?.avatarUrl && (
                   <span className="w-full h-full bg-onPrimary rounded-full inline-flex items-center justify-center text-6xl text-primary">
                     {icons.person}
                   </span>
                 )}
                 <img
-                  src={imagePreview ? imagePreview : user?.profileImageUrl}
+                  src={imagePreview ? imagePreview : user?.avatarUrl}
                   alt="img"
                   className=" w-full h-full object-cover rounded-full object-conain"
                 />

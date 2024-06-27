@@ -16,15 +16,15 @@ const DashboardProfilePage = () => {
   const fullName = user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name";
 
   const [date, setDate] = useState(new Date());
-
-  const {
-    data: eventsOnThisDay,
-    isLoading,
-    isFetching,
-  } = useGetAllEventsQuery(
-    { page: 1, limit: 5, date: date.toISOString().slice(0, 10) },
-    { refetchOnMountOrArgChange: true }
-  );
+  // console.log({ user });
+  // const {
+  //   data: eventsOnThisDay,
+  //   isLoading,
+  //   isFetching,
+  // } = useGetAllEventsQuery(
+  //   { page: 1, limit: 5, date: date.toISOString().slice(0, 10) },
+  //   { refetchOnMountOrArgChange: true }
+  // );
 
   return (
     <div>
@@ -58,7 +58,7 @@ const DashboardProfilePage = () => {
               <p className="text-sm font-medium mb-4">
                 <span className="text-gray">Phone: </span> {user?.phone || "---"}
               </p>
-              <div className="flex gap-2">
+              {/* <div className="flex gap-2">
                 {user?.socials.map((item) => (
                   <a
                     key={item.name}
@@ -70,7 +70,7 @@ const DashboardProfilePage = () => {
                     {icons[item.name]}
                   </a>
                 ))}
-              </div>
+              </div> */}
               <div className="flex justify-end text-sm">
                 <Link to="/dashboard/edit-profile" className="text-primary font-semibold underline">
                   Edit Profile
@@ -159,7 +159,7 @@ const DashboardProfilePage = () => {
               " " +
               formatDate(date).date}
           </h3>
-
+          {/* 
           {isLoading || isFetching ? (
             <div className="h-52 flex justify-center items-center">
               <Loading className="text-primary w-12 h-12" />
@@ -180,7 +180,7 @@ const DashboardProfilePage = () => {
                 </li>
               ))}
             </ul>
-          )}
+          )} */}
         </div>
       </section>
     </div>

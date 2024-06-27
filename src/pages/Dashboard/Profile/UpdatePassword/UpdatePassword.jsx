@@ -18,13 +18,13 @@ const DashboardUpdatePassword = () => {
   const [updatePassword, { isLoading }] = useUpdatePasswordMutation();
 
   const handleUpdatePassword = (payload) => {
-    const { oldPassword, newPassword, confirmNewPassword } = payload;
-    if (newPassword !== confirmNewPassword) {
+    const { oldPassword, newPassword, confirmPassword } = payload;
+    if (newPassword !== confirmPassword) {
       toast.error("Password do not match");
       return;
     }
 
-    updatePassword({ oldPassword, newPassword })
+    updatePassword({ oldPassword, newPassword, confirmPassword })
       .unwrap()
       .then((data) => {
         toast.success(data.message);
@@ -54,7 +54,7 @@ const DashboardUpdatePassword = () => {
               required
             />
             <TextInput
-              label="confirmNewPassword"
+              label="confirmPassword"
               title="Confirm New Password"
               type="password"
               register={register}
