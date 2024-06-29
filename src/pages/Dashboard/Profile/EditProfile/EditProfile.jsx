@@ -20,6 +20,7 @@ import {
   currentYearOptions,
   doctorsRegionLists,
   genderOptions,
+  globalRegionsData,
   studentChapterOptions,
 } from "~/utilities/reusableVariables";
 
@@ -32,7 +33,7 @@ const DashboardEditProfile = () => {
   if (!user) {
     navigate("/login");
   }
-
+  // console.log(user);
   const [editProfile, { isLoading }] = useEditProfileMutation();
   const dispatch = useDispatch();
   const {
@@ -54,23 +55,12 @@ const DashboardEditProfile = () => {
       region: user?.region || "",
       bio: user?.bio || "",
       dateOfBirth: user?.dateOfBirth || "",
-      admissionYear: Number(user?.admissionYear) || "",
+      admissionYear: user?.admissionYear || "",
       yearOfStudy: user?.yearOfStudy || "",
       licenseNumber: user?.licenseNumber || "",
       specialty: user?.specialty || "",
-      country: user?.country || "",
-      state: user?.state || "",
     },
   });
-
-  // watching the country field so as to updates the state field
-  const selectedCountry = watch("country", "");
-
-  const { getAllStatesByCountryCode } = useCountry();
-
-  const allStates = useMemo(() => {
-    return getAllStatesByCountryCode(selectedCountry);
-  }, [getAllStatesByCountryCode, selectedCountry]);
 
   // Function to remove a social
   const removeSocial = (indexToRemove) => {
@@ -82,37 +72,32 @@ const DashboardEditProfile = () => {
       middleName: payload.middleName,
       lastName: payload.lastName,
       email: payload.email,
-      // gender: payload.gender,
+      gender: payload.gender,
       dateOfBirth: payload.dateOfBirth,
       bio: payload?.bio,
       socials: socials,
-      ...(user?.role === "student" && {
-        admissionYear: payload.admissionYear,
+      ...(user?.role == "Student" && {
+        admissionYear: payload.admissionYear.toString(),
         yearOfStudy: payload.yearOfStudy,
       }),
-      ...(user?.role !== "global" && {
-        region: payload.region,
-      }),
-      ...(user?.role !== "student" && {
+      region: payload.region,
+      ...(user?.role != "Student" && {
         licenseNumber: payload.licenseNumber,
         specialty: payload.specialty,
       }),
-      ...(user?.role === "global" && {
-        country: payload.country,
-        state: payload.specialty,
-      }),
     };
 
-    editProfile({ id: user?._id, payload: data })
+    editProfile(data)
       .unwrap()
       .then((data) => {
+        // console.log(data);
         dispatch(setUser(data.data));
         toast.success(data?.message);
         navigate("/dashboard/profile");
       })
       .catch((error) => {
         console.log(error);
-        toast.error(error);
+        toast.error(error[0]);
       });
   };
 
@@ -195,7 +180,13 @@ const DashboardEditProfile = () => {
                   <Select
                     label="region"
                     control={control}
-                    options={user.role === "doctor" ? doctorsRegionLists : studentChapterOptions}
+                    options={
+                      user.role == "doctor"
+                        ? doctorsRegionLists
+                        : user.role == "Student"
+                          ? studentChapterOptions
+                          : globalRegionsData
+                    }
                     errors={errors}
                     required
                     title="Chapter/Region"
@@ -237,7 +228,7 @@ const DashboardEditProfile = () => {
                 />
               </div>
               {/* students only roles */}
-              {user.role === "student" && (
+              {user.role == "Student" && (
                 <>
                   <div className="w-full">
                     <Select
@@ -265,7 +256,7 @@ const DashboardEditProfile = () => {
                 </>
               )}
               {/* doctors and global only roles */}
-              {user.role !== "student" && (
+              {user.role != "Student" && (
                 <>
                   <div>
                     <TextInput
@@ -286,35 +277,6 @@ const DashboardEditProfile = () => {
                       errors={errors}
                       required
                       placeholder="professional Cadre"
-                    />
-                  </div>
-                </>
-              )}
-
-              {/* global */}
-              {user.role === "global" && (
-                <>
-                  <div className="w-full">
-                    <CountryFlags
-                      selected={selectedCountry}
-                      setSelected={(code) =>
-                        setValue("country", code, {
-                          shouldDirty: true,
-                          shouldTouch: true,
-                          shouldValidate: true,
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="w-full">
-                    <Select
-                      label="state"
-                      control={control}
-                      options={allStates}
-                      errors={errors}
-                      required
-                      placeholder="choose your state"
-                      disabled={!selectedCountry}
                     />
                   </div>
                 </>

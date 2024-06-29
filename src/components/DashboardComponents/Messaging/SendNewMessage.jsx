@@ -80,7 +80,7 @@ const SendNewMessage = ({ userId }) => {
                     <ContactListItem
                       key={id}
                       name={getFullName(user)}
-                      image={user?.profileImageUrl}
+                      image={user?.avatarUrl}
                       subText={user?.email}
                       onClick={() => {
                         setSearchParams({ id: user?._id });

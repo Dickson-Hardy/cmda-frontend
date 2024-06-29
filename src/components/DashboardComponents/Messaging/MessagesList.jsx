@@ -60,7 +60,7 @@ const MessagesLists = ({ userId }) => {
                 <ContactListItem
                   key={id}
                   name={getFullName(message)}
-                  image={message?.profileImageUrl}
+                  image={message?.avatarUrl}
                   subText={message?.email}
                   onClick={() => {
                     setSearchParams({ id: message?._id });

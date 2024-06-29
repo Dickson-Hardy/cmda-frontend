@@ -4,7 +4,7 @@ import ResourceCard from "~/components/DashboardComponents/Resources/ResourceCar
 import Button from "~/components/Global/Button/Button";
 import Chip from "~/components/Global/Chip/Chip";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
-import { useGetAllPostsQuery } from "~/redux/api/external/wordPressApi";
+import { useGetAllResourcesQuery } from "~/redux/api/external/resourceApi";
 
 const DashboardResources = () => {
   const CATEGORIES = ["Articles", "Webinars", "Newsletters", "Others"];
@@ -24,19 +24,26 @@ const DashboardResources = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
+  // const {
+  //   data: allPosts,
+  //   isLoading: loadingPosts,
+  //   isFetching,
+  // } = useGetAllPostsQuery({ perPage: 12, page }, { refetchOnMountOrArgChange: true });
+
   const {
     data: allPosts,
     isLoading: loadingPosts,
     isFetching,
-  } = useGetAllPostsQuery({ perPage: 12, page }, { refetchOnMountOrArgChange: true });
+  } = useGetAllResourcesQuery({ page, limit: 10 }, { refetchOnMountOrArgChange: true });
+  // console.log({ allPosts });
 
   useEffect(() => {
     if (allPosts) {
       setPosts((prevPosts) => {
-        const combinedPosts = [...prevPosts, ...allPosts.posts];
+        const combinedPosts = [...prevPosts, ...allPosts.items];
         // Use Set to remove duplicate objects based on their IDs
-        const uniquePosts = Array.from(new Set(combinedPosts.map((post) => post.id))).map((id) =>
-          combinedPosts.find((post) => post.id === id)
+        const uniquePosts = Array.from(new Set(combinedPosts.map((post) => post._id))).map((id) =>
+          combinedPosts.find((post) => post._id === id)
         );
         return uniquePosts;
       });
@@ -69,12 +76,12 @@ const DashboardResources = () => {
         <h3 className="text-lg font-bold mb-4">Recent Resources </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
           {posts.map((post, v) => (
-            <Link to={`/dashboard/resources/articles/${post.slug}`} key={v + 1}>
+            <Link to={`/dashboard/resources/${post.slug}`} key={v + 1}>
               <ResourceCard
-                image={post?._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
-                title={post?.title?.rendered}
+                image={post?.featuredImage}
+                title={post?.title}
                 type="article"
-                subtitle={post?.excerpt?.rendered}
+                subtitle={post?.description}
                 width="auto"
               />
             </Link>

@@ -52,10 +52,10 @@ const DashboardMemberDetailsPage = () => {
           </Button>
         </div>
 
-        {member?.profileImageUrl ? (
+        {member?.avatarUrl ? (
           <img
             className="size-40 md:size-52 bg-cover bg-white p-1 rounded-full mx-auto"
-            src={member?.profileImageUrl}
+            src={member?.avatarUrl}
             alt=""
           />
         ) : (

@@ -108,7 +108,7 @@ const ChatBox = ({ user, recipientId }) => {
           <ContactListItem
             asHeader={true}
             name={getFullName(recipientData)}
-            image={recipientData?.profileImageUrl}
+            image={recipientData?.avatarUrl}
             subText={recipientData?.email}
           />
         )}

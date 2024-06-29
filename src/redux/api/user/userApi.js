@@ -6,7 +6,7 @@ const userApi = api.injectEndpoints({
       query: ({ searchText, page, limit }) => ({
         url: "/users",
         params: {
-          ...(searchText ? { searchText } : {}),
+          ...(searchText ? { fullName: searchText } : {}),
           ...(page ? { page } : {}),
           ...(limit ? { limit } : {}),
         },

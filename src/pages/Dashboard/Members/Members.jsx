@@ -65,7 +65,7 @@ const DashboardMembersPage = () => {
                 id={mem._id}
                 width="auto"
                 fullName={mem.firstName + " " + mem?.middleName + " " + mem?.lastName}
-                avatar={mem.profileImageUrl}
+                avatar={mem.avatarUrl}
                 role={mem.role}
                 region={mem.region}
               />

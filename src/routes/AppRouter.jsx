@@ -33,6 +33,7 @@ import { selectAuth } from "~/redux/features/auth/authSlice";
 import DashboardPaymentsPage from "~/pages/Dashboard/Payments/Payments";
 import DashboardStoreOrderHistoryPage from "~/pages/Dashboard/Store/OrderHistory/OrderHistory";
 import DashboardSettingsPage from "~/pages/Dashboard/Settings/Settings";
+import SingleResource from "~/pages/Dashboard/Resources/SingleResource";
 
 export default function AppRouter() {
   const { isAuthenticated } = useSelector(selectAuth);
@@ -83,8 +84,9 @@ export default function AppRouter() {
             { path: "events/:id", element: <DashboardStoreSingleEventPage /> },
             { path: "profile", element: <DashboardProfilePage /> },
             { path: "resources", element: <DashboardResources /> },
-            { path: "resources/:category", element: <Navigate to="/dashboard/resources" /> },
-            { path: "resources/:category/:slug", element: <DashboardResourceDetails /> },
+            // { path: "resources/:category", element: <Navigate to="/dashboard/resources" /> },
+            // { path: "resources/:category/:slug", element: <DashboardResourceDetails /> },
+            { path: "resources/:slug", element: <SingleResource /> },
             { path: "messaging", element: <DashboardMessagingPage /> },
             { path: "store", element: <DashboardStorePage /> },
             { path: "store/cart", element: <DashboardCartPage /> },

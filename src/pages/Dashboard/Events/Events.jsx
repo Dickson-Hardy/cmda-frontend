@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Tabs from "~/components/Global/Tabs/Tabs";
 import Drawer from "~/components/Global/Drawer/Drawer";
-import EventsCalender from "~/components/DashboardComponents/Events/EventsCalender";
+// import EventsCalender from "~/components/DashboardComponents/Events/EventsCalender";
 import icons from "~/assets/js/icons";
 import { useIsSmallScreen } from "~/hooks/useIsSmallScreen";
 import UpcomingEvents from "~/components/DashboardComponents/Events/UpcomingEvents";
@@ -36,16 +36,12 @@ const DashboardEventsPage = () => {
         <div className="w-full lg:w-2/3 ">
           <Tabs tabs={eventTabs} equalTab={false} activeView={activeView} setActiveView={setActiveView} page="events" />
         </div>
-        <div className="hidden lg:block lg:w-1/3">
-          <EventsCalender />
-        </div>
+        <div className="hidden lg:block lg:w-1/3">{/* <EventsCalender /> */}</div>
       </section>
 
       {/* mobile calender */}
       <Drawer active={openMobileCalender} setActive={setOpenMobileCalender}>
-        <div className="px-4 mt-16 mb-10 max-w-md ml-auto">
-          <EventsCalender />
-        </div>
+        <div className="px-4 mt-16 mb-10 max-w-md ml-auto">{/* <EventsCalender /> */}</div>
       </Drawer>
     </div>
   );

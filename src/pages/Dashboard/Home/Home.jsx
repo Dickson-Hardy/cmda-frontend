@@ -9,19 +9,17 @@ import Button from "~/components/Global/Button/Button";
 import Switch from "~/components/Global/FormElements/Switch/Switch";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
 import Loading from "~/components/Global/Loading/Loading";
-import { useGetAllPostsQuery } from "~/redux/api/external/wordPressApi";
-import { useGetRandomVerseQuery } from "~/redux/api/verse/verseApi";
 import Slider from "react-slick";
 import { useGetAllEventsQuery } from "~/redux/api/events/eventsApi";
 import { membersResponsiveSliderSettings, responsiveSliderSettings } from "~/constants/sliderConstants";
 import { useCreatePrayerTestimonyMutation } from "~/redux/api/prayerTestimonies/prayerTestimoniesApi";
 import { toast } from "react-toastify";
 import { useGetVolunteerJobsQuery } from "~/redux/api/volunteer/volunteerApi";
-import icons from "~/assets/js/icons";
 import { useGetAllUsersQuery } from "~/redux/api/user/userApi";
 import MemberCard from "~/components/DashboardComponents/Members/MemberCard";
 import Modal from "~/components/Global/Modal/Modal";
 import doctorPng from "~/assets/images/cheerful-doctor.png";
+import { useGetAllResourcesQuery } from "~/redux/api/external/resourceApi";
 
 const DashboardHomePage = () => {
   const user = useSelector((state) => state.auth.user);
@@ -37,20 +35,24 @@ const DashboardHomePage = () => {
   } = useForm({ mode: "all" });
 
   // get verse of the day
-  const { data: randomVerse, isLoading: loadingVerse } = useGetRandomVerseQuery(null, {
-    refetchOnMountOrArgChange: true,
-  });
+  // const { data: randomVerse, isLoading: loadingVerse } = useGetRandomVerseQuery(null, {
+  //   refetchOnMountOrArgChange: true,
+  // });
 
-  const { data: blog, isLoading: loadingPosts } = useGetAllPostsQuery(
-    { perPage: 10, page: 1 },
+  // const { data: blog, isLoading: loadingPosts } = useGetAllPostsQuery(
+  //   { perPage: 10, page: 1 },
+  //   { refetchOnMountOrArgChange: true }
+  // );
+  const { data: blog, isLoading: loadingPosts } = useGetAllResourcesQuery(
+    { page: 1, limit: 10 },
     { refetchOnMountOrArgChange: true }
   );
 
   const { data: events, isLoading: loadingEvents } = useGetAllEventsQuery(
-    { page: 1, limit: 10, status: null },
+    { page: 1, limit: 10 },
     { refetchOnMountOrArgChange: true }
   );
-
+  // console.log(events);
   const { data: volunteerJobs, isLoading: loadingVolunteers } = useGetVolunteerJobsQuery(
     { page: 1, limit: 3 },
     { refetchOnMountOrArgChange: true }
@@ -62,7 +64,7 @@ const DashboardHomePage = () => {
     { page: 1, limit: 10 },
     { refetchOnMountOrArgChange: true }
   );
-
+  // console.log(allUsers?.data?.items);
   const handleCreatePrayer = (data) => {
     const payload = {
       ...data,
@@ -81,8 +83,8 @@ const DashboardHomePage = () => {
     <div>
       <section className="h-[400px] w-full rounded-3xl mb-8" style={{ backgroundImage: `url(${doctorPng})` }}>
         <div className="h-full w-full bg-black/50 rounded-3xl text-white p-8 flex flex-col justify-between">
-          <h2 className="font-bold text-2xl">Welcome, {user?.firstName}</h2>
-          {loadingVerse ? (
+          <h2 className="font-bold text-2xl">Welcome, {user?.fullName}</h2>
+          {/* {loadingVerse ? (
             <Loading />
           ) : (
             <div className="flex justify-between gap-1 items-end">
@@ -96,7 +98,7 @@ const DashboardHomePage = () => {
                 {icons.pray}
               </button>
             </div>
-          )}
+          )} */}
         </div>
       </section>
 
@@ -111,19 +113,22 @@ const DashboardHomePage = () => {
           <Loading height={48} width={48} className="text-primary" />
         ) : (
           <Slider {...membersResponsiveSliderSettings}>
-            {allUsers?.data
+            {allUsers?.data?.items
               ?.filter((x) => x._id !== user?._id)
-              .map((mem) => (
-                <MemberCard
-                  key={mem._id}
-                  id={mem._id}
-                  width="auto"
-                  fullName={mem.firstName + " " + mem?.middleName + " " + mem?.lastName}
-                  avatar={mem.profileImageUrl}
-                  role={mem.role}
-                  region={mem.region}
-                />
-              ))}
+              .map((mem) => {
+                // console.log(mem);
+                return (
+                  <MemberCard
+                    key={mem._id}
+                    id={mem._id}
+                    width="auto"
+                    fullName={mem.fullName}
+                    avatar={mem.avatarUrl}
+                    role={mem.role}
+                    region={mem.region}
+                  />
+                );
+              })}
           </Slider>
         )}
       </section>
@@ -139,18 +144,40 @@ const DashboardHomePage = () => {
           <Loading height={48} width={48} className="text-primary" />
         ) : (
           <Slider {...responsiveSliderSettings} speed={1000} autoplaySpeed={4000}>
-            {events?.data?.map((evt) => (
-              <Link key={evt._id} to={`/dashboard/events/${evt._id}`}>
-                <EventCard
-                  width="auto"
-                  title={evt.title}
-                  date={evt.eventDateTime}
-                  image={evt.eventImageUrl}
-                  tag={evt.eventTag}
-                  location={evt.eventType === "physical" ? evt.physicalLocation : evt.virtualLink}
-                />
-              </Link>
-            ))}
+            {/* {events?.items?.map((evt) => {
+              // console.log(evt);
+              return (
+                <Link key={evt._id} to={`/dashboard/events/${evt._id}`}>
+                  <EventCard
+                    width="auto"
+                    title={evt.name}
+                    date={evt.eventDateTime}
+                    image={evt.featuredImage}
+                    tag={evt.audience}
+                    location={evt.type === "Physical" ? evt.location : evt.virtualLink}
+                    description={evt?.description}
+                  />
+                </Link>
+              );
+            })} */}
+            {[1, 2, 3, 4].map((evt) => {
+              // console.log(evt);
+              return (
+                <Link key={events?.items[0].slug} to={`/dashboard/events/${events?.items[0].slug}`}>
+                  <EventCard
+                    width="auto"
+                    title={events?.items[0].name}
+                    date={events?.items[0].eventDateTime}
+                    image={events?.items[0].featuredImage}
+                    tag={events?.items[0].audience}
+                    location={
+                      events?.items[0].type === "Physical" ? events?.items[0].location : events?.items[0].virtualLink
+                    }
+                    description={events?.items[0]?.description}
+                  />
+                </Link>
+              );
+            })}
           </Slider>
         )}
       </section>
@@ -166,13 +193,13 @@ const DashboardHomePage = () => {
           <Loading height={48} width={48} className="text-primary" />
         ) : (
           <Slider {...responsiveSliderSettings}>
-            {blog?.posts.map((post, v) => (
-              <Link to={`/dashboard/resources/articles/${post.slug}`} key={v + 1}>
+            {blog?.items?.map((post, v) => (
+              <Link to={`/dashboard/resources/${post.slug}`} key={v + 1}>
                 <ResourceCard
-                  image={post?._embedded?.["wp:featuredmedia"]?.[0]?.source_url}
-                  title={post?.title?.rendered}
-                  type={"article"}
-                  subtitle={post?.excerpt?.rendered}
+                  image={post?.featuredImage}
+                  title={post?.title}
+                  type="article"
+                  subtitle={post?.description}
                   width="auto"
                 />
               </Link>
