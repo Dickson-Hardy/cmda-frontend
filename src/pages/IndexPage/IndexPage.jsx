@@ -7,9 +7,17 @@ import doctorPng from "~/assets/images/cheerful-doctor.png";
 import studentsPng from "~/assets/images/students.png";
 import lecturerPng from "~/assets/images/lecturer.png";
 import { classNames } from "~/utilities/classNames";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const IndexPage = () => {
+  const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) navigate("/dashboard");
+  }, [navigate, user]);
+
 
   const CATEGORIES = [
     {

@@ -9,15 +9,12 @@ import Button from "~/components/Global/Button/Button";
 import Switch from "~/components/Global/FormElements/Switch/Switch";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
 import Loading from "~/components/Global/Loading/Loading";
-import { useGetAllPostsQuery } from "~/redux/api/external/wordPressApi";
-import { useGetRandomVerseQuery } from "~/redux/api/verse/verseApi";
 import Slider from "react-slick";
 import { useGetAllEventsQuery } from "~/redux/api/events/eventsApi";
 import { membersResponsiveSliderSettings, responsiveSliderSettings } from "~/constants/sliderConstants";
 import { useCreatePrayerTestimonyMutation } from "~/redux/api/prayerTestimonies/prayerTestimoniesApi";
 import { toast } from "react-toastify";
 import { useGetVolunteerJobsQuery } from "~/redux/api/volunteer/volunteerApi";
-import icons from "~/assets/js/icons";
 import { useGetAllUsersQuery } from "~/redux/api/user/userApi";
 import MemberCard from "~/components/DashboardComponents/Members/MemberCard";
 import Modal from "~/components/Global/Modal/Modal";
@@ -64,10 +61,10 @@ const DashboardHomePage = () => {
   const [createPrayerTestimony, { isLoading: isCreatingPrayer }] = useCreatePrayerTestimonyMutation();
 
   const { data: allUsers, isLoading: loadingUsers } = useGetAllUsersQuery(
-    { page: 1, limit: 3 },
+    { page: 1, limit: 10 },
     { refetchOnMountOrArgChange: true }
   );
-  // console.log(volunteerJobs);
+  // console.log(allUsers?.data?.items);
   const handleCreatePrayer = (data) => {
     const payload = {
       ...data,
@@ -116,19 +113,22 @@ const DashboardHomePage = () => {
           <Loading height={48} width={48} className="text-primary" />
         ) : (
           <Slider {...membersResponsiveSliderSettings}>
-            {allUsers?.data
+            {allUsers?.data?.items
               ?.filter((x) => x._id !== user?._id)
-              .map((mem) => (
-                <MemberCard
-                  key={mem._id}
-                  id={mem._id}
-                  width="auto"
-                  fullName={mem.firstName + " " + mem?.middleName + " " + mem?.lastName}
-                  avatar={mem.avatarUrl}
-                  role={mem.role}
-                  region={mem.region}
-                />
-              ))}
+              .map((mem) => {
+                // console.log(mem);
+                return (
+                  <MemberCard
+                    key={mem._id}
+                    id={mem._id}
+                    width="auto"
+                    fullName={mem.fullName}
+                    avatar={mem.avatarUrl}
+                    role={mem.role}
+                    region={mem.region}
+                  />
+                );
+              })}
           </Slider>
         )}
       </section>
