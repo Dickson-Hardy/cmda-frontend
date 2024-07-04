@@ -1,21 +1,21 @@
 import api from "../api";
 
-const eventsApi = api.injectEndpoints({
+const resourceApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getAllEvents: build.query({
+    getAllResources: build.query({
       query: ({ page, limit, searchBy }) => ({
-        url: "/events",
+        url: "/resources",
         params: { page, limit, ...(searchBy ? { searchBy } : {}) },
       }),
       transformResponse: (response) => response.data,
     }),
-    getSingleEvent: build.query({
-      query: (slug) => `/events/${slug}`,
+    getResourceBySlug: build.query({
+      query: (slug) => ({ url: `/resources/${slug}` }),
       transformResponse: (response) => response.data,
     }),
   }),
 });
 
-export const { useGetAllEventsQuery, useGetSingleEventQuery } = eventsApi;
+export const { useGetAllResourcesQuery, useGetResourceBySlugQuery } = resourceApi;
 
-export default eventsApi;
+export default resourceApi;

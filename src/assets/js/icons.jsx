@@ -40,6 +40,7 @@ import {
   FaAngleDoubleLeft,
   FaPrayingHands,
   FaCreditCard,
+  FaYoutube,
 } from "react-icons/fa";
 import { AiOutlineDelete, AiOutlineFileText } from "react-icons/ai";
 import {
@@ -119,6 +120,7 @@ const icons = {
   filter: <MdFilterList />,
   card: <FaCreditCard />,
   add: <MdOutlineAdd />,
+  youtube: <FaYoutube />,
 };
 
 export default icons;

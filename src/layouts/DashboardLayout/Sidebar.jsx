@@ -33,12 +33,9 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
           <Logo className="w-auto h-10 sm:h-12 hidden md:block" />
         </div>
 
-        <div className="flex items-center gap-2 my-6 mt-2 pt-8">
+        <div className="flex items-center gap-2 my-6">
           {user?.avatarUrl ? (
-            <img
-              src={user.avatarUrl}
-              className="bg-onPrimary object-cover rounded-full h-14 w-14 flex-shrink-0"
-            />
+            <img src={user.avatarUrl} className="bg-onPrimary object-cover rounded-full h-14 w-14 flex-shrink-0" />
           ) : (
             <span className="h-14 w-14 flex-shrink-0 bg-onPrimary rounded-full inline-flex items-center justify-center text-4xl text-primary">
               {icons.person}
@@ -55,26 +52,26 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
         </div>
         {/* Navigation Links */}
         <nav>
-          <ul className="flex-1 space-y-3">
+          <ul className="flex-1 space-y-2">
             {navLinks.map((navItem) => (
               <li key={navItem.title}>
                 <NavLink
                   to={navItem.link}
                   className={({ isActive }) =>
                     classNames(
-                      "flex items-center gap-4 px-4 py-3 cursor-pointer text-sm font-semibold rounded-lg transition-all",
+                      "flex items-center gap-4 px-4 py-2.5 cursor-pointer text-sm font-semibold rounded-lg transition-all",
                       isActive ? "bg-white text-primary" : "bg-transparent text-white hover:bg-onPrimary/20"
                     )
                   }
                   end={navItem.link === "/dashboard"}
                 >
-                  <span className="text-xl">{navItem.icon}</span> {navItem.title}
+                  <span className="text-lg">{navItem.icon}</span> {navItem.title}
                 </NavLink>
               </li>
             ))}
             <li
               className={classNames(
-                "flex items-center gap-4 px-4 py-3 cursor-pointer text-sm font-semibold rounded-lg transition-all",
+                "flex items-center gap-4 px-4 py-2.5 cursor-pointer text-sm font-semibold rounded-lg transition-all",
                 "bg-transparent text-white hover:bg-onPrimary/20"
               )}
               onClick={handleLogout}

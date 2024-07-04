@@ -1,7 +1,7 @@
 import { classNames } from "~/utilities/classNames";
 import formatDate from "~/utilities/fomartDate";
 
-const EventCard = ({ width = 288, row, title, image, date, tag, location, description }) => {
+const EventCard = ({ width = 288, row, title, image, date, type, location, description }) => {
   return (
     <div
       className={classNames(
@@ -12,19 +12,12 @@ const EventCard = ({ width = 288, row, title, image, date, tag, location, descri
     >
       <img src={image} className={classNames("bg-onPrimary h-36 w-full rounded-lg", row && "max-w-[200px] h-28")} />
       <div className="truncate">
-        <div className="flex gap-2 items-center">
-          {tag.map((tag, i) => (
-            <span
-              key={i}
-              className="px-2 py-1 capitalize text-tertiary text-xs font-semibold bg-onTertiary rounded-3xl"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
+        <span className="px-2 py-1 capitalize text-tertiary text-xs font-semibold bg-onTertiary rounded-3xl">
+          {type}
+        </span>
         <h4 className="text-sm font-bold truncate my-2 capitalize">{title}</h4>
         <p className="text-gray-dark text-xs truncate ">{description}</p>
-        {/* <p className="text-gray-dark text-xs">{formatDate(date).date + ", " + formatDate(date).time}</p> */}
+        <p className="text-gray-dark text-xs">{formatDate(date).date + ", " + formatDate(date).time}</p>
         <p className="text-gray-dark text-xs mt-2 truncate">{location}</p>
       </div>
     </div>

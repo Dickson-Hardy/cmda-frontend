@@ -1,4 +1,4 @@
-import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ErrorElement from "./ErrorElement/ErrorElement";
 import AuthLayout from "~/layouts/AuthLayout/AuthLayout";
 import DashboardLayout from "~/layouts/DashboardLayout/DashboardLayout";
@@ -15,7 +15,6 @@ import DashboardProfilePage from "~/pages/Dashboard/Profile/Profile";
 import ProtectedRoutes from "./ProtectedRoutes";
 import DashboardResources from "~/pages/Dashboard/Resources/Resources";
 import DashboardUpdatePassword from "~/pages/Dashboard/Profile/UpdatePassword/UpdatePassword";
-import DashboardResourceDetails from "~/pages/Dashboard/Resources/ResourceDetails/ResourceDetails";
 import DashboardMessagingPage from "~/pages/Dashboard/Messaging/Messaging";
 import DashboardStorePage from "~/pages/Dashboard/Store/Store";
 import DashboardStoreSingleProductPage from "~/pages/Dashboard/Store/SingleProduct/SingleProduct";
@@ -84,8 +83,6 @@ export default function AppRouter() {
             { path: "events/:id", element: <DashboardStoreSingleEventPage /> },
             { path: "profile", element: <DashboardProfilePage /> },
             { path: "resources", element: <DashboardResources /> },
-            // { path: "resources/:category", element: <Navigate to="/dashboard/resources" /> },
-            // { path: "resources/:category/:slug", element: <DashboardResourceDetails /> },
             { path: "resources/:slug", element: <SingleResource /> },
             { path: "messaging", element: <DashboardMessagingPage /> },
             { path: "store", element: <DashboardStorePage /> },

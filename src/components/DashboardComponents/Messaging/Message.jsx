@@ -1,4 +1,4 @@
-import { format } from "timeago.js";
+import { fromNow } from "~/utilities/timeFromNow";
 
 const Message = ({ message, userId }) => {
   return (
@@ -12,7 +12,7 @@ const Message = ({ message, userId }) => {
           <p>{message.content}</p>
         </div>
 
-        <p className="text-[9px] text-gray mt-1 text-right">{format(message.timestamp)}</p>
+        <p className="text-[9px] text-gray mt-1 text-right">{fromNow(message.timestamp)}</p>
       </div>
     </div>
   );

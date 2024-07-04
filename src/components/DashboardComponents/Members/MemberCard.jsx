@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import { classNames } from "~/utilities/classNames";
 import convertToCapitalizedWords from "~/utilities/convertToCapitalizedWords";
@@ -22,9 +22,9 @@ const MemberCard = ({ width = 288, fullName, id, avatar, role, region }) => {
           <span
             className={classNames(
               "inline-flex justify-center items-center text-4xl size-20 p-1 rounded-full",
-              role === "student"
+              role === "Doctor"
                 ? "bg-onSecondary text-secondary"
-                : role === "doctor"
+                : role === "Student"
                   ? "bg-onPrimary text-primary"
                   : "bg-onTertiary text-tertiary"
             )}
@@ -39,26 +39,25 @@ const MemberCard = ({ width = 288, fullName, id, avatar, role, region }) => {
         <span
           className={classNames(
             "px-2 py-1 capitalize text-xs font-semibold rounded-3xl",
-            role === "student"
+            role === "Doctor"
               ? "bg-onSecondary text-secondary"
-              : role.includes("global")
+              : role.includes("Global")
                 ? "bg-onTertiary text-tertiary"
                 : "bg-onPrimary text-primary"
           )}
         >
-          {role.includes("global") ? "Global Network Member" : convertToCapitalizedWords(role)}
+          {convertToCapitalizedWords(role)}
         </span>
         <p className="text-gray-dark text-xs mt-2 capitalize truncate">{region}</p>
       </div>
       <hr className="mt-3" />
       <div className="flex  bg-gray- rounded-b-xl">
-        <button
-          type="button"
-          onClick={() => navigate(`/dashboard/members/${id}`)}
+        <Link
+          to={`/dashboard/members/${id}`}
           className="text-center w-1/2 py-2 px-2 text-xs text-primary hover:bg-onPrimary hover:underline font-semibold"
         >
           View Profile
-        </button>
+        </Link>
         <div className="border"></div>
         <button
           type="button"

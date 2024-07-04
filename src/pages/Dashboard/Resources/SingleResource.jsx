@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import BackButton from "~/components/Global/BackButton/BackButton";
-import { useGetResourceBySlugQuery } from "~/redux/api/external/resourceApi";
+import { useGetResourceBySlugQuery } from "~/redux/api/resources/resourcesApi";
 import formatDate from "~/utilities/fomartDate";
 
 const SingleResource = () => {

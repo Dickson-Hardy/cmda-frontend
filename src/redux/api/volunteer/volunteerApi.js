@@ -3,15 +3,14 @@ import api from "../api";
 const volunteerApi = api.injectEndpoints({
   endpoints: (build) => ({
     getVolunteerJobs: build.query({
-      query: ({ page, limit }) => ({ url: "/volunteer/jobs", params: { page, limit } }),
-      transformResponse: ({ data: { items, meta } }) => {
-        const totalPages = meta.totalPages;
-        const totalItems = meta.totalItems;
-        return { data: items, totalItems, totalPages };
-      },
+      query: ({ page, limit, searchBy }) => ({
+        url: "/volunteer/jobs",
+        params: { page, limit, ...(searchBy ? { searchBy } : {}) },
+      }),
+      transformResponse: (response) => response.data,
     }),
     getSingleVolunteerJob: build.query({
-      query: (id) => `/volunteers/${id}`,
+      query: (id) => `/volunteer/jobs/${id}`,
       transformResponse: (response) => response.data,
     }),
   }),

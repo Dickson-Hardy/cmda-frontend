@@ -4,7 +4,7 @@ import ResourceCard from "~/components/DashboardComponents/Resources/ResourceCar
 import Button from "~/components/Global/Button/Button";
 import Chip from "~/components/Global/Chip/Chip";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
-import { useGetAllResourcesQuery } from "~/redux/api/external/resourceApi";
+import { useGetAllResourcesQuery } from "~/redux/api/resources/resourcesApi";
 
 const DashboardResources = () => {
   const CATEGORIES = ["Articles", "Webinars", "Newsletters", "Others"];

@@ -3,17 +3,14 @@ import api from "../api";
 const userApi = api.injectEndpoints({
   endpoints: (build) => ({
     getAllUsers: build.query({
-      query: ({ searchText, page, limit }) => ({
+      query: ({ searchBy, page, limit }) => ({
         url: "/users",
-        params: {
-          ...(searchText ? { fullName: searchText } : {}),
-          ...(page ? { page } : {}),
-          ...(limit ? { limit } : {}),
-        },
+        params: { page, limit, ...(searchBy ? { searchBy } : {}) },
       }),
+      transformResponse: (response) => response.data,
     }),
     getSingleUser: build.query({
-      query: (id) => `/users/${id}`,
+      query: (memId) => `/users/${memId}`,
       transformResponse: (response) => response.data,
     }),
   }),

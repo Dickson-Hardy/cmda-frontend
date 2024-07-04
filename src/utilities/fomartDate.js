@@ -7,24 +7,19 @@
 function formatDate(dateString) {
   const date = new Date(dateString);
 
-  const day = date.toLocaleString("en-US", { day: "2-digit" });
+  const day = date.toLocaleString("en-US", { day: "numeric" });
   const monthShort = date.toLocaleString("en-US", { month: "short" });
   const year = date.getFullYear();
   const time = date.toLocaleString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true });
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const ampm = hours > 12 ? "pm" : "am";
+  // const hours = date.getHours();
+  // const minutes = date.getMinutes();
+  // const ampm = hours > 12 ? "pm" : "am";
+  const _date = `${monthShort} ${day}, ${year}`;
 
   return {
-    date: `${day}-${monthShort}-${year}`,
-    monthDate: `${monthShort} ${parseInt(day)}`,
-    year,
-    monthShort,
-    day: parseInt(day),
+    date: _date,
     time,
-    hours,
-    minutes,
-    ampm,
+    dateTime: `${_date} || ${time}`,
   };
 }
 
