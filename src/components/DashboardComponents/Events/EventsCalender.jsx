@@ -13,10 +13,7 @@ const EventsCalender = () => {
     data: eventsOnThisDay,
     isLoading,
     isFetching,
-  } = useGetAllEventsQuery(
-    { page: 1, limit: 10, date: date.toISOString().slice(0, 10) },
-    { refetchOnMountOrArgChange: true }
-  );
+  } = useGetAllEventsQuery({ page: 1, limit: 10, date: date.toISOString().slice(0, 10) });
 
   return (
     <div className="sticky top-0">
@@ -32,15 +29,13 @@ const EventsCalender = () => {
           </div>
         ) : (
           <ul className="space-y-3 h-52 overflow-y-auto py-2">
-            {eventsOnThisDay?.data.map((evt, i) => (
+            {eventsOnThisDay?.items.map((evt, i) => (
               <li key={i}>
-                <Link to={`/dashboard/events/${evt?._id}`} className="block bg-white border rounded-xl p-4 space-y-2">
-                  <h4 className="text-sm font-bold truncate capitalize">{evt?.title}</h4>
+                <Link to={`/dashboard/events/${evt?.slug}`} className="block bg-white border rounded-xl p-4 space-y-2">
+                  <h4 className="text-sm font-bold truncate capitalize">{evt?.name}</h4>
                   <div className="text-gray-dark text-xs mb-2 truncate flex items-center gap-2">
                     <span>{evt?.eventType === "physical" ? icons.location : icons.globe}</span>
-                    <p className="truncate">
-                      {evt?.eventType === "physical" ? evt.physicalLocation : evt.virtualLink} and some others
-                    </p>
+                    <p className="truncate">{evt?.linkOrLocation}</p>
                   </div>
                 </Link>
               </li>

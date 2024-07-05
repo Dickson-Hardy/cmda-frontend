@@ -3,11 +3,11 @@ import icons from "~/assets/js/icons";
 import { classNames } from "~/utilities/classNames";
 import convertToCapitalizedWords from "~/utilities/convertToCapitalizedWords";
 
-const MemberCard = ({ width = 288, fullName, id, avatar, role, region }) => {
+const MemberCard = ({ width = 240, fullName, id, avatar, role, region, className }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-white border rounded-xl hover:shadow pt-4" style={{ width }}>
+    <div className={classNames("bg-white border rounded-xl hover:shadow pt-4", className)} style={{ width }}>
       {avatar ? (
         <img
           className={classNames(

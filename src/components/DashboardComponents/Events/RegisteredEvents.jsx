@@ -7,21 +7,18 @@ import SearchBar from "~/components/Global/SearchBar/SearchBar";
 import icons from "~/assets/js/icons";
 import EventFilterModal from "./EventFilterModal";
 
-const PastEvents = ({ row, isSmallScreen }) => {
-  const [pastEvents, setPastEvents] = useState([]);
+const RegisteredEvents = ({ row, isSmallScreen }) => {
+  const [registeredEvents, setRegisteredEvents] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [searchText, setSearchText] = useState();
+  const [searchBy, setSearchBy] = useState();
   const [openFilter, setOpenFilter] = useState(false);
 
-  const { data: events, isLoading } = useGetAllEventsQuery(
-    { page, limit: 10, status: "false", searchText },
-    { refetchOnMountOrArgChange: true }
-  );
+  const { data: events, isLoading } = useGetAllEventsQuery({ page, limit: 10, searchBy });
 
   useEffect(() => {
     if (events) {
-      setPastEvents((prevEvts) => {
+      setRegisteredEvents((prevEvts) => {
         const combinedEvents = [...prevEvts, ...events.items];
         const uniqueEvents = Array.from(new Set(combinedEvents.map((evt) => evt._id))).map((_id) =>
           combinedEvents.find((evt) => evt._id === _id)
@@ -29,7 +26,7 @@ const PastEvents = ({ row, isSmallScreen }) => {
         return uniqueEvents;
       });
 
-      setTotalPages(events.pagination?.totalPages);
+      setTotalPages(events.meta?.totalPages);
     }
   }, [events]);
 
@@ -39,8 +36,8 @@ const PastEvents = ({ row, isSmallScreen }) => {
         <SearchBar
           placeholder="Search events"
           onSearch={(v) => {
-            // setUpcomingEvents([]);
-            setSearchText(v);
+            // setRegisteredEvents([]);
+            setSearchBy(v);
           }}
         />
         <Button
@@ -53,16 +50,16 @@ const PastEvents = ({ row, isSmallScreen }) => {
       </div>
 
       <div className={`flex gap-8  ${row || isSmallScreen ? "flex-col" : "flex-row flex-wrap"}`}>
-        {pastEvents.map((evt) => (
+        {registeredEvents.map((evt) => (
           <Link key={evt.slug} to={`/dashboard/events/${evt.slug}`}>
             <EventCard
               row={row && !isSmallScreen}
               width={row ? "auto" : isSmallScreen ? "100%" : 330}
               title={evt.name}
-              // date={evt.eventDateTime}
-              image={evt.featuredImage}
-              tag={evt.audience}
-              location={evt.type === "Physical" ? evt.location : evt.virtualLink}
+              date={evt.eventDateTime}
+              image={evt.featuredImageUrl}
+              type={evt.eventType}
+              location={evt.linkOrLocation}
               description={evt?.description}
             />
           </Link>
@@ -84,4 +81,4 @@ const PastEvents = ({ row, isSmallScreen }) => {
   );
 };
 
-export default PastEvents;
+export default RegisteredEvents;

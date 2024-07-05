@@ -11,20 +11,16 @@ const DashboardMembersPage = () => {
   const [members, setMembers] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [searchText, setSearchText] = useState("");
+  const [searchBy, setSearchBy] = useState("");
   const { user } = useSelector((state) => state.auth);
   const [openFilter, setOpenFilter] = useState(false);
 
-  const {
-    data: allUsers,
-    isLoading: loadingUsers,
-    isFetching,
-  } = useGetAllUsersQuery({ limit: 12, page, searchText }, { refetchOnMountOrArgChange: true });
+  const { data: allUsers, isLoading: loadingUsers, isFetching } = useGetAllUsersQuery({ limit: 12, page, searchBy });
 
   useEffect(() => {
     if (allUsers) {
       setMembers((prevUsers) => {
-        const combinedUsers = [...prevUsers, ...allUsers.data];
+        const combinedUsers = [...prevUsers, ...allUsers.items];
         // Use Set to remove duplicate objects based on their IDs
         const uniqueUsers = Array.from(new Set(combinedUsers.map((user) => user._id))).map((_id) =>
           combinedUsers.find((cUser) => cUser._id === _id)
@@ -32,7 +28,7 @@ const DashboardMembersPage = () => {
         return uniqueUsers;
       });
 
-      setTotalPages(allUsers.pagination?.totalPages);
+      setTotalPages(allUsers.meta?.totalPages);
     }
   }, [allUsers]);
 
@@ -50,7 +46,7 @@ const DashboardMembersPage = () => {
         <SearchBar
           onSearch={(v) => {
             setMembers([]);
-            setSearchText(v);
+            setSearchBy(v);
           }}
         />
       </div>
@@ -61,10 +57,10 @@ const DashboardMembersPage = () => {
             ?.filter((x) => x._id !== user?._id)
             .map((mem) => (
               <MemberCard
-                key={mem._id}
-                id={mem._id}
+                key={mem.membershipId}
+                id={mem.membershipId}
                 width="auto"
-                fullName={mem.firstName + " " + mem?.middleName + " " + mem?.lastName}
+                fullName={mem.fullName}
                 avatar={mem.avatarUrl}
                 role={mem.role}
                 region={mem.region}

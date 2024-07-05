@@ -1,6 +1,7 @@
 import { useMemo } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import icons from "~/assets/js/icons";
+import BackButton from "~/components/Global/BackButton/BackButton";
 import Button from "~/components/Global/Button/Button";
 import Loading from "~/components/Global/Loading/Loading";
 import { useGetSingleUserQuery } from "~/redux/api/user/userApi";
@@ -9,11 +10,7 @@ import { classNames } from "~/utilities/classNames";
 const DashboardMemberDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
-  const { data: member, isLoading } = useGetSingleUserQuery(id, {
-    refetchOnMountOrArgChange: true,
-    skip: !id,
-  });
+  const { data: member, isLoading } = useGetSingleUserQuery(id);
 
   const memberInfo = useMemo(() => {
     return {
@@ -31,15 +28,7 @@ const DashboardMemberDetailsPage = () => {
 
   return (
     <div>
-      <div className="flex justify-start items-center">
-        <Link
-          to="/dashboard/members"
-          className="inline-flex gap-2 text-base items-center font-medium text-primary hover:underline"
-        >
-          {icons.arrowLeft}
-          Back to Members List
-        </Link>
-      </div>
+      <BackButton to="/dashboard/members" label="Back to Members List" />
 
       <div className="max-w-screen-md mx-auto shadow h-[calc(100vh-240px)] md:h-[calc(100vh-180px)] overflow-y-auto bg-white rounded-lg pb-5 mt-6">
         <div className="flex gap-3 justify-between items-center p-5 mb-5 bg-white rounded-t-lg sticky top-0 right-0 left-0">
@@ -62,10 +51,10 @@ const DashboardMemberDetailsPage = () => {
           <div className="text-center">
             <span
               className={classNames(
-                "inline-flex justify-center items-center text-8xl size-40 md:size-52 border bg-white p-1 rounded-full",
-                member?.role === "student"
+                "inline-flex justify-center items-center text-8xl size-40 md:size-52 border p-1 rounded-full",
+                member?.role === "Doctor"
                   ? "bg-onSecondary text-secondary"
-                  : member?.role.includes("global")
+                  : member?.role.includes("Global")
                     ? "bg-onTertiary text-tertiary"
                     : "bg-onPrimary text-primary"
               )}
@@ -94,8 +83,8 @@ const DashboardMemberDetailsPage = () => {
                 </div>
               ))}
             </div>
-            <div className="flex gap-2 px-5 mt-4 md:mt-8">
-              {member?.socials.map((item) => (
+            {/* <div className="flex gap-2 px-5 mt-4 md:mt-8">
+              {member?.socials?.map((item) => (
                 <a
                   key={item.name}
                   href={item.link?.startsWith("http") ? item.link : "https://" + item.link}
@@ -106,7 +95,7 @@ const DashboardMemberDetailsPage = () => {
                   {icons[item.name]}
                 </a>
               ))}
-            </div>
+            </div> */}
           </>
         )}
       </div>

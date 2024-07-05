@@ -9,7 +9,7 @@ import { useGetAllResourcesQuery } from "~/redux/api/resources/resourcesApi";
 const DashboardResources = () => {
   const CATEGORIES = ["Articles", "Webinars", "Newsletters", "Others"];
 
-  const [selectedCategory, setSelectedCategory] = useState(["Articles"]);
+  const [selectedCategory, setSelectedCategory] = useState([]);
 
   const handleSelectCategory = (category) => {
     setSelectedCategory([category]);
@@ -20,37 +20,31 @@ const DashboardResources = () => {
     }
   };
 
-  const [posts, setPosts] = useState([]);
+  const [resources, setResources] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-
-  // const {
-  //   data: allPosts,
-  //   isLoading: loadingPosts,
-  //   isFetching,
-  // } = useGetAllPostsQuery({ perPage: 12, page }, { refetchOnMountOrArgChange: true });
+  const [searchBy, setSearchBy] = useState("");
 
   const {
-    data: allPosts,
-    isLoading: loadingPosts,
+    data: allResources,
+    isLoading: loadingResources,
     isFetching,
-  } = useGetAllResourcesQuery({ page, limit: 10 }, { refetchOnMountOrArgChange: true });
-  // console.log({ allPosts });
+  } = useGetAllResourcesQuery({ page, limit: 12, searchBy });
 
   useEffect(() => {
-    if (allPosts) {
-      setPosts((prevPosts) => {
-        const combinedPosts = [...prevPosts, ...allPosts.items];
+    if (allResources) {
+      setResources((prevResources) => {
+        const combinedResources = [...prevResources, ...allResources.items];
         // Use Set to remove duplicate objects based on their IDs
-        const uniquePosts = Array.from(new Set(combinedPosts.map((post) => post._id))).map((id) =>
-          combinedPosts.find((post) => post._id === id)
+        const uniqueResources = Array.from(new Set(combinedResources.map((res) => res._id))).map((id) =>
+          combinedResources.find((res) => res._id === id)
         );
-        return uniquePosts;
+        return uniqueResources;
       });
 
-      setTotalPages(allPosts.totalPages);
+      setTotalPages(allResources.meta.totalPages);
     }
-  }, [allPosts]);
+  }, [allResources]);
 
   return (
     <div>
@@ -63,25 +57,30 @@ const DashboardResources = () => {
               key={category}
               label={category}
               variant={selectedCategory.includes(category) ? "filled" : "outlined"}
-              color={selectedCategory.includes(category) ? "primary" : "black"}
+              color={"primary"}
               onClick={() => handleSelectCategory(category)}
             />
           ))}
         </div>
 
-        <SearchBar />
+        <SearchBar
+          onSearch={(v) => {
+            setResources([]);
+            setSearchBy(v);
+          }}
+        />
       </div>
 
       <section className="mt-8">
         <h3 className="text-lg font-bold mb-4">Recent Resources </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
-          {posts.map((post, v) => (
-            <Link to={`/dashboard/resources/${post.slug}`} key={v + 1}>
+          {resources.map((res) => (
+            <Link to={`/dashboard/resources/${res.slug}`} key={res._id}>
               <ResourceCard
-                image={post?.featuredImage}
-                title={post?.title}
-                type="article"
-                subtitle={post?.description}
+                image={res?.featuredImage}
+                title={res?.title}
+                type={res.category}
+                subtitle={res?.description}
                 width="auto"
               />
             </Link>
@@ -93,7 +92,7 @@ const DashboardResources = () => {
             disabled={page === totalPages}
             label={page === totalPages ? "The End" : "Load More"}
             className={"md:w-1/3 w-full"}
-            loading={loadingPosts || isFetching}
+            loading={loadingResources || isFetching}
             onClick={() => setPage((prev) => prev + 1)}
           />
         </div>

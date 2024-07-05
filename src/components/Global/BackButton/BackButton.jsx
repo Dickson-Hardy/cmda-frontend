@@ -1,5 +1,5 @@
+import { BiChevronLeft } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import icons from "~/assets/js/icons";
 import { classNames } from "~/utilities/classNames";
 
 const BackButton = ({ label, to, className }) => {
@@ -14,7 +14,7 @@ const BackButton = ({ label, to, className }) => {
       type="button"
       onClick={() => navigate(to || -1)}
     >
-      <span className="text-xl">{icons.arrowLeft}</span>
+      <BiChevronLeft size={28} />
       {label || "Back"}
     </button>
   );

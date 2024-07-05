@@ -1,6 +1,6 @@
 import icons from "~/assets/js/icons";
 
-const ResourceCard = ({ title, subtitle, type, image, width = 280 }) => {
+const ResourceCard = ({ title, subtitle, type, image, width = 240 }) => {
   return (
     <div className="bg-white rounded-2xl border" style={{ width }}>
       <img src={image} className="bg-onPrimary h-32 w-full rounded-t-lg object-cover" />

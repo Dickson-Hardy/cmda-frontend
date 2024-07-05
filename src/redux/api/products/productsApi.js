@@ -3,18 +3,14 @@ import api from "../api";
 const productsApi = api.injectEndpoints({
   endpoints: (build) => ({
     getAllProducts: build.query({
-      query: ({ page, limit, searchText, status }) => ({
+      query: ({ page, limit, searchBy }) => ({
         url: "/products",
-        params: {
-          page,
-          limit,
-          ...(searchText ? { searchText } : {}),
-          ...(status ? { status } : {}),
-        },
+        params: { page, limit, ...(searchBy ? { searchBy } : {}) },
       }),
+      transformResponse: (response) => response.data,
     }),
     getSingleProduct: build.query({
-      query: ({ id }) => ({ url: `/products/${id}`, cache: "no-cache" }),
+      query: (slug) => ({ url: `/products/${slug}` }),
       transformResponse: (response) => response.data,
     }),
   }),

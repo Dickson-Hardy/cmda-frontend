@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import icons from "~/assets/js/icons";
+import BackButton from "~/components/Global/BackButton/BackButton";
 import Button from "~/components/Global/Button/Button";
 import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import { useGetSingleEventQuery } from "~/redux/api/events/eventsApi";
@@ -8,95 +9,111 @@ import { classNames } from "~/utilities/classNames";
 import formatDate from "~/utilities/fomartDate";
 
 const DashboardStoreSingleEventPage = () => {
-  const { id } = useParams();
-  const { data: singleEvent } = useGetSingleEventQuery(id, { refetchOnMountOrArgChange: true, skip: !id });
+  const { slug } = useParams();
+  const { data: singleEvent } = useGetSingleEventQuery(slug);
   const [confirmRegister, setConfirmRegister] = useState(false);
 
   const handleShare = (social) => alert("Sharing on " + social);
 
   return (
-    <div className="bg-white py-6 px-2 lg:px-6 rounded-3xl">
-      <Link
-        to="/dashboard/events"
-        className="inline-flex gap-2 text-base items-center font-medium text-primary hover:underline"
-      >
-        {icons.arrowLeft}
-        Back to Events
-      </Link>
+    <div>
+      <BackButton label="Back to Events List" to="/dashboard/events" />
 
-      {/* content */}
-      <div className="mt-4">
-        <img
-          src={singleEvent?.featuredImage}
-          className={classNames("bg-onPrimary h-auto max-h-[300px] md:max-h-[350px] w-full rounded-lg object-cover")}
-        />
+      <section className="bg-white rounded-2xl p-6 shadow w-full mt-6">
+        <span className="capitalize bg-onTertiary text-tertiary px-4 py-2 rounded-lg text-xs font-semibold mb-4 inline-block">
+          {singleEvent?.eventType}
+        </span>
 
-        <div className="flex gap-2 items-center">
-          {singleEvent?.tag.map((tag, i) => (
-            <span
-              key={i}
-              className="px-2 py-1 capitalize text-tertiary text-xs font-semibold bg-onTertiary rounded-3xl"
-            >
+        <h2 className="font-bold mb-4 text-2xl">{singleEvent?.name}</h2>
+
+        <img src={singleEvent?.featuredImageUrl} className="w-full max-h-[500px] mb-6" />
+
+        <p className="text-base">{singleEvent?.description}</p>
+
+        <div className="mt-6">
+          <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">
+            Event {singleEvent?.eventType === "Physical" ? "Location" : "Link"}
+          </h4>
+          <p className="text-base mb-1">{singleEvent?.linkOrLocation}</p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-6 mt-6">
+          <div>
+            <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Access Code</h4>
+            <p className="text-base mb-1">{singleEvent?.accessCode || "N/A"}</p>
+          </div>
+          <div>
+            <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Event Date &amp; Time</h4>
+            <p className="text-base mb-1">{formatDate(singleEvent?.eventDateTime).dateTime}</p>
+          </div>
+          <div className="col-span-2">
+            <h4 className="text-sm text-gray-600 font-semibold uppercase mb-2">Members Group</h4>
+            <p className="flex flex-wrap gap-4">
+              {singleEvent?.membersGroup?.map((grp) => (
+                <span
+                  key={grp}
+                  className={classNames(
+                    "capitalize px-4 py-2 rounded text-xs font-medium",
+                    grp === "Student"
+                      ? "bg-onPrimaryContainer text-primary"
+                      : grp === "Doctor"
+                        ? "bg-onSecondaryContainer text-secondary"
+                        : "bg-onTertiaryContainer text-tertiary"
+                  )}
+                >
+                  {grp}
+                </span>
+              ))}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Additional Information</h4>
+          <p className="text-base mb-1">{singleEvent?.additionalInformation}</p>
+        </div>
+
+        <div className="flex flex-wrap gap-4 my-6">
+          {singleEvent?.eventTags?.map((tag) => (
+            <span key={tag} className="capitalize bg-gray-light px-4 py-2 rounded text-xs font-medium">
               {tag}
             </span>
           ))}
         </div>
-        <h4 className="text-xl lg:text-2xl font-bold capitalize mt-3">{singleEvent?.name}</h4>
 
-        {singleEvent?.isActive && (
-          <div className="flex flex-wrap gap-2 lg:gap-4 items-center justify-start mt-4 mb-8">
-            <Button label="Register for free" onClick={() => setConfirmRegister(true)} />
-            <Button label="Add to calender" variant="outlined" />
+        <div className="space-y-1">
+          <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Share this Event</h4>
+          <div className="flex flex-wrap gap-x-5">
+            {["facebook", "twitter", "whatsapp", "linkedIn", "instagram"].map((item) => (
+              <button
+                key={item}
+                type="button"
+                className="bg-gray-light rounded-full text-xl h-10 w-10 inline-flex justify-center items-center hover:text-primary"
+                onClick={() => handleShare(item)}
+              >
+                {icons[item]}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="my-6">
+          <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">CME Points</h4>
+          <p className="text-base mb-1">{singleEvent?.cmePoints || 0}</p>
+        </div>
+
+        {singleEvent?.eventDateTime && (
+          <div className="flex flex-wrap gap-2 lg:gap-4 justify-end mt-4 mb-4">
+            <Button label="Register for free" large onClick={() => setConfirmRegister(true)} />
+            <Button label="Add to calender" large variant="outlined" icon={icons.calendar} />
           </div>
         )}
-
-        <div className="mt-6 flex flex-col lg:flex-row lg:justify-between gap-y-5 items-start">
-          {/* when and where */}
-          <div className="space-y-1">
-            <h5 className="font-semibold">When and Where</h5>
-            <div className="flex gap-x-2 items-center text-sm">
-              {/* <p className="">
-                {formatDate(singleEvent?.eventDateTime).date + ", " + formatDate(singleEvent?.eventDateTime).time}
-              </p> */}
-              <span className="">{icons.dot}</span>
-              <p className="">{singleEvent?.type === "Physical" ? singleEvent?.location : singleEvent?.virtualLink}</p>
-            </div>
-          </div>
-          {/* share */}
-          <div className="space-y-1">
-            <h5 className="font-semibold">Share this Event</h5>
-            <div className="flex flex-wrap gap-x-5">
-              {["facebook", "twitter", "whatsapp", "linkedIn", "instagram"].map((item) => (
-                <button
-                  key={item}
-                  type="button"
-                  className="bg-gray-light rounded-full text-xl h-10 w-10 inline-flex justify-center items-center hover:text-primary"
-                  onClick={() => handleShare(item)}
-                >
-                  {icons[item]}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* event details */}
-        <div className="space-y-1 mt-8">
-          <h5 className="font-semibold">Event Details</h5>
-          <div>{singleEvent?.description}</div>
-        </div>
-
-        {/* cme points */}
-        <div className="mt-8 space-y-1">
-          <h5 className="font-semibold">CME Points</h5>
-          <p className="text-sm">{singleEvent?.cmePoints || 0} points</p>
-        </div>
-      </div>
+      </section>
 
       <ConfirmationModal
-        icon={icons.check}
-        title="Medical Problems in West Africa And How to Solve them"
-        subtitle={formatDate(new Date()).date + ", " + formatDate(new Date()).time}
+        icon={icons.calendar}
+        title={singleEvent?.name}
+        subtitle={singleEvent?.linkOrLocation + " --- " + formatDate(singleEvent?.eventDateTime).dateTime}
         subAction={() => setConfirmRegister(false)}
         subActionText="Cancel"
         maxWidth={400}

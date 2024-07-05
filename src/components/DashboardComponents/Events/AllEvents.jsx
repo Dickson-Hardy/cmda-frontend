@@ -7,21 +7,21 @@ import icons from "~/assets/js/icons";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
 import EventFilterModal from "./EventFilterModal";
 
-const UpcomingEvents = ({ row, isSmallScreen }) => {
-  const [upcomingEvents, setUpcomingEvents] = useState([]);
+const AllEvents = ({ row, isSmallScreen }) => {
+  const [allEvents, setAllEvents] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [searchText, setSearchText] = useState();
+  const [searchBy, setSearchBy] = useState();
   const [openFilter, setOpenFilter] = useState(false);
 
   const { data: events, isLoading } = useGetAllEventsQuery(
-    { page, limit: 10, status: "true", searchText },
+    { page, limit: 10, status: "true", searchBy },
     { refetchOnMountOrArgChange: true }
   );
 
   useEffect(() => {
     if (events) {
-      setUpcomingEvents((prevEvts) => {
+      setAllEvents((prevEvts) => {
         const combinedEvents = [...prevEvts, ...events.items];
         const uniqueEvents = Array.from(new Set(combinedEvents.map((evt) => evt._id))).map((_id) =>
           combinedEvents.find((evt) => evt._id === _id)
@@ -29,7 +29,7 @@ const UpcomingEvents = ({ row, isSmallScreen }) => {
         return uniqueEvents;
       });
 
-      setTotalPages(events.pagination?.totalPages);
+      setTotalPages(events.meta?.totalPages);
     }
   }, [events]);
 
@@ -38,8 +38,8 @@ const UpcomingEvents = ({ row, isSmallScreen }) => {
       <div className="flex justify-between item-center mb-4">
         <SearchBar
           onSearch={(v) => {
-            // setUpcomingEvents([]);
-            setSearchText(v);
+            // setAllEvents([]);
+            setSearchBy(v);
           }}
         />
         <Button
@@ -51,16 +51,16 @@ const UpcomingEvents = ({ row, isSmallScreen }) => {
         />
       </div>
       <div className={`flex gap-8  ${row || isSmallScreen ? "flex-col" : "flex-row flex-wrap"}`}>
-        {upcomingEvents.map((evt) => (
+        {allEvents.map((evt) => (
           <Link key={evt.slug} to={`/dashboard/events/${evt.slug}`}>
             <EventCard
               row={row && !isSmallScreen}
               width={row ? "auto" : isSmallScreen ? "100%" : 330}
               title={evt.name}
-              // date={evt.eventDateTime}
-              image={evt.featuredImage}
-              tag={evt.audience}
-              location={evt.type === "Physical" ? evt.location : evt.virtualLink}
+              date={evt.eventDateTime}
+              image={evt.featuredImageUrl}
+              type={evt.eventType}
+              location={evt.linkOrLocation}
               description={evt?.description}
             />
           </Link>
@@ -82,4 +82,4 @@ const UpcomingEvents = ({ row, isSmallScreen }) => {
   );
 };
 
-export default UpcomingEvents;
+export default AllEvents;

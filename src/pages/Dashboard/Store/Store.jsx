@@ -19,22 +19,20 @@ const DashboardStorePage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
-  const { data: productsData, isLoading } = useGetAllProductsQuery(
-    { page, limit: 10 },
-    { refetchOnMountOrArgChange: true }
-  );
+  const { data: productsData, isLoading, isFetching } = useGetAllProductsQuery({ page, limit: 12 });
+  console.log("PROD", productsData?.items);
 
   useEffect(() => {
     if (productsData) {
       setProducts((prevProds) => {
-        const combinedProducts = [...prevProds, ...productsData.data];
+        const combinedProducts = [...prevProds, ...productsData.items];
         const uniqueProducts = Array.from(new Set(combinedProducts.map((evt) => evt._id))).map((_id) =>
           combinedProducts.find((evt) => evt._id === _id)
         );
         return uniqueProducts;
       });
 
-      setTotalPages(productsData.pagination?.totalPages);
+      setTotalPages(productsData.meta?.totalPages);
     }
   }, [productsData]);
 
@@ -48,14 +46,14 @@ const DashboardStorePage = () => {
       <section className="flex flex-col-reverse sm:flex-row justify-center gap-10 mt-8 ">
         <div className="w-full sm:w-1/2 md:w-2/3 xl:w-3/4">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {products.map((prod, i) => (
-              <Link to={`/dashboard/store/${prod?._id}`} key={i + 1}>
+            {products.map((prod) => (
+              <Link to={`/dashboard/store/${prod?.slug}`} key={prod._id}>
                 <ProductCard
                   width="auto"
-                  name={prod?.productName}
+                  name={prod?.name}
                   description={prod?.description}
-                  price={prod?.salePrice}
-                  image={prod?.productImages[0]?.Url}
+                  price={prod?.price}
+                  image={prod?.featuredImageUrl}
                 />
               </Link>
             ))}
@@ -66,7 +64,7 @@ const DashboardStorePage = () => {
               disabled={page === totalPages}
               label={page === totalPages ? "The End" : "Load More"}
               className={"md:w-1/3 w-full"}
-              loading={isLoading}
+              loading={isLoading || isFetching}
               onClick={() => setPage((prev) => prev + 1)}
             />
           </div>

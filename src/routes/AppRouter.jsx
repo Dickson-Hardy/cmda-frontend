@@ -80,7 +80,7 @@ export default function AppRouter() {
           children: [
             { index: true, element: <DashboardHomePage /> },
             { path: "events", element: <DashboardEventsPage /> },
-            { path: "events/:id", element: <DashboardStoreSingleEventPage /> },
+            { path: "events/:slug", element: <DashboardStoreSingleEventPage /> },
             { path: "profile", element: <DashboardProfilePage /> },
             { path: "resources", element: <DashboardResources /> },
             { path: "resources/:slug", element: <SingleResource /> },
@@ -89,7 +89,7 @@ export default function AppRouter() {
             { path: "store/cart", element: <DashboardCartPage /> },
             { path: "store/checkout", element: <DashboardCheckoutPage /> },
             { path: "store/history", element: <DashboardStoreOrderHistoryPage /> },
-            { path: "store/:id", element: <DashboardStoreSingleProductPage /> },
+            { path: "store/:slug", element: <DashboardStoreSingleProductPage /> },
             { path: "volunteers", element: <DashboardVolunteersPage /> },
             { path: "volunteer/:id", element: <DashboardVolunteerDetailsPage /> },
             { path: "members", element: <DashboardMembersPage /> },

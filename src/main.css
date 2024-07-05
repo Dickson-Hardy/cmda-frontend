@@ -27,29 +27,21 @@
   display: none;
 }
 
-/* resource articles single */
-.blogpost img {
-  margin: 2rem auto;
-}
-
-/* the slides */
-.slick-slide {
-  padding: 4px 8px;
-}
-
-/* the arrows */
-.slick-prev:before,
-.slick-next:before {
-  font-size: 22px;
-  line-height: 1;
-  opacity: 1;
-  background: white;
+#resource-body a {
+  display: inline-block;
   color: #994279;
+  margin: 4px 0;
+  font-weight: 600;
+}
+#resource-body a:hover {
+  text-decoration: underline;
 }
 
-.slick-next {
-  right: -18px;
-}
-.slick-prev {
-  left: -18px;
+#resource-body p,
+#resource-body ul,
+#resource-body h2,
+#resource-body h3,
+#resource-body h4,
+#resource-body img {
+  margin: 8px 0;
 }

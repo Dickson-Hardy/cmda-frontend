@@ -1,11 +1,11 @@
 import { useState } from "react";
 import Tabs from "~/components/Global/Tabs/Tabs";
 import Drawer from "~/components/Global/Drawer/Drawer";
-// import EventsCalender from "~/components/DashboardComponents/Events/EventsCalender";
+import EventsCalender from "~/components/DashboardComponents/Events/EventsCalender";
 import icons from "~/assets/js/icons";
 import { useIsSmallScreen } from "~/hooks/useIsSmallScreen";
-import UpcomingEvents from "~/components/DashboardComponents/Events/UpcomingEvents";
-import PastEvents from "~/components/DashboardComponents/Events/PastEvents";
+import AllEvents from "~/components/DashboardComponents/Events/AllEvents";
+import RegisteredEvents from "~/components/DashboardComponents/Events/RegisteredEvents";
 
 const DashboardEventsPage = () => {
   const [activeView, setActiveView] = useState("list");
@@ -16,8 +16,8 @@ const DashboardEventsPage = () => {
   const isRowView = activeView === "list";
 
   const eventTabs = [
-    { label: "Upcoming events", content: <UpcomingEvents row={isRowView} isSmallScreen={isSmallScreen} /> },
-    { label: "Past events", content: <PastEvents row={isRowView} isSmallScreen={isSmallScreen} /> },
+    { label: "All Events", content: <AllEvents row={isRowView} isSmallScreen={isSmallScreen} /> },
+    { label: "Registered events", content: <RegisteredEvents row={isRowView} isSmallScreen={isSmallScreen} /> },
   ];
 
   return (
@@ -36,7 +36,9 @@ const DashboardEventsPage = () => {
         <div className="w-full lg:w-2/3 ">
           <Tabs tabs={eventTabs} equalTab={false} activeView={activeView} setActiveView={setActiveView} page="events" />
         </div>
-        <div className="hidden lg:block lg:w-1/3">{/* <EventsCalender /> */}</div>
+        <div className="hidden lg:block lg:w-1/3">
+          <EventsCalender />
+        </div>
       </section>
 
       {/* mobile calender */}

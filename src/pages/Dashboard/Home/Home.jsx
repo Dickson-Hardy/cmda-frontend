@@ -10,7 +10,6 @@ import Switch from "~/components/Global/FormElements/Switch/Switch";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
 import Loading from "~/components/Global/Loading/Loading";
 import { useGetAllEventsQuery } from "~/redux/api/events/eventsApi";
-// import { membersResponsiveSliderSettings, responsiveSliderSettings } from "~/constants/sliderConstants";
 import { useCreatePrayerTestimonyMutation } from "~/redux/api/prayerTestimonies/prayerTestimoniesApi";
 import { toast } from "react-toastify";
 import { useGetVolunteerJobsQuery } from "~/redux/api/volunteer/volunteerApi";
@@ -22,31 +21,7 @@ import doctorPng from "~/assets/images/cheerful-doctor.png";
 import { useGetLatestDevotionalQuery } from "~/redux/api/devotionals/devotionalsApi";
 import { useGetAllResourcesQuery } from "~/redux/api/resources/resourcesApi";
 import { selectAuth } from "~/redux/features/auth/authSlice";
-// import Carousel from "react-multi-carousel";
-
-const responsive = {
-  superLargeDesktop: {
-    // the naming can be any, depends on you.
-    breakpoint: { max: 4000, min: 3000 },
-    items: 5,
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 3,
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2,
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-  },
-};
-
-const Carousel = ({ children }) => {
-  <div className="overflow-x-auto p-6 flex bg-red-300">{children}</div>;
-};
+import MultiItemCarousel from "~/components/Global/MultiItemCarousel/MultiItemCarousel";
 
 const DashboardHomePage = () => {
   const { user } = useSelector(selectAuth);
@@ -116,22 +91,7 @@ const DashboardHomePage = () => {
         {loadingUsers ? (
           <Loading height={48} width={48} className="text-primary" />
         ) : (
-          <Carousel
-            swipeable={false}
-            draggable={false}
-            showDots={true}
-            responsive={responsive}
-            ssr={true} // means to render carousel on server-side.
-            infinite={true}
-            autoPlaySpeed={1000}
-            keyBoardControl={true}
-            customTransition="all .5"
-            transitionDuration={500}
-            containerClass="carousel-container"
-            removeArrowOnDeviceType={["tablet", "mobile"]}
-            dotListClass="custom-dot-list-style"
-            itemClass="carousel-item-padding-40-px"
-          >
+          <MultiItemCarousel>
             {allUsers?.items
               ?.filter((x) => x._id !== user?._id)
               .map((mem) => (
@@ -142,9 +102,10 @@ const DashboardHomePage = () => {
                   avatar={mem.avatarUrl}
                   role={mem.role}
                   region={mem.region}
+                  className="mb-4 mx-10"
                 />
               ))}
-          </Carousel>
+          </MultiItemCarousel>
         )}
       </section>
 
@@ -158,34 +119,20 @@ const DashboardHomePage = () => {
         {loadingEvents ? (
           <Loading height={48} width={48} className="text-primary" />
         ) : (
-          <Carousel
-            swipeable={false}
-            draggable={false}
-            showDots={true}
-            responsive={responsive}
-            ssr={true} // means to render carousel on server-side.
-            infinite={true}
-            autoPlaySpeed={1000}
-            keyBoardControl={true}
-            customTransition="all .5"
-            transitionDuration={500}
-            containerClass="carousel-container"
-            removeArrowOnDeviceType={["tablet", "mobile"]}
-            dotListClass="custom-dot-list-style"
-            itemClass="carousel-item-padding-40-px"
-          >
+          <MultiItemCarousel>
             {events?.items?.map((evt) => (
-              <Link key={evt._id} to={`/dashboard/events/${evt._id}`}>
+              <Link key={evt._id} to={`/dashboard/events/${evt.slug}`} className="mb-4 mx-10">
                 <EventCard
-                  title={evt.title}
+                  title={evt.name}
                   date={evt.eventDateTime}
-                  image={evt.eventImageUrl}
+                  image={evt.featuredImageUrl}
                   type={evt.eventType}
-                  location={evt.eventType === "physical" ? evt.physicalLocation : evt.virtualLink}
+                  location={evt.linkOrLocation}
+                  description={evt.description}
                 />
               </Link>
             ))}
-          </Carousel>
+          </MultiItemCarousel>
         )}
       </section>
 
@@ -199,24 +146,9 @@ const DashboardHomePage = () => {
         {loadingRes ? (
           <Loading height={48} width={48} className="text-primary" />
         ) : (
-          <Carousel
-            swipeable={false}
-            draggable={false}
-            showDots={true}
-            responsive={responsive}
-            ssr={true} // means to render carousel on server-side.
-            infinite={true}
-            autoPlaySpeed={1000}
-            keyBoardControl={true}
-            customTransition="all .5"
-            transitionDuration={500}
-            containerClass="carousel-container"
-            removeArrowOnDeviceType={["tablet", "mobile"]}
-            dotListClass="custom-dot-list-style"
-            itemClass="carousel-item-padding-40-px"
-          >
-            {allResources?.items?.map((res, v) => (
-              <Link to={`/dashboard/resources/${res.slug}`} key={v + 1}>
+          <MultiItemCarousel>
+            {allResources?.items?.map((res) => (
+              <Link to={`/dashboard/resources/${res.slug}`} key={res.slug} className="mb-4 mx-10">
                 <ResourceCard
                   image={res?.featuredImage}
                   title={res?.title}
@@ -225,7 +157,7 @@ const DashboardHomePage = () => {
                 />
               </Link>
             ))}
-          </Carousel>
+          </MultiItemCarousel>
         )}
       </section>
 
