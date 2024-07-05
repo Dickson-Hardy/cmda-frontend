@@ -37,15 +37,10 @@ const DashboardHomePage = () => {
   } = useForm({ mode: "all" });
 
   const { data: devotional, isLoading: loadingVerse } = useGetLatestDevotionalQuery();
-  console.log("DEVO", devotional);
   const { data: allResources, isLoading: loadingRes } = useGetAllResourcesQuery({ page: 1, limit: 10 });
-  console.log("RES", allResources);
   const { data: events, isLoading: loadingEvents } = useGetAllEventsQuery({ page: 1, limit: 10 });
-  console.log("evt", events);
   const { data: jobs, isLoading: loadingJobs } = useGetVolunteerJobsQuery({ page: 1, limit: 3 });
-  console.log("JOB", jobs);
   const { data: allUsers, isLoading: loadingUsers } = useGetAllUsersQuery({ page: 1, limit: 10 });
-  console.log("MEM", allUsers);
   const [createPrayerTestimony, { isLoading: isCreatingPrayer }] = useCreatePrayerTestimonyMutation();
 
   const handleCreatePrayer = (data) => {

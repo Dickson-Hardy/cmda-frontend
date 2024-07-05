@@ -9,10 +9,10 @@ const ConfirmationModal = ({
   title = "Title",
   subtitle = "Are you sure you want to do this?",
   mainAction, // function for the mainAction - button with filled variant // set as null to hide
-  mainActionText = "Yes",
+  mainActionText = "Yes, Continue",
   mainActionLoading = false,
   subAction, // function for subAction - outlined button // set as null to hide
-  subActionText = "No",
+  subActionText = "No, Cancel",
   subActionLoading = false,
   maxWidth = 480,
   actionsFlex = "flex-row", // flex-row-reverse, flex-col, flex-col-reverse ==> change the flex direction of the action buttons
@@ -40,7 +40,12 @@ const ConfirmationModal = ({
           <div className={classNames("flex gap-4", actionsFlex)}>
             {subAction && (
               <div className="flex-1">
-                <Button className="w-full" variant="outlined" loading={subActionLoading} onClick={subAction || onClose}>
+                <Button
+                  className="w-full"
+                  variant="outlined"
+                  loading={subActionLoading}
+                  onClick={typeof subAction === "boolean" ? onClose : subAction}
+                >
                   {subActionText}
                 </Button>
               </div>

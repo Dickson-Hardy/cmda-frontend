@@ -9,22 +9,19 @@ const DashboardVolunteersPage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
-  const { data: volunteerJobs, isLoading } = useGetVolunteerJobsQuery(
-    { page, limit: 10 },
-    { refetchOnMountOrArgChange: true }
-  );
+  const { data: volunteerJobs, isLoading } = useGetVolunteerJobsQuery({ page, limit: 10 });
 
   useEffect(() => {
     if (volunteerJobs) {
       setVolunteerships((prevVols) => {
-        const combinedVols = [...prevVols, ...volunteerJobs.data];
+        const combinedVols = [...prevVols, ...volunteerJobs.items];
         const uniqueVols = Array.from(new Set(combinedVols.map((vol) => vol._id))).map((_id) =>
           combinedVols.find((vol) => vol._id === _id)
         );
         return uniqueVols;
       });
 
-      setTotalPages(volunteerJobs.pagination?.totalPages);
+      setTotalPages(volunteerJobs.meta?.totalPages);
     }
   }, [volunteerJobs]);
 
@@ -35,7 +32,7 @@ const DashboardVolunteersPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2  gap-6 mt-6">
         {volunteerships?.map((vol, i) => (
           <Link to={`/dashboard/volunteer/${vol._id}`} key={i}>
-            <Volunteer position={vol?.position} location={vol?.location} />
+            <Volunteer position={vol?.title} location={vol?.companyLocation} />
           </Link>
         ))}
       </div>
