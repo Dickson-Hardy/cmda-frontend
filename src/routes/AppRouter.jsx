@@ -34,6 +34,7 @@ import DashboardStoreOrderHistoryPage from "~/pages/Dashboard/Store/OrderHistory
 import DashboardSettingsPage from "~/pages/Dashboard/Settings/Settings";
 import SingleResource from "~/pages/Dashboard/Resources/SingleResource";
 import PaymentSuccessful from "~/pages/Dashboard/Payments/PaymentSuccessful";
+import OrderSuccessful from "~/pages/Dashboard/Store/OrderHistory/OrderSuccessful";
 
 export default function AppRouter() {
   const { isAuthenticated } = useSelector(selectAuth);
@@ -89,7 +90,8 @@ export default function AppRouter() {
             { path: "store", element: <DashboardStorePage /> },
             { path: "store/cart", element: <DashboardCartPage /> },
             { path: "store/checkout", element: <DashboardCheckoutPage /> },
-            { path: "store/history", element: <DashboardStoreOrderHistoryPage /> },
+            { path: "store/orders", element: <DashboardStoreOrderHistoryPage /> },
+            { path: "store/orders/successful", element: <OrderSuccessful /> },
             { path: "store/:slug", element: <DashboardStoreSingleProductPage /> },
             { path: "volunteers", element: <DashboardVolunteersPage /> },
             { path: "volunteer/:id", element: <DashboardVolunteerDetailsPage /> },

@@ -17,19 +17,19 @@ const cartSlice = createSlice({
       } else {
         state.cartItems.push({ ...item, quantity });
       }
-      state.totalPrice += item.salePrice * quantity;
+      state.totalPrice += item.price * quantity;
     },
     adjustItemQuantity(state, action) {
       const { itemId, newQuantity } = action.payload;
       const itemToAdjust = state.cartItems.find((cartItem) => cartItem._id === itemId);
       if (itemToAdjust) {
-        state.totalPrice -= itemToAdjust.salePrice * itemToAdjust.quantity;
+        state.totalPrice -= itemToAdjust.price * itemToAdjust.quantity;
         // If new quantity is 0, remove the item from cart
         if (newQuantity === 0) {
           state.cartItems = state.cartItems.filter((cartItem) => cartItem._id !== itemId);
         } else {
           itemToAdjust.quantity = newQuantity;
-          state.totalPrice += itemToAdjust.salePrice * newQuantity;
+          state.totalPrice += itemToAdjust.price * newQuantity;
         }
       }
     },
@@ -37,7 +37,7 @@ const cartSlice = createSlice({
       const itemId = action.payload;
       const itemToRemove = state.cartItems.find((cartItem) => cartItem._id === itemId);
       if (itemToRemove) {
-        state.totalPrice -= itemToRemove.salePrice * itemToRemove.quantity;
+        state.totalPrice -= itemToRemove.price * itemToRemove.quantity;
         state.cartItems = state.cartItems.filter((cartItem) => cartItem._id !== itemId);
       }
     },

@@ -16,17 +16,13 @@ import BackButton from "~/components/Global/BackButton/BackButton";
 const DashboardStoreSingleProductPage = () => {
   const [quantity, setQuantity] = useState(1);
   const { slug } = useParams();
-
-  const { data: product, isLoading } = useGetSingleProductQuery(slug);
-
-  const { data: otherProducts, isLoading: loadingOthers } = useGetAllProductsQuery({ page: 1, limit: 10 });
-  console.log("OTH", otherProducts);
-
   const dispatch = useDispatch();
 
+  const { data: product, isLoading } = useGetSingleProductQuery(slug);
+  const { data: otherProducts, isLoading: loadingOthers } = useGetAllProductsQuery({ page: 1, limit: 10 });
   const { cartItems } = useSelector((state) => state.cart);
-
   const alreadyInCart = cartItems.some((item) => item._id === product?._id);
+
   const [addingItem, setAddingItem] = useState(false);
   const [removingItem, setRemovingItem] = useState(false);
 
@@ -34,7 +30,7 @@ const DashboardStoreSingleProductPage = () => {
     setAddingItem(true);
     setTimeout(() => {
       dispatch(addItemToCart({ item: product, quantity }));
-      toast.success(`"${convertToCapitalizedWords(product?.productName)}" added to cart!`);
+      toast.success(`"${convertToCapitalizedWords(product?.name)}" added to cart!`);
       setAddingItem(false);
     }, 2000);
   };
@@ -43,7 +39,7 @@ const DashboardStoreSingleProductPage = () => {
     setRemovingItem(true);
     setTimeout(() => {
       dispatch(removeItemFromCart(product?._id));
-      toast.success(`"${convertToCapitalizedWords(product?.productName)}" removed from cart!`);
+      toast.success(`"${convertToCapitalizedWords(product?.name)}" removed from cart!`);
       setRemovingItem(false);
     }, 2000);
   };

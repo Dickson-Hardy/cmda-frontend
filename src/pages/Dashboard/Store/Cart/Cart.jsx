@@ -5,12 +5,14 @@ import icons from "~/assets/js/icons";
 import DashboardCartItems from "~/components/DashboardComponents/Cart/CartItems";
 import Button from "~/components/Global/Button/Button";
 import { clearCart } from "~/redux/features/cart/cartSlice";
-import { formatPrice } from "~/utilities/others";
+import { formatCurrency } from "~/utilities/formatCurrency";
 
 const DashboardCartPage = () => {
   const { cartItems, totalPrice } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  console.log("TOTA", totalPrice);
 
   const handleClearAll = () => {
     dispatch(clearCart());
@@ -48,7 +50,7 @@ const DashboardCartPage = () => {
         )}
 
         <hr />
-        <div className="text-right text-2xl font-bold my-4">&#8358; {formatPrice(totalPrice)}</div>
+        <div className="text-right text-2xl font-bold my-4">{formatCurrency(totalPrice)}</div>
 
         <div className="flex justify-between items-center">
           <button className="text-primary hover:underline text-sm font-medium" onClick={handleClearAll}>

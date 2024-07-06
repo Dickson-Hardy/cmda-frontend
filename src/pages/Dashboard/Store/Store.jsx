@@ -20,7 +20,6 @@ const DashboardStorePage = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   const { data: productsData, isLoading, isFetching } = useGetAllProductsQuery({ page, limit: 12 });
-  console.log("PROD", productsData?.items);
 
   useEffect(() => {
     if (productsData) {
@@ -80,11 +79,14 @@ const DashboardStorePage = () => {
               <span className="ml-auto">{icons.chevronRight}</span>
             </Link>
 
-            <div className="bg-onPrimary flex items-center gap-4 font-bold rounded-lg p-4 text-sm">
+            <Link
+              to="/dashboard/store/orders"
+              className="bg-onPrimary flex items-center gap-4 font-bold rounded-lg p-4 text-sm"
+            >
               <span className="text-primary text-2xl">{icons.clockCounter}</span>
               Order History
               <span className="ml-auto">{icons.chevronRight}</span>
-            </div>
+            </Link>
 
             <form className="flex flex-col gap-6" onSubmit={handleSubmit(console.log)}>
               <TextInput
