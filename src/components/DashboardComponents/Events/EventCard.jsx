@@ -1,12 +1,13 @@
 import { classNames } from "~/utilities/classNames";
 import formatDate from "~/utilities/fomartDate";
 
-const EventCard = ({ width = 240, row, title, image, date, type, location, description }) => {
+const EventCard = ({ width = 240, row, title, image, date, type, location, description, className }) => {
   return (
     <div
       className={classNames(
         "bg-white border p-4 rounded-2xl flex overflow-hidden hover:shadow-md transition-shadow duration-300",
-        row ? "flex-row gap-4 items-center" : "flex-col gap-2"
+        row ? "flex-row gap-4 items-center" : "flex-col gap-2",
+        className
       )}
       style={{ width }}
     >

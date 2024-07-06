@@ -151,11 +151,12 @@ const DashboardStoreSingleProductPage = () => {
             {otherProducts?.items?.slice().map((prod, i) => (
               <Link to={`/dashboard/store/${prod?.slug}`} key={i + 1}>
                 <ProductCard
-                  width={240}
                   name={prod?.name}
                   description={prod?.description}
                   price={prod?.price}
                   image={prod?.featuredImageUrl}
+                  width="auto"
+                  className="mx-2"
                 />
               </Link>
             ))}

@@ -1,8 +1,9 @@
 import icons from "~/assets/js/icons";
+import { classNames } from "~/utilities/classNames";
 
-const ResourceCard = ({ title, subtitle, type, image, width = 240 }) => {
+const ResourceCard = ({ title, subtitle, type, image, width = 240, className }) => {
   return (
-    <div className="bg-white rounded-2xl border" style={{ width }}>
+    <div className={classNames("bg-white rounded-2xl border", className)} style={{ width }}>
       <img src={image} className="bg-onPrimary h-32 w-full rounded-t-lg object-cover" />
       <div className="p-4">
         <div className="flex items-center gap-2">

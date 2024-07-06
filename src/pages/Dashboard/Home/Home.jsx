@@ -97,7 +97,8 @@ const DashboardHomePage = () => {
                   avatar={mem.avatarUrl}
                   role={mem.role}
                   region={mem.region}
-                  className="mb-4 mx-10"
+                  width="auto"
+                  className="mx-2"
                 />
               ))}
           </MultiItemCarousel>
@@ -124,6 +125,8 @@ const DashboardHomePage = () => {
                   type={evt.eventType}
                   location={evt.linkOrLocation}
                   description={evt.description}
+                  width="auto"
+                  className="mx-2"
                 />
               </Link>
             ))}
@@ -149,6 +152,8 @@ const DashboardHomePage = () => {
                   title={res?.title}
                   type={res.category}
                   subtitle={res.description}
+                  width="auto"
+                  className="mx-2"
                 />
               </Link>
             ))}
