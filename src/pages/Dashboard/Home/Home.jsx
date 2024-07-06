@@ -92,7 +92,8 @@ const DashboardHomePage = () => {
               .map((mem) => (
                 <MemberCard
                   key={mem.membershipId}
-                  id={mem.membershipId}
+                  memId={mem.membershipId}
+                  id={mem._id}
                   fullName={mem.fullName}
                   avatar={mem.avatarUrl}
                   role={mem.role}

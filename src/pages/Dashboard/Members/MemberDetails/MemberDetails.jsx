@@ -35,7 +35,7 @@ const DashboardMemberDetailsPage = () => {
           <h2 className="text-black truncate text-xl md:text-2xl font-bold">{member?.firstName}</h2>
           <Button
             color={member?.role === "student" ? "secondary" : member?.role.includes("global") ? "tertiary" : "primary"}
-            onClick={() => navigate("/messaging?id=" + id)}
+            onClick={() => navigate("/dashboard/messaging?id=" + member?._id)}
           >
             Message
           </Button>

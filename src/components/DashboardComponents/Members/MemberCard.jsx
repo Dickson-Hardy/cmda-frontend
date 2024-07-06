@@ -3,7 +3,7 @@ import icons from "~/assets/js/icons";
 import { classNames } from "~/utilities/classNames";
 import convertToCapitalizedWords from "~/utilities/convertToCapitalizedWords";
 
-const MemberCard = ({ width = 240, fullName, id, avatar, role, region, className }) => {
+const MemberCard = ({ width = 240, fullName, id, memId, avatar, role, region, className }) => {
   const navigate = useNavigate();
 
   return (
@@ -53,7 +53,7 @@ const MemberCard = ({ width = 240, fullName, id, avatar, role, region, className
       <hr className="mt-3" />
       <div className="flex  bg-gray- rounded-b-xl">
         <Link
-          to={`/dashboard/members/${id}`}
+          to={`/dashboard/members/${memId}`}
           className="text-center w-1/2 py-2 px-2 text-xs text-primary hover:bg-onPrimary hover:underline font-semibold"
         >
           View Profile
@@ -61,7 +61,7 @@ const MemberCard = ({ width = 240, fullName, id, avatar, role, region, className
         <div className="border"></div>
         <button
           type="button"
-          onClick={() => navigate(`/messaging?id=${id}`)}
+          onClick={() => navigate(`/dashboard/messaging?id=${id}`)}
           className="text-center w-1/2 py-2 px-2 text-xs text-primary hover:bg-onPrimary hover:underline font-semibold"
         >
           Message

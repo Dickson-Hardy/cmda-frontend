@@ -3,97 +3,76 @@ import icons from "~/assets/js/icons";
 import { useNavigate } from "react-router-dom";
 import { classNames } from "~/utilities/classNames";
 import ContactListItem from "./ContactListItem";
-import { useAddToHistoryMutation, useGetAllChatsQuery } from "~/redux/api/chats/chatsApi";
+import { useGetChatHistoryQuery } from "~/redux/api/chats/chatsApi";
 import { useGetSingleUserQuery } from "~/redux/api/user/userApi";
-import { getCombinedId, getFullName } from "~/utilities/reusableVariables";
 import Loading from "~/components/Global/Loading/Loading";
-import useWebSocket, { ReadyState } from "react-use-websocket";
 import Message from "./Message";
-const ENDPOINT = import.meta.env.VITE_WEBSOCKET_BASE_URL;
+import { useSocket } from "~/utilities/socket";
 
-const ChatBox = ({ user, recipientId }) => {
+const ChatBox = ({ userId, recipientId }) => {
   const [inputValue, setInputValue] = useState("");
   const [inputHeight, setInputHeight] = useState(48); // Initial height
-  const [allMessages, setAllMessages] = useState([]);
   const navigate = useNavigate();
   const maxInputHeight = 160;
 
-  // get the room id by combining the two users id
-  const uniqueId = getCombinedId(user?._id, recipientId);
-
-  // getting all previous chats between the two users
   const {
     data: allChatsBetweenUsers,
-    isLoading: loadingChats,
+    isLoading,
     isFetching,
-  } = useGetAllChatsQuery({ limit: 50, room: uniqueId }, { refetchOnMountOrArgChange: true });
+  } = useGetChatHistoryQuery(recipientId, { refetchOnMountOrArgChange: true });
+  const { data: recipientData, isLoading: loadingRecipientData } = useGetSingleUserQuery(recipientId);
 
-  const [addToHistory] = useAddToHistoryMutation();
-
-  useEffect(() => {
-    if (!loadingChats && allChatsBetweenUsers?.data) {
-      const sortedMessages = [...allChatsBetweenUsers.data];
-
-      setAllMessages(sortedMessages.reverse());
-    }
-  }, [allChatsBetweenUsers, loadingChats, uniqueId]);
-
-  // fetching recipients data by fteching their details with their id
-  const { data: recipientData, isLoading: loadingRecipientData } = useGetSingleUserQuery(recipientId, {
-    refetchOnMountOrArgChange: true,
-  });
-
-  const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(`${ENDPOINT}/chats/${uniqueId}`, {
-    share: false,
-    //Will attempt to reconnect on all close events, such as server shutting down
-    shouldReconnect: () => true,
-  });
+  const [allMessages, setAllMessages] = useState([]);
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
     setInputHeight(e.target.scrollHeight);
-    // Ensure the input height does not exceed the maximum height
     if (inputHeight > maxInputHeight) {
       setInputHeight(maxInputHeight);
     }
   };
 
+  const { socket } = useSocket();
+
   const handleSend = (e) => {
     e.preventDefault();
-    // Implement your send message logic here
-    if (readyState === ReadyState.OPEN) {
-      sendJsonMessage({
-        room: uniqueId,
-        sender: user?._id,
-        receiver: recipientId,
-        content: inputValue,
-      });
-      // if (!allMessages) {
-      addToHistory({ participants: [recipientId] });
-      // }
-    }
+    socket.emit("newMessage", { sender: userId, receiver: recipientId, content: inputValue });
     setInputValue("");
   };
+
+  useEffect(() => {
+    if (allChatsBetweenUsers) {
+      setAllMessages(allChatsBetweenUsers);
+    }
+  }, [allChatsBetweenUsers]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNewMessage = (newMessage) => {
+      setAllMessages((prev) => [...prev, newMessage]);
+    };
+
+    socket.on(`newMessage_${[userId, recipientId].sort().join("_")}`, handleNewMessage);
+
+    return () => {
+      socket.off(`newMessage_${[userId, recipientId].sort().join("_")}`, handleNewMessage);
+    };
+  }, [socket, recipientId, userId]);
+
   const scrollRef = useRef(null);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [allMessages]);
 
-  // update the lists of messages in the messages array with the new message
-  useEffect(() => {
-    if (lastJsonMessage !== null) {
-      setAllMessages((prevMessages) => [lastJsonMessage, ...prevMessages]);
-    }
-  }, [lastJsonMessage]);
-
   return (
     <div className="w-full lg:w-3/4 flex flex-col rounded-xl">
       {/* back button mobile screen */}
-      <div className="lg:hidden ">
+      <div className="lg:hidden">
         <div
           className="flex items-center text-black gap-x-2 mt-1 mb-4 cursor-pointer"
-          onClick={() => navigate("/messaging")}
+          onClick={() => navigate("/dashboard/messaging")}
         >
           <span className="text-lg">{icons.arrowLeft}</span> <span>Back</span>
         </div>
@@ -107,22 +86,31 @@ const ChatBox = ({ user, recipientId }) => {
         ) : (
           <ContactListItem
             asHeader={true}
-            name={getFullName(recipientData)}
+            name={recipientData?.fullName}
             image={recipientData?.avatarUrl}
             subText={recipientData?.email}
           />
         )}
       </div>
       <div className="w-full bg-onPrimary h-[calc(100vh-400px)] md:h-[calc(100vh-320px)]">
-        {loadingChats || isFetching ? (
+        {isLoading || isFetching ? (
           <div className="w-full h-full flex items-center justify-center">
             <Loading className="text-primary h-16 w-16" />
           </div>
         ) : (
-          <div className="w-full h-full overflow-y-scroll flex flex-col-reverse" ref={scrollRef}>
+          <div className="w-full h-full overflow-y-auto flex flex-col">
             {allMessages.map(
-              (message, id) => message.content && <Message key={id} message={message} userId={user?._id} />
+              (item) =>
+                item.content && (
+                  <Message
+                    key={item._id}
+                    content={item.content}
+                    timestamp={item.updatedAt}
+                    isSender={item.sender === userId}
+                  />
+                )
             )}
+            <div ref={scrollRef} />
           </div>
         )}
       </div>

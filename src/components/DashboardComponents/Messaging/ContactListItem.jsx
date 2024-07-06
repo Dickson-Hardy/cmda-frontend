@@ -23,10 +23,6 @@ const ContactListItem = ({
           {icons.person}
         </span>
       )}
-      {/* <img src="" className="bg-onPrimary rounded-full h-14 w-14" /> */}
-      {/* <span className="h-12 w-12 flex-shrink-0 bg-onSecondary rounded-full inline-flex items-center justify-center text-3xl">
-        {icons.person}
-      </span> */}
       <div className="truncate">
         <h5 className="font-semibold text-sm truncate">{name}</h5>
         {subText && <p className="text-xs truncate">{subText}</p>}
