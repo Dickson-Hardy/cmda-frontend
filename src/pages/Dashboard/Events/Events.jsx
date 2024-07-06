@@ -6,6 +6,7 @@ import icons from "~/assets/js/icons";
 import { useIsSmallScreen } from "~/hooks/useIsSmallScreen";
 import AllEvents from "~/components/DashboardComponents/Events/AllEvents";
 import RegisteredEvents from "~/components/DashboardComponents/Events/RegisteredEvents";
+import { classNames } from "~/utilities/classNames";
 
 const DashboardEventsPage = () => {
   const [activeView, setActiveView] = useState("list");
@@ -19,6 +20,27 @@ const DashboardEventsPage = () => {
     { label: "All Events", content: <AllEvents row={isRowView} isSmallScreen={isSmallScreen} /> },
     { label: "Registered events", content: <RegisteredEvents row={isRowView} isSmallScreen={isSmallScreen} /> },
   ];
+
+  const handleViewClick = (view) => {
+    setActiveView(view);
+  };
+
+  const AddonElement = () => (
+    <div className="hidden lg:flex items-center gap-x-4">
+      <div
+        className={classNames(activeView === "list" && "p-1 bg-[#f5f5f5] rounded-full", "cursor-pointer")}
+        onClick={() => handleViewClick("list")}
+      >
+        {icons.list}
+      </div>
+      <div
+        className={classNames(activeView === "grid" && "p-1 bg-[#f5f5f5] rounded-full", "cursor-pointer")}
+        onClick={() => handleViewClick("grid")}
+      >
+        {icons.grid}
+      </div>
+    </div>
+  );
 
   return (
     <div>
@@ -34,7 +56,7 @@ const DashboardEventsPage = () => {
 
       <section className="flex gap-10">
         <div className="w-full lg:w-2/3 ">
-          <Tabs tabs={eventTabs} equalTab={false} activeView={activeView} setActiveView={setActiveView} page="events" />
+          <Tabs tabs={eventTabs} equalTab={false} addonElement={AddonElement} />
         </div>
         <div className="hidden lg:block lg:w-1/3">
           <EventsCalender />

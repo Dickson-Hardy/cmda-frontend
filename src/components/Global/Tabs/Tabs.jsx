@@ -1,16 +1,12 @@
 import { useState } from "react";
 import { classNames } from "~/utilities/classNames";
-import icons from "~/assets/js/icons";
 
-const Tabs = ({ tabs, equalTab = true, activeView, setActiveView, page }) => {
+const Tabs = ({ tabs, equalTab = true, setActiveIndex, addonElement }) => {
   const [activeTab, setActiveTab] = useState(0);
 
   const handleTabClick = (index) => {
     setActiveTab(index);
-  };
-
-  const handleViewClick = (view) => {
-    setActiveView(view);
+    setActiveIndex(index);
   };
 
   return (
@@ -34,23 +30,8 @@ const Tabs = ({ tabs, equalTab = true, activeView, setActiveView, page }) => {
             </button>
           ))}
         </div>
-        {/* toggle view mode */}
-        {page === "events" && (
-          <div className="hidden lg:flex items-center gap-x-4">
-            <div
-              className={classNames(activeView === "list" && "p-1 bg-[#f5f5f5] rounded-full", "cursor-pointer")}
-              onClick={() => handleViewClick("list")}
-            >
-              {icons.list}
-            </div>
-            <div
-              className={classNames(activeView === "grid" && "p-1 bg-[#f5f5f5] rounded-full", "cursor-pointer")}
-              onClick={() => handleViewClick("grid")}
-            >
-              {icons.grid}
-            </div>
-          </div>
-        )}
+
+        {addonElement}
       </div>
 
       {/* Tab Content */}

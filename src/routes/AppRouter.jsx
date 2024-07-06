@@ -33,6 +33,7 @@ import DashboardPaymentsPage from "~/pages/Dashboard/Payments/Payments";
 import DashboardStoreOrderHistoryPage from "~/pages/Dashboard/Store/OrderHistory/OrderHistory";
 import DashboardSettingsPage from "~/pages/Dashboard/Settings/Settings";
 import SingleResource from "~/pages/Dashboard/Resources/SingleResource";
+import PaymentSuccessful from "~/pages/Dashboard/Payments/PaymentSuccessful";
 
 export default function AppRouter() {
   const { isAuthenticated } = useSelector(selectAuth);
@@ -97,6 +98,7 @@ export default function AppRouter() {
             { path: "update-password", element: <DashboardUpdatePassword /> },
             { path: "edit-profile", element: <DashboardEditProfile /> },
             { path: "payments", element: <DashboardPaymentsPage /> },
+            { path: "payments/successful", element: <PaymentSuccessful /> },
             { path: "settings", element: <DashboardSettingsPage /> },
           ],
           errorElement: <ErrorDisplay />,

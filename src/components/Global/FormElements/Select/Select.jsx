@@ -9,7 +9,7 @@ const Select = ({
   name,
   title,
   control,
-  options,
+  options = [],
   errors,
   rules,
   multiple,
@@ -39,7 +39,9 @@ const Select = ({
             }}
             onBlur={onBlur}
             placeholder={placeholder}
-            options={options}
+            options={
+              options?.every((x) => typeof x === "string") ? options.map((v) => ({ label: v, value: v })) : options
+            }
             className="cursor-pointer"
             isMulti={multiple}
             // adding disbaled property
