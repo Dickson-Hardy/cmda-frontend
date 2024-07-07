@@ -68,6 +68,11 @@ const DashboardStoreSingleEventPage = () => {
           </div>
         </div>
 
+        <div className="my-6">
+          <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">CME Points</h4>
+          <p className="text-base mb-1">{singleEvent?.cmePoints || 0}</p>
+        </div>
+
         <div className="mt-6">
           <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Additional Information</h4>
           <p className="text-base mb-1">{singleEvent?.additionalInformation}</p>
@@ -97,15 +102,9 @@ const DashboardStoreSingleEventPage = () => {
           </div>
         </div>
 
-        <div className="my-6">
-          <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">CME Points</h4>
-          <p className="text-base mb-1">{singleEvent?.cmePoints || 0}</p>
-        </div>
-
         {singleEvent?.eventDateTime && (
           <div className="flex flex-wrap gap-2 lg:gap-4 justify-end mt-4 mb-4">
-            <Button label="Register for free" large onClick={() => setConfirmRegister(true)} />
-            <Button label="Add to calender" large variant="outlined" icon={icons.calendar} />
+            <Button label="Register for Event" large onClick={() => setConfirmRegister(true)} />
           </div>
         )}
       </section>
