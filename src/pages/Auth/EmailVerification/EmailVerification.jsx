@@ -1,5 +1,5 @@
 import Button from "~/components/Global/Button/Button";
-import { useVerifyUserMutation } from "~/redux/api/auth/authApi";
+import { useResendVerifyCodeMutation, useVerifyUserMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
 import OTPInput from "~/components/Global/FormElements/OTPInput/OTPInput";
 import { useState } from "react";
@@ -9,6 +9,7 @@ import { setVerifyEmail } from "~/redux/features/auth/authSlice";
 
 const EmailVerification = () => {
   const [verifyUser, { isLoading }] = useVerifyUserMutation();
+  const [resendVerifyCode, { isLoading: isResending }] = useResendVerifyCodeMutation();
   const [token, setToken] = useState(null);
   const verifyEmail = useSelector((state) => state.auth.verifyEmail);
   const navigate = useNavigate();
@@ -24,6 +25,14 @@ const EmailVerification = () => {
       });
   };
 
+  const handleResend = () => {
+    resendVerifyCode({ email: verifyEmail })
+      .unwrap()
+      .then(() => {
+        toast.success("Email verification code resent");
+      });
+  };
+
   return (
     <div className="flex flex-col items-center gap-8">
       <div className="text-center">
@@ -34,7 +43,14 @@ const EmailVerification = () => {
         <OTPInput onComplete={(val) => setToken(val)} length={6} />
         <div className="flex items-center gap-2 mt-3">
           Didn&apos;t get email?{" "}
-          <Button variant="text" loadin loadingText="Resending..." label="Resend" className="px-[8px] h-[32px]" />
+          <Button
+            variant="text"
+            loading={isResending}
+            loadingText="Resending..."
+            label="Resend"
+            onClick={handleResend}
+            className="px-[8px] h-[32px]"
+          />
         </div>
       </div>
       <Button

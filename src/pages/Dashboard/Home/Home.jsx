@@ -165,7 +165,7 @@ const DashboardHomePage = () => {
       <section className="flex flex-col md:flex-row gap-10 mb-6">
         <div className="w-full md:w-1/2">
           <div className="flex justify-between items-center gap-2 mb-2">
-            <h3 className="text-lg font-bold">Volunteer Positions</h3>
+            <h3 className="text-lg font-bold">Available Jobs</h3>
             <Link to="/dashboard/volunteers" className="text-sm text-primary font-semibold">
               See more
             </Link>

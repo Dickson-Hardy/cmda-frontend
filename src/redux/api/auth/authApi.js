@@ -5,10 +5,6 @@ const authApi = api.injectEndpoints({
     // LOGIN
     login: build.mutation({
       query: (payload) => ({ url: "/auth/login", method: "POST", body: payload }),
-      // Pick out data and prevent nested properties in a hook or selector
-      // transformResponse: (response) => response.data,
-      // Pick out error and prevent nested properties when displaying error
-      // transformErrorResponse: (response) => response.data?.message,
     }),
     // Sign Up
     signUp: build.mutation({
@@ -17,6 +13,10 @@ const authApi = api.injectEndpoints({
     // VERIFY USER
     verifyUser: build.mutation({
       query: (body) => ({ url: "/auth/verify-email", method: "POST", body }),
+    }),
+    // RESEND VERIFY CODE
+    resendVerifyCode: build.mutation({
+      query: (body) => ({ url: "/auth/resend-verify-code", method: "POST", body }),
     }),
     // FORGOT PASSWORD
     passwordForgot: build.mutation({
@@ -37,6 +37,7 @@ export const {
   usePasswordForgotMutation,
   usePasswordResetMutation,
   useVerifyUserMutation,
+  useResendVerifyCodeMutation,
 } = authApi;
 
 export default authApi;

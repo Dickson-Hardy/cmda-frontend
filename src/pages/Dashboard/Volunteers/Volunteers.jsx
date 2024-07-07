@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Volunteer from "~/components/DashboardComponents/Volunteer/Volunteer";
 import Button from "~/components/Global/Button/Button";
+import SearchBar from "~/components/Global/SearchBar/SearchBar";
 import { useGetVolunteerJobsQuery } from "~/redux/api/volunteer/volunteerApi";
 
 const DashboardVolunteersPage = () => {
   const [volunteerships, setVolunteerships] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-
-  const { data: volunteerJobs, isLoading } = useGetVolunteerJobsQuery({ page, limit: 10 });
+  const [searchBy, setSearchBy] = useState("");
+  const { data: volunteerJobs, isLoading } = useGetVolunteerJobsQuery({ page, limit: 10, searchBy });
 
   useEffect(() => {
     if (volunteerJobs) {
@@ -27,7 +28,15 @@ const DashboardVolunteersPage = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-primary mb-6">Volunteer Positions</h2>
+      <div className="flex gap-4 justify-between">
+        <h2 className="text-2xl font-bold text-primary mb-6">Available Jobs</h2>
+        <SearchBar
+          onSearch={(v) => {
+            setVolunteerships([]);
+            setSearchBy(v);
+          }}
+        />
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2  gap-6 mt-6">
         {volunteerships?.map((vol, i) => (

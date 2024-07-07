@@ -55,7 +55,7 @@ import {
   BsSortAlphaDownAlt,
   BsSortAlphaUp,
 } from "react-icons/bs";
-import { BiSortAlt2 } from "react-icons/bi";
+import { BiBriefcase, BiSortAlt2 } from "react-icons/bi";
 import { RxCounterClockwiseClock } from "react-icons/rx";
 import { IoList } from "react-icons/io5";
 import { GoDotFill } from "react-icons/go";
@@ -121,6 +121,7 @@ const icons = {
   card: <FaCreditCard />,
   add: <MdOutlineAdd />,
   youtube: <FaYoutube />,
+  briefcase: <BiBriefcase />,
 };
 
 export default icons;

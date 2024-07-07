@@ -29,15 +29,12 @@ const DashboardCheckoutPage = () => {
     },
   });
 
-  const vat = useMemo(() => totalPrice * 0.075, [totalPrice]);
-
   const [payOrderSession, { isLoading }] = usePayOrderSessionMutation();
 
   const onSubmit = (payload) => {
     payOrderSession({
       ...payload,
       totalAmount: +totalPrice,
-      vatAmount: +vat,
       products: cartItems.map((item) => ({ product: item._id, quantity: item.quantity })),
     })
       .unwrap()
@@ -93,22 +90,14 @@ const DashboardCheckoutPage = () => {
           <hr />
           <section>
             <div className="flex justify-between">
-              <span className="uppercase font-medium">Subtotal</span>
-              <span className="text-lg font-semibold">{formatCurrency(totalPrice)}</span>
-            </div>
-            <div className="flex justify-between my-2">
-              <span className="uppercase font-medium">VAT (7.5%)</span>
-              <span className="text-lg font-semibold">{formatCurrency(vat)}</span>
-            </div>
-            <div className="flex justify-between">
               <span className="uppercase font-medium">Total</span>
-              <span className="text-2xl font-bold">{formatCurrency(totalPrice + vat)}</span>
+              <span className="text-2xl font-bold">{formatCurrency(totalPrice)}</span>
             </div>
           </section>
 
           <div className="flex justify-center">
             <Button className="w-4/5 md:w-1/3" large type="submit" loading={isLoading}>
-              Pay {formatCurrency(totalPrice + vat)}
+              Pay {formatCurrency(totalPrice)}
             </Button>
           </div>
         </form>

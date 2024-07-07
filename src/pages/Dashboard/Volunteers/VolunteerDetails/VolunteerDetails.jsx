@@ -1,25 +1,17 @@
-import { useState } from "react";
 import { BiBriefcase } from "react-icons/bi";
-// import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import BackButton from "~/components/Global/BackButton/BackButton";
-import Button from "~/components/Global/Button/Button";
-import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import Loading from "~/components/Global/Loading/Loading";
 import { useGetSingleVolunteerJobQuery } from "~/redux/api/volunteer/volunteerApi";
 import formatDate from "~/utilities/fomartDate";
 
 const DashboardVolunteerDetailsPage = () => {
   const { id } = useParams();
-
   const { data: volunteerJob, isLoading } = useGetSingleVolunteerJobQuery(id);
-  // const { user } = useSelector((state) => state.auth);
-
-  const [confirmVolunteer, setConfirmVolunteer] = useState(false);
 
   return (
     <div>
-      <BackButton to="/dashboard/volunteers" label="Back to Volunteer Jobs" />
+      <BackButton to="/dashboard/volunteers" label="Back to Available Jobs" />
 
       <div className="max-screen-xl mx-auto min-h-[calc(100vh-180px)] bg-white shadow rounded-lg p-5 mt-6">
         {isLoading ? (
@@ -77,24 +69,9 @@ const DashboardVolunteerDetailsPage = () => {
             <p className="text-gray text-sm mb-4">
               Posted: <span className="text-black font-medium">{formatDate(volunteerJob?.createdAt).dateTime}</span>{" "}
             </p>
-
-            <div className="flex justify-end gap-6">
-              <Button large label="Volunteer for this Job" onClick={() => setConfirmVolunteer(true)} />
-            </div>
           </div>
         )}
       </div>
-
-      <ConfirmationModal
-        icon={<BiBriefcase />}
-        title="Volunteer for this role"
-        subtitle={`Are you sure you want to  volunteer for this job`}
-        subAction
-        maxWidth={400}
-        mainAction={() => setConfirmVolunteer(false)}
-        isOpen={confirmVolunteer}
-        onClose={() => setConfirmVolunteer(false)}
-      />
     </div>
   );
 };
