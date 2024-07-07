@@ -35,7 +35,7 @@ function DashboardStoreOrderHistoryPage() {
       ) : col.accessor === "totalAmount" ? (
         formatCurrency(value)
       ) : col.accessor === "totalItems" ? (
-        item.products.length
+        item.products?.reduce((acc, prod) => acc + prod.quantity, 0)
       ) : (
         value || "--"
       );
