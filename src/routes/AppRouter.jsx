@@ -1,4 +1,4 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
 import ErrorElement from "./ErrorElement/ErrorElement";
 import AuthLayout from "~/layouts/AuthLayout/AuthLayout";
 import DashboardLayout from "~/layouts/DashboardLayout/DashboardLayout";
@@ -57,7 +57,7 @@ export default function AppRouter() {
     {
       element: <EmptyLayout />,
       children: [
-        { path: "/", element: <IndexPage /> },
+        { path: "/", element: isAuthenticated ? <Navigate to="/dashboard" /> : <IndexPage /> },
         { path: "/welcome", element: <WelcomePage /> },
       ],
       errorElement: <ErrorDisplay />,

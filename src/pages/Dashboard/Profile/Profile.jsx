@@ -10,13 +10,13 @@ import Calendar from "~/components/Global/Calendar/Calendar";
 import formatDate from "~/utilities/fomartDate";
 import Loading from "~/components/Global/Loading/Loading";
 import ProfileTabTrainingRecord from "~/components/DashboardComponents/ProfileTabContents/TrainingRecord";
+import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
+import { useInitSubscriptionSessionMutation } from "~/redux/api/payments/subscriptionApi";
+import { selectAuth } from "~/redux/features/auth/authSlice";
 
 const DashboardProfilePage = () => {
-  const user = useSelector((state) => state.auth.user);
-  const fullName = user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name";
-
+  const { user } = useSelector(selectAuth);
   const [date, setDate] = useState(new Date());
-  // console.log({ user });
   // const {
   //   data: eventsOnThisDay,
   //   isLoading,
@@ -26,13 +26,28 @@ const DashboardProfilePage = () => {
   //   { refetchOnMountOrArgChange: true }
   // );
 
+  const [openSubscribe, setOpenSubscribe] = useState(false);
+  const [initSubscription, { isLoading: isSubscribing }] = useInitSubscriptionSessionMutation();
+
+  const onSubscribe = () => {
+    initSubscription({})
+      .unwrap()
+      .then((res) => {
+        window.open(res.checkout_url, "_self");
+      });
+  };
+
   return (
     <div>
       <div className="flex justify-end gap-2 mb-4">
-        <Button variant="outlined">Subscribe</Button>
-        {["student", "doctor"].includes(user?.role) ? (
-          <Button label="Transit" color={user?.role === "student" ? "secondary" : "primary"} />
-        ) : null}
+        <Button
+          icon={icons.checkAlt}
+          label={user?.subscribed ? "Subscribed" : "Subscribe Now"}
+          color={user?.subscribed ? "secondary" : "primary"}
+          disabled={user?.subscribed}
+          onClick={() => setOpenSubscribe(true)}
+        />
+        {["Student", "Doctor"].includes(user?.role) ? <Button label="Transit" /> : null}
       </div>
 
       <section className="flex gap-6 flex-col md:flex-row mb-6">
@@ -40,12 +55,12 @@ const DashboardProfilePage = () => {
           <div className="w-full flex flex-col md:flex-row h-full items-center gap-3 md:gap-6">
             <ProfileImageUpdate />
             <div className="flex flex-col justify-between h-full w-full">
-              <h3 className="capitalize font-semibold text-lg mb-4">{fullName}</h3>
+              <h3 className="capitalize font-semibold text-lg mb-4">{user?.fullName || "No Name"}</h3>
               <p className="text-sm mb-4 font-medium flex items-center gap-2">
                 <span className="text-gray">Membership Type:</span>
                 <Chip
                   className="capitalize text-xs !h-7 !rounded-full"
-                  color={user?.role === "student" ? "secondary" : user?.role === "doctor" ? "primary" : "tertiary"}
+                  color={user?.role === "Student" ? "secondary" : user?.role === "Doctor" ? "primary" : "tertiary"}
                   label={user?.role}
                 />
               </p>
@@ -90,9 +105,9 @@ const DashboardProfilePage = () => {
           <p className="text-sm font-medium mb-4 capitalize">
             <span className="text-gray">Gender: </span> {user?.gender}
           </p>
-          {/* <p className="text-sm font-medium mb-4">
+          <p className="text-sm font-medium mb-4">
             <span className="text-gray">Phone: </span> {user?.phone || "---"}
-          </p> */}
+          </p>
           <div className="flex justify-end mt-auto text-sm">
             <Link to="/dashboard/edit-profile" className="text-primary font-semibold underline">
               Edit Profile
@@ -183,6 +198,17 @@ const DashboardProfilePage = () => {
           )} */}
         </div>
       </section>
+
+      <ConfirmationModal
+        isOpen={openSubscribe}
+        onClose={() => setOpenSubscribe(false)}
+        icon={icons.card}
+        title="Pay Annual Subscription"
+        subtitle="Would you like to subscribe annually to access premium features and enjoy enhanced benefits?"
+        mainActionLoading={isSubscribing}
+        mainAction={onSubscribe}
+        subAction
+      />
     </div>
   );
 };

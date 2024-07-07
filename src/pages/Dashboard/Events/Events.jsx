@@ -12,13 +12,14 @@ const DashboardEventsPage = () => {
   const [activeView, setActiveView] = useState("list");
   const [openMobileCalender, setOpenMobileCalender] = useState(false);
 
-  const isSmallScreen = useIsSmallScreen("750px");
-
-  const isRowView = activeView === "list";
+  const isSmallScreen = useIsSmallScreen("768px");
 
   const eventTabs = [
-    { label: "All Events", content: <AllEvents row={isRowView} isSmallScreen={isSmallScreen} /> },
-    { label: "Registered events", content: <RegisteredEvents row={isRowView} isSmallScreen={isSmallScreen} /> },
+    { label: "All Events", content: <AllEvents row={activeView === "list"} isSmallScreen={isSmallScreen} /> },
+    {
+      label: "Registered events",
+      content: <RegisteredEvents row={activeView === "list"} isSmallScreen={isSmallScreen} />,
+    },
   ];
 
   const handleViewClick = (view) => {
@@ -55,10 +56,10 @@ const DashboardEventsPage = () => {
       </div>
 
       <section className="flex gap-10">
-        <div className="w-full lg:w-2/3 ">
+        <div className="w-full lg:w-[calc(100%-344px)]">
           <Tabs tabs={eventTabs} equalTab={false} addonElement={AddonElement} />
         </div>
-        <div className="hidden lg:block lg:w-1/3">
+        <div className="hidden lg:block w-[300px]">
           <EventsCalender />
         </div>
       </section>

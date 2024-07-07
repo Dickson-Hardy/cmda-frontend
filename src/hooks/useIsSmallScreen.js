@@ -4,7 +4,7 @@ export function useIsSmallScreen(query) {
   const [isSmallScreen, setIsSmallScreen] = useState(window.matchMedia(`(max-width: ${query})`).matches);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 750px)");
+    const mediaQuery = window.matchMedia(`${query}`);
 
     const handleResize = () => setIsSmallScreen(mediaQuery.matches);
 

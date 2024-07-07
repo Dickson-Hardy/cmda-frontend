@@ -7,17 +7,9 @@ import doctorPng from "~/assets/images/cheerful-doctor.png";
 import studentsPng from "~/assets/images/students.png";
 import lecturerPng from "~/assets/images/lecturer.png";
 import { classNames } from "~/utilities/classNames";
-import { useSelector } from "react-redux";
-import { useEffect } from "react";
 
 const IndexPage = () => {
-  const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user) navigate("/dashboard");
-  }, [navigate, user]);
-
 
   const CATEGORIES = [
     {
@@ -144,7 +136,18 @@ const IndexPage = () => {
             </div>
           </section>
           <section className="text-center py-8 lg:py-12 mt-8">
-            <p className="text-sm">&copy; {new Date().getFullYear()} CMDA Nigeria</p>
+            <p className="text-sm">&copy; {new Date().getFullYear()} CMDA Nigeria | All rights reserved.</p>
+            <p className="text-xs mt-1">
+              Built by{" "}
+              <a
+                href="https://www.danisoftsolution.com/en/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                Danisoft Innovative Solution LTD
+              </a>
+            </p>
           </section>
         </div>
       </div>
