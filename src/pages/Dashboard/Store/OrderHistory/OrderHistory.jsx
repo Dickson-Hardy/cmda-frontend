@@ -31,7 +31,7 @@ function DashboardStoreOrderHistoryPage() {
       return col.accessor === "status" ? (
         <StatusChip status={value} />
       ) : col.accessor === "createdAt" ? (
-        formatDate(value).dateTime
+        <span className="whitespace-nowrap">{formatDate(value).dateTime}</span>
       ) : col.accessor === "totalAmount" ? (
         formatCurrency(value)
       ) : col.accessor === "totalItems" ? (
@@ -45,7 +45,7 @@ function DashboardStoreOrderHistoryPage() {
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row justify-center gap-y-3 md:justify-between items-center">
+      <div className="flex flex-row  gap-3 justify-between items-center">
         <h2 className="text-xl font-bold text-primary">Order History</h2>
         <button type="button" onClick={() => navigate("/dashboard/store")} className="text-2xl text-primary">
           {icons.close}
@@ -53,7 +53,7 @@ function DashboardStoreOrderHistoryPage() {
       </div>
 
       <div className="bg-white shadow py-6 rounded-xl mt-6">
-        <div className="mb-4 px-6 flex items-center gap-4 justify-between">
+        <div className="mb-4 px-6 flex flex-col md:flex-row md:items-center gap-2 md:justify-between">
           <h3 className="text-lg font-semibold">All Orders</h3>
           <SearchBar onSearch={setSearchBy} />
         </div>

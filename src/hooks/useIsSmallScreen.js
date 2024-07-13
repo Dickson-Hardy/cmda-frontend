@@ -4,14 +4,16 @@ export function useIsSmallScreen(query) {
   const [isSmallScreen, setIsSmallScreen] = useState(window.matchMedia(`(max-width: ${query})`).matches);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(`${query}`);
+    const mediaQuery = window.matchMedia(`(max-width: ${query})`);
 
     const handleResize = () => setIsSmallScreen(mediaQuery.matches);
 
-    // Add the event listener on initial render and cleanup on unmount
+    // Set the event listener for screen size changes
     mediaQuery.addEventListener("change", handleResize);
+
+    // Clean up the event listener on unmount
     return () => mediaQuery.removeEventListener("change", handleResize);
-  }, []);
+  }, [query]);
 
   return isSmallScreen;
 }

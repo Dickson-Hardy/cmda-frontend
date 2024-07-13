@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import icons from "~/assets/js/icons";
 import AddSocials from "~/components/DashboardComponents/ProfileTabContents/AddSocials";
+import BackButton from "~/components/Global/BackButton/BackButton";
 import Button from "~/components/Global/Button/Button";
 import Select from "~/components/Global/FormElements/Select/Select";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
@@ -88,11 +89,10 @@ const DashboardEditProfile = () => {
 
   return (
     <div>
-      <Button variant="text" onClick={() => navigate(-1)}>
-        {icons.arrowLeft} Back
-      </Button>
+      <BackButton label="Back to Profile" to="/dashboard/profile" />
+
       <div className="mt-6 flex items-center justify-center relative">
-        <div className="bg-white w-full max-w-2xl max-auto p-8 rounded-lg ">
+        <div className="bg-white w-full max-w-2xl max-auto p-5 md:p-8 rounded-lg ">
           <form onSubmit={handleSubmit(handleUpdateProfile)}>
             <div className="flex items-center justify-between mb-7">
               <h2 className="text-lg font-bold mb-4">Edit Profile</h2>

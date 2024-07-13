@@ -28,13 +28,14 @@ const DashboardVolunteersPage = () => {
 
   return (
     <div>
-      <div className="flex gap-4 justify-between">
-        <h2 className="text-2xl font-bold text-primary mb-6">Available Jobs</h2>
+      <div className="flex flex-col md:flex-row gap-4 justify-between">
+        <h2 className="text-xl sm:text-2xl font-bold text-primary">Available Jobs</h2>
         <SearchBar
           onSearch={(v) => {
             setVolunteerships([]);
             setSearchBy(v);
           }}
+          placeholder="Search jobs..."
         />
       </div>
 

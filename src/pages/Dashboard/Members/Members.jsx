@@ -42,21 +42,17 @@ const DashboardMembersPage = () => {
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row gap-6 items-center">
-        <h2 className="text-2xl font-bold text-primary">Connect with Members</h2>
-        <Button
-          label="Filter"
-          className="ml-auto"
-          onClick={() => setOpenFilter(true)}
-          icon={icons.filter}
-          variant="outlined"
-        />
-        <SearchBar
-          onSearch={(v) => {
-            setMembers([]);
-            setSearchBy(v);
-          }}
-        />
+      <div className="flex flex-col md:flex-row gap-3 md:gap-6 md:items-center">
+        <h2 className="text-xl sm:text-2xl font-bold text-primary">Connect with Members</h2>
+        <div className="flex flex-row-reverse md:flex-row items-end gap-2 md:ml-auto">
+          <Button label="Filter" onClick={() => setOpenFilter(true)} icon={icons.filter} variant="outlined" />
+          <SearchBar
+            onSearch={(v) => {
+              setMembers([]);
+              setSearchBy(v);
+            }}
+          />
+        </div>
       </div>
 
       <section className="mt-8">

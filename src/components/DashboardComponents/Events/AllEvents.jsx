@@ -46,7 +46,7 @@ const AllEvents = ({ row, isSmallScreen }) => {
 
   return (
     <div>
-      <div className="flex justify-between item-center mb-4">
+      <div className="flex justify-between gap-4 items-end mb-4">
         <SearchBar
           onSearch={(v) => {
             setAllEvents([]);

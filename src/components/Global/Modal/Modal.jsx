@@ -22,7 +22,7 @@ const Modal = ({ isOpen, onClose, className, title, subtitle, showCloseBtn = tru
         <div className="absolute inset-0 bg-black opacity-40" onClick={onClose} />
         <div
           className={classNames(
-            "bg-white p-6 rounded-lg z-10 transform transition-transform duration-300 shadow-md w-full",
+            "bg-white p-6 rounded-lg z-10 transform transition-transform duration-300 shadow-md w-full m-3",
             isOpen ? "translate-y-0" : "translate-y-full",
             className
           )}

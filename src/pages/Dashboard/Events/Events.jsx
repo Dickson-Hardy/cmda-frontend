@@ -46,7 +46,7 @@ const DashboardEventsPage = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-primary">Events</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-primary">Events</h2>
         <div
           className="lg:hidden flex items-center justify-center p-4 cursor-pointer bg-gray-light rounded-full shadow-md"
           onClick={() => setOpenMobileCalender(true)}
@@ -66,7 +66,9 @@ const DashboardEventsPage = () => {
 
       {/* mobile calender */}
       <Drawer active={openMobileCalender} setActive={setOpenMobileCalender}>
-        <div className="px-4 mt-16 mb-10 max-w-md ml-auto">{/* <EventsCalender /> */}</div>
+        <div className="px-4 mt-16 mb-10 max-w-md ml-auto">
+          <EventsCalender />
+        </div>
       </Drawer>
     </div>
   );

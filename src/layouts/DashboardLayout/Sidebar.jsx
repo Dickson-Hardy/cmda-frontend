@@ -18,20 +18,18 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
 
   return (
     <>
-      {/* Overlay */}
-      {isOpen && <div className="fixed inset-0 bg-black opacity-50 z-[5] hidden" onClick={onToggleSidebar}></div>}
+      {/* Overlay for small screens */}
+      {isOpen && <div className="fixed inset-0 bg-black/50 z-[5] md:hidden" onClick={onToggleSidebar}></div>}
 
       {/* Sidebar */}
       <aside
         className={classNames(
-          // isOpen ? "translate-x-0 animate-slidein" : "-translate-x-full",
-          "shadow-md md:shadow-none p-4 hidden md:block",
-          "transition-all duration-200 fixed inset-y-0 left-0 w-60 bg-primary overflow-y-auto ease-in-out transform z-10 md:z-[1]"
+          isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
+          "shadow-md md:shadow-none p-4 md:block",
+          "transition-all duration-200 fixed inset-y-0 left-0 w-60 bg-primary overflow-y-auto ease-in-out transform z-[100] md:z-[1]"
         )}
       >
-        <div className="bg-whit">
-          <Logo className="w-auto h-10 sm:h-12 hidden md:block" />
-        </div>
+        <Logo className="w-auto h-12 sm:h-12 mx-auto" />
 
         <div className="flex items-center gap-2 my-6">
           {user?.avatarUrl ? (
@@ -42,15 +40,13 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
             </span>
           )}
           <div className="truncate">
-            <h5 className="font-bold text-base truncate text-white">
-              {user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name"}
-            </h5>
-            <Link to="/dashboard/profile" className="text-white text-sm hover:underline">
+            <h5 className="font-bold text-base truncate text-white">{user ? user.fullName : "No Name"}</h5>
+            <Link to="/dashboard/profile" className="text-white text-sm hover:underline" onClick={onToggleSidebar}>
               View Profile
             </Link>
           </div>
         </div>
-        {/* Navigation Links */}
+
         <nav>
           <ul className="flex-1 space-y-2">
             {navLinks.map((navItem) => (
@@ -64,6 +60,7 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
                     )
                   }
                   end={navItem.link === "/dashboard"}
+                  onClick={onToggleSidebar}
                 >
                   <span className="text-lg">{navItem.icon}</span> {navItem.title}
                 </NavLink>

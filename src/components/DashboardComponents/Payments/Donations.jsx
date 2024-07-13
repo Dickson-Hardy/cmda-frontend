@@ -23,15 +23,19 @@ const Donations = () => {
     ...col,
     cell: (info) => {
       const value = info.getValue();
-      return col.accessor === "recurring"
-        ? value
-          ? "Yes"
-          : "No"
-        : col.accessor === "createdAt"
-          ? formatDate(value).dateTime
-          : col.accessor === "amount"
-            ? formatCurrency(value)
-            : value || "--";
+      return col.accessor === "recurring" ? (
+        value ? (
+          "Yes"
+        ) : (
+          "No"
+        )
+      ) : col.accessor === "createdAt" ? (
+        <span className="whitespace-nowrap">{formatDate(value).dateTime}</span>
+      ) : col.accessor === "amount" ? (
+        formatCurrency(value)
+      ) : (
+        value || "--"
+      );
     },
     enableSorting: false,
   }));
@@ -39,9 +43,9 @@ const Donations = () => {
   return (
     <div>
       <div className="bg-white shadow py-6 rounded-xl">
-        <div className="mb-4 px-6 flex items-center gap-4 justify-between">
+        <div className="mb-4 px-6 flex flex-col md:flex-row md:items-center gap-4 justify-between">
           <h3 className="text-lg font-semibold">Donation History</h3>
-          <SearchBar onSearch={setSearchBy} />
+          <SearchBar onSearch={setSearchBy} className="ml-auto" />
         </div>
         <Table
           tableData={donations?.items || []}

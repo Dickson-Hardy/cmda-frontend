@@ -44,7 +44,7 @@ const DashboardCheckoutPage = () => {
   return (
     <div>
       <div className="flex flex-col md:flex-row justify-center gap-y-3 md:justify-between items-center">
-        <h2 className="text-2xl font-bold text-primary">Order Checkout</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-primary">Order Checkout</h2>
         <button type="button" onClick={() => navigate(-1)} className="text-xl text-primary">
           {icons.close}
         </button>

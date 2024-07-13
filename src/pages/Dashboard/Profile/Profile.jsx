@@ -5,10 +5,7 @@ import { useSelector } from "react-redux";
 import ProfileImageUpdate from "~/components/DashboardComponents/ProfileTabContents/ProfileImageUpdate";
 import Chip from "~/components/Global/Chip/Chip";
 import { useState } from "react";
-import { useGetAllEventsQuery } from "~/redux/api/events/eventsApi";
-import Calendar from "~/components/Global/Calendar/Calendar";
 import formatDate from "~/utilities/fomartDate";
-import Loading from "~/components/Global/Loading/Loading";
 import ProfileTabTrainingRecord from "~/components/DashboardComponents/ProfileTabContents/TrainingRecord";
 import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import { useInitSubscriptionSessionMutation } from "~/redux/api/payments/subscriptionApi";
@@ -16,15 +13,6 @@ import { selectAuth } from "~/redux/features/auth/authSlice";
 
 const DashboardProfilePage = () => {
   const { user } = useSelector(selectAuth);
-  const [date, setDate] = useState(new Date());
-  // const {
-  //   data: eventsOnThisDay,
-  //   isLoading,
-  //   isFetching,
-  // } = useGetAllEventsQuery(
-  //   { page: 1, limit: 5, date: date.toISOString().slice(0, 10) },
-  //   { refetchOnMountOrArgChange: true }
-  // );
 
   const [openSubscribe, setOpenSubscribe] = useState(false);
   const [initSubscription, { isLoading: isSubscribing }] = useInitSubscriptionSessionMutation();
@@ -47,7 +35,9 @@ const DashboardProfilePage = () => {
           disabled={user?.subscribed}
           onClick={() => setOpenSubscribe(true)}
         />
-        {["Student", "Doctor"].includes(user?.role) ? <Button label="Transit" /> : null}
+        {["Student", "Doctor"].includes(user?.role) ? (
+          <Button label="Transit" onClick={() => alert("Coming soon")} />
+        ) : null}
       </div>
 
       <section className="flex gap-6 flex-col md:flex-row mb-6">
@@ -116,11 +106,11 @@ const DashboardProfilePage = () => {
         </div>
       </section>
 
-      <section className="bg-white rounded-2xl my-8 shadow pt-2">
-        <ProfileTabTrainingRecord />
-      </section>
+      <section className="my-8 flex flex-col md:flex-row gap-8">
+        <div className="w-full md:w-2/3 bg-white rounded-2xl shadow pt-2">
+          <ProfileTabTrainingRecord />
+        </div>
 
-      <section className="flex gap-6 flex-col md:flex-row mb-6">
         <div className="w-full md:w-1/3 bg-white shadow px-4 py-4 rounded-xl">
           <h3 className="text-base font-bold mb-2">Community Statistics</h3>
           <ul className="space-y-4 capitalize">
@@ -161,41 +151,6 @@ const DashboardProfilePage = () => {
               </div>
             </li>
           </ul>
-        </div>
-
-        <div className="w-full md:w-1/3">
-          <Calendar defaultDate={date} onDateSelect={setDate} />
-        </div>
-
-        <div className="w-full md:w-1/3 bg-white shadow p-4 rounded-lg">
-          <h3 className="text-base font-bold mb-2">
-            {"Upcoming Events - " +
-              (date?.toDateString() === new Date().toDateString() ? "Today, " : "") +
-              " " +
-              formatDate(date).date}
-          </h3>
-          {/* 
-          {isLoading || isFetching ? (
-            <div className="h-52 flex justify-center items-center">
-              <Loading className="text-primary w-12 h-12" />
-            </div>
-          ) : (
-            <ul className="space-y-2 h-52 overflow-y-auto py-2">
-              {eventsOnThisDay?.data?.map((evt) => (
-                <li key={evt?._id}>
-                  <Link to={`/dashboard/events/${evt?._id}`} className="block bg-white border rounded-xl p-4 space-y-2">
-                    <h4 className="text-sm font-bold truncate capitalize">{evt?.title}</h4>
-                    <div className="text-gray-dark text-xs mb-2 truncate flex items-center gap-2">
-                      <span>{evt?.eventType === "physical" ? icons.location : icons.globe}</span>
-                      <p className="truncate">
-                        {evt?.eventType === "physical" ? evt.physicalLocation : evt.virtualLink}
-                      </p>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )} */}
         </div>
       </section>
 

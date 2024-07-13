@@ -26,24 +26,26 @@ const Subscriptions = () => {
     ...col,
     cell: (info) => {
       const value = info.getValue();
-      return col.accessor === "recurring"
-        ? value
-          ? "Yes"
-          : "No"
-        : col.accessor === "createdAt"
-          ? formatDate(value).dateTime
-          : col.accessor === "expiryDate"
-            ? formatDate(value).dateTime
-            : col.accessor === "amount"
-              ? formatCurrency(value)
-              : value || "--";
+      return col.accessor === "recurring" ? (
+        value ? (
+          "Yes"
+        ) : (
+          "No"
+        )
+      ) : col.accessor === "createdAt" || col.accessor === "expiryDate" ? (
+        <span className="whitespace-nowrap">{formatDate(value).dateTime}</span>
+      ) : col.accessor === "amount" ? (
+        formatCurrency(value)
+      ) : (
+        value || "--"
+      );
     },
     enableSorting: false,
   }));
 
   return (
     <div>
-      <div className="grid grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6">
         <div className="border p-4 bg-white rounded-xl">
           <h6 className="text-gray text-sm font-medium mb-4">Subscription Status</h6>
           <StatusChip status={user.subscribed ? "Active" : "Inactive"} />

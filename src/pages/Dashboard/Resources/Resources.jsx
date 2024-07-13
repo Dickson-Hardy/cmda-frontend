@@ -48,10 +48,10 @@ const DashboardResources = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-primary mb-6">Resources</h2>
+      <h2 className="text-xl sm:text-2xl font-bold text-primary mb-6">Resources</h2>
 
       <div className="flex flex-col md:flex-row gap-6 justify-between items-center">
-        <div className="inline-flex flex-wrap justify-center gap-2">
+        <div className="inline-flex flex-wrap justify-center gap-1.5">
           {CATEGORIES.map((category) => (
             <Chip
               key={category}
@@ -59,6 +59,7 @@ const DashboardResources = () => {
               variant={selectedCategory.includes(category) ? "filled" : "outlined"}
               color={"primary"}
               onClick={() => handleSelectCategory(category)}
+              className={"px-[10px] md:px-[16px]"}
             />
           ))}
         </div>
@@ -68,12 +69,14 @@ const DashboardResources = () => {
             setResources([]);
             setSearchBy(v);
           }}
+          className="w-full md:w-auto"
+          placeholder="Search resources..."
         />
       </div>
 
       <section className="mt-8">
         <h3 className="text-lg font-bold mb-4">Recent Resources </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
           {resources.map((res) => (
             <Link to={`/dashboard/resources/${res.slug}`} key={res._id}>
               <ResourceCard

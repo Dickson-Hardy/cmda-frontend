@@ -60,7 +60,7 @@ const DashboardHomePage = () => {
   return (
     <div>
       <section className="h-[400px] w-full rounded-3xl mb-8" style={{ backgroundImage: `url(${doctorPng})` }}>
-        <div className="h-full w-full bg-black/50 rounded-3xl text-white p-8 flex flex-col justify-between">
+        <div className="h-full w-full bg-black/50 rounded-3xl text-white p-8 px-4 md:px-8 flex flex-col justify-between">
           <h2 className="font-bold text-2xl">Welcome, {user?.firstName}</h2>
           {loadingVerse ? (
             <Loading />

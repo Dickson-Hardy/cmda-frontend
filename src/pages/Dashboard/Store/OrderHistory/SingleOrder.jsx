@@ -29,7 +29,7 @@ const SingleOrder = () => {
     <div>
       <BackButton label="Back to Orders History" to="/dashboard/store/orders" />
 
-      <div className="flex gap-8 mt-6">
+      <div className="flex flex-col md:flex-row gap-8 mt-6">
         <section className="bg-white-shadow rounded-xl w-full lg:w-1/2">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {Object.entries(DETAILS).map(([key, value]) => (

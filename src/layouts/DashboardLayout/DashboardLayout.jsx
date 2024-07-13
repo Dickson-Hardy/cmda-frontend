@@ -9,39 +9,41 @@ import BottomNav from "./BottomNav";
 
 const DashboardLayout = ({ withOutlet = true, children }) => {
   const isSmallScreen = useIsSmallScreen("750px");
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [isSidebarOpen, setSidebarOpen] = useState(!isSmallScreen);
 
   const toggleSidebar = () => {
-    setSidebarOpen(!isSidebarOpen);
+    if (isSmallScreen) {
+      setSidebarOpen(!isSidebarOpen);
+    }
   };
 
   useEffect(() => {
-    !isSmallScreen && setSidebarOpen(true);
+    if (!isSmallScreen) {
+      setSidebarOpen(true); // Keep sidebar open on large screens
+    } else {
+      setSidebarOpen(false); // Default to closed on small screens
+    }
   }, [isSmallScreen]);
 
   return (
     <div className="bg-background">
-      {/* Header */}
       <Header onToggleSidebar={toggleSidebar} />
 
       <div className="flex h-screen overflow-hidden">
-        {/* Sidebar */}
         <Sidebar isOpen={isSidebarOpen} onToggleSidebar={toggleSidebar} navLinks={NAV_LINKS} />
-        {/* Main content */}
         <div
           className={classNames(
             isSidebarOpen && "md:ml-60",
             "flex-1 flex flex-col overflow-hidden transition-all duration-300"
           )}
         >
-          {/* Content */}
           <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-6 pb-20 md:pb-6 mt-16">
             {withOutlet ? <Outlet /> : children}
           </main>
         </div>
       </div>
 
-      <BottomNav navLinks={NAV_LINKS} />
+      <BottomNav navLinks={NAV_LINKS} toggleSidebar={toggleSidebar} />
     </div>
   );
 };
