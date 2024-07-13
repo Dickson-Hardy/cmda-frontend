@@ -30,6 +30,10 @@ const productsApi = api.injectEndpoints({
       transformResponse: (response) => response.data,
       providesTags: ["ORDERS"],
     }),
+    getSingleOrder: build.query({
+      query: (id) => ({ url: `/orders/${id}` }),
+      transformResponse: (response) => response.data,
+    }),
   }),
 });
 
@@ -39,6 +43,7 @@ export const {
   usePayOrderSessionMutation,
   useCreateOrderMutation,
   useGetOrderHistoryQuery,
+  useGetSingleOrderQuery,
 } = productsApi;
 
 export default productsApi;

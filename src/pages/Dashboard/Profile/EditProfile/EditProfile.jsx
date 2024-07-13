@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -6,12 +6,9 @@ import { toast } from "react-toastify";
 import icons from "~/assets/js/icons";
 import AddSocials from "~/components/DashboardComponents/ProfileTabContents/AddSocials";
 import Button from "~/components/Global/Button/Button";
-import CountryFlags from "~/components/Global/FormElements/CountryWithFlagsInput/CountyFlags";
 import Select from "~/components/Global/FormElements/Select/Select";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
-// import PhoneInput from "~/components/Global/FormElements/phoneInput/PhoneInput";
-import useCountry from "~/hooks/useCountry ";
 import { useEditProfileMutation } from "~/redux/api/profile/editProfile";
 import { setUser } from "~/redux/features/auth/authSlice";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
@@ -29,11 +26,6 @@ const DashboardEditProfile = () => {
   const navigate = useNavigate();
   const [socials, setSocials] = useState(user?.socials || []);
   const [addSocialVisible, setAddSocialVisible] = useState(false);
-
-  if (!user) {
-    navigate("/login");
-  }
-  // console.log(user);
   const [editProfile, { isLoading }] = useEditProfileMutation();
   const dispatch = useDispatch();
   const {
@@ -41,8 +33,6 @@ const DashboardEditProfile = () => {
     register,
     formState: { errors },
     handleSubmit,
-    watch,
-    setValue,
   } = useForm({
     mode: "all",
     defaultValues: {
@@ -90,14 +80,9 @@ const DashboardEditProfile = () => {
     editProfile(data)
       .unwrap()
       .then((data) => {
-        // console.log(data);
         dispatch(setUser(data.data));
         toast.success(data?.message);
         navigate("/dashboard/profile");
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error(error[0]);
       });
   };
 
@@ -150,16 +135,15 @@ const DashboardEditProfile = () => {
               </div>
 
               {/* TODO: add the phone number */}
-              {/* <div>
-                <PhoneInput
+              <div>
+                <TextInput
+                  type="tel"
                   title="Phone number (optional)"
                   label="phone"
                   register={register}
                   errors={errors}
-                  watch={watch}
-                  setValue={setValue}
                 />
-              </div> */}
+              </div>
               <div>
                 <TextInput
                   title="Email Address"

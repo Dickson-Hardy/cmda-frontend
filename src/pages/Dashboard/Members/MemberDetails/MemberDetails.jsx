@@ -43,7 +43,7 @@ const DashboardMemberDetailsPage = () => {
 
         {member?.avatarUrl ? (
           <img
-            className="size-40 md:size-52 bg-cover bg-white p-1 rounded-full mx-auto"
+            className="size-32 md:size-40 bg-cover bg-white p-1 rounded-full mx-auto"
             src={member?.avatarUrl}
             alt=""
           />
@@ -51,7 +51,7 @@ const DashboardMemberDetailsPage = () => {
           <div className="text-center">
             <span
               className={classNames(
-                "inline-flex justify-center items-center text-8xl size-40 md:size-52 border p-1 rounded-full",
+                "inline-flex justify-center items-center text-8xl size-32 md:size-40 border p-1 rounded-full",
                 member?.role === "Doctor"
                   ? "bg-onSecondary text-secondary"
                   : member?.role.includes("Global")
@@ -63,6 +63,7 @@ const DashboardMemberDetailsPage = () => {
             </span>
           </div>
         )}
+        <h5 className="text-center font-semibold mt-1">{member?.membershipId}</h5>
 
         {isLoading ? (
           <Loading height={48} width={48} className="text-primary mx-auto my-40" />

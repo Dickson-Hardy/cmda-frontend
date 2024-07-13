@@ -11,7 +11,6 @@ import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 
 const DashboardCheckoutPage = () => {
   const navigate = useNavigate();
-
   const { cartItems, totalPrice } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.auth);
 

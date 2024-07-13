@@ -17,6 +17,7 @@ const Calendar = ({ defaultDate, onDateSelect = console.log, options = {} }) => 
 
   useEffect(() => {
     setSelectedDate(today);
+    console.log(today);
   }, [today]);
 
   const generateCalendar = () => {

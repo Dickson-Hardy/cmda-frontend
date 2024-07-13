@@ -4,7 +4,6 @@ import Button from "../../Global/Button/Button";
 import TextInput from "../../Global/FormElements/TextInput/TextInput";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 import Select from "../../Global/FormElements/Select/Select";
-import PhoneInput from "../../Global/FormElements/phoneInput/PhoneInput";
 import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
 import { setVerifyEmail } from "~/redux/features/auth/authSlice";
@@ -16,8 +15,6 @@ const DoctorForm = () => {
   const {
     control,
     register,
-    watch,
-    setValue,
     formState: { errors },
     handleSubmit,
   } = useForm({ mode: "all" });
@@ -100,14 +97,7 @@ const DoctorForm = () => {
         </div>
 
         <div>
-          <PhoneInput
-            title="Phone number (optional)"
-            label="phone"
-            register={register}
-            errors={errors}
-            watch={watch}
-            setValue={setValue}
-          />
+          <TextInput type="tel" title="Phone number (optional)" label="phone" register={register} errors={errors} />
         </div>
         <div>
           <TextInput

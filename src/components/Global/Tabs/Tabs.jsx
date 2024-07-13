@@ -6,7 +6,9 @@ const Tabs = ({ tabs, equalTab = true, setActiveIndex, addonElement }) => {
 
   const handleTabClick = (index) => {
     setActiveTab(index);
-    setActiveIndex(index);
+    if (setActiveIndex) {
+      setActiveIndex(index);
+    }
   };
 
   return (

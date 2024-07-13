@@ -38,7 +38,11 @@ const DashboardHomePage = () => {
 
   const { data: devotional, isLoading: loadingVerse } = useGetLatestDevotionalQuery();
   const { data: allResources, isLoading: loadingRes } = useGetAllResourcesQuery({ page: 1, limit: 10 });
-  const { data: events, isLoading: loadingEvents } = useGetAllEventsQuery({ page: 1, limit: 10 });
+  const { data: events, isLoading: loadingEvents } = useGetAllEventsQuery({
+    page: 1,
+    limit: 10,
+    membersGroup: user.role,
+  });
   const { data: jobs, isLoading: loadingJobs } = useGetVolunteerJobsQuery({ page: 1, limit: 3 });
   const { data: allUsers, isLoading: loadingUsers } = useGetAllUsersQuery({ page: 1, limit: 10 });
   const [createPrayerTestimony, { isLoading: isCreatingPrayer }] = useCreatePrayerTestimonyMutation();
@@ -166,7 +170,7 @@ const DashboardHomePage = () => {
         <div className="w-full md:w-1/2">
           <div className="flex justify-between items-center gap-2 mb-2">
             <h3 className="text-lg font-bold">Available Jobs</h3>
-            <Link to="/dashboard/volunteers" className="text-sm text-primary font-semibold">
+            <Link to="/dashboard/jobs" className="text-sm text-primary font-semibold">
               See more
             </Link>
           </div>
@@ -176,7 +180,7 @@ const DashboardHomePage = () => {
           ) : (
             <div className="flex flex-col gap-4">
               {jobs?.items?.map((vol, i) => (
-                <Link to={`/dashboard/volunteer/${vol._id}`} key={i}>
+                <Link to={`/dashboard/jobs/${vol._id}`} key={i}>
                   <Volunteer position={vol?.title} location={vol?.companyLocation} />
                 </Link>
               ))}

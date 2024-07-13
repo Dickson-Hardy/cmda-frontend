@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
 import TextInput from "../../Global/FormElements/TextInput/TextInput";
-import PhoneInput from "../../Global/FormElements/phoneInput/PhoneInput";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 import Select from "../../Global/FormElements/Select/Select";
 import Button from "../../Global/Button/Button";
@@ -17,8 +16,6 @@ const GlobalForm = () => {
   const {
     control,
     register,
-    watch,
-    setValue,
     formState: { errors },
     handleSubmit,
   } = useForm({ mode: "all" });
@@ -49,12 +46,6 @@ const GlobalForm = () => {
         toast.success("Global account created successfully, Check email for token");
         dispatch(setVerifyEmail(email));
         navigate("/verify-email");
-      })
-      .catch((error) => {
-        if (error?.data?.message[0]) {
-          toast.error(error?.data?.message[0]);
-        }
-        console.log("Error ", error);
       });
   };
 
@@ -100,14 +91,7 @@ const GlobalForm = () => {
         </div>
 
         <div>
-          <PhoneInput
-            title="Phone number (optional)"
-            label="phone"
-            register={register}
-            errors={errors}
-            watch={watch}
-            setValue={setValue}
-          />
+          <TextInput type="tel" title="Phone number (optional)" label="phone" register={register} errors={errors} />
         </div>
         <div>
           <TextInput

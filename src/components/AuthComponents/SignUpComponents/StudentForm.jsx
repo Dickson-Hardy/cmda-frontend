@@ -4,7 +4,6 @@ import Button from "../../Global/Button/Button";
 import TextInput from "../../Global/FormElements/TextInput/TextInput";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 import Select from "../../Global/FormElements/Select/Select";
-import PhoneInput from "../../Global/FormElements/phoneInput/PhoneInput";
 import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -23,17 +22,12 @@ const StudentForm = () => {
     register,
     formState: { errors },
     handleSubmit,
-    watch,
-    setValue,
   } = useForm({ mode: "all" });
 
   const [signUp, { isLoading }] = useSignUpMutation();
   const dispatch = useDispatch();
 
   const handleSignUp = (payload) => {
-    delete payload.numbers;
-    delete payload.countryCode;
-    //
     signUp({ ...payload, role: "Student" })
       .unwrap()
       .then(() => {
@@ -92,14 +86,7 @@ const StudentForm = () => {
         </div>
 
         <div>
-          <PhoneInput
-            title="Phone number (optional)"
-            label="phone"
-            register={register}
-            errors={errors}
-            watch={watch}
-            setValue={setValue}
-          />
+          <TextInput type="tel" title="Phone number (optional)" label="phone" register={register} errors={errors} />
         </div>
         <div>
           <TextInput

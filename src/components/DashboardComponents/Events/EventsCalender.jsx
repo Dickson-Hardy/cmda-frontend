@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import formatDate from "~/utilities/fomartDate";
 import Loading from "~/components/Global/Loading/Loading";
 import Calendar from "~/components/Global/Calendar/Calendar";
+import { classNames } from "~/utilities/classNames";
 
 const EventsCalender = () => {
   const [date, setDate] = useState(new Date());
@@ -13,7 +14,11 @@ const EventsCalender = () => {
     data: eventsOnThisDay,
     isLoading,
     isFetching,
-  } = useGetAllEventsQuery({ page: 1, limit: 10, date: date.toISOString().slice(0, 10) });
+  } = useGetAllEventsQuery({
+    page: 1,
+    limit: 10,
+    eventDate: date.toLocaleDateString("en-GB").split("/").reverse().join("-"),
+  });
 
   return (
     <div className="sticky top-0">
@@ -27,7 +32,7 @@ const EventsCalender = () => {
           <div className="h-52 flex justify-center items-center">
             <Loading className="text-primary w-12 h-12" />
           </div>
-        ) : (
+        ) : eventsOnThisDay?.items?.length ? (
           <ul className="space-y-3 h-52 overflow-y-auto py-2">
             {eventsOnThisDay?.items.map((evt, i) => (
               <li key={i}>
@@ -41,6 +46,21 @@ const EventsCalender = () => {
               </li>
             ))}
           </ul>
+        ) : (
+          <div className="px-6 py-10 flex justify-center">
+            <div className="w-full max-w-[360px] text-center">
+              <span
+                className={classNames(
+                  "flex items-center justify-center text-primary text-2xl",
+                  "size-14 mx-auto rounded-full bg-onPrimaryContainer"
+                )}
+              >
+                {icons.file}
+              </span>
+              <h3 className="font-bold text-primary mb-1 text-lg mt-2">No Event Available</h3>
+              <p className=" text-sm text-gray-600 mb-6">There is currently no event happening today</p>
+            </div>
+          </div>
         )}
       </div>
     </div>

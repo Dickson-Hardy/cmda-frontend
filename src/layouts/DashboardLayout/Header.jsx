@@ -55,7 +55,7 @@ const Header = () => {
               {user?.avatarUrl ? (
                 <img src={user.avatarUrl} className="bg-onPrimary object-cover rounded-full h-10 w-10 flex-shrink-0" />
               ) : (
-                <span className="h-10 w-10 flex-shrink-0 bg-onPrimary rounded-full inline-flex items-center justify-center text-4xl text-primary">
+                <span className="h-10 w-10 flex-shrink-0 bg-onPrimary rounded-full inline-flex items-center justify-center text-3xl text-primary">
                   {icons.person}
                 </span>
               )}

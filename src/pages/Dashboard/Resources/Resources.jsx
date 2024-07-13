@@ -7,16 +7,16 @@ import SearchBar from "~/components/Global/SearchBar/SearchBar";
 import { useGetAllResourcesQuery } from "~/redux/api/resources/resourcesApi";
 
 const DashboardResources = () => {
-  const CATEGORIES = ["Articles", "Webinars", "Newsletters", "Others"];
+  const CATEGORIES = ["Article", "Webinar", "Newsletter", "Others"];
 
-  const [selectedCategory, setSelectedCategory] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const handleSelectCategory = (category) => {
-    setSelectedCategory([category]);
-    if (selectedCategory.includes(category)) {
-      setSelectedCategory((prev) => prev.filter((item) => item !== category));
+    setResources([]);
+    if (selectedCategory === category) {
+      setSelectedCategory("");
     } else {
-      setSelectedCategory((prev) => prev.concat(category));
+      setSelectedCategory(category);
     }
   };
 
@@ -29,7 +29,7 @@ const DashboardResources = () => {
     data: allResources,
     isLoading: loadingResources,
     isFetching,
-  } = useGetAllResourcesQuery({ page, limit: 12, searchBy });
+  } = useGetAllResourcesQuery({ page, limit: 12, searchBy, category: selectedCategory });
 
   useEffect(() => {
     if (allResources) {

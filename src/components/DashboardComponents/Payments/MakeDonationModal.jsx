@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import Button from "~/components/Global/Button/Button";
 import Select from "~/components/Global/FormElements/Select/Select";
 import Switch from "~/components/Global/FormElements/Switch/Switch";
+import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import Modal from "~/components/Global/Modal/Modal";
 
@@ -19,6 +20,14 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading }) => {
         <TextInput label="amount" type="number" register={register} required errors={errors} />
         <Switch label="recurring" title="Re-occuring Donation" control={control} inActiveText="No" activeText="Yes" />
         <Select label="Frequency" options={["Monthly", "Annually"]} control={control} required={false} />
+        <TextArea
+          label="comment"
+          rows={3}
+          register={register}
+          placeholder="Donation for conference, good will, etc"
+          required={false}
+          errors={errors}
+        />
         <Button type="submit" className="w-full" label="Donate Now" large loading={loading} />
       </form>
     </Modal>

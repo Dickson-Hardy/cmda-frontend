@@ -11,7 +11,7 @@ const DashboardVolunteerDetailsPage = () => {
 
   return (
     <div>
-      <BackButton to="/dashboard/volunteers" label="Back to Available Jobs" />
+      <BackButton to="/dashboard/jobs" label="Back to Available Jobs" />
 
       <div className="max-screen-xl mx-auto min-h-[calc(100vh-180px)] bg-white shadow rounded-lg p-5 mt-6">
         {isLoading ? (

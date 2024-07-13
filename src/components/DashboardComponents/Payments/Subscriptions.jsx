@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import StatusChip from "~/components/Global/StatusChip/StatusChip";
 import Table from "~/components/Global/Table/Table";
+import { SUBSCRIPTION_PRICES } from "~/constants/subscription";
 import { useGetAllSubscriptionsQuery } from "~/redux/api/payments/subscriptionApi";
 import { selectAuth } from "~/redux/features/auth/authSlice";
 import formatDate from "~/utilities/fomartDate";
@@ -49,7 +50,7 @@ const Subscriptions = () => {
         </div>
         <div className="border p-4 bg-white rounded-xl">
           <h6 className="text-gray text-sm font-medium mb-4">Subscription Package</h6>
-          <p className="font-semibold">{formatCurrency(2500)} / Annually</p>
+          <p className="font-semibold">{formatCurrency(SUBSCRIPTION_PRICES[user.role])} / Annually</p>
         </div>
       </div>
 

@@ -68,6 +68,7 @@ function DashboardStoreOrderHistoryPage() {
             setPage(currentPage);
             setLimit(perPage);
           }}
+          onRowClick={(item) => navigate(`/dashboard/store/orders/${item._id}`)}
         />
       </div>
     </div>

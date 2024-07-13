@@ -3,9 +3,9 @@ import api from "../api";
 const resourceApi = api.injectEndpoints({
   endpoints: (build) => ({
     getAllResources: build.query({
-      query: ({ page, limit, searchBy }) => ({
+      query: ({ page, limit, searchBy, category }) => ({
         url: "/resources",
-        params: { page, limit, ...(searchBy ? { searchBy } : {}) },
+        params: { page, limit, ...(searchBy ? { searchBy } : {}), ...(category ? { category } : {}) },
       }),
       transformResponse: (response) => response.data,
     }),

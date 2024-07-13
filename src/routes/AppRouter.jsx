@@ -35,6 +35,7 @@ import DashboardSettingsPage from "~/pages/Dashboard/Settings/Settings";
 import SingleResource from "~/pages/Dashboard/Resources/SingleResource";
 import PaymentSuccessful from "~/pages/Dashboard/Payments/PaymentSuccessful";
 import OrderSuccessful from "~/pages/Dashboard/Store/OrderHistory/OrderSuccessful";
+import SingleOrder from "~/pages/Dashboard/Store/OrderHistory/SingleOrder";
 
 export default function AppRouter() {
   const { isAuthenticated } = useSelector(selectAuth);
@@ -92,9 +93,10 @@ export default function AppRouter() {
             { path: "store/checkout", element: <DashboardCheckoutPage /> },
             { path: "store/orders", element: <DashboardStoreOrderHistoryPage /> },
             { path: "store/orders/successful", element: <OrderSuccessful /> },
+            { path: "store/orders/:id", element: <SingleOrder /> },
             { path: "store/:slug", element: <DashboardStoreSingleProductPage /> },
-            { path: "volunteers", element: <DashboardVolunteersPage /> },
-            { path: "volunteer/:id", element: <DashboardVolunteerDetailsPage /> },
+            { path: "jobs", element: <DashboardVolunteersPage /> },
+            { path: "jobs/:id", element: <DashboardVolunteerDetailsPage /> },
             { path: "members", element: <DashboardMembersPage /> },
             { path: "members/:id", element: <DashboardMemberDetailsPage /> },
             { path: "update-password", element: <DashboardUpdatePassword /> },

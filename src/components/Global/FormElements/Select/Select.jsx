@@ -17,6 +17,7 @@ const Select = ({
   required = "This field is required", // set to false if not required or pass custom error message as string
   disabled,
   showTitleLabel = true, // whether to show label or title of input above the component
+  onSelect = () => {},
 }) => {
   return (
     <div>
@@ -33,9 +34,10 @@ const Select = ({
           <ReactSelect
             unstyled
             id={label}
-            value={options.find((option) => option.value === value)}
+            value={value ? options.find((option) => option.value === value) : null}
             onChange={(selectedOption) => {
               onChange(multiple ? selectedOption : selectedOption.value);
+              onSelect(multiple ? selectedOption : selectedOption.value);
             }}
             onBlur={onBlur}
             placeholder={placeholder}
