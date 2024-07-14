@@ -20,7 +20,9 @@ const ChatBox = ({ userId, recipientId }) => {
     isLoading,
     isFetching,
   } = useGetChatHistoryQuery(recipientId, { refetchOnMountOrArgChange: true });
-  const { data: recipientData, isLoading: loadingRecipientData } = useGetSingleUserQuery(recipientId);
+  const { data: recipientData, isLoading: loadingRecipientData } = useGetSingleUserQuery(recipientId, {
+    skip: recipientId === "admin",
+  });
 
   const [allMessages, setAllMessages] = useState([]);
 
@@ -53,10 +55,12 @@ const ChatBox = ({ userId, recipientId }) => {
       setAllMessages((prev) => [...prev, newMessage]);
     };
 
-    socket.on(`newMessage_${[userId, recipientId].sort().join("_")}`, handleNewMessage);
+    const eventName = `newMessage_${[userId, recipientId].sort().join("_")}`;
+
+    socket.on(eventName, handleNewMessage);
 
     return () => {
-      socket.off(`newMessage_${[userId, recipientId].sort().join("_")}`, handleNewMessage);
+      socket.off(eventName, handleNewMessage);
     };
   }, [socket, recipientId, userId]);
 
@@ -86,9 +90,9 @@ const ChatBox = ({ userId, recipientId }) => {
         ) : (
           <ContactListItem
             asHeader={true}
-            name={recipientData?.fullName}
-            image={recipientData?.avatarUrl}
-            subText={recipientData?.email}
+            name={recipientId === "admin" ? "Admin" : recipientData?.fullName}
+            image={recipientId === "admin" ? null : recipientData?.avatarUrl}
+            subText={recipientId === "admin" ? "CMDA Nigeria" : recipientData?.email}
           />
         )}
       </div>

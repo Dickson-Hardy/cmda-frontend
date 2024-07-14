@@ -17,6 +17,8 @@ const ContactList = () => {
       <div className="mt-4 h-[calc(100%-160px)] overflow-y-auto">
         <h4 className="text-sm font-semibold mb-1 sticky top-0 pb-1 bg-background">Recent Messages</h4>
 
+        <ContactListItem name="Admin" image="" subText="---" onClick={() => setSearchParams({ id: "admin" })} />
+
         <div className="flex flex-col gap-1">
           {loadingChats ? (
             <div className="w-full h-full justify-center flex items-center">
@@ -30,9 +32,7 @@ const ContactList = () => {
                   name={contact.chatWith?.fullName}
                   image={contact.chatWith?.avatarUrl}
                   subText={contact.lastMessage}
-                  onClick={() => {
-                    setSearchParams({ id: contact.chatWith?._id });
-                  }}
+                  onClick={() => setSearchParams({ id: contact.chatWith?._id })}
                 />
               );
             })

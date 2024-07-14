@@ -17,7 +17,7 @@ const ContactListItem = ({
       onClick={onClick}
     >
       {image ? (
-        <img src={image} className="bg-onPrimary rounded-full h-12 w-12" />
+        <img src={image} className="bg-onPrimary rounded-full object-cover h-12 w-12" />
       ) : (
         <span className="h-12 w-12 flex-shrink-0 bg-onSecondary rounded-full inline-flex items-center justify-center text-3xl">
           {icons.person}
