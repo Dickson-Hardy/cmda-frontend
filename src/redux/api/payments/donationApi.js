@@ -19,9 +19,27 @@ const donationApi = api.injectEndpoints({
       transformResponse: (response) => response.data,
       providesTags: ["DONATIONS"],
     }),
+    exportDonations: build.mutation({
+      queryFn: async ({ callback, userId }, api, extraOptions, baseQuery) => {
+        const result = await baseQuery({
+          url: `/donations/export?userId=${userId}`,
+          method: "GET",
+          responseHandler: (response) => response.blob(),
+          cache: "no-cache",
+        });
+
+        callback(result);
+        return { data: null };
+      },
+    }),
   }),
 });
 
-export const { useInitDonationSessionMutation, useSaveDonationMutation, useGetAllDonationsQuery } = donationApi;
+export const {
+  useInitDonationSessionMutation,
+  useSaveDonationMutation,
+  useGetAllDonationsQuery,
+  useExportDonationsMutation,
+} = donationApi;
 
 export default donationApi;

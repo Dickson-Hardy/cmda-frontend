@@ -1,7 +1,11 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import Button from "~/components/Global/Button/Button";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
 import Table from "~/components/Global/Table/Table";
-import { useGetAllDonationsQuery } from "~/redux/api/payments/donationApi";
+import { useExportDonationsMutation, useGetAllDonationsQuery } from "~/redux/api/payments/donationApi";
+import { selectAuth } from "~/redux/features/auth/authSlice";
+import { downloadFile } from "~/utilities/fileDownloader";
 import formatDate from "~/utilities/fomartDate";
 import { formatCurrency } from "~/utilities/formatCurrency";
 
@@ -40,12 +44,26 @@ const Donations = () => {
     enableSorting: false,
   }));
 
+  const { user } = useSelector(selectAuth);
+
+  const [exportDonations, { isLoading: isExporting }] = useExportDonationsMutation();
+
+  const handleExport = async () => {
+    const callback = (result) => {
+      downloadFile(result.data, "Donations.csv");
+    };
+    exportDonations({ callback, userId: user._id });
+  };
+
   return (
     <div>
       <div className="bg-white shadow py-6 rounded-xl">
-        <div className="mb-4 px-6 flex flex-col md:flex-row md:items-center gap-4 justify-between">
+        <div className="mb-4 px-4 md:px-6 flex flex-col md:flex-row md:items-center gap-4 justify-between">
           <h3 className="text-lg font-semibold">Donation History</h3>
-          <SearchBar onSearch={setSearchBy} className="ml-auto" />
+          <div className="flex flex-row-reverse justify-between md:flex-row items-center gap-4">
+            <Button label="Export" variant="outlined" loading={isExporting} onClick={handleExport} />
+            <SearchBar onSearch={setSearchBy} />
+          </div>
         </div>
         <Table
           tableData={donations?.items || []}

@@ -19,10 +19,27 @@ const subscriptionApi = api.injectEndpoints({
       transformResponse: (response) => response.data,
       providesTags: ["SUBSCRIPTION"],
     }),
+    exportSubscriptions: build.mutation({
+      queryFn: async ({ callback, userId }, api, extraOptions, baseQuery) => {
+        const result = await baseQuery({
+          url: `/subscriptions/export?userId=${userId}`,
+          method: "GET",
+          responseHandler: (response) => response.blob(),
+          cache: "no-cache",
+        });
+
+        callback(result);
+        return { data: null };
+      },
+    }),
   }),
 });
 
-export const { useInitSubscriptionSessionMutation, useSaveSubscriptionMutation, useGetAllSubscriptionsQuery } =
-  subscriptionApi;
+export const {
+  useInitSubscriptionSessionMutation,
+  useSaveSubscriptionMutation,
+  useGetAllSubscriptionsQuery,
+  useExportSubscriptionsMutation,
+} = subscriptionApi;
 
 export default subscriptionApi;

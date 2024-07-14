@@ -43,7 +43,7 @@ const DashboardPaymentsPage = () => {
 
   return (
     <div>
-      <div className="flex flex-col justify-center gap-y-3 md:justify-between md:items-center">
+      <div className="flex flex-col md:flex-row justify-center gap-y-3 md:justify-between md:items-center">
         <h2 className="text-xl sm:text-2xl font-bold text-primary">Manage Payments</h2>
         {activeIndex ? (
           <Button label="Make a Donation" onClick={() => setOpenDonate(true)} />

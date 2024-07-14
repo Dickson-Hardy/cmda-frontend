@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import Button from "~/components/Global/Button/Button";
 import StatusChip from "~/components/Global/StatusChip/StatusChip";
 import Table from "~/components/Global/Table/Table";
 import { SUBSCRIPTION_PRICES } from "~/constants/subscription";
-import { useGetAllSubscriptionsQuery } from "~/redux/api/payments/subscriptionApi";
+import { useExportSubscriptionsMutation, useGetAllSubscriptionsQuery } from "~/redux/api/payments/subscriptionApi";
 import { selectAuth } from "~/redux/features/auth/authSlice";
+import { downloadFile } from "~/utilities/fileDownloader";
 import formatDate from "~/utilities/fomartDate";
 import { formatCurrency } from "~/utilities/formatCurrency";
 
@@ -43,6 +45,15 @@ const Subscriptions = () => {
     enableSorting: false,
   }));
 
+  const [exportSubscriptions, { isLoading: isExporting }] = useExportSubscriptionsMutation();
+
+  const handleExport = async () => {
+    const callback = (result) => {
+      downloadFile(result.data, "Subscriptions.csv");
+    };
+    exportSubscriptions({ callback, userId: user._id });
+  };
+
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6">
@@ -57,8 +68,9 @@ const Subscriptions = () => {
       </div>
 
       <div className="bg-white shadow py-6 rounded-3xl">
-        <div className="mb-4 px-6">
+        <div className="mb-4 px-6 flex flex-col md:flex-row gap-4">
           <h3 className="text-lg font-semibold">Subscription History</h3>
+          <Button label="Export" variant="outlined" loading={isExporting} className="ml-auto" onClick={handleExport} />
         </div>
         <Table
           tableData={subscriptions?.items || []}
