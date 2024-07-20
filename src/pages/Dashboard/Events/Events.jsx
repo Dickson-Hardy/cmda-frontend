@@ -15,7 +15,7 @@ const DashboardEventsPage = () => {
   const isSmallScreen = useIsSmallScreen("768px");
 
   const eventTabs = [
-    { label: "All Events", content: <AllEvents row={activeView === "list"} isSmallScreen={isSmallScreen} /> },
+    { label: "Upcoming Events", content: <AllEvents row={activeView === "list"} isSmallScreen={isSmallScreen} /> },
     {
       label: "Registered events",
       content: <RegisteredEvents row={activeView === "list"} isSmallScreen={isSmallScreen} />,

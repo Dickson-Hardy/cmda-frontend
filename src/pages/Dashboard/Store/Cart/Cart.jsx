@@ -12,8 +12,6 @@ const DashboardCartPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log("TOTA", totalPrice);
-
   const handleClearAll = () => {
     dispatch(clearCart());
     toast.success("Cart cleared!");

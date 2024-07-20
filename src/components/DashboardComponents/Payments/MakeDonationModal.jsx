@@ -11,6 +11,7 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading }) => {
     register,
     control,
     formState: { errors },
+    watch,
     handleSubmit,
   } = useForm({ mode: "all", defaultValues: { recurring: false } });
 
@@ -18,8 +19,10 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading }) => {
     <Modal maxWidth={400} isOpen={isOpen} onClose={onClose} title="Make a Donation">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <TextInput label="amount" type="number" register={register} required errors={errors} />
-        <Switch label="recurring" title="Re-occuring Donation" control={control} inActiveText="No" activeText="Yes" />
-        <Select label="Frequency" options={["Monthly", "Annually"]} control={control} required={false} />
+        <Switch label="recurring" title="Vision Partner?" control={control} inActiveText="No" activeText="Yes" />
+        {watch("recurring") ? (
+          <Select label="frequency" options={["Monthly", "Annually"]} control={control} required={false} />
+        ) : null}
         <TextArea
           label="comment"
           rows={3}

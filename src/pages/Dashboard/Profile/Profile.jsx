@@ -46,8 +46,11 @@ const DashboardProfilePage = () => {
             <ProfileImageUpdate />
             <div className="flex flex-col justify-between h-full w-full">
               <h3 className="capitalize font-semibold text-lg mb-4">{user?.fullName || "No Name"}</h3>
+              <p className="text-sm font-medium mb-4">
+                <span className="text-gray">ID: </span> {user?.membershipId}
+              </p>
               <p className="text-sm mb-4 font-medium flex items-center gap-2">
-                <span className="text-gray">Membership Type:</span>
+                <span className="text-gray">Type:</span>
                 <Chip
                   className="capitalize text-xs !h-7 !rounded-full"
                   color={user?.role === "Student" ? "secondary" : user?.role === "Doctor" ? "primary" : "tertiary"}
@@ -56,6 +59,9 @@ const DashboardProfilePage = () => {
               </p>
               <p className="text-sm font-medium mb-4">
                 <span className="text-gray">Chapter/Region: </span> {user?.region}
+              </p>
+              <p className="text-sm font-medium mb-4">
+                <span className="text-gray">Leadership Position: </span> {user?.leadershipPosition || "--"}
               </p>
               <p className="text-sm font-medium mb-4">
                 <span className="text-gray">Email: </span> {user?.email}
@@ -95,9 +101,25 @@ const DashboardProfilePage = () => {
           <p className="text-sm font-medium mb-4 capitalize">
             <span className="text-gray">Gender: </span> {user?.gender}
           </p>
-          <p className="text-sm font-medium mb-4">
-            <span className="text-gray">Phone: </span> {user?.phone || "---"}
-          </p>
+          {user.role === "Student" ? (
+            <>
+              <p className="text-sm font-medium mb-4">
+                <span className="text-gray">Admission Year: </span> {user?.admissionYear}
+              </p>
+              <p className="text-sm font-medium mb-4">
+                <span className="text-gray">Current Year: </span> {user?.yearOfStudy}
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="text-sm font-medium mb-4">
+                <span className="text-gray">Specialty: </span> {user?.specialty}
+              </p>
+              <p className="text-sm font-medium mb-4">
+                <span className="text-gray">License Number: </span> {user?.licenseNumber}
+              </p>
+            </>
+          )}
           <div className="flex justify-end mt-auto text-sm">
             <Link to="/dashboard/edit-profile" className="text-primary font-semibold underline">
               Edit Profile
@@ -132,7 +154,7 @@ const DashboardProfilePage = () => {
                 <p className="text-xs text-gray-dark">Total trainings attended</p>
               </div>
             </li>
-            <li className="flex items-center gap-4">
+            {/* <li className="flex items-center gap-4">
               <span className="h-14 w-14 rounded-xl inline-flex items-center justify-center bg-onSecondary text-secondary text-2xl">
                 {icons.verified}
               </span>
@@ -140,7 +162,7 @@ const DashboardProfilePage = () => {
                 <span className="font-bold text-lg">0</span>
                 <p className="text-xs text-gray-dark">CME points awarded</p>
               </div>
-            </li>
+            </li> */}
             <li className="flex items-center gap-4">
               <span className="h-14 w-14 rounded-xl inline-flex items-center justify-center bg-onTertiary text-tertiary text-2xl">
                 {icons.file}

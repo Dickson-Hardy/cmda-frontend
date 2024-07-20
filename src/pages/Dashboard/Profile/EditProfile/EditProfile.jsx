@@ -87,6 +87,8 @@ const DashboardEditProfile = () => {
       });
   };
 
+  const eighteenYrsAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split("T")[0];
+
   return (
     <div>
       <BackButton label="Back to Profile" to="/dashboard/profile" />
@@ -198,6 +200,7 @@ const DashboardEditProfile = () => {
                   errors={errors}
                   placeholder="Enter email address"
                   type="date"
+                  max={eighteenYrsAgo}
                 />
               </div>
 

@@ -28,6 +28,16 @@ const authApi = api.injectEndpoints({
       query: (body) => ({ url: "/auth/reset-password", method: "POST", body }),
       transformErrorResponse: (response) => response.data?.message,
     }),
+    // GET SETTINGS
+    getSettings: build.query({
+      query: () => ({ url: "/users/settings" }),
+      providesTags: ["USER_SETTINGS"],
+    }),
+    // UPDATE SETTINGS
+    updateSettings: build.mutation({
+      query: (body) => ({ url: "/users/settings", method: "PATCH", body }),
+      invalidatesTags: ["USER_SETTINGS"],
+    }),
   }),
 });
 
@@ -38,6 +48,8 @@ export const {
   usePasswordResetMutation,
   useVerifyUserMutation,
   useResendVerifyCodeMutation,
+  useGetSettingsQuery,
+  useUpdateSettingsMutation,
 } = authApi;
 
 export default authApi;

@@ -3,14 +3,12 @@ import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { useEditProfileMutation, useUpdateProfilePictureMutation } from "~/redux/api/profile/editProfile";
+import { useEditProfileMutation } from "~/redux/api/profile/editProfile";
 import { toast } from "react-toastify";
 import { setUser } from "~/redux/features/auth/authSlice";
 
 const ProfileImageUpdate = () => {
   const user = useSelector((state) => state.auth.user);
-  // console.log(user);
-  // const [updateProfilePicture, { isLoading }] = useUpdateProfilePictureMutation();
   const [editProfile, { isLoading }] = useEditProfileMutation();
 
   const dispatch = useDispatch();
@@ -29,20 +27,6 @@ const ProfileImageUpdate = () => {
     const formData = new FormData();
     formData.append("avatar", image);
 
-    // updateProfilePicture({ id: user?._id, payload: formData })
-    //   .unwrap()
-    //   .then((data) => {
-    // dispatch(setUser(data.data));
-    // toast.success(data?.message);
-    // setImagePreview("");
-    // setImage("");
-    // setOpenModal(false);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     toast.error(error);
-    //   });
-
     editProfile(formData)
       .unwrap()
       .then((data) => {
@@ -51,10 +35,6 @@ const ProfileImageUpdate = () => {
         setImagePreview("");
         setImage("");
         setOpenModal(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error(error[0]);
       });
   };
 
@@ -103,7 +83,6 @@ const ProfileImageUpdate = () => {
             </div>
 
             <div className="w-full space-y-5 flex flex-col items-center">
-              {/* <Button className="w-full h-full" disabled={isLoading}> */}
               <label htmlFor="image" className="cursor-pointer text-primary font-semibold hover:underline">
                 Click here to browse image
                 <input
@@ -116,7 +95,6 @@ const ProfileImageUpdate = () => {
                   onChange={handleImageChange}
                 />
               </label>
-              {/* </Button> */}
 
               <Button
                 label="Save Image"

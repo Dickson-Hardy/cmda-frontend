@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import icons from "~/assets/js/icons";
 import Donations from "~/components/DashboardComponents/Payments/Donations";
 import MakeDonationModal from "~/components/DashboardComponents/Payments/MakeDonationModal";
-// import PaymentMethod from "~/components/DashboardComponents/Payments/PaymentMethod";
 import Subscriptions from "~/components/DashboardComponents/Payments/Subscriptions";
 import Button from "~/components/Global/Button/Button";
 import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
@@ -16,7 +15,6 @@ const DashboardPaymentsPage = () => {
   const PAYMENT_TABS = [
     { label: "Subscriptions", content: <Subscriptions /> },
     { label: "Donations", content: <Donations /> },
-    // { label: "Payment Methods", content: <PaymentMethod /> },
   ];
   const { user } = useSelector(selectAuth);
   const [activeIndex, setActiveIndex] = useState(0);

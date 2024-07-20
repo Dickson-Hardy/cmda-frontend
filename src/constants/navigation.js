@@ -6,7 +6,7 @@ export const NAV_LINKS = [
   { title: "Resources", link: "/dashboard/resources", icon: icons.play },
   { title: "Manage Payments", link: "/dashboard/payments", icon: icons.card },
   { title: "Connect with Others", link: "/dashboard/members", icon: icons.group },
-  { title: "Available Jobs", link: "/dashboard/jobs", icon: icons.briefcase },
+  { title: "Volunteer Jobs", link: "/dashboard/jobs", icon: icons.briefcase },
   { title: "Messaging", link: "/dashboard/messaging", icon: icons.message },
   { title: "Store", link: "/dashboard/store", icon: icons.store },
 ];

@@ -34,13 +34,6 @@ const StudentForm = () => {
         toast.success("Student account created successfully, Check email for token");
         dispatch(setVerifyEmail(payload.email));
         navigate("/verify-email");
-      })
-      .catch((error) => {
-        // console.log(error?.data?.message[0])
-        if (error?.data?.message[0]) {
-          toast.error(error?.data?.message[0]);
-        }
-        console.log("Error ", error);
       });
   };
 

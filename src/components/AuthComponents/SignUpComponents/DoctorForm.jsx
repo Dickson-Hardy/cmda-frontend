@@ -46,12 +46,6 @@ const DoctorForm = () => {
         toast.success("Doctor account created successfully, Check email for token");
         dispatch(setVerifyEmail(email));
         navigate("/verify-email");
-      })
-      .catch((error) => {
-        if (error?.data?.message[0]) {
-          toast.error(error?.data?.message[0]);
-        }
-        console.log("Error ", error);
       });
   };
 
