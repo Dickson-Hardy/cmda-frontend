@@ -22,6 +22,9 @@ import { useGetLatestDevotionalQuery } from "~/redux/api/devotionals/devotionals
 import { useGetAllResourcesQuery } from "~/redux/api/resources/resourcesApi";
 import { selectAuth } from "~/redux/features/auth/authSlice";
 import MultiItemCarousel from "~/components/Global/MultiItemCarousel/MultiItemCarousel";
+import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
+import { useInitSubscriptionSessionMutation } from "~/redux/api/payments/subscriptionApi";
+import formatDate from "~/utilities/fomartDate";
 
 const DashboardHomePage = () => {
   const { user } = useSelector(selectAuth);
@@ -57,8 +60,34 @@ const DashboardHomePage = () => {
       });
   };
 
+  const [openSubscribe, setOpenSubscribe] = useState(false);
+  const [initSubscription, { isLoading: isSubscribing }] = useInitSubscriptionSessionMutation();
+
+  const onSubscribe = () => {
+    initSubscription({})
+      .unwrap()
+      .then((res) => {
+        window.open(res.checkout_url, "_self");
+      });
+  };
+
   return (
     <div>
+      {user.subscribed ? (
+        <div className="mb-4 border px-6 py-3 bg-success/20 border-success rounded-lg overflow-hidden text-sm font-medium text-success">
+          You have an active subscription! Enjoy access to all our premium features and exclusive content. Please note
+          that your current subscription will expire on {formatDate(user.subscriptionExpiry).dateTime}.
+        </div>
+      ) : (
+        <div className="mb-4 border px-6 py-3 bg-error/20 border-error rounded-lg overflow-hidden text-sm font-medium text-error">
+          You currently do not have an active subscription. Without a subscription, you won&apos;t have access to our
+          premium features in this application and within CMDA. Click{" "}
+          <button type="button" className="underline font-bold" onClick={() => setOpenSubscribe(true)}>
+            here to subscribe now.
+          </button>
+        </div>
+      )}
+
       <section className="h-[400px] w-full rounded-3xl mb-8" style={{ backgroundImage: `url(${doctorPng})` }}>
         <div className="h-full w-full bg-black/50 rounded-3xl text-white p-8 px-4 md:px-8 flex flex-col justify-between">
           <h2 className="font-bold text-2xl">Welcome, {user?.firstName}</h2>
@@ -240,6 +269,17 @@ const DashboardHomePage = () => {
           </button>
         </div>
       </Modal>
+
+      <ConfirmationModal
+        isOpen={openSubscribe}
+        onClose={() => setOpenSubscribe(false)}
+        icon={icons.card}
+        title="Pay Annual Subscription"
+        subtitle="Would you like to subscribe annually to access premium features and enjoy enhanced benefits?"
+        mainActionLoading={isSubscribing}
+        mainAction={onSubscribe}
+        subAction
+      />
     </div>
   );
 };
