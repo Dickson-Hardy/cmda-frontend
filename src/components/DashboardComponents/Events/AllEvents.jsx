@@ -6,27 +6,24 @@ import { Link } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
 import EventFilterModal from "./EventFilterModal";
-import { useSelector } from "react-redux";
-import { selectAuth } from "~/redux/features/auth/authSlice";
 import Loading from "~/components/Global/Loading/Loading";
 import { classNames } from "~/utilities/classNames";
 
 const AllEvents = ({ row, isSmallScreen }) => {
-  const { user } = useSelector(selectAuth);
   const [allEvents, setAllEvents] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [searchBy, setSearchBy] = useState();
   const [openFilter, setOpenFilter] = useState(false);
   const [eventDate, setEventDate] = useState("");
-  const [membersGroup] = useState(user.role);
+  const [membersGroup, setMembersGroup] = useState("");
   const [eventType, setEventType] = useState("");
   const {
     data: events,
     isLoading,
     isFetching,
   } = useGetAllEventsQuery(
-    { page, limit: 10, searchBy, eventDate, membersGroup, eventType },
+    { page, limit: 10, searchBy, fromToday: true, eventDate, membersGroup, eventType },
     { refetchOnMountOrArgChange: true }
   );
 
@@ -115,10 +112,11 @@ const AllEvents = ({ row, isSmallScreen }) => {
       <EventFilterModal
         isOpen={openFilter}
         onClose={() => setOpenFilter(false)}
-        onSubmit={({ eventDate, eventType }) => {
+        onSubmit={({ eventDate, eventType, membersGroup }) => {
           setAllEvents([]);
           setEventDate(eventDate);
           setEventType(eventType);
+          setMembersGroup(membersGroup);
           setOpenFilter(false);
         }}
       />
