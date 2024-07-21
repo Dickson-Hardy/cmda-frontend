@@ -68,11 +68,6 @@ const DashboardStoreSingleEventPage = () => {
           </div>
         </div>
 
-        <div className="my-6">
-          <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">CME Points</h4>
-          <p className="text-base mb-1">{singleEvent?.cmePoints || 0}</p>
-        </div>
-
         <div className="mt-6">
           <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Additional Information</h4>
           <p className="text-base mb-1">{singleEvent?.additionalInformation}</p>
