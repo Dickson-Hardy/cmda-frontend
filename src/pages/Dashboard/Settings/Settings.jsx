@@ -7,11 +7,8 @@ import Switch from "~/components/Global/FormElements/Switch/Switch";
 import { useGetSettingsQuery, useUpdateSettingsMutation } from "~/redux/api/auth/authApi";
 
 const DashboardSettingsPage = () => {
-  const {
-    data: { data: userSettings },
-  } = useGetSettingsQuery();
   const [updateSettings, { isLoading }] = useUpdateSettingsMutation();
-  console.log("SETTINGS", userSettings);
+  const { data: userSettings } = useGetSettingsQuery(null, { refetchOnMountOrArgChange: true });
 
   const { control, handleSubmit } = useForm({
     defaultValues: {

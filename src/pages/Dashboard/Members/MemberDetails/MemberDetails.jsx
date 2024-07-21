@@ -22,7 +22,7 @@ const DashboardMemberDetailsPage = () => {
       Region: member?.region,
       About: member?.bio,
       "Email Address": member?.email,
-      "Phone Number": member?.phone,
+      // "Phone Number": member?.phone,
     };
   }, [member]);
 

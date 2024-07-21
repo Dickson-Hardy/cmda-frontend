@@ -31,6 +31,7 @@ const authApi = api.injectEndpoints({
     // GET SETTINGS
     getSettings: build.query({
       query: () => ({ url: "/users/settings" }),
+      transformResponse: (response) => response.data,
       providesTags: ["USER_SETTINGS"],
     }),
     // UPDATE SETTINGS
