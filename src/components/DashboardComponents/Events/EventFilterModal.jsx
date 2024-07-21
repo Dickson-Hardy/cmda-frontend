@@ -11,6 +11,13 @@ const EventFilterModal = ({ isOpen, onClose, onSubmit = console.log }) => {
     <Modal isOpen={isOpen} onClose={onClose} maxWidth={400} title="Filter Events">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Select label="eventType" control={control} options={["Physical", "Virtual"]} required={false} errors={{}} />
+        <Select
+          label="membersGroup"
+          control={control}
+          options={["Student", "Doctor", "GlobalNetwork"]}
+          required={false}
+          errors={{}}
+        />
         <TextInput type="date" label="eventDate" register={register} errors={{}} required={false} />
         <Button label="Apply Filter" type="submit" large className="w-full" />
         <div>
