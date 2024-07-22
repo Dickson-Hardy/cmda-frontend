@@ -22,9 +22,17 @@ const eventsApi = api.injectEndpoints({
       query: (slug) => `/events/${slug}`,
       transformResponse: (response) => response.data,
     }),
+    getAllTrainings: build.query({
+      query: ({ searchBy, membersGroup }) => ({
+        url: "/trainings",
+        params: { ...(searchBy ? { searchBy } : {}), ...(membersGroup ? { membersGroup } : {}) },
+      }),
+      transformResponse: (response) => response.data,
+      providesTags: ["TRAININGS"],
+    }),
   }),
 });
 
-export const { useGetAllEventsQuery, useGetSingleEventQuery } = eventsApi;
+export const { useGetAllEventsQuery, useGetSingleEventQuery, useGetAllTrainingsQuery } = eventsApi;
 
 export default eventsApi;

@@ -6,16 +6,41 @@ import ProfileImageUpdate from "~/components/DashboardComponents/ProfileTabConte
 import Chip from "~/components/Global/Chip/Chip";
 import { useState } from "react";
 import formatDate from "~/utilities/fomartDate";
-import ProfileTabTrainingRecord from "~/components/DashboardComponents/ProfileTabContents/TrainingRecord";
 import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import { useInitSubscriptionSessionMutation } from "~/redux/api/payments/subscriptionApi";
 import { selectAuth } from "~/redux/features/auth/authSlice";
+import { useGetAllTrainingsQuery } from "~/redux/api/events/eventsApi";
+import StatusChip from "~/components/Global/StatusChip/StatusChip";
+import Table from "~/components/Global/Table/Table";
 
 const DashboardProfilePage = () => {
   const { user } = useSelector(selectAuth);
 
   const [openSubscribe, setOpenSubscribe] = useState(false);
   const [initSubscription, { isLoading: isSubscribing }] = useInitSubscriptionSessionMutation();
+  const { data: allTrainings, isLoading: isLoadingTrainings } = useGetAllTrainingsQuery(
+    { membersGroup: user.role },
+    { refetchOnMountOrArgChange: true }
+  );
+
+  const COLUMNS = [
+    { header: "Training Name", accessor: "name" },
+    { header: "Status", accessor: "status" },
+  ];
+  const formattedColumns = COLUMNS.map((col) => ({
+    ...col,
+    cell: (info) => {
+      const [value, item] = [info.getValue(), info.row.original];
+      return col.accessor === "name" ? (
+        <span className="capitalize">{value}</span>
+      ) : col.accessor === "status" ? (
+        <StatusChip status={item.completedUsers.includes(user._id) ? "completed" : "pending"} />
+      ) : (
+        value || "--"
+      );
+    },
+    enableSorting: false,
+  }));
 
   const onSubscribe = () => {
     initSubscription({})
@@ -130,7 +155,15 @@ const DashboardProfilePage = () => {
 
       <section className="my-8 flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-2/3 bg-white rounded-2xl shadow pt-2">
-          <ProfileTabTrainingRecord />
+          <div className="w-full  px-4 py-4">
+            <h3 className="text-base font-bold mb-4">Training Records</h3>
+            <Table
+              tableData={allTrainings || []}
+              tableColumns={formattedColumns}
+              loading={isLoadingTrainings}
+              showPagination={allTrainings?.length > 10}
+            />
+          </div>
         </div>
 
         <div className="w-full md:w-1/3 bg-white shadow px-4 py-4 rounded-xl">

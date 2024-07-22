@@ -1,6 +1,6 @@
 import api from "../api";
 
-const editProfile = api.injectEndpoints({
+const profileApi = api.injectEndpoints({
   endpoints: (build) => ({
     // edit profile
     editProfile: build.mutation({
@@ -20,6 +20,6 @@ const editProfile = api.injectEndpoints({
   }),
 });
 
-export const { useEditProfileMutation, useUpdatePasswordMutation, useUpdateProfilePictureMutation } = editProfile;
+export const { useEditProfileMutation, useUpdatePasswordMutation, useUpdateProfilePictureMutation } = profileApi;
 
-export default editProfile;
+export default profileApi;

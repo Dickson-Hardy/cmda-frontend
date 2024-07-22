@@ -3,7 +3,7 @@ import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { useEditProfileMutation } from "~/redux/api/profile/editProfile";
+import { useEditProfileMutation } from "~/redux/api/profile/profileApi";
 import { toast } from "react-toastify";
 import { setUser } from "~/redux/features/auth/authSlice";
 

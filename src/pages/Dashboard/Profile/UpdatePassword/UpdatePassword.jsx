@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
-import { useUpdatePasswordMutation } from "~/redux/api/profile/editProfile";
+import { useUpdatePasswordMutation } from "~/redux/api/profile/profileApi";
 
 const DashboardUpdatePassword = () => {
   const {

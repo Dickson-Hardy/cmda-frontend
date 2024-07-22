@@ -10,7 +10,7 @@ import Button from "~/components/Global/Button/Button";
 import Select from "~/components/Global/FormElements/Select/Select";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
-import { useEditProfileMutation } from "~/redux/api/profile/editProfile";
+import { useEditProfileMutation } from "~/redux/api/profile/profileApi";
 import { setUser } from "~/redux/features/auth/authSlice";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 import {
