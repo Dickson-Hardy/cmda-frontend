@@ -1,27 +1,47 @@
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ProfileImageUpdate from "~/components/DashboardComponents/ProfileTabContents/ProfileImageUpdate";
 import Chip from "~/components/Global/Chip/Chip";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import formatDate from "~/utilities/fomartDate";
 import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import { useInitSubscriptionSessionMutation } from "~/redux/api/payments/subscriptionApi";
-import { selectAuth } from "~/redux/features/auth/authSlice";
+import { selectAuth, setUser } from "~/redux/features/auth/authSlice";
 import { useGetAllTrainingsQuery } from "~/redux/api/events/eventsApi";
 import StatusChip from "~/components/Global/StatusChip/StatusChip";
 import Table from "~/components/Global/Table/Table";
+import TransitionModal from "~/components/DashboardComponents/Members/TransitionModal";
+import {
+  useCreateUpdateTransitionMutation,
+  useGetProfileQuery,
+  useGetTransitionQuery,
+} from "~/redux/api/profile/profileApi";
+import { toast } from "react-toastify";
 
 const DashboardProfilePage = () => {
   const { user } = useSelector(selectAuth);
 
   const [openSubscribe, setOpenSubscribe] = useState(false);
+  const [openTransit, setOpenTransit] = useState(false);
   const [initSubscription, { isLoading: isSubscribing }] = useInitSubscriptionSessionMutation();
   const { data: allTrainings, isLoading: isLoadingTrainings } = useGetAllTrainingsQuery(
     { membersGroup: user.role },
     { refetchOnMountOrArgChange: true }
   );
+
+  const { data: transitionInfo } = useGetTransitionQuery(null, { refetchOnMountOrArgChange: true });
+  const [postTransition, { isLoading: isTransiting }] = useCreateUpdateTransitionMutation();
+
+  const { data: myProfile } = useGetProfileQuery(null, { refetchOnMountOrArgChange: true });
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (myProfile && myProfile?.email) {
+      dispatch(setUser(myProfile));
+    }
+  }, [myProfile, dispatch]);
 
   const COLUMNS = [
     { header: "Training Name", accessor: "name" },
@@ -50,6 +70,19 @@ const DashboardProfilePage = () => {
       });
   };
 
+  const handleTransit = (payload) => {
+    const body = {
+      ...payload,
+      ...(user.role === "Doctor" ? { specialty: user.specialty, licenseNumber: user.licenseNumber } : {}),
+    };
+    postTransition(body)
+      .unwrap()
+      .then(() => {
+        toast.success("Transition info updated successfully");
+        setOpenTransit(false);
+      });
+  };
+
   return (
     <div>
       <div className="flex justify-end gap-2 mb-4">
@@ -61,7 +94,14 @@ const DashboardProfilePage = () => {
           onClick={() => setOpenSubscribe(true)}
         />
         {["Student", "Doctor"].includes(user?.role) ? (
-          <Button label="Transit" onClick={() => alert("Coming soon")} />
+          <Button
+            label={
+              transitionInfo
+                ? "Transition in Progress"
+                : `Transit to ${user.role === "Student" ? "Doctor" : "GlobalNetwork"}`
+            }
+            onClick={() => setOpenTransit(true)}
+          />
         ) : null}
       </div>
 
@@ -78,7 +118,7 @@ const DashboardProfilePage = () => {
                 <span className="text-gray">Type:</span>
                 <Chip
                   className="capitalize text-xs !h-7 !rounded-full"
-                  color={user?.role === "Student" ? "secondary" : user?.role === "Doctor" ? "primary" : "tertiary"}
+                  color={user?.role === "Student" ? "primary" : user?.role === "Doctor" ? "secondary" : "tertiary"}
                   label={user?.role}
                 />
               </p>
@@ -183,19 +223,12 @@ const DashboardProfilePage = () => {
                 {icons.person}
               </span>
               <div>
-                <span className="font-bold text-lg">0</span>
+                <span className="font-bold text-lg">
+                  {allTrainings?.filter((x) => x.completedUsers.includes(user._id)).length}
+                </span>
                 <p className="text-xs text-gray-dark">Total trainings attended</p>
               </div>
             </li>
-            {/* <li className="flex items-center gap-4">
-              <span className="h-14 w-14 rounded-xl inline-flex items-center justify-center bg-onSecondary text-secondary text-2xl">
-                {icons.verified}
-              </span>
-              <div>
-                <span className="font-bold text-lg">0</span>
-                <p className="text-xs text-gray-dark">CME points awarded</p>
-              </div>
-            </li> */}
             <li className="flex items-center gap-4">
               <span className="h-14 w-14 rounded-xl inline-flex items-center justify-center bg-onTertiary text-tertiary text-2xl">
                 {icons.file}
@@ -218,6 +251,14 @@ const DashboardProfilePage = () => {
         mainActionLoading={isSubscribing}
         mainAction={onSubscribe}
         subAction
+      />
+
+      <TransitionModal
+        isOpen={openTransit}
+        transition={transitionInfo}
+        onClose={() => setOpenTransit(false)}
+        onSubmit={handleTransit}
+        loading={isTransiting}
       />
     </div>
   );
