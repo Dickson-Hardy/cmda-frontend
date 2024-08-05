@@ -16,11 +16,12 @@ const Donations = () => {
   const { data: donations, isLoading } = useGetAllDonationsQuery({ page, limit, searchBy });
 
   const COLUMNS = [
-    { header: "Reference", accessor: "reference" },
+    // { header: "Reference", accessor: "reference" },
     { header: "Date", accessor: "createdAt" },
     { header: "Amount", accessor: "amount" },
     { header: "Recurring", accessor: "recurring" },
     { header: "Frequency", accessor: "frequency" },
+    { header: "Areas of Need", accessor: "areasOfNeed" },
   ];
 
   const formattedColumns = COLUMNS.map((col) => ({

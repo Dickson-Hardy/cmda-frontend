@@ -160,26 +160,23 @@ const DashboardEditProfile = () => {
                 />
               </div>
 
-              {/* roles similar to doctors and students */}
-              {user.role !== "global" && (
-                <div className="w-full">
-                  <Select
-                    label="region"
-                    control={control}
-                    options={
-                      user.role == "doctor"
-                        ? doctorsRegionLists
-                        : user.role == "Student"
-                          ? studentChapterOptions
-                          : globalRegionsData
-                    }
-                    errors={errors}
-                    required
-                    title="Chapter/Region"
-                    placeholder="choose your chapter/region"
-                  />
-                </div>
-              )}
+              <div className="w-full">
+                <Select
+                  label="region"
+                  control={control}
+                  options={
+                    user.role == "Doctor"
+                      ? doctorsRegionLists
+                      : user.role == "Student"
+                        ? studentChapterOptions
+                        : globalRegionsData
+                  }
+                  errors={errors}
+                  required
+                  title="Chapter/Region"
+                  placeholder="choose your chapter/region"
+                />
+              </div>
 
               <div className="w-full">
                 <Select

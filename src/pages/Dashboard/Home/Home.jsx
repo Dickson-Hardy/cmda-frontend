@@ -24,7 +24,6 @@ import { selectAuth } from "~/redux/features/auth/authSlice";
 import MultiItemCarousel from "~/components/Global/MultiItemCarousel/MultiItemCarousel";
 import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import { useInitSubscriptionSessionMutation } from "~/redux/api/payments/subscriptionApi";
-import formatDate from "~/utilities/fomartDate";
 
 const DashboardHomePage = () => {
   const { user } = useSelector(selectAuth);
@@ -73,12 +72,7 @@ const DashboardHomePage = () => {
 
   return (
     <div>
-      {user.subscribed ? (
-        <div className="mb-4 border px-6 py-3 bg-success/20 border-success rounded-lg overflow-hidden text-sm font-medium text-success">
-          You have an active subscription! Enjoy access to all our premium features and exclusive content. Please note
-          that your current subscription will expire on {formatDate(user.subscriptionExpiry).dateTime}.
-        </div>
-      ) : (
+      {!user.subscribed && (
         <div className="mb-4 border px-6 py-3 bg-error/20 border-error rounded-lg overflow-hidden text-sm font-medium text-error">
           You currently do not have an active subscription. Without a subscription, you won&apos;t have access to our
           premium features in this application and within CMDA. Click{" "}
@@ -198,7 +192,7 @@ const DashboardHomePage = () => {
       <section className="flex flex-col md:flex-row gap-10 mb-6">
         <div className="w-full md:w-1/2">
           <div className="flex justify-between items-center gap-2 mb-2">
-            <h3 className="text-lg font-bold">Volunteer Jobs</h3>
+            <h3 className="text-lg font-bold">Volunteer</h3>
             <Link to="/dashboard/jobs" className="text-sm text-primary font-semibold">
               See more
             </Link>
