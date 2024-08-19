@@ -10,7 +10,7 @@ import Switch from "~/components/Global/FormElements/Switch/Switch";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
 import Loading from "~/components/Global/Loading/Loading";
 import { useGetAllEventsQuery } from "~/redux/api/events/eventsApi";
-import { useCreatePrayerTestimonyMutation } from "~/redux/api/prayerTestimonies/prayerTestimoniesApi";
+import { useCreateFaithEntryMutation } from "~/redux/api/prayerTestimonies/prayerTestimoniesApi";
 import { toast } from "react-toastify";
 import { useGetVolunteerJobsQuery } from "~/redux/api/volunteer/volunteerApi";
 import icons from "~/assets/js/icons";
@@ -24,10 +24,10 @@ import { selectAuth } from "~/redux/features/auth/authSlice";
 import MultiItemCarousel from "~/components/Global/MultiItemCarousel/MultiItemCarousel";
 import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import { useInitSubscriptionSessionMutation } from "~/redux/api/payments/subscriptionApi";
+import Select from "~/components/Global/FormElements/Select/Select";
 
 const DashboardHomePage = () => {
   const { user } = useSelector(selectAuth);
-  const [shareTestimony, setShareTestimony] = useState(false);
   const [prayerModal, setPrayerModal] = useState(false);
 
   const {
@@ -35,6 +35,7 @@ const DashboardHomePage = () => {
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm({ mode: "all" });
 
@@ -47,14 +48,13 @@ const DashboardHomePage = () => {
   });
   const { data: jobs, isLoading: loadingJobs } = useGetVolunteerJobsQuery({ page: 1, limit: 3 });
   const { data: allUsers, isLoading: loadingUsers } = useGetAllUsersQuery({ page: 1, limit: 10 });
-  const [createPrayerTestimony, { isLoading: isCreatingPrayer }] = useCreatePrayerTestimonyMutation();
+  const [createFaithEntry, { isLoading: isCreatingPrayer }] = useCreateFaithEntryMutation();
 
-  const handleCreatePrayer = (data) => {
-    const payload = { ...data, type: shareTestimony ? "testimony" : "prayer" };
-    createPrayerTestimony(payload)
+  const handleCreatePrayer = (payload) => {
+    createFaithEntry({ ...payload, isAnonymous: payload.isAnonymous || false })
       .unwrap()
       .then(() => {
-        toast.success(`Your ${payload.type} has been submitted successfully`);
+        toast.success(`Your ${payload.category} has been submitted successfully`);
         reset();
       });
   };
@@ -192,7 +192,7 @@ const DashboardHomePage = () => {
       <section className="flex flex-col md:flex-row gap-10 mb-6">
         <div className="w-full md:w-1/2">
           <div className="flex justify-between items-center gap-2 mb-2">
-            <h3 className="text-lg font-bold">Volunteer</h3>
+            <h3 className="text-lg font-bold">Volunteer Opportunities</h3>
             <Link to="/dashboard/jobs" className="text-sm text-primary font-semibold">
               See more
             </Link>
@@ -213,21 +213,24 @@ const DashboardHomePage = () => {
 
         <div className="w-full md:w-1/2">
           <div className="flex justify-between items-center gap-2 mb-2">
-            <h3 className="text-lg font-bold">{shareTestimony ? "Share a Testimony" : "Prayer Request"}</h3>
-            <button
-              type="button"
-              className="text-sm text-primary font-semibold"
-              onClick={() => setShareTestimony(!shareTestimony)}
-            >
-              {shareTestimony ? "Make prayer request" : "Share a testimony"}
-            </button>
+            <h3 className="text-lg font-bold">Testimonies, prayer requests &amp; comments</h3>
+            <Link to="/dashboard/faith-entry" className="text-sm text-primary font-semibold">
+              View all
+            </Link>
           </div>
           <form className="flex flex-col gap-5" onSubmit={handleSubmit(handleCreatePrayer)}>
+            <Select
+              label="category"
+              placeholder="Select Category"
+              showTitleLabel={false}
+              options={["Testimony", "Prayer Request", "Comment"]}
+              control={control}
+            />
             <TextArea
               register={register}
               label="content"
               showTitleLabel={false}
-              placeholder={"Share your " + (shareTestimony ? "testimony" : "prayer request")}
+              placeholder={"Enter your testimonies, prayer requests or comments"}
               errors={errors}
               rows={6}
             />
@@ -238,12 +241,7 @@ const DashboardHomePage = () => {
               inActiveText="Post as anonymous"
               showTitleLabel={false}
             />
-            <Button
-              large
-              loading={isCreatingPrayer}
-              type="submit"
-              label={"Submit " + (shareTestimony ? "Testimony" : "Prayer Request")}
-            />
+            <Button large loading={isCreatingPrayer} type="submit" label={"Submit " + (watch("category") || "")} />
           </form>
         </div>
       </section>

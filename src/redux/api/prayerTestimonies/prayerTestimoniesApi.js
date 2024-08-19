@@ -2,16 +2,25 @@ import api from "../api";
 
 const prayerTestimonyApi = api.injectEndpoints({
   endpoints: (build) => ({
-    createPrayerTestimony: build.mutation({
+    createFaithEntry: build.mutation({
       query: (body) => ({
-        url: "/prayers-and-testimonies/create",
+        url: "/faith-entry",
         method: "POST",
         body,
       }),
+      invalidatesTags: ["FAITH"],
+    }),
+    getAllFaithEntries: build.query({
+      query: ({ limit, page, searchBy }) => ({
+        url: "/faith-entry",
+        params: { limit, page, ...(searchBy ? { searchBy } : {}) },
+      }),
+      transformResponse: (response) => response.data,
+      providesTags: ["FAITH"],
     }),
   }),
 });
 
-export const { useCreatePrayerTestimonyMutation } = prayerTestimonyApi;
+export const { useCreateFaithEntryMutation, useGetAllFaithEntriesQuery } = prayerTestimonyApi;
 
 export default prayerTestimonyApi;

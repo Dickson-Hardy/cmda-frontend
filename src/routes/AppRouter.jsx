@@ -36,6 +36,7 @@ import SingleResource from "~/pages/Dashboard/Resources/SingleResource";
 import PaymentSuccessful from "~/pages/Dashboard/Payments/PaymentSuccessful";
 import OrderSuccessful from "~/pages/Dashboard/Store/OrderHistory/OrderSuccessful";
 import SingleOrder from "~/pages/Dashboard/Store/OrderHistory/SingleOrder";
+import DashboardFaithEntryPage from "~/pages/Dashboard/Faith/FaithEntry";
 
 export default function AppRouter() {
   const { isAuthenticated } = useSelector(selectAuth);
@@ -85,6 +86,7 @@ export default function AppRouter() {
             { path: "events", element: <DashboardEventsPage /> },
             { path: "events/:slug", element: <DashboardStoreSingleEventPage /> },
             { path: "profile", element: <DashboardProfilePage /> },
+            { path: "faith-entry", element: <DashboardFaithEntryPage /> },
             { path: "resources", element: <DashboardResources /> },
             { path: "resources/:slug", element: <SingleResource /> },
             { path: "messaging", element: <DashboardMessagingPage /> },
