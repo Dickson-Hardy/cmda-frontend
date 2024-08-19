@@ -13,6 +13,7 @@ const NewPassword = () => {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm({ mode: "all" });
 
   const navigate = useNavigate();
@@ -67,6 +68,9 @@ const NewPassword = () => {
               errors={errors}
               placeholder="Enter password"
               className="text-gray-500"
+              rules={{
+                validate: (value) => value === watch("newPassword") || "Passwords do not match",
+              }}
             />
           </div>
 

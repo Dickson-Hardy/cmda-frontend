@@ -22,6 +22,7 @@ const StudentForm = () => {
     register,
     formState: { errors },
     handleSubmit,
+    watch,
   } = useForm({ mode: "all" });
 
   const [signUp, { isLoading }] = useSignUpMutation();
@@ -103,6 +104,21 @@ const StudentForm = () => {
             errors={errors}
             placeholder="Set a password"
             title="Create Password"
+          />
+        </div>
+
+        <div>
+          <TextInput
+            type="password"
+            label="confirmPassword"
+            required={true}
+            register={register}
+            errors={errors}
+            placeholder="Set a password"
+            title="Confirm Password"
+            rules={{
+              validate: (value) => value === watch("password") || "Passwords do not match",
+            }}
           />
         </div>
 

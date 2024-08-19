@@ -24,6 +24,12 @@ const GetStarted = () => {
     }
   };
 
+  const REQUIRES = {
+    student: "Admission Year & Student Chapter",
+    doctor: "License Number, Specialty & State Chapter",
+    "global member": "License Number, Specialty & Region",
+  };
+
   return (
     <>
       <div className="mb-9 text-center">
@@ -44,6 +50,9 @@ const GetStarted = () => {
             <img src={studentImg} alt="Student Icon" className="size-[3rem] object-contain" />
             <p className="text-black text-sm font-bold capitalize">
               {title === "global member" ? "Global Network Member" : title}
+            </p>
+            <p className="text-gray-600 text-xs text-center -mt-3">
+              <b className="text-error">*</b> Requires {REQUIRES[title]}
             </p>
           </div>
         ))}
