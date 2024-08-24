@@ -1,19 +1,33 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import icons from "~/assets/js/icons";
 import BackButton from "~/components/Global/BackButton/BackButton";
 import Button from "~/components/Global/Button/Button";
 import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
-import { useGetSingleEventQuery } from "~/redux/api/events/eventsApi";
+import { useGetSingleEventQuery, useRegisterForEventMutation } from "~/redux/api/events/eventsApi";
+import { selectAuth } from "~/redux/features/auth/authSlice";
 import { classNames } from "~/utilities/classNames";
 import formatDate from "~/utilities/fomartDate";
 
 const DashboardStoreSingleEventPage = () => {
   const { slug } = useParams();
   const { data: singleEvent } = useGetSingleEventQuery(slug);
+  const [registerForEvent, { isLoading: isRegistering }] = useRegisterForEventMutation();
   const [confirmRegister, setConfirmRegister] = useState(false);
+  const { user } = useSelector(selectAuth);
 
   const handleShare = (social) => alert("Sharing on " + social);
+
+  const handleRegisterEvent = () => {
+    registerForEvent({ slug })
+      .unwrap()
+      .then(() => {
+        toast.success("Registeration for event successful");
+        setConfirmRegister(false);
+      });
+  };
 
   return (
     <div>
@@ -97,9 +111,14 @@ const DashboardStoreSingleEventPage = () => {
           </div>
         </div>
 
-        {singleEvent?.eventDateTime && (
+        {new Date(singleEvent?.eventDateTime).getTime() > Date.now() && (
           <div className="flex flex-wrap gap-2 lg:gap-4 justify-end mt-4 mb-4">
-            <Button label="Register for Event" large onClick={() => setConfirmRegister(true)} />
+            <Button
+              label={singleEvent?.registeredUsers?.includes(user._id) ? "Already Registered" : "Register for Event"}
+              large
+              disabled={singleEvent?.registeredUsers?.includes(user._id)}
+              onClick={() => setConfirmRegister(true)}
+            />
           </div>
         )}
       </section>
@@ -111,8 +130,9 @@ const DashboardStoreSingleEventPage = () => {
         subAction={() => setConfirmRegister(false)}
         subActionText="Cancel"
         maxWidth={400}
-        mainAction={() => setConfirmRegister(false)}
+        mainAction={handleRegisterEvent}
         mainActionText="Confirm"
+        mainActionLoading={isRegistering}
         isOpen={confirmRegister}
         onClose={() => setConfirmRegister(false)}
       />

@@ -7,7 +7,6 @@ import icons from "~/assets/js/icons";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
 import EventFilterModal from "./EventFilterModal";
 import Loading from "~/components/Global/Loading/Loading";
-import { classNames } from "~/utilities/classNames";
 
 const AllEvents = ({ row, isSmallScreen }) => {
   const [allEvents, setAllEvents] = useState([]);
@@ -81,15 +80,6 @@ const AllEvents = ({ row, isSmallScreen }) => {
         ) : (
           <div className="px-6 py-10 flex justify-center">
             <div className="w-full max-w-[360px] text-center">
-              <span
-                className={classNames(
-                  "flex items-center justify-center text-primary text-2xl",
-                  "size-14 mx-auto rounded-full bg-onPrimaryContainer"
-                )}
-              >
-                {icons.file}
-              </span>
-
               <h3 className="font-bold text-primary mb-1 text-lg mt-2">No Data Available</h3>
               <p className=" text-sm text-gray-600 mb-6">There are currently no matching events to display</p>
             </div>

@@ -21,6 +21,7 @@ const eventsApi = api.injectEndpoints({
     getSingleEvent: build.query({
       query: (slug) => `/events/${slug}`,
       transformResponse: (response) => response.data,
+      providesTags: ["SINGLE_EVT"],
     }),
     getAllTrainings: build.query({
       query: ({ searchBy, membersGroup }) => ({
@@ -30,9 +31,27 @@ const eventsApi = api.injectEndpoints({
       transformResponse: (response) => response.data,
       providesTags: ["TRAININGS"],
     }),
+    getRegisteredEvents: build.query({
+      query: ({ limit, page, searchBy }) => ({
+        url: "/events/registered",
+        params: { limit, page, ...(searchBy ? { searchBy } : {}) },
+      }),
+      transformResponse: (response) => response.data,
+      providesTags: ["USER_EVENTS"],
+    }),
+    registerForEvent: build.mutation({
+      query: ({ slug }) => ({ url: `/events/register/${slug}`, method: "POST" }),
+      invalidatesTags: ["USER_EVENTS", "SINGLE_EVT"],
+    }),
   }),
 });
 
-export const { useGetAllEventsQuery, useGetSingleEventQuery, useGetAllTrainingsQuery } = eventsApi;
+export const {
+  useGetAllEventsQuery,
+  useGetSingleEventQuery,
+  useGetAllTrainingsQuery,
+  useRegisterForEventMutation,
+  useGetRegisteredEventsQuery,
+} = eventsApi;
 
 export default eventsApi;
