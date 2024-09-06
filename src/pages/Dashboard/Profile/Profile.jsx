@@ -134,7 +134,7 @@ const DashboardProfilePage = () => {
               <p className="text-sm font-medium mb-4">
                 <span className="text-gray">Phone: </span> {user?.phone || "---"}
               </p>
-              {/* <div className="flex gap-2">
+              <div className="flex gap-2">
                 {user?.socials.map((item) => (
                   <a
                     key={item.name}
@@ -146,7 +146,7 @@ const DashboardProfilePage = () => {
                     {icons[item.name]}
                   </a>
                 ))}
-              </div> */}
+              </div>
               <div className="flex justify-end text-sm">
                 <Link to="/dashboard/edit-profile" className="text-primary font-semibold underline">
                   Edit Profile

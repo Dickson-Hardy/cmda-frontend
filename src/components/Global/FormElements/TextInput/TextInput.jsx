@@ -38,6 +38,7 @@ const TextInput = ({
           className={classNames(
             "bg-white border border-gray placeholder:text-gray placeholder:text-xs rounded-md block w-full text-sm p-3 h-12",
             "focus:ring focus:ring-primary/20 focus:outline-none focus:bg-white focus:border-transparent transition-all",
+            "disabled:bg-gray-200 disabled:opacity-80",
             errors?.[label]?.message && "border-error",
             type === "password" ? "pr-8" : "pr-3",
             className

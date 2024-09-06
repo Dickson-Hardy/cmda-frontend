@@ -45,7 +45,7 @@ const DashboardEditProfile = () => {
       gender: user?.gender || "",
       region: user?.region || "",
       bio: user?.bio || "",
-      dateOfBirth: user?.dateOfBirth || "",
+      dateOfBirth: user?.dateOfBirth?.slice(0, 10) || "",
       admissionYear: user?.admissionYear || "",
       yearOfStudy: user?.yearOfStudy || "",
       licenseNumber: user?.licenseNumber || "",
@@ -62,7 +62,7 @@ const DashboardEditProfile = () => {
       firstName: payload.firstName,
       middleName: payload.middleName,
       lastName: payload.lastName,
-      email: payload.email,
+      phone: payload.phone,
       gender: payload.gender,
       dateOfBirth: payload.dateOfBirth,
       bio: payload?.bio,
@@ -98,7 +98,7 @@ const DashboardEditProfile = () => {
           <form onSubmit={handleSubmit(handleUpdateProfile)}>
             <div className="flex items-center justify-between mb-7">
               <h2 className="text-lg font-bold mb-4">Edit Profile</h2>
-              <Button label="Save Changes" type="submit" disabled={isLoading} />
+              <Button label="Save Changes" type="submit" loading={isLoading} loadingText="Saving..." />
             </div>
             <div className="flex flex-col gap-6">
               <div>
