@@ -61,7 +61,7 @@ const DashboardUpdatePassword = () => {
               errors={errors}
               required
             />
-            <Button type="submit" label="Update Password" large disabled={isLoading} />
+            <Button type="submit" label="Update Password" large loading={isLoading} />
           </form>
         </div>
       </div>

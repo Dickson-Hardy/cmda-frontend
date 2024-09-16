@@ -9,13 +9,17 @@ const errorMiddleware = (store) => (next) => (action) => {
 
   const payload = action.payload || {};
   const { data, error, message } = payload;
-  const errorMessage = data
-    ? Array.isArray(data?.message)
-      ? data?.message?.[0]
-      : Array.isArray(data?.error)
-        ? data?.error?.[0]
-        : data?.message || data?.error
-    : message || error || "Oops, something went wrong!";
+
+  const errorMessage =
+    typeof payload === "string"
+      ? payload
+      : data
+        ? Array.isArray(data?.message)
+          ? data?.message?.[0]
+          : Array.isArray(data?.error)
+            ? data?.error?.[0]
+            : data?.message || data?.error
+        : message || error || "Oops, something went wrong!";
 
   if ((isFulfilled && error) || isRejected) {
     if (errorMessage.includes("expired token")) {

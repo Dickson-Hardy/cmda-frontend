@@ -54,7 +54,7 @@ const IndexPage = () => {
         <div className="max-w-screen-xl mx-auto px-8 xl:px-0 grid grid-cols-1 lg:grid-cols-2 gap-6">
           {CATEGORIES.map((item, x) => (
             <div
-              key={item}
+              key={x}
               className={classNames(
                 "h-64 group rounded-3xl relative bg-cover transition-all cursor-pointer text-onPrimary",
                 x > 1 && "lg:col-span-2",
@@ -85,9 +85,9 @@ const IndexPage = () => {
           <img className="bg-onPrimaryContainer rounded-3xl w-full lg:w-1/2 h-auto hidden lg:block" src={studentsPng} />
           <div className="p-8 lg:p-12 bg-onPrimary rounded-3xl w-full lg:w-1/2">
             <h3 className="font-bold text-2xl lg:text-3xl mb-4">Frequently Asked Questions</h3>
-            <div className="space-y-2">
+            <div className="space-y-2 max-h-[500px] overflow-y-auto">
               {FAQS.map((faq, index) => (
-                <details key={index} className="py-2" open>
+                <details key={index} className="py-2">
                   <summary className="text-sm cursor-pointer font-medium">
                     <span className="ml-4" />
                     {faq.question}

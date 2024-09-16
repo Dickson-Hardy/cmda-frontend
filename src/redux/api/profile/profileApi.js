@@ -13,7 +13,7 @@ const profileApi = api.injectEndpoints({
     }),
     // update password
     updatePassword: build.mutation({
-      query: (payload) => ({ url: `/auth/change-password`, method: "PATCH", body: payload }),
+      query: (payload) => ({ url: `/auth/change-password`, method: "POST", body: payload }),
       transformErrorResponse: (response) => response.data?.message,
     }),
     getTransition: build.query({
