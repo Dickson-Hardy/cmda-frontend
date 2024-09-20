@@ -29,14 +29,16 @@ const DashboardSettingsPage = () => {
       <h2 className="text-xl sm:text-2xl font-bold text-primary">Settings</h2>
 
       <form className="mt-6" onSubmit={handleSubmit(handleUpdate)}>
-        <div className="mb-4 flex justify-between gap-4">
+        <div className="mb-6 md:mb-4 flex flex-col md:flex-row justify-between gap-4">
           <div>
             <h3 className="text-base font-bold">Notifications Settings</h3>
             <p className="text-sm text-gray">Select how you will be notified when the following changes occur</p>
           </div>
-          <Button type="submit" label="Save Changes" loading={isLoading} loadingText="Saving.." />
+          <div className="flex justify-end">
+            <Button type="submit" label="Save Changes" loading={isLoading} loadingText="Saving.." />
+          </div>
         </div>
-        <div className="space-y-4 text-sm w-1/3">
+        <div className="space-y-4 text-sm w-full md:w-1/3">
           <li className="flex justify-between items-center gap-4">
             Someone sends a message
             <Switch control={control} label="newMessage" showStatusText={false} showTitleLabel={false} />
