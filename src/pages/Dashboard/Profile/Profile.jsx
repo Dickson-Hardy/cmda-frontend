@@ -135,7 +135,7 @@ const DashboardProfilePage = () => {
                 <span className="text-gray">Phone: </span> {user?.phone || "---"}
               </p>
               <div className="flex gap-2">
-                {user?.socials.map((item) => (
+                {user?.socials?.map((item) => (
                   <a
                     key={item.name}
                     href={item.link?.startsWith("http") ? item.link : "https://" + item.link}
