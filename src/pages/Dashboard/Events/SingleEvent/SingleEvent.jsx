@@ -1,32 +1,66 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import icons from "~/assets/js/icons";
 import BackButton from "~/components/Global/BackButton/BackButton";
 import Button from "~/components/Global/Button/Button";
 import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
-import { useGetSingleEventQuery, useRegisterForEventMutation } from "~/redux/api/events/eventsApi";
+import Modal from "~/components/Global/Modal/Modal";
+import {
+  useConfirmEventPaymentMutation,
+  useGetSingleEventQuery,
+  usePayForEventMutation,
+  useRegisterForEventMutation,
+} from "~/redux/api/events/eventsApi";
 import { selectAuth } from "~/redux/features/auth/authSlice";
 import { classNames } from "~/utilities/classNames";
 import formatDate from "~/utilities/fomartDate";
+import { formatCurrency } from "~/utilities/formatCurrency";
 
 const DashboardStoreSingleEventPage = () => {
   const { slug } = useParams();
+  const [searchParams] = useSearchParams();
+  const paymentSuccess = searchParams.get("payment");
+  const reference = searchParams.get("reference");
+  const navigate = useNavigate();
   const { data: singleEvent } = useGetSingleEventQuery(slug);
   const [registerForEvent, { isLoading: isRegistering }] = useRegisterForEventMutation();
+  const [payForEvent, { isLoading: isPaying }] = usePayForEventMutation();
   const [confirmRegister, setConfirmRegister] = useState(false);
   const { user } = useSelector(selectAuth);
+  const [openSuccess, setOpenSuccess] = useState(false);
+
+  const [confirmPayment, { isLoading: isConfirming }] = useConfirmEventPaymentMutation();
+
+  useEffect(() => {
+    if (paymentSuccess && reference) {
+      setOpenSuccess(true);
+      confirmPayment({ reference })
+        .unwrap()
+        .then(() => {
+          toast.success("Event registeration successfully");
+        });
+    }
+  }, [confirmPayment, paymentSuccess, reference]);
 
   const handleShare = (social) => alert("Sharing on " + social);
 
   const handleRegisterEvent = () => {
-    registerForEvent({ slug })
-      .unwrap()
-      .then(() => {
-        toast.success("Registeration for event successful");
-        setConfirmRegister(false);
-      });
+    if (singleEvent?.isPaid) {
+      payForEvent({ slug })
+        .unwrap()
+        .then(({ data }) => {
+          window.open(data?.checkout_url, "_self");
+        });
+    } else {
+      registerForEvent({ slug })
+        .unwrap()
+        .then(() => {
+          toast.success("Registered for event successfully");
+          setConfirmRegister(false);
+        });
+    }
   };
 
   return (
@@ -53,8 +87,14 @@ const DashboardStoreSingleEventPage = () => {
 
         <div className="grid grid-cols-2 gap-6 mt-6">
           <div>
-            <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Access Code</h4>
-            <p className="text-base mb-1">{singleEvent?.accessCode || "N/A"}</p>
+            <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Payment Plans</h4>
+            {singleEvent?.isPaid
+              ? singleEvent?.paymentPlans.map((x) => (
+                  <p className="text-sm mb-2" key={x.role}>
+                    {x.role + " - " + formatCurrency(x.price)}
+                  </p>
+                ))
+              : null}
           </div>
           <div>
             <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Event Date &amp; Time</h4>
@@ -132,10 +172,30 @@ const DashboardStoreSingleEventPage = () => {
         maxWidth={400}
         mainAction={handleRegisterEvent}
         mainActionText="Confirm"
-        mainActionLoading={isRegistering}
+        mainActionLoading={isRegistering || isPaying}
         isOpen={confirmRegister}
         onClose={() => setConfirmRegister(false)}
       />
+
+      <Modal isOpen={openSuccess}>
+        <div className="flex flex-col gap-4 text-center">
+          <span className="text-6xl text-primary mx-auto">{icons.checkAlt}</span>
+          <h3 className="text-xl font-bold capitalize">Event Payment Successful</h3>
+
+          <p className="text-base text-gray-600">
+            You have successfully paid and registered for this event - {singleEvent?.name?.toUpperCase()}
+          </p>
+          <Button
+            label="Continue"
+            large
+            loading={isConfirming}
+            onClick={() => {
+              setOpenSuccess(false);
+              navigate(`/dashboard/events/${slug}`);
+            }}
+          />
+        </div>
+      </Modal>
     </div>
   );
 };
