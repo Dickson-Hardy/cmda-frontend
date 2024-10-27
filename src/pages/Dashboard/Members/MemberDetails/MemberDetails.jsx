@@ -20,9 +20,8 @@ const DashboardMemberDetailsPage = () => {
       Gender: member?.gender,
       Membership: member?.role,
       Region: member?.region,
-      About: member?.bio,
       "Email Address": member?.email,
-      // "Phone Number": member?.phone,
+      About: member?.bio,
     };
   }, [member]);
 

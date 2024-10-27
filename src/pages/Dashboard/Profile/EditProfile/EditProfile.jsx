@@ -50,6 +50,7 @@ const DashboardEditProfile = () => {
       yearOfStudy: user?.yearOfStudy || "",
       licenseNumber: user?.licenseNumber || "",
       specialty: user?.specialty || "",
+      yearsOfExperience: user?.yearsOfExperience,
     },
   });
 
@@ -75,6 +76,7 @@ const DashboardEditProfile = () => {
       ...(user?.role != "Student" && {
         licenseNumber: payload.licenseNumber,
         specialty: payload.specialty,
+        yearsOfExperience: payload.yearsOfExperience,
       }),
     };
 
@@ -198,6 +200,7 @@ const DashboardEditProfile = () => {
                   placeholder="Enter email address"
                   type="date"
                   max={eighteenYrsAgo}
+                  required
                 />
               </div>
 
@@ -261,6 +264,17 @@ const DashboardEditProfile = () => {
                       errors={errors}
                       required
                       placeholder="professional Cadre"
+                    />
+                  </div>
+
+                  <div>
+                    <Select
+                      label="yearsOfExperience"
+                      control={control}
+                      options={["0 - 5 Years", "5 Years and Above"]}
+                      errors={errors}
+                      required
+                      placeholder="Select..."
                     />
                   </div>
                 </>

@@ -183,6 +183,9 @@ const DashboardProfilePage = () => {
               <p className="text-sm font-medium mb-4">
                 <span className="text-gray">License Number: </span> {user?.licenseNumber}
               </p>
+              <p className="text-sm font-medium mb-4">
+                <span className="text-gray">Years of Experience: </span> {user?.yearsOfExperience || "N/A"}
+              </p>
             </>
           )}
           <div className="flex justify-end mt-auto text-sm">

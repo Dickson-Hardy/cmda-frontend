@@ -180,6 +180,17 @@ const DoctorForm = () => {
           />
         </div>
 
+        <div>
+          <Select
+            label="yearsOfExperience"
+            control={control}
+            options={["0 - 5 Years", "5 Years and Above"]}
+            errors={errors}
+            required
+            placeholder="Select..."
+          />
+        </div>
+
         <div className="grid gap-6">
           <Button label="Create Account" large loading={isLoading} className="w-full" type="submit" />
           <div className="text-center font-bold text-black ">

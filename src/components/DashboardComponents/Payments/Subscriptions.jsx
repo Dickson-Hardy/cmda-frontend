@@ -63,7 +63,14 @@ const Subscriptions = () => {
         </div>
         <div className="border p-4 bg-white rounded-xl">
           <h6 className="text-gray text-sm font-medium mb-4">Subscription Package</h6>
-          <p className="font-semibold">{formatCurrency(SUBSCRIPTION_PRICES[user.role])} / Annually</p>
+          <p className="font-semibold">
+            {formatCurrency(
+              user.role === "Doctor" && user.yearsOfExperience?.toLowerCase()?.includes("above")
+                ? SUBSCRIPTION_PRICES["GlobalNetwork"]
+                : SUBSCRIPTION_PRICES[user.role]
+            )}{" "}
+            / Annually
+          </p>
         </div>
       </div>
 
