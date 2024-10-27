@@ -3,6 +3,7 @@ import { Controller } from "react-hook-form";
 import convertToCapitalizedWords from "~/utilities/convertToCapitalizedWords";
 import FormError from "../FormError";
 import { classNames } from "~/utilities/classNames";
+import { useMemo } from "react";
 
 const Select = ({
   label,
@@ -19,6 +20,12 @@ const Select = ({
   showTitleLabel = true, // whether to show label or title of input above the component
   onSelect = () => {},
 }) => {
+  // Convert options if they are strings to { label, value } format
+  const transformedOptions = useMemo(
+    () => (options?.every((x) => typeof x === "string") ? options.map((v) => ({ label: v, value: v })) : options),
+    [options]
+  );
+
   return (
     <div>
       {showTitleLabel && (
@@ -34,20 +41,23 @@ const Select = ({
           <ReactSelect
             unstyled
             id={label}
-            value={value ? options.find((option) => option.value === value) : null}
+            value={
+              multiple
+                ? transformedOptions.filter((option) => value?.includes(option.value))
+                : transformedOptions.find((option) => option.value === value) || null
+            }
             onChange={(selectedOption) => {
-              onChange(multiple ? selectedOption : selectedOption.value);
-              onSelect(multiple ? selectedOption : selectedOption.value);
+              const newValue = multiple ? selectedOption.map((option) => option.value) : selectedOption.value;
+              onChange(newValue);
+              onSelect(newValue);
             }}
             onBlur={onBlur}
             placeholder={placeholder}
-            options={
-              options?.every((x) => typeof x === "string") ? options.map((v) => ({ label: v, value: v })) : options
-            }
+            options={transformedOptions}
             className="cursor-pointer"
             isMulti={multiple}
-            // adding disbaled property
-            disabled={disabled}
+            // adding disabled property
+            isDisabled={disabled}
             classNames={{
               control: (state) =>
                 classNames(
@@ -79,7 +89,10 @@ const Select = ({
             }}
           />
         )}
-        rules={{ required, ...rules }}
+        rules={{
+          required: required && typeof required === "boolean" ? "This field is required" : required,
+          ...rules,
+        }}
       />
       <FormError error={errors?.[label]?.message} />
     </div>
