@@ -3,7 +3,7 @@ import icons from "~/assets/js/icons";
 import { useNavigate } from "react-router-dom";
 import { classNames } from "~/utilities/classNames";
 import ContactListItem from "./ContactListItem";
-import { useGetChatHistoryQuery } from "~/redux/api/chats/chatsApi";
+import { useGetAllContactsQuery, useGetChatHistoryQuery } from "~/redux/api/chats/chatsApi";
 import { useGetSingleUserQuery } from "~/redux/api/user/userApi";
 import Loading from "~/components/Global/Loading/Loading";
 import Message from "./Message";
@@ -23,6 +23,8 @@ const ChatBox = ({ userId, recipientId }) => {
   const { data: recipientData, isLoading: loadingRecipientData } = useGetSingleUserQuery(recipientId, {
     skip: recipientId === "admin",
   });
+  // eslint-disable-next-line no-unused-vars
+  const { data } = useGetAllContactsQuery(null, { refetchOnMountOrArgChange: true });
 
   const [allMessages, setAllMessages] = useState([]);
 
@@ -71,7 +73,7 @@ const ChatBox = ({ userId, recipientId }) => {
   }, [allMessages]);
 
   return (
-    <div className="w-full lg:w-3/4 flex flex-col rounded-xl">
+    <div className="w-full lg:w-3/5 flex flex-col rounded-xl">
       {/* back button mobile screen */}
       <div className="lg:hidden">
         <div

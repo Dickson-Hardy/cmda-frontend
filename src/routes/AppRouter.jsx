@@ -37,6 +37,8 @@ import PaymentSuccessful from "~/pages/Dashboard/Payments/PaymentSuccessful";
 import OrderSuccessful from "~/pages/Dashboard/Store/OrderHistory/OrderSuccessful";
 import SingleOrder from "~/pages/Dashboard/Store/OrderHistory/SingleOrder";
 import DashboardFaithEntryPage from "~/pages/Dashboard/Faith/FaithEntry";
+import DashboardNotificationsPage from "~/pages/Dashboard/Notifications/Notifications";
+import SingleNotification from "~/pages/Dashboard/Notifications/SingleNotification";
 
 export default function AppRouter() {
   const { isAuthenticated } = useSelector(selectAuth);
@@ -106,6 +108,8 @@ export default function AppRouter() {
             { path: "payments", element: <DashboardPaymentsPage /> },
             { path: "payments/successful", element: <PaymentSuccessful /> },
             { path: "settings", element: <DashboardSettingsPage /> },
+            { path: "notifications", element: <DashboardNotificationsPage /> },
+            { path: "notifications/:id", element: <SingleNotification /> },
           ],
           errorElement: <ErrorDisplay />,
         },

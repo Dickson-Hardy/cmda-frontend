@@ -25,7 +25,7 @@ const DashboardMessagingPage = () => {
         {recipientId ? (
           <ChatBox userId={user._id} recipientId={recipientId} />
         ) : (
-          <div className="w-3/4 flex flex-col justify-center items-center">
+          <div className="w-3/5 flex flex-col justify-center items-center">
             <p className="font-bold text-lg text-center cursor-not-allowed">Select A User to start chatting with</p>
           </div>
         )}

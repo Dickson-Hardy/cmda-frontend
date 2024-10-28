@@ -7,11 +7,12 @@ const ContactListItem = ({
   subText = null,
   asHeader = false,
   onClick = () => {},
+  unreadCount,
 }) => {
   return (
     <div
       className={classNames(
-        "flex items-center gap-2 p-2 transition-all duration-500",
+        "flex items-center gap-2 p-2 pr-4 transition-all duration-500",
         !asHeader && "hover:bg-onPrimary hover:rounded-lg cursor-pointer"
       )}
       onClick={onClick}
@@ -23,10 +24,15 @@ const ContactListItem = ({
           {icons.person}
         </span>
       )}
-      <div className="truncate">
+      <div className="flex-1 truncate">
         <h5 className="font-semibold text-sm truncate">{name}</h5>
         {subText && <p className="text-xs truncate">{subText}</p>}
       </div>
+      {unreadCount ? (
+        <span className="flex items-center justify-center h-4 w-4 rounded-xl bg-primary text-white text-[8px] font-medium">
+          {unreadCount}
+        </span>
+      ) : null}
     </div>
   );
 };

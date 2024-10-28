@@ -7,7 +7,7 @@ import { setUser } from "~/redux/features/auth/authSlice";
 import { clearTokens } from "~/redux/features/auth/tokenSlice";
 import { classNames } from "~/utilities/classNames";
 
-const Header = () => {
+const Header = ({ unreadMessagesCount, unreadNotificationCount }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
@@ -21,7 +21,7 @@ const Header = () => {
 
   return (
     <header className="bg-white fixed top-0 inset-x-0 z-[2] shadow">
-      <nav className="h-full w-full flex items-center gap-2 md:gap-4 p-6 px-3 md:px-6 py-3">
+      <nav className="h-full w-full flex items-center gap-2 md:gap-3 p-6 px-3 md:px-6 py-3">
         <Logo className="w-auto h-10 sm:h-12 md:hidde" />
 
         <div className="flex-1" />
@@ -38,15 +38,31 @@ const Header = () => {
             </span>
           </button>
         ) : null}
+        {/* Message Icon */}
+        <button
+          type="button"
+          className="relative inline-flex items-center p-1.5 text-xl font-medium text-center text-primary rounded-lg hover:bg-onPrimary focus:outline-none"
+          onClick={() => navigate("/dashboard/messaging")}
+        >
+          {icons.message}
+          {unreadMessagesCount ? (
+            <span className="absolute inline-flex items-center justify-center w-6 h-6 text-[10px] font-bold text-white bg-primary border-2 border-white rounded-full -top-2 -end-2">
+              {unreadMessagesCount}
+            </span>
+          ) : null}
+        </button>
         {/* Notification Icon */}
         <button
           type="button"
           className="relative inline-flex items-center p-1.5 text-xl font-medium text-center text-primary rounded-lg hover:bg-onPrimary focus:outline-none"
+          onClick={() => navigate("/dashboard/notifications")}
         >
           {icons.bell}
-          {/* <span className="absolute inline-flex items-center justify-center w-6 h-6 text-[10px] font-bold text-white bg-secondary border-2 border-white rounded-full -top-2 -end-2">
-            20
-          </span> */}
+          {unreadNotificationCount ? (
+            <span className="absolute inline-flex items-center justify-center w-6 h-6 text-[10px] font-bold text-white bg-primary border-2 border-white rounded-full -top-2 -end-2">
+              {unreadNotificationCount}
+            </span>
+          ) : null}
         </button>
         {/* Avatar Dropdown */}
         <Dropdown

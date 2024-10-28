@@ -6,6 +6,7 @@ import { Outlet } from "react-router-dom";
 import { NAV_LINKS } from "../../constants/navigation";
 import { useIsSmallScreen } from "~/hooks/useIsSmallScreen";
 import BottomNav from "./BottomNav";
+import { useGetNotificationStatsQuery } from "~/redux/api/notification/notificationApi";
 
 const DashboardLayout = ({ withOutlet = true, children }) => {
   const isSmallScreen = useIsSmallScreen("750px");
@@ -25,12 +26,22 @@ const DashboardLayout = ({ withOutlet = true, children }) => {
     }
   }, [isSmallScreen]);
 
+  const { data: { unreadMessagesCount, unreadNotificationCount } = {} } = useGetNotificationStatsQuery(null, {
+    refetchOnMountOrArgChange: true,
+    pollingInterval: 900000,
+  });
+
   return (
     <div className="bg-background">
-      <Header onToggleSidebar={toggleSidebar} />
+      <Header unreadMessagesCount={unreadMessagesCount} unreadNotificationCount={unreadNotificationCount} />
 
       <div className="flex h-screen overflow-hidden">
-        <Sidebar isOpen={isSidebarOpen} onToggleSidebar={toggleSidebar} navLinks={NAV_LINKS} />
+        <Sidebar
+          isOpen={isSidebarOpen}
+          onToggleSidebar={toggleSidebar}
+          navLinks={NAV_LINKS}
+          unreadMessagesCount={unreadMessagesCount}
+        />
         <div
           className={classNames(
             isSidebarOpen && "md:ml-60",

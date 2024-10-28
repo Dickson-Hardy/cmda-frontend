@@ -6,7 +6,7 @@ import { setUser } from "~/redux/features/auth/authSlice";
 import { clearTokens } from "~/redux/features/auth/tokenSlice";
 import Logo from "~/components/Global/Logo/Logo";
 
-const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
+const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [], unreadMessagesCount }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
 
@@ -63,6 +63,11 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [] }) => {
                   onClick={onToggleSidebar}
                 >
                   <span className="text-lg">{navItem.icon}</span> {navItem.title}
+                  {navItem.title === "Messaging" && unreadMessagesCount ? (
+                    <span className="ml-auto inline-flex items-center justify-center w-6 h-6 text-[10px] font-bold text-white bg-primary border border-white rounded-full -top-2 -end-2">
+                      {unreadMessagesCount}
+                    </span>
+                  ) : null}
                 </NavLink>
               </li>
             ))}
