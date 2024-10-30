@@ -129,16 +129,16 @@ const DashboardStoreSingleEventPage = () => {
         </div>
 
         <div className="grid grid-cols-2 gap-6 mt-6">
-          <div>
-            <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Payment Plans</h4>
-            {singleEvent?.isPaid
-              ? singleEvent?.paymentPlans.map((x) => (
-                  <p className="text-sm mb-2" key={x.role}>
-                    {x.role + " - " + formatCurrency(x.price)}
-                  </p>
-                ))
-              : null}
-          </div>
+          {singleEvent?.isPaid ? (
+            <div>
+              <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Payment Plans</h4>
+              {singleEvent?.paymentPlans.map((x) => (
+                <p className="text-sm mb-2" key={x.role}>
+                  {x.role + " - " + formatCurrency(x.price)}
+                </p>
+              ))}
+            </div>
+          ) : null}
           <div>
             <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Event Date &amp; Time</h4>
             <p className="text-base mb-1">{formatDate(singleEvent?.eventDateTime).dateTime}</p>
