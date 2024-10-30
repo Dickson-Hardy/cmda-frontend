@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -44,7 +45,32 @@ const DashboardStoreSingleEventPage = () => {
     }
   }, [confirmPayment, paymentSuccess, reference]);
 
-  const handleShare = (social) => alert("Sharing on " + social);
+  const handleSocialsShare = (social) => {
+    const pageUrl = encodeURIComponent(window.location.href);
+    const shareText = encodeURIComponent(singleEvent?.name);
+    // socials
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
+    const twitterUrl = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${shareText}`;
+    const linkedInUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${pageUrl}&title=${shareText}`;
+    const whatsAppUrl = `https://wa.me/?text=${shareText}%20${pageUrl}`;
+    //
+    switch (social) {
+      case "facebook":
+        window.open(facebookUrl, "_blank");
+        break;
+      case "twitter":
+        window.open(twitterUrl, "_blank");
+        break;
+      case "linkedIn":
+        window.open(linkedInUrl, "_blank");
+        break;
+      case "whatsapp":
+        window.open(whatsAppUrl, "_blank");
+        break;
+      default:
+        break;
+    }
+  };
 
   const handleRegisterEvent = () => {
     if (singleEvent?.isPaid) {
@@ -65,6 +91,23 @@ const DashboardStoreSingleEventPage = () => {
 
   return (
     <div>
+      {/* SEO Starts */}
+      <Helmet>
+        <title>{singleEvent?.name}</title>
+        {/* Open Graph tags for social sharing */}
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={singleEvent?.name} />
+        <meta property="og:description" content={singleEvent?.description} />
+        <meta property="og:image" content={singleEvent?.featuredImageUrl} />
+        {/* Twitter Card tags for Twitter sharing */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={singleEvent?.name} />
+        <meta name="twitter:description" content={singleEvent?.description} />
+        <meta name="twitter:image" content={singleEvent?.featuredImageUrl} />
+      </Helmet>
+      {/* SEO Ends */}
+
       <BackButton label="Back to Events List" to="/dashboard/events" />
 
       <section className="bg-white rounded-2xl p-6 shadow w-full mt-6">
@@ -138,12 +181,12 @@ const DashboardStoreSingleEventPage = () => {
         <div className="space-y-1">
           <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Share this Event</h4>
           <div className="flex flex-wrap gap-x-5">
-            {["facebook", "twitter", "whatsapp", "linkedIn", "instagram"].map((item) => (
+            {["facebook", "twitter", "whatsapp", "linkedIn"].map((item) => (
               <button
                 key={item}
                 type="button"
                 className="bg-gray-light rounded-full text-xl h-10 w-10 inline-flex justify-center items-center hover:text-primary"
-                onClick={() => handleShare(item)}
+                onClick={() => handleSocialsShare(item)}
               >
                 {icons[item]}
               </button>
