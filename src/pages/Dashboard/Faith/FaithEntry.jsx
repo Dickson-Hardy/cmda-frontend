@@ -16,7 +16,7 @@ const DashboardFaithEntryPage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [searchBy, setSearchBy] = useState("");
-  const { data: faithEntrys, isLoading } = useGetAllFaithEntriesQuery({ page, limit: 10, searchBy });
+  const { data: faithEntrys, isLoading, refetch } = useGetAllFaithEntriesQuery({ page, limit: 10, searchBy });
   const [openModal, setOpenModal] = useState(false);
   const [createFaithEntry, { isLoading: isCreating }] = useCreateFaithEntryMutation();
 
@@ -24,6 +24,8 @@ const DashboardFaithEntryPage = () => {
     createFaithEntry({ ...payload, isAnonymous: payload.isAnonymous || false })
       .unwrap()
       .then(() => {
+        setFaithEntries([]);
+        refetch();
         toast.success(`Your ${payload.category} has been submitted successfully`);
         setOpenModal(false);
       });
@@ -76,7 +78,8 @@ const DashboardFaithEntryPage = () => {
             </span>
             <p className="my-4 text-sm font-medium">{item.content}</p>
             <p className="text-gray-600 text-xs">
-              Posted by: <span className="text-black font-medium">{item.user ? item.user?.fullName : "Anonymous"}</span>
+              Posted by:{" "}
+              <span className="text-black font-medium">{!item.isAnonymous ? item.user?.fullName : "Anonymous"}</span>
             </p>
             <p className="text-gray-600 text-xs mt-2">
               Date: <span className="text-black font-medium">{formatDate(item.createdAt).dateTime}</span>

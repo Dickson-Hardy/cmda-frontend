@@ -8,7 +8,7 @@ const prayerTestimonyApi = api.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["FAITH"],
+      // invalidatesTags: ["FAITH"],
     }),
     getAllFaithEntries: build.query({
       query: ({ limit, page, searchBy }) => ({
