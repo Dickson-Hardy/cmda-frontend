@@ -30,11 +30,18 @@ const DashboardCheckoutPage = () => {
   const [payOrderSession, { isLoading }] = usePayOrderSessionMutation();
 
   const onSubmit = (payload) => {
-    payOrderSession({
+    payload = {
       ...payload,
       totalAmount: +totalPrice,
-      products: cartItems.map((item) => ({ product: item._id, quantity: item.quantity })),
-    })
+      products: cartItems.map((item) => ({
+        product: item._id,
+        quantity: item.quantity,
+        size: item.selected?.size || null,
+        color: item.selected?.color ? item.additionalImages?.find((x) => x.color == item.selected?.color)?.name : null,
+      })),
+    };
+
+    payOrderSession(payload)
       .unwrap()
       .then((res) => {
         window.open(res.checkout_url, "_self");

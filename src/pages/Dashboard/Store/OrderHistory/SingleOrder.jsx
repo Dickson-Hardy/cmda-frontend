@@ -50,12 +50,19 @@ const SingleOrder = () => {
                       <tr key={v}>
                         <td className="px-2 py-1">{item?.quantity}</td>
                         <td className="px-2 py-1">X</td>
-                        <td className="px-2 py-1 font-medium flex items-center gap-2">
+                        <td className="px-1 py-1 font-medium flex items-center gap-1.5">
                           <img
                             src={item.product.featuredImageUrl}
                             className="size-8 rounded-lg bg-onPrimaryContainer"
                           />
-                          {item?.product.name}
+                          <div>
+                            <h5 className="truncate text-sm font-medium">{item?.product.name}</h5>
+                            {item.size || item.color ? (
+                              <p className="text-xs">
+                                {item?.size ? "Size: " + item.size : ""} {item?.color ? "Color: " + item.color : ""}{" "}
+                              </p>
+                            ) : null}
+                          </div>
                         </td>
                         <td className="px-2 py-1 font-medium">{formatCurrency(item.product.price)}</td>
                       </tr>
