@@ -25,27 +25,11 @@ const GlobalForm = () => {
   const dispatch = useDispatch();
 
   const handleSignUp = (payload) => {
-    // removing the rememberMe checkbox from payload cos it is not used
-    const { email, firstName, middleName, lastName, phone, password, gender, licenseNumber, specialty, region } =
-      payload;
-
-    signUp({
-      email,
-      firstName,
-      middleName,
-      lastName,
-      phone,
-      password,
-      gender,
-      licenseNumber,
-      specialty,
-      region,
-      role: "GlobalNetwork",
-    })
+    signUp({ ...payload, role: "GlobalNetwork" })
       .unwrap()
       .then(() => {
         toast.success("Global account created successfully, Check email for token");
-        dispatch(setVerifyEmail(email));
+        dispatch(setVerifyEmail(payload.email));
         navigate("/verify-email");
       });
   };

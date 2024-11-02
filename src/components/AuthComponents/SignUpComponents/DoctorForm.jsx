@@ -24,28 +24,12 @@ const DoctorForm = () => {
   const dispatch = useDispatch();
 
   const handleSignUp = (payload) => {
-    // removing the rememberMe checkbox from payload cos it is not used
-    const { email, password, firstName, middleName, lastName, phone, gender, licenseNumber, specialty, region } =
-      payload;
-
     // making request using signUp() from RTK Query
-    signUp({
-      email,
-      password,
-      firstName,
-      middleName,
-      lastName,
-      phone,
-      gender,
-      licenseNumber,
-      specialty,
-      region,
-      role: "Doctor",
-    })
+    signUp({ ...payload, role: "Doctor" })
       .unwrap()
       .then(() => {
         toast.success("Doctor account created successfully, Check email for token");
-        dispatch(setVerifyEmail(email));
+        dispatch(setVerifyEmail(payload?.email));
         navigate("/verify-email");
       });
   };
