@@ -1,4 +1,5 @@
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import { adjustItemQuantity } from "~/redux/features/cart/cartSlice";
@@ -17,21 +18,47 @@ const DashboardCartItems = ({ item }) => {
       <div className="flex flex-col md:flex-row md:items-center gap-y-2 gap-x-4 col-span-1">
         <img src={item?.featuredImageUrl} className="bg-onPrimary size-[80px] rounded-lg object-cover" />
         <div className="space-y-1 truncate">
-          <h4 className="text-sm font-semibold truncate leading-5 capitalize">{item?.name}</h4>
+          <Link to={`/dashboard/store/${item?.slug}`}>
+            <h4 className="text-sm font-semibold truncate leading-5 capitalize hover:text-primary hover:underline">
+              {item?.name}
+            </h4>
+          </Link>
           <p className="text-gray-dark text-xs truncate leading-5">{item?.description}</p>
           <p className=" font-medium text-primaryContainer">{formatCurrency(item?.price)}</p>
         </div>
       </div>
 
       {/* quantity */}
-      <div className="flex gap-1 md:mx-auto md:text-center justify-between items-center col-span-1">
-        <Button variant="text" className="!px-3" onClick={() => handleQtyChange(item?.quantity - 1)}>
-          {icons.minus}
-        </Button>
-        <span className="px-3 inline-flex text-lg text-black font-medium">{item.quantity}</span>
-        <Button variant="text" className="!px-3" onClick={() => handleQtyChange(item?.quantity + 1)}>
-          {icons.plus}
-        </Button>
+      <div className="col-span-1 md:mx-auto">
+        <div className="flex gap-1 md:text-center md:justify-between items-center ">
+          <Button variant="text" className="!px-3" onClick={() => handleQtyChange(item?.quantity - 1)}>
+            {icons.minus}
+          </Button>
+          <span className="px-3 inline-flex text-lg text-black font-medium">{item.quantity}</span>
+          <Button variant="text" className="!px-3" onClick={() => handleQtyChange(item?.quantity + 1)}>
+            {icons.plus}
+          </Button>
+        </div>
+        {item?.selected?.size || item?.selected?.color ? (
+          <>
+            <div className="md:text-center">
+              {item?.selected?.size ? (
+                <p className="text-xs">
+                  <span className="font-medium">Size:</span> {item?.selected?.size}
+                </p>
+              ) : null}
+              {item?.selected?.color ? (
+                <p className="text-xs">
+                  <span className="font-medium">Color:</span>{" "}
+                  {item.additionalImages.find((x) => x.color === item?.selected?.color).name}
+                </p>
+              ) : null}
+            </div>
+            <Link to={`/dashboard/store/${item?.slug}`} className="mt-2 text-xs font-medium text-primary underline">
+              Change size or color
+            </Link>
+          </>
+        ) : null}
       </div>
 
       {/* total */}

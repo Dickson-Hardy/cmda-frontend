@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import ProductCard from "~/components/DashboardComponents/Store/ProductCard";
@@ -12,9 +12,9 @@ import { toast } from "react-toastify";
 import convertToCapitalizedWords from "~/utilities/convertToCapitalizedWords";
 import MultiItemCarousel from "~/components/Global/MultiItemCarousel/MultiItemCarousel";
 import BackButton from "~/components/Global/BackButton/BackButton";
+import { classNames } from "~/utilities/classNames";
 
 const DashboardStoreSingleProductPage = () => {
-  const [quantity, setQuantity] = useState(1);
   const { slug } = useParams();
   const dispatch = useDispatch();
 
@@ -22,14 +22,30 @@ const DashboardStoreSingleProductPage = () => {
   const { data: otherProducts, isLoading: loadingOthers } = useGetAllProductsQuery({ page: 1, limit: 10 });
   const { cartItems } = useSelector((state) => state.cart);
   const alreadyInCart = cartItems.some((item) => item._id === product?._id);
+  const [quantity, setQuantity] = useState(1);
+  const [size, setSize] = useState("");
+  const [color, setColor] = useState("");
+
+  useEffect(() => {
+    if (product?.featuredImageUrl) {
+      setCurrentImage(product?.featuredImageUrl);
+    }
+  }, [product]);
+  const [currentImage, setCurrentImage] = useState(product?.featuredImageUrl);
 
   const [addingItem, setAddingItem] = useState(false);
   const [removingItem, setRemovingItem] = useState(false);
 
   const handleAddItem = () => {
+    if (product.sizes.length && !size) {
+      return toast.error("Please select a size");
+    }
+    if (product.additionalImages.filter((x) => !!x.color).length && !color) {
+      return toast.error("Please select a color");
+    }
     setAddingItem(true);
     setTimeout(() => {
-      dispatch(addItemToCart({ item: product, quantity }));
+      dispatch(addItemToCart({ item: { ...product, selected: { color, size } }, quantity }));
       toast.success(`"${convertToCapitalizedWords(product?.name)}" added to cart!`);
       setAddingItem(false);
     }, 2000);
@@ -44,42 +60,39 @@ const DashboardStoreSingleProductPage = () => {
     }, 2000);
   };
 
-  // const CustomDot = ({ onClick, active, index, carouselState }) => {
-  //   const { currentSlide, deviceType } = carouselState;
-  //   const isActive = currentSlide === index;
-
-  //   const images = [
-  //     "https://via.placeholder.com/100?text=1",
-  //     "https://via.placeholder.com/100?text=2",
-  //     "https://via.placeholder.com/100?text=3",
-  //     "https://via.placeholder.com/100?text=4",
-  //     "https://via.placeholder.com/100?text=5",
-  //   ];
-
-  //   return (
-  //     <button className={`w-16 h-16 ${isActive ? "opacity-100" : "opacity-50"} mx-1`} onClick={() => onClick()}>
-  //       <img src={images[index]} alt={`Dot ${index}`} className="w-full h-full rounded-full" />
-  //     </button>
-  //   );
-  // };
-
   return (
     <div>
       <BackButton to="/dashboard/store" label="Back to Store" />
 
-      <div className="bg-white p-6 shadow rounded-3xl mt-6">
-        <div className="flex gap-10">
-          <div className="w-1/2">
+      <div className="bg-white p-6 rounded-3xl mt-6">
+        <div className="flex flex-col md:flex-row gap-10 lg:gap-12">
+          <div className="w-full md:w-1/2">
             {isLoading ? (
               <div className="h-96 flex items-center justify-center">
                 <Loading width={64} height={64} className="text-primary" />
               </div>
             ) : (
-              <img src={product?.featuredImageUrl} className="w-full object-cover max-h-[500px]" />
+              <img src={currentImage} className="w-full object-cover max-h-[500px] min-h-80 border p-0.5 rounded-3xl" />
             )}
+
+            <div className="flex gap-3 justify-center mt-6">
+              {[{ imageUrl: product?.featuredImageUrl }]
+                .concat(product?.additionalImages?.filter((x) => !!x.imageUrl))
+                .map((x) => (
+                  <img
+                    key={x}
+                    src={x?.imageUrl}
+                    className={classNames(
+                      "h-16 w-16 rounded-lg border-2 border-white",
+                      currentImage == x?.imageUrl && "outline-none ring-4 ring-primary"
+                    )}
+                    onClick={() => setCurrentImage(x?.imageUrl)}
+                  />
+                ))}
+            </div>
           </div>
 
-          <div className="w-1/2">
+          <div className="w-full md:w-1/2 md:pt-8">
             {isLoading ? (
               <div className="h-96 flex items-center justify-center">
                 <Loading width={64} height={64} className="text-primary" />
@@ -92,7 +105,7 @@ const DashboardStoreSingleProductPage = () => {
                   <h4 className="font-bold mb-1 text-sm">Product Description</h4>
                   <p className="font-light">{product?.description || "--- -- ---"}</p>
                 </div>
-                <div className="my-8">
+                <div className="mt-8 mb-6">
                   <h4 className="font-bold mb-1 text-sm">Quantity</h4>
                   <div className="flex gap-3">
                     <Button
@@ -110,7 +123,49 @@ const DashboardStoreSingleProductPage = () => {
                     </Button>
                   </div>
                 </div>
-                <div className="flex gap-3 mt-8">
+                {product?.sizes?.length ? (
+                  <div className="mb-6">
+                    <h4 className="font-bold mb-1 text-sm">Sizes</h4>
+                    <div className="flex gap-3">
+                      {product?.sizes.map((x) => (
+                        <Button
+                          key={x}
+                          variant={size == x ? "filled" : "outlined"}
+                          className="px-[16px]"
+                          onClick={() => setSize(x)}
+                          label={x}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+                {product?.additionalImages?.filter((x) => !!x.color).length ? (
+                  <div className="mb-4">
+                    <h4 className="font-bold mb-2 text-sm">Colors</h4>
+                    <div className="flex gap-3">
+                      {product?.additionalImages
+                        ?.filter((x) => !!x.color)
+                        .map((x) => (
+                          <div key={x} className="flex flex-col gap-0.5 items-center text-center">
+                            <button
+                              type="button"
+                              className={classNames(
+                                "h-12 w-12 rounded-full border-4 border-white",
+                                color == x.color && "outline-none ring-4 ring-primary"
+                              )}
+                              style={{ backgroundColor: x.color }}
+                              onClick={() => {
+                                setColor(x.color);
+                                setCurrentImage(x.imageUrl);
+                              }}
+                            />
+                            <p className="text-xs">{x.name}</p>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                ) : null}
+                <div className="flex flex-col md:flex-row gap-3 mt-6">
                   <Button
                     large
                     onClick={handleAddItem}
