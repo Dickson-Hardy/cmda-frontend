@@ -8,14 +8,14 @@ import { formatCurrency } from "~/utilities/formatCurrency";
 const DashboardCartItems = ({ item }) => {
   const dispatch = useDispatch();
 
-  const handleQtyChange = (newQuantity) => {
-    dispatch(adjustItemQuantity({ itemId: item?._id, newQuantity }));
+  const handleQtyChange = (itemId, newQuantity) => {
+    dispatch(adjustItemQuantity({ itemId, newQuantity }));
   };
 
   return (
     <div className="w-full p-2 rounded-xl border border-gray-light grid grid-cols-1 gap-y-2 md:grid-cols-3 my-6">
       {/* product details */}
-      <div className="flex flex-col md:flex-row md:items-center gap-y-2 gap-x-4 col-span-1">
+      <div className="flex flex-row md:items-center gap-y-2 gap-x-4 col-span-1">
         <img src={item?.featuredImageUrl} className="bg-onPrimary size-[80px] rounded-lg object-cover" />
         <div className="space-y-1 truncate">
           <Link to={`/dashboard/store/${item?.slug}`}>
@@ -29,15 +29,18 @@ const DashboardCartItems = ({ item }) => {
       </div>
 
       {/* quantity */}
-      <div className="col-span-1 md:mx-auto">
-        <div className="flex gap-1 md:text-center md:justify-between items-center ">
-          <Button variant="text" className="!px-3" onClick={() => handleQtyChange(item?.quantity - 1)}>
-            {icons.minus}
-          </Button>
-          <span className="px-3 inline-flex text-lg text-black font-medium">{item.quantity}</span>
-          <Button variant="text" className="!px-3" onClick={() => handleQtyChange(item?.quantity + 1)}>
-            {icons.plus}
-          </Button>
+      <div className="col-span-1 md:mx-auto flex flex-col justify-center">
+        <div className="flex items-center gap-0.5">
+          <p className="text-sm md:hidden font-medium">Quantity:</p>
+          <div className="flex gap-1 md:text-center md:justify-between items-center ">
+            <Button variant="text" className="!px-3" onClick={() => handleQtyChange(item._id, item?.quantity - 1)}>
+              {icons.minus}
+            </Button>
+            <span className="px-3 inline-flex text-lg text-black font-medium">{item.quantity}</span>
+            <Button variant="text" className="!px-3" onClick={() => handleQtyChange(item._id, item?.quantity + 1)}>
+              {icons.plus}
+            </Button>
+          </div>
         </div>
         {item?.selected?.size || item?.selected?.color ? (
           <>
@@ -62,7 +65,7 @@ const DashboardCartItems = ({ item }) => {
       </div>
 
       {/* total */}
-      <p className="leading-5 text-black font-medium col-span-1 md:text-center flex md:items-center md:justify-center">
+      <p className="text-lg font-medium col-span-1 md:text-center flex md:items-center justify-end md:justify-center">
         {formatCurrency(item?.quantity * item?.price)}
       </p>
     </div>

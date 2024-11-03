@@ -11,8 +11,10 @@ const SingleNotification = () => {
   const [markAsRead, { isLoading }] = useMarkAsReadMutation();
 
   useEffect(() => {
-    markAsRead(item._id).unwrap();
-  }, [markAsRead, item._id]);
+    if (!item.read) {
+      markAsRead(item._id).unwrap();
+    }
+  }, [markAsRead, item]);
 
   return (
     <div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import ProductCard from "~/components/DashboardComponents/Store/ProductCard";
@@ -18,10 +18,12 @@ const DashboardStoreSingleProductPage = () => {
   const { slug } = useParams();
   const dispatch = useDispatch();
 
-  const { data: product, isLoading } = useGetSingleProductQuery(slug);
+  const { data: product, isLoading } = useGetSingleProductQuery(slug, { refetchOnMountOrArgChange: true });
   const { data: otherProducts, isLoading: loadingOthers } = useGetAllProductsQuery({ page: 1, limit: 10 });
   const { cartItems } = useSelector((state) => state.cart);
-  const alreadyInCart = cartItems.some((item) => item._id === product?._id);
+  const alreadyInCart = useMemo(() => {
+    return cartItems.some((item) => item._id === product?._id);
+  }, [cartItems, product?._id]);
   const [quantity, setQuantity] = useState(1);
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
@@ -75,21 +77,23 @@ const DashboardStoreSingleProductPage = () => {
               <img src={currentImage} className="w-full object-cover max-h-[500px] min-h-80 border p-0.5 rounded-3xl" />
             )}
 
-            <div className="flex gap-3 justify-center mt-6">
-              {[{ imageUrl: product?.featuredImageUrl }]
-                .concat(product?.additionalImages?.filter((x) => !!x.imageUrl))
-                .map((x) => (
-                  <img
-                    key={x}
-                    src={x?.imageUrl}
-                    className={classNames(
-                      "h-16 w-16 rounded-lg border-2 border-white",
-                      currentImage == x?.imageUrl && "outline-none ring-4 ring-primary"
-                    )}
-                    onClick={() => setCurrentImage(x?.imageUrl)}
-                  />
-                ))}
-            </div>
+            {product?.featuredImageUrl ? (
+              <div className="flex gap-3 justify-center mt-6">
+                {[{ imageUrl: product?.featuredImageUrl }]
+                  .concat(product?.additionalImages?.filter((x) => !!x?.imageUrl))
+                  .map((x) => (
+                    <img
+                      key={x.imageUrl}
+                      src={x?.imageUrl}
+                      className={classNames(
+                        "h-14 w-14 lg:w-16 lg:h-16 rounded-lg border-2 border-white",
+                        currentImage == x?.imageUrl && "outline-none ring-4 ring-primary"
+                      )}
+                      onClick={() => setCurrentImage(x?.imageUrl)}
+                    />
+                  ))}
+              </div>
+            ) : null}
           </div>
 
           <div className="w-full md:w-1/2 md:pt-8">
@@ -101,10 +105,16 @@ const DashboardStoreSingleProductPage = () => {
               <>
                 <h2 className="text-3xl font-bold mb-4 capitalize">{product?.name || "---"}</h2>
                 <p className="text-2xl font-medium">&#8358;{formatPrice(product?.price)}</p>
-                <div className="my-8">
+                <div className="mt-8 mb-4">
                   <h4 className="font-bold mb-1 text-sm">Product Description</h4>
                   <p className="font-light">{product?.description || "--- -- ---"}</p>
                 </div>
+                {product?.brand ? (
+                  <div>
+                    <h4 className="font-bold mb-1 text-sm">Brand</h4>
+                    <p className="font-light">{product?.brand}</p>
+                  </div>
+                ) : null}
                 <div className="mt-8 mb-6">
                   <h4 className="font-bold mb-1 text-sm">Quantity</h4>
                   <div className="flex gap-3">
@@ -146,7 +156,7 @@ const DashboardStoreSingleProductPage = () => {
                       {product?.additionalImages
                         ?.filter((x) => !!x.color)
                         .map((x) => (
-                          <div key={x} className="flex flex-col gap-0.5 items-center text-center">
+                          <div key={x.imageUrl} className="flex flex-col gap-0.5 items-center text-center">
                             <button
                               type="button"
                               className={classNames(

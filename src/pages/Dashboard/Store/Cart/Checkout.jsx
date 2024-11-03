@@ -61,7 +61,7 @@ const DashboardCheckoutPage = () => {
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <section>
             <h3 className="text-lg font-bold mb-3">Shipping Details</h3>
-            <div className="grid md:grid-cols-3 gap-x-6 gap-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-3">
               <TextInput label="shippingContactName" errors={errors} register={register} required />
               <TextInput label="shippingContactPhone" errors={errors} register={register} required />
               <TextInput
@@ -74,23 +74,44 @@ const DashboardCheckoutPage = () => {
                   pattern: { value: EMAIL_PATTERN, message: "Enter a valid email address" },
                 }}
               />
-              <div className="col-span-3">
+              <div className="md:col-span-3">
                 <TextArea label="shippingAddress" errors={errors} rows={2} register={register} required />
               </div>
             </div>
           </section>
           <section>
             <h3 className="text-lg font-bold mb-2">Order Summary</h3>
-            <ul>
+            <table className="table-auto w-full">
               {cartItems.map((item) => (
-                <li key={item._id} className="flex justify-between">
-                  <span className="font-semibold">{item.quantity}</span> x{" "}
-                  <span className="font-semibold capitalize">{item.name}</span> ({formatCurrency(item?.price)}){" "}
-                  <span>=</span>
-                  <span className="font-semibold">{formatCurrency(item.quantity * item.price)}</span>
-                </li>
+                <tr key={item._id} className="text-sm md:text-base">
+                  <td className="px-1 py-1 font-semibold text-base">{item.quantity}</td>
+                  <td className="px-1 py-1 font-medium">
+                    {item.name}
+                    <br />
+                    <span className="font-normal">({formatCurrency(item?.price)})</span>
+                    {item?.selected?.size || item?.selected?.color ? (
+                      <>
+                        <br />
+                        <span>
+                          {[
+                            item?.selected?.size,
+                            item?.selected?.color
+                              ? item.additionalImages.find((x) => x.color === item?.selected?.color)?.name
+                              : false,
+                          ]
+                            .filter(Boolean)
+                            .join(", ")}
+                        </span>
+                      </>
+                    ) : null}
+                  </td>
+                  <td className="p-1">=</td>
+                  <td className="p-1 text-right">
+                    <b>{formatCurrency(item.quantity * item.price)}</b>
+                  </td>
+                </tr>
               ))}
-            </ul>
+            </table>
           </section>
           <hr />
           <section>
@@ -101,7 +122,7 @@ const DashboardCheckoutPage = () => {
           </section>
 
           <div className="flex justify-center">
-            <Button className="w-4/5 md:w-1/3" large type="submit" loading={isLoading}>
+            <Button className="w-full md:w-1/2" large type="submit" loading={isLoading}>
               Pay {formatCurrency(totalPrice)}
             </Button>
           </div>
