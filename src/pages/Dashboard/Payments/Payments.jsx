@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import Donations from "~/components/DashboardComponents/Payments/Donations";
 import MakeDonationModal from "~/components/DashboardComponents/Payments/MakeDonationModal";
@@ -17,18 +18,19 @@ const DashboardPaymentsPage = () => {
     { label: "Donations", content: <Donations /> },
   ];
   const { user } = useSelector(selectAuth);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const activeTab = searchParams.get("active");
+  const [activeIndex, setActiveIndex] = useState(+activeTab || 0);
   const [openDonate, setOpenDonate] = useState(false);
   const [initDonation, { isLoading }] = useInitDonationSessionMutation();
   const [openSubscribe, setOpenSubscribe] = useState(false);
   const [initSubscription, { isLoading: isSubscribing }] = useInitSubscriptionSessionMutation();
 
-  const onSubmit = (payload) => {
-    initDonation({ ...payload, amount: +payload.amount })
-      .unwrap()
-      .then((res) => {
-        window.open(res.checkout_url, "_self");
-      });
+  const onSubmit = async (payload) => {
+    const res = await initDonation({ ...payload, amount: +payload.amount }).unwrap();
+    if (user.role === "GlobalNetwork") return res.id;
+    else window.open(res.checkout_url, "_self");
   };
 
   const onSubscribe = () => {
@@ -47,7 +49,7 @@ const DashboardPaymentsPage = () => {
           <Button label="Make a Donation" onClick={() => setOpenDonate(true)} />
         ) : (
           <Button
-            icon={icons.checkAlt}
+            icon={user?.subscribed ? icons.checkAlt : null}
             label={user?.subscribed ? "Subscribed" : "Subscribe Now"}
             color={user?.subscribed ? "secondary" : "primary"}
             disabled={user?.subscribed}
@@ -58,7 +60,7 @@ const DashboardPaymentsPage = () => {
       </div>
 
       <div className="my-6">
-        <Tabs tabs={PAYMENT_TABS} setActiveIndex={setActiveIndex} />
+        <Tabs tabs={PAYMENT_TABS} setActiveIndex={setActiveIndex} activeIndex={activeIndex} />
       </div>
 
       {/*  */}
@@ -67,6 +69,10 @@ const DashboardPaymentsPage = () => {
         onClose={() => setOpenDonate(false)}
         loading={isLoading}
         onSubmit={onSubmit}
+        onApprove={(data) => {
+          console.log("APPROVE", data);
+          navigate(`/dashboard/payments/successful?type=donation&source=paypal&reference=${data.orderID}`);
+        }}
       />
 
       <ConfirmationModal

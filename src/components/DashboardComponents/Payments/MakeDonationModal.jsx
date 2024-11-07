@@ -9,30 +9,50 @@ import { AREAS_OF_NEED, AREAS_OF_NEED_GLOBAL } from "~/constants/donations";
 import { selectAuth } from "~/redux/features/auth/authSlice";
 import PaypalPaymentButton from "./PaypalPaymentButton";
 
-const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading }) => {
+const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading, onApprove }) => {
+  const { user } = useSelector(selectAuth);
+
   const {
     register,
     control,
     formState: { errors },
     watch,
+    trigger,
+    getValues,
     handleSubmit,
-  } = useForm({ mode: "all", defaultValues: { recurring: false } });
+  } = useForm({
+    mode: "all",
+    defaultValues: { recurring: false, currency: user.role === "GlobalNetwork" ? "USD" : "NGN" },
+  });
 
-  const { user } = useSelector(selectAuth);
+  // Validate form and then trigger PayPal createOrder
+  const handlePayPalOrder = async () => {
+    const values = getValues(); // Retrieve form values
+    if (await trigger()) {
+      // Run validation on all fields
+      return onSubmit(values); // Call the onSubmit prop if form is valid
+    }
+  };
 
   return (
     <Modal maxWidth={400} isOpen={isOpen} onClose={onClose} title="Make a Donation">
       {/* Paypal button */}
-      <div className="p-4 text-enter max-h-[500px] overflow-y-auto">
-        <PaypalPaymentButton />
-      </div>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 hidden">
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <Select
+          label="currency"
+          options={user.role === "GlobalNetwork" ? ["USD", "CAD"] : ["NGN"]}
+          control={control}
+          required
+          disabled={user.role !== "GlobalNetwork"}
+        />
+
         <TextInput label="amount" type="number" register={register} required errors={errors} />
 
         <Switch label="recurring" title="Vision Partner?" control={control} inActiveText="No" activeText="Yes" />
 
         {watch("recurring") ? (
-          <Select label="frequency" options={["Monthly", "Annually"]} control={control} required={false} />
+          <Select label="frequency" options={["Monthly", "Annually"]} control={control} required />
         ) : null}
 
         <Select
@@ -42,7 +62,13 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading }) => {
           required={false}
         />
 
-        <Button type="submit" className="w-full" label="Donate Now" large loading={loading} />
+        {user?.role === "GlobalNetwork" ? (
+          <div id="paypal-donate">
+            <PaypalPaymentButton createOrder={handlePayPalOrder} onApprove={onApprove} />
+          </div>
+        ) : (
+          <Button type="submit" className="w-full" label="Donate Now" large loading={loading} />
+        )}
       </form>
     </Modal>
   );

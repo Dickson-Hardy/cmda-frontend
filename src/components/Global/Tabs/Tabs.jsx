@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { classNames } from "~/utilities/classNames";
 
-const Tabs = ({ tabs, equalTab = true, setActiveIndex, addonElement }) => {
-  const [activeTab, setActiveTab] = useState(0);
+const Tabs = ({ tabs, equalTab = true, setActiveIndex, activeIndex, addonElement }) => {
+  const [activeTab, setActiveTab] = useState(activeIndex || 0);
 
   const handleTabClick = (index) => {
     setActiveTab(index);

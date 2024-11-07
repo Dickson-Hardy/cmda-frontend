@@ -36,3 +36,7 @@
 #resource-body img {
   margin: 8px 0;
 }
+
+#paypal-donate iframe {
+  z-index: 0 !important;
+}

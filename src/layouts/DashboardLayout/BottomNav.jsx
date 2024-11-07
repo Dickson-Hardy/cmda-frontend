@@ -13,7 +13,7 @@ const BottomNav = ({ navLinks, toggleSidebar }) => {
   }, [location.pathname]);
 
   return (
-    <div className="block md:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-primary shadow-lg">
+    <div className="block md:hidden fixed bottom-0 left-0 z-20 w-full h-16 bg-primary shadow-lg">
       <nav className="flex h-full w-full font-medium">
         {navLinks.slice(0, 4).map((item) => (
           <button
