@@ -5,7 +5,7 @@ import Select from "~/components/Global/FormElements/Select/Select";
 import Switch from "~/components/Global/FormElements/Switch/Switch";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import Modal from "~/components/Global/Modal/Modal";
-import { AREAS_OF_NEED, AREAS_OF_NEED_GLOBAL } from "~/constants/donations";
+import { AREAS_OF_NEED, AREAS_OF_NEED_GLOBAL, PAYPAL_CURRENCIES } from "~/constants/donations";
 import { selectAuth } from "~/redux/features/auth/authSlice";
 import PaypalPaymentButton from "./PaypalPaymentButton";
 
@@ -41,7 +41,11 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading, onApprove }) =>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Select
           label="currency"
-          options={user.role === "GlobalNetwork" ? ["USD", "CAD"] : ["NGN"]}
+          options={
+            user.role === "GlobalNetwork"
+              ? PAYPAL_CURRENCIES.map((x) => ({ label: x.currency + ` (${x.code})`, value: x.code }))
+              : [{ label: "Nigerian Naira (NGN)", value: "NGN" }]
+          }
           control={control}
           required
           disabled={user.role !== "GlobalNetwork"}
@@ -64,7 +68,7 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading, onApprove }) =>
 
         {user?.role === "GlobalNetwork" ? (
           <div id="paypal-donate">
-            <PaypalPaymentButton createOrder={handlePayPalOrder} onApprove={onApprove} />
+            <PaypalPaymentButton createOrder={handlePayPalOrder} onApprove={onApprove} currency={watch("currency")} />
           </div>
         ) : (
           <Button type="submit" className="w-full" label="Donate Now" large loading={loading} />
