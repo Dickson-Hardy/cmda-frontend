@@ -10,6 +10,7 @@ const PayPalButtonWrapper = ({ createOrder, onApprove, currency }) => {
       type: "resetOptions",
       value: { ...options, currency },
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currency, dispatch]);
 
   if (isPending) return <div>Loading...</div>;

@@ -1,19 +1,16 @@
 import { useEffect, useState } from "react";
-// import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import ProductCard from "~/components/DashboardComponents/Store/ProductCard";
 import Button from "~/components/Global/Button/Button";
-// import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
 import { useGetAllProductsQuery } from "~/redux/api/products/productsApi";
+import { selectAuth } from "~/redux/features/auth/authSlice";
+import { formatProductPrice } from "~/utilities/formatCurrency";
 
 const DashboardStorePage = () => {
-  // const {
-  //   register,
-  //   formState: { errors },
-  //   handleSubmit,
-  // } = useForm({ mode: "all" });
+  const { user } = useSelector(selectAuth);
 
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
@@ -51,7 +48,7 @@ const DashboardStorePage = () => {
                   width="auto"
                   name={prod?.name}
                   description={prod?.description}
-                  price={prod?.price}
+                  price={formatProductPrice(prod, user.role)}
                   image={prod?.featuredImageUrl}
                 />
               </Link>
@@ -87,18 +84,6 @@ const DashboardStorePage = () => {
               Order History
               <span className="ml-auto">{icons.chevronRight}</span>
             </Link>
-
-            {/* <form className="flex flex-col gap-6" onSubmit={handleSubmit(console.log)}>
-              <TextInput
-                label="trackingNumber"
-                register={register}
-                errors={errors}
-                title="Track an Order"
-                placeholder="Enter tracking number"
-                required
-              />
-              <Button label="Track Shipment" />
-            </form> */}
           </div>
         </div>
       </section>

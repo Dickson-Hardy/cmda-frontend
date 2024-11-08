@@ -7,6 +7,7 @@ import { useExportDonationsMutation, useGetAllDonationsQuery } from "~/redux/api
 import { selectAuth } from "~/redux/features/auth/authSlice";
 import { downloadFile } from "~/utilities/fileDownloader";
 import formatDate from "~/utilities/fomartDate";
+import { formatCurrency } from "~/utilities/formatCurrency";
 
 const Donations = () => {
   const [page, setPage] = useState(1);
@@ -15,7 +16,6 @@ const Donations = () => {
   const { data: donations, isLoading } = useGetAllDonationsQuery({ page, limit, searchBy });
 
   const COLUMNS = [
-    // { header: "Reference", accessor: "reference" },
     { header: "Date", accessor: "createdAt" },
     { header: "Amount", accessor: "amount" },
     { header: "Recurring", accessor: "recurring" },
@@ -36,7 +36,7 @@ const Donations = () => {
       ) : col.accessor === "createdAt" ? (
         <span className="whitespace-nowrap">{formatDate(value).dateTime}</span>
       ) : col.accessor === "amount" ? (
-        item.currency + " " + Number(value).toFixed(2).toLocaleString()
+        formatCurrency(value, item.currency)
       ) : (
         value || "--"
       );

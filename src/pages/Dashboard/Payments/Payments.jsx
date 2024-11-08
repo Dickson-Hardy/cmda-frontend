@@ -2,11 +2,11 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import icons from "~/assets/js/icons";
+import ConfirmSubscriptionModal from "~/components/DashboardComponents/Payments/ConfirmSubscriptionModal";
 import Donations from "~/components/DashboardComponents/Payments/Donations";
 import MakeDonationModal from "~/components/DashboardComponents/Payments/MakeDonationModal";
 import Subscriptions from "~/components/DashboardComponents/Payments/Subscriptions";
 import Button from "~/components/Global/Button/Button";
-import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import Tabs from "~/components/Global/Tabs/Tabs";
 import { useInitDonationSessionMutation } from "~/redux/api/payments/donationApi";
 import { useInitSubscriptionSessionMutation } from "~/redux/api/payments/subscriptionApi";
@@ -33,12 +33,10 @@ const DashboardPaymentsPage = () => {
     else window.open(res.checkout_url, "_self");
   };
 
-  const onSubscribe = () => {
-    initSubscription({})
-      .unwrap()
-      .then((res) => {
-        window.open(res.checkout_url, "_self");
-      });
+  const onSubscribe = async () => {
+    const res = await initSubscription({}).unwrap();
+    if (user.role === "GlobalNetwork") return res.id;
+    else window.open(res.checkout_url, "_self");
   };
 
   return (
@@ -58,11 +56,9 @@ const DashboardPaymentsPage = () => {
           />
         )}
       </div>
-
       <div className="my-6">
         <Tabs tabs={PAYMENT_TABS} setActiveIndex={setActiveIndex} activeIndex={activeIndex} />
       </div>
-
       {/*  */}
       <MakeDonationModal
         isOpen={openDonate}
@@ -70,20 +66,19 @@ const DashboardPaymentsPage = () => {
         loading={isLoading}
         onSubmit={onSubmit}
         onApprove={(data) => {
-          console.log("APPROVE", data);
           navigate(`/dashboard/payments/successful?type=donation&source=paypal&reference=${data.orderID}`);
         }}
       />
 
-      <ConfirmationModal
+      <ConfirmSubscriptionModal
         isOpen={openSubscribe}
         onClose={() => setOpenSubscribe(false)}
-        icon={icons.card}
-        title="Pay Annual Subscription"
-        subtitle="Would you like to subscribe annually to access premium features and enjoy enhanced benefits?"
-        mainActionLoading={isSubscribing}
-        mainAction={onSubscribe}
-        subAction
+        onSubmit={onSubscribe}
+        loading={isSubscribing}
+        onApprove={(data) => {
+          navigate(`/dashboard/payments/successful?type=subscription&source=paypal&reference=${data.orderID}`);
+        }}
+        isGlobalMember={user.role === "GlobalNetwork"}
       />
     </div>
   );

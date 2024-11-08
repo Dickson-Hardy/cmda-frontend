@@ -1,12 +1,14 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
+import { selectAuth } from "~/redux/features/auth/authSlice";
 import { adjustItemQuantity } from "~/redux/features/cart/cartSlice";
-import { formatCurrency } from "~/utilities/formatCurrency";
+import { formatProductPrice } from "~/utilities/formatCurrency";
 
 const DashboardCartItems = ({ item }) => {
   const dispatch = useDispatch();
+  const { user } = useSelector(selectAuth);
 
   const handleQtyChange = (itemId, newQuantity) => {
     dispatch(adjustItemQuantity({ itemId, newQuantity }));
@@ -24,7 +26,7 @@ const DashboardCartItems = ({ item }) => {
             </h4>
           </Link>
           <p className="text-gray-dark text-xs truncate leading-5">{item?.description}</p>
-          <p className=" font-medium text-primaryContainer">{formatCurrency(item?.price)}</p>
+          <p className=" font-medium text-primaryContainer">{formatProductPrice(item, user.role)}</p>
         </div>
       </div>
 
@@ -66,7 +68,10 @@ const DashboardCartItems = ({ item }) => {
 
       {/* total */}
       <p className="text-lg font-medium col-span-1 md:text-center flex md:items-center justify-end md:justify-center">
-        {formatCurrency(item?.quantity * item?.price)}
+        {formatProductPrice(
+          { price: item?.quantity * item?.price, priceUSD: item?.quantity * item?.priceUSD },
+          user.role
+        )}
       </p>
     </div>
   );

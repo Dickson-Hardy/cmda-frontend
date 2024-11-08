@@ -2,22 +2,25 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import icons from "~/assets/js/icons";
+import PaypalPaymentButton from "~/components/DashboardComponents/Payments/PaypalPaymentButton";
 import Button from "~/components/Global/Button/Button";
 import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import { usePayOrderSessionMutation } from "~/redux/api/products/productsApi";
-import { formatCurrency } from "~/utilities/formatCurrency";
+import { formatProductPrice } from "~/utilities/formatCurrency";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 
 const DashboardCheckoutPage = () => {
   const navigate = useNavigate();
-  const { cartItems, totalPrice } = useSelector((state) => state.cart);
+  const { cartItems, totalPrice, totalPriceUSD } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.auth);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    trigger,
+    getValues,
   } = useForm({
     mode: "all",
     defaultValues: {
@@ -29,10 +32,11 @@ const DashboardCheckoutPage = () => {
 
   const [payOrderSession, { isLoading }] = usePayOrderSessionMutation();
 
-  const onSubmit = (payload) => {
+  const onSubmit = async (payload) => {
     payload = {
       ...payload,
-      totalAmount: +totalPrice,
+      totalAmount: user.role === "GlobalNetwork" ? +totalPriceUSD : +totalPrice,
+      source: user.role === "GlobalNetwork" ? "PAYPAL" : "PAYSTACK",
       products: cartItems.map((item) => ({
         product: item._id,
         quantity: item.quantity,
@@ -41,11 +45,16 @@ const DashboardCheckoutPage = () => {
       })),
     };
 
-    payOrderSession(payload)
-      .unwrap()
-      .then((res) => {
-        window.open(res.checkout_url, "_self");
-      });
+    const res = await payOrderSession(payload).unwrap();
+    if (user.role === "GlobalNetwork") return res.id;
+    else window.open(res.checkout_url, "_self");
+  };
+
+  const handlePayPalOrder = async () => {
+    const values = getValues();
+    if (await trigger()) {
+      return onSubmit(values);
+    }
   };
 
   return (
@@ -88,7 +97,7 @@ const DashboardCheckoutPage = () => {
                   <td className="px-1 py-1 font-medium">
                     {item.name}
                     <br />
-                    <span className="font-normal">({formatCurrency(item?.price)})</span>
+                    <span className="font-normal text-sm">({formatProductPrice(item, user.role)})</span>
                     {item?.selected?.size || item?.selected?.color ? (
                       <>
                         <br />
@@ -107,7 +116,12 @@ const DashboardCheckoutPage = () => {
                   </td>
                   <td className="p-1">=</td>
                   <td className="p-1 text-right">
-                    <b>{formatCurrency(item.quantity * item.price)}</b>
+                    <b>
+                      {formatProductPrice(
+                        { price: item?.quantity * item?.price, priceUSD: item?.quantity * item?.priceUSD },
+                        user.role
+                      )}
+                    </b>
                   </td>
                 </tr>
               ))}
@@ -117,14 +131,27 @@ const DashboardCheckoutPage = () => {
           <section>
             <div className="flex justify-between">
               <span className="uppercase font-medium">Total</span>
-              <span className="text-2xl font-bold">{formatCurrency(totalPrice)}</span>
+              <span className="text-2xl font-bold">
+                {formatProductPrice({ price: totalPrice, priceUSD: totalPriceUSD }, user.role)}
+              </span>
             </div>
           </section>
 
           <div className="flex justify-center">
-            <Button className="w-full md:w-1/2" large type="submit" loading={isLoading}>
-              Pay {formatCurrency(totalPrice)}
-            </Button>
+            {user?.role === "GlobalNetwork" ? (
+              <div className="w-full md:w-1/2">
+                <PaypalPaymentButton
+                  createOrder={handlePayPalOrder}
+                  onApprove={(data) => {
+                    navigate(`/dashboard/store/orders/successful?source=paypal&reference=${data.orderID}`);
+                  }}
+                />
+              </div>
+            ) : (
+              <Button className="w-full md:w-1/2" large type="submit" loading={isLoading}>
+                Pay {formatProductPrice({ price: totalPrice, priceUSD: totalPriceUSD }, user.role)}
+              </Button>
+            )}
           </div>
         </form>
       </div>

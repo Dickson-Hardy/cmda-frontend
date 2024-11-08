@@ -4,7 +4,6 @@ import icons from "~/assets/js/icons";
 import ProductCard from "~/components/DashboardComponents/Store/ProductCard";
 import Button from "~/components/Global/Button/Button";
 import { useGetAllProductsQuery, useGetSingleProductQuery } from "~/redux/api/products/productsApi";
-import { formatPrice } from "~/utilities/others";
 import Loading from "~/components/Global/Loading/Loading";
 import { useDispatch, useSelector } from "react-redux";
 import { addItemToCart, removeItemFromCart } from "~/redux/features/cart/cartSlice";
@@ -13,12 +12,15 @@ import convertToCapitalizedWords from "~/utilities/convertToCapitalizedWords";
 import MultiItemCarousel from "~/components/Global/MultiItemCarousel/MultiItemCarousel";
 import BackButton from "~/components/Global/BackButton/BackButton";
 import { classNames } from "~/utilities/classNames";
+import { selectAuth } from "~/redux/features/auth/authSlice";
+import { formatProductPrice } from "~/utilities/formatCurrency";
 
 const DashboardStoreSingleProductPage = () => {
   const { slug } = useParams();
   const dispatch = useDispatch();
+  const { user } = useSelector(selectAuth);
 
-  const { data: product, isLoading } = useGetSingleProductQuery(slug, { refetchOnMountOrArgChange: true });
+  const { data: product = {}, isLoading } = useGetSingleProductQuery(slug, { refetchOnMountOrArgChange: true });
   const { data: otherProducts, isLoading: loadingOthers } = useGetAllProductsQuery({ page: 1, limit: 10 });
   const { cartItems } = useSelector((state) => state.cart);
   const alreadyInCart = useMemo(() => {
@@ -104,7 +106,7 @@ const DashboardStoreSingleProductPage = () => {
             ) : (
               <>
                 <h2 className="text-3xl font-bold mb-4 capitalize">{product?.name || "---"}</h2>
-                <p className="text-2xl font-medium">&#8358;{formatPrice(product?.price)}</p>
+                <p className="text-2xl font-medium">{formatProductPrice(product, user.role)}</p>
                 <div className="mt-8 mb-4">
                   <h4 className="font-bold mb-1 text-sm">Product Description</h4>
                   <p className="font-light">{product?.description || "--- -- ---"}</p>
@@ -214,7 +216,7 @@ const DashboardStoreSingleProductPage = () => {
                 <ProductCard
                   name={prod?.name}
                   description={prod?.description}
-                  price={prod?.price}
+                  price={formatProductPrice(prod, user.role)}
                   image={prod?.featuredImageUrl}
                   width="auto"
                   className="mx-2"

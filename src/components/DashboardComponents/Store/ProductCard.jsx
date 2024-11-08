@@ -1,5 +1,4 @@
 import { classNames } from "~/utilities/classNames";
-import { formatPrice } from "~/utilities/others";
 
 const ProductCard = ({ width = "auto", name, image, description, price, className }) => {
   return (
@@ -7,7 +6,7 @@ const ProductCard = ({ width = "auto", name, image, description, price, classNam
       <img src={image} className="bg-onPrimary h-52 w-full rounded-lg mb-3 object-cover" />
       <h4 className="text-sm capitalize font-bold truncate mt-2">{name || "--- ---"}</h4>
       <p className="text-gray-dark text-xs mt-2 mb-1 truncate">{description || "-- -- -- --"}</p>
-      <p className="text-xl font-bold">&#8358;{formatPrice(price)}</p>
+      <p className="text-xl font-bold">{price}</p>
     </div>
   );
 };

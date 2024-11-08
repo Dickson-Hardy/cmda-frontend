@@ -33,7 +33,7 @@ function DashboardStoreOrderHistoryPage() {
       ) : col.accessor === "createdAt" ? (
         <span className="whitespace-nowrap">{formatDate(value).dateTime}</span>
       ) : col.accessor === "totalAmount" ? (
-        formatCurrency(value)
+        formatCurrency(value, item.currency)
       ) : col.accessor === "totalItems" ? (
         item.products?.reduce((acc, prod) => acc + prod.quantity, 0)
       ) : (

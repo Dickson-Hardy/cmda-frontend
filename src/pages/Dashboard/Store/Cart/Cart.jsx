@@ -4,11 +4,13 @@ import { toast } from "react-toastify";
 import icons from "~/assets/js/icons";
 import DashboardCartItems from "~/components/DashboardComponents/Cart/CartItems";
 import Button from "~/components/Global/Button/Button";
+import { selectAuth } from "~/redux/features/auth/authSlice";
 import { clearCart } from "~/redux/features/cart/cartSlice";
-import { formatCurrency } from "~/utilities/formatCurrency";
+import { formatProductPrice } from "~/utilities/formatCurrency";
 
 const DashboardCartPage = () => {
-  const { cartItems, totalPrice } = useSelector((state) => state.cart);
+  const { cartItems, totalPrice, totalPriceUSD } = useSelector((state) => state.cart);
+  const { user } = useSelector(selectAuth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -48,7 +50,9 @@ const DashboardCartPage = () => {
         )}
 
         <hr />
-        <div className="text-right text-2xl font-bold my-4">{formatCurrency(totalPrice)}</div>
+        <div className="text-right text-2xl font-bold my-4">
+          {formatProductPrice({ price: totalPrice, priceUSD: totalPriceUSD }, user.role)}
+        </div>
 
         <div className="flex justify-between items-center">
           <button className="text-primary hover:underline text-sm font-medium" onClick={handleClearAll}>
