@@ -35,7 +35,7 @@ const errorMiddleware = (store) => (next) => (action) => {
       }, 1500);
       return;
     } else {
-      if (errorMessage == "Oops, something went wrong!") console.log("OOPS", action);
+      if (action.meta.arg.endpointName === "getNotificationStats") return;
       return toast.error(errorMessage);
     }
   }

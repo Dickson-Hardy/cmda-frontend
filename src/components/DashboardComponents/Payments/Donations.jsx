@@ -17,7 +17,7 @@ const Donations = () => {
 
   const COLUMNS = [
     { header: "Date", accessor: "createdAt" },
-    { header: "Amount", accessor: "amount" },
+    { header: "Total Amount", accessor: "totalAmount" },
     { header: "Recurring", accessor: "recurring" },
     { header: "Frequency", accessor: "frequency" },
     { header: "Areas of Need", accessor: "areasOfNeed" },
@@ -28,15 +28,17 @@ const Donations = () => {
     cell: (info) => {
       const [value, item] = [info.getValue(), info.row.original];
       return col.accessor === "recurring" ? (
-        value ? (
-          "Yes"
-        ) : (
-          "No"
-        )
+        `${value ? "Yes" : "No"}`
       ) : col.accessor === "createdAt" ? (
         <span className="whitespace-nowrap">{formatDate(value).dateTime}</span>
-      ) : col.accessor === "amount" ? (
-        formatCurrency(value, item.currency)
+      ) : col.accessor === "areasOfNeed" ? (
+        typeof value === "string" ? (
+          value
+        ) : (
+          value?.map((x) => x.name + " - " + formatCurrency(x.amount, item.currency)).join(", ")
+        )
+      ) : col.accessor === "totalAmount" ? (
+        formatCurrency(value || item.amount, item.currency)
       ) : (
         value || "--"
       );
