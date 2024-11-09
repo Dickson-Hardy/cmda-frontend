@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import EventCard from "~/components/DashboardComponents/Events/EventCard";
 import ResourceCard from "~/components/DashboardComponents/Resources/ResourceCard";
 import Volunteer from "~/components/DashboardComponents/Volunteer/Volunteer";
@@ -22,8 +22,6 @@ import { useGetLatestDevotionalQuery } from "~/redux/api/devotionals/devotionals
 import { useGetAllResourcesQuery } from "~/redux/api/resources/resourcesApi";
 import { selectAuth } from "~/redux/features/auth/authSlice";
 import MultiItemCarousel from "~/components/Global/MultiItemCarousel/MultiItemCarousel";
-import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
-import { useInitSubscriptionSessionMutation } from "~/redux/api/payments/subscriptionApi";
 import Select from "~/components/Global/FormElements/Select/Select";
 
 const DashboardHomePage = () => {
@@ -49,6 +47,7 @@ const DashboardHomePage = () => {
   const { data: jobs, isLoading: loadingJobs } = useGetVolunteerJobsQuery({ page: 1, limit: 3 });
   const { data: allUsers, isLoading: loadingUsers } = useGetAllUsersQuery({ page: 1, limit: 10 });
   const [createFaithEntry, { isLoading: isCreatingPrayer }] = useCreateFaithEntryMutation();
+  const navigate = useNavigate();
 
   const handleCreatePrayer = (payload) => {
     createFaithEntry({ ...payload, isAnonymous: payload.isAnonymous || false })
@@ -59,28 +58,17 @@ const DashboardHomePage = () => {
       });
   };
 
-  const [openSubscribe, setOpenSubscribe] = useState(false);
-  const [initSubscription, { isLoading: isSubscribing }] = useInitSubscriptionSessionMutation();
-
-  const onSubscribe = () => {
-    initSubscription({})
-      .unwrap()
-      .then((res) => {
-        window.open(res.checkout_url, "_self");
-      });
-  };
-
   return (
     <div>
-      {!user.subscribed && (
+      {!user.subscribed ? (
         <div className="mb-4 border px-6 py-3 bg-error/20 border-error rounded-lg overflow-hidden text-sm font-medium text-error">
           You currently do not have an active subscription. Without a subscription, you won&apos;t have access to our
           premium features in this application and within CMDA. Click{" "}
-          <button type="button" className="underline font-bold" onClick={() => setOpenSubscribe(true)}>
+          <button type="button" className="underline font-bold" onClick={() => navigate("/dashboard/payments")}>
             here to subscribe now.
           </button>
         </div>
-      )}
+      ) : null}
 
       <section className="h-[400px] w-full rounded-3xl mb-8" style={{ backgroundImage: `url(${doctorPng})` }}>
         <div className="h-full w-full bg-black/50 rounded-3xl text-white p-8 px-4 md:px-8 flex flex-col justify-between">
@@ -261,17 +249,6 @@ const DashboardHomePage = () => {
           </button>
         </div>
       </Modal>
-
-      <ConfirmationModal
-        isOpen={openSubscribe}
-        onClose={() => setOpenSubscribe(false)}
-        icon={icons.card}
-        title="Pay Annual Subscription"
-        subtitle="Would you like to subscribe annually to access premium features and enjoy enhanced benefits?"
-        mainActionLoading={isSubscribing}
-        mainAction={onSubscribe}
-        subAction
-      />
     </div>
   );
 };

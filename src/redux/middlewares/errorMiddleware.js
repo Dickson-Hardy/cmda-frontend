@@ -33,8 +33,10 @@ const errorMiddleware = (store) => (next) => (action) => {
         store.dispatch(logout());
         window.location.href = "/login";
       }, 1500);
+      return;
     } else {
-      toast.error(errorMessage);
+      if (errorMessage == "Oops, something went wrong!") console.log("OOPS", action);
+      return toast.error(errorMessage);
     }
   }
 

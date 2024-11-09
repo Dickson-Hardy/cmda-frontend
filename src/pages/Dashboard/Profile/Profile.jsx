@@ -1,13 +1,11 @@
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import ProfileImageUpdate from "~/components/DashboardComponents/ProfileTabContents/ProfileImageUpdate";
 import Chip from "~/components/Global/Chip/Chip";
 import { useEffect, useState } from "react";
 import formatDate from "~/utilities/fomartDate";
-import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
-import { useInitSubscriptionSessionMutation } from "~/redux/api/payments/subscriptionApi";
 import { selectAuth, setUser } from "~/redux/features/auth/authSlice";
 import { useGetAllTrainingsQuery } from "~/redux/api/events/eventsApi";
 import StatusChip from "~/components/Global/StatusChip/StatusChip";
@@ -23,9 +21,7 @@ import { toast } from "react-toastify";
 const DashboardProfilePage = () => {
   const { user } = useSelector(selectAuth);
 
-  const [openSubscribe, setOpenSubscribe] = useState(false);
   const [openTransit, setOpenTransit] = useState(false);
-  const [initSubscription, { isLoading: isSubscribing }] = useInitSubscriptionSessionMutation();
   const { data: allTrainings, isLoading: isLoadingTrainings } = useGetAllTrainingsQuery(
     { membersGroup: user.role },
     { refetchOnMountOrArgChange: true }
@@ -62,13 +58,7 @@ const DashboardProfilePage = () => {
     enableSorting: false,
   }));
 
-  const onSubscribe = () => {
-    initSubscription({})
-      .unwrap()
-      .then((res) => {
-        window.open(res.checkout_url, "_self");
-      });
-  };
+  const navigate = useNavigate();
 
   const handleTransit = (payload) => {
     const body = {
@@ -91,7 +81,7 @@ const DashboardProfilePage = () => {
           label={user?.subscribed ? "Subscribed" : "Subscribe Now"}
           color={user?.subscribed ? "secondary" : "primary"}
           disabled={user?.subscribed}
-          onClick={() => setOpenSubscribe(true)}
+          onClick={() => navigate("/dashboard/payments")}
         />
         {["Student", "Doctor"].includes(user?.role) ? (
           <Button
@@ -244,17 +234,6 @@ const DashboardProfilePage = () => {
           </ul>
         </div>
       </section>
-
-      <ConfirmationModal
-        isOpen={openSubscribe}
-        onClose={() => setOpenSubscribe(false)}
-        icon={icons.card}
-        title="Pay Annual Subscription"
-        subtitle="Would you like to subscribe annually to access premium features and enjoy enhanced benefits?"
-        mainActionLoading={isSubscribing}
-        mainAction={onSubscribe}
-        subAction
-      />
 
       <TransitionModal
         isOpen={openTransit}

@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import icons from "~/assets/js/icons";
+import PaypalPaymentButton from "~/components/DashboardComponents/Payments/PaypalPaymentButton";
 import BackButton from "~/components/Global/BackButton/BackButton";
 import Button from "~/components/Global/Button/Button";
-import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import Modal from "~/components/Global/Modal/Modal";
 import {
   useConfirmEventPaymentMutation,
@@ -24,8 +24,9 @@ const DashboardStoreSingleEventPage = () => {
   const [searchParams] = useSearchParams();
   const paymentSuccess = searchParams.get("payment");
   const reference = searchParams.get("reference");
+  const source = searchParams.get("source");
   const navigate = useNavigate();
-  const { data: singleEvent } = useGetSingleEventQuery(slug);
+  const { data: singleEvent } = useGetSingleEventQuery(slug, { refetchOnMountOrArgChange: true });
   const [registerForEvent, { isLoading: isRegistering }] = useRegisterForEventMutation();
   const [payForEvent, { isLoading: isPaying }] = usePayForEventMutation();
   const [confirmRegister, setConfirmRegister] = useState(false);
@@ -34,16 +35,22 @@ const DashboardStoreSingleEventPage = () => {
 
   const [confirmPayment, { isLoading: isConfirming }] = useConfirmEventPaymentMutation();
 
+  const wasCalled = useRef(false);
+
   useEffect(() => {
+    setConfirmRegister(false);
+    if (wasCalled.current) return;
     if (paymentSuccess && reference) {
+      wasCalled.current = true;
       setOpenSuccess(true);
-      confirmPayment({ reference })
+      confirmPayment({ reference, source })
         .unwrap()
         .then(() => {
           toast.success("Event registeration successfully");
         });
     }
-  }, [confirmPayment, paymentSuccess, reference]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSocialsShare = (social) => {
     const pageUrl = encodeURIComponent(window.location.href);
@@ -72,13 +79,12 @@ const DashboardStoreSingleEventPage = () => {
     }
   };
 
-  const handleRegisterEvent = () => {
+  const handleRegisterEvent = async () => {
     if (singleEvent?.isPaid) {
-      payForEvent({ slug })
-        .unwrap()
-        .then(({ data }) => {
-          window.open(data?.checkout_url, "_self");
-        });
+      const res = await payForEvent({ slug }).unwrap();
+      if (user.role === "GlobalNetwork") return res.id;
+      else window.open(res.checkout_url, "_self");
+      //
     } else {
       registerForEvent({ slug })
         .unwrap()
@@ -134,7 +140,7 @@ const DashboardStoreSingleEventPage = () => {
               <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Payment Plans</h4>
               {singleEvent?.paymentPlans.map((x) => (
                 <p className="text-sm mb-2" key={x.role}>
-                  {x.role + " - " + formatCurrency(x.price)}
+                  {x.role + " - " + formatCurrency(x.price, x.role === "GlobalNetwork" ? "USD" : "NGN")}
                 </p>
               ))}
             </div>
@@ -206,19 +212,50 @@ const DashboardStoreSingleEventPage = () => {
         )}
       </section>
 
-      <ConfirmationModal
-        icon={icons.calendar}
-        title={singleEvent?.name}
-        subtitle={singleEvent?.linkOrLocation + " --- " + formatDate(singleEvent?.eventDateTime).dateTime}
-        subAction={() => setConfirmRegister(false)}
-        subActionText="Cancel"
-        maxWidth={400}
-        mainAction={handleRegisterEvent}
-        mainActionText="Confirm"
-        mainActionLoading={isRegistering || isPaying}
-        isOpen={confirmRegister}
-        onClose={() => setConfirmRegister(false)}
-      />
+      <Modal isOpen={confirmRegister} onClose={() => setConfirmRegister(false)} className="m-4" maxWidth={480}>
+        <div className="flex flex-col gap-4">
+          <span
+            className={classNames(
+              "text-3xl rounded-full w-14 h-14 inline-flex justify-center items-center mx-auto p-2",
+              "bg-onPrimary text-primary"
+            )}
+          >
+            {icons.calendar}
+          </span>
+
+          <div className="text-center">
+            <h4 className={classNames("text-lg font-semibold mb-1")}>Register For This Event?</h4>
+            <p className={classNames("text-sm capitalize")}>
+              <b>NAME:</b> {singleEvent?.name}
+            </p>
+            <p className={classNames("text-sm")}>
+              <b>DATE & LOCATION:</b>{" "}
+              {singleEvent?.linkOrLocation + " --- " + formatDate(singleEvent?.eventDateTime).dateTime}
+            </p>
+          </div>
+
+          <div className={classNames("grid grid-cols-2 gap-4 items-center")}>
+            <Button className="w-full mb-1.5" variant="outlined" large onClick={() => setConfirmRegister(false)}>
+              No, Cancel
+            </Button>
+
+            {user.role === "GlobalNetwork" && singleEvent?.isPaid ? (
+              <PaypalPaymentButton
+                onApprove={(data) => {
+                  navigate(
+                    `/dashboard/events/${singleEvent.slug}?payment=successful&reference=${data.orderID}&source=PAYPAL`
+                  );
+                }}
+                createOrder={handleRegisterEvent}
+              />
+            ) : (
+              <Button className="w-full mb-1.5" loading={isRegistering || isPaying} onClick={handleRegisterEvent}>
+                Yes, Proceed
+              </Button>
+            )}
+          </div>
+        </div>
+      </Modal>
 
       <Modal isOpen={openSuccess}>
         <div className="flex flex-col gap-4 text-center">

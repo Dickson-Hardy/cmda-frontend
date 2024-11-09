@@ -27,7 +27,6 @@ const DashboardLayout = ({ withOutlet = true, children }) => {
   }, [isSmallScreen]);
 
   const { data: { unreadMessagesCount, unreadNotificationCount } = {} } = useGetNotificationStatsQuery(null, {
-    refetchOnMountOrArgChange: true,
     pollingInterval: 900000,
   });
 
