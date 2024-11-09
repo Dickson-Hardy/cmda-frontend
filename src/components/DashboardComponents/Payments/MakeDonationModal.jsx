@@ -134,9 +134,7 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading, onApprove }) =>
 
         <div className="col-span-2">
           {user?.role === "GlobalNetwork" ? (
-            <div id="paypal-donate">
-              <PaypalPaymentButton createOrder={handlePayPalOrder} onApprove={onApprove} currency={watch("currency")} />
-            </div>
+            <PaypalPaymentButton createOrder={handlePayPalOrder} onApprove={onApprove} currency={watch("currency")} />
           ) : (
             <Button type="submit" className="w-full" label="Donate Now" large loading={loading} />
           )}
