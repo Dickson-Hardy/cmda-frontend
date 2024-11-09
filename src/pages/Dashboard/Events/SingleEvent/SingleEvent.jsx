@@ -26,7 +26,7 @@ const DashboardStoreSingleEventPage = () => {
   const reference = searchParams.get("reference");
   const source = searchParams.get("source");
   const navigate = useNavigate();
-  const { data: singleEvent } = useGetSingleEventQuery(slug, { refetchOnMountOrArgChange: true });
+  const { data: singleEvent, refetch } = useGetSingleEventQuery(slug, { refetchOnMountOrArgChange: true });
   const [registerForEvent, { isLoading: isRegistering }] = useRegisterForEventMutation();
   const [payForEvent, { isLoading: isPaying }] = usePayForEventMutation();
   const [confirmRegister, setConfirmRegister] = useState(false);
@@ -49,8 +49,7 @@ const DashboardStoreSingleEventPage = () => {
           toast.success("Event registeration successfully");
         });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [reference, paymentSuccess, source, confirmPayment]);
 
   const handleSocialsShare = (social) => {
     const pageUrl = encodeURIComponent(window.location.href);
@@ -271,6 +270,7 @@ const DashboardStoreSingleEventPage = () => {
             loading={isConfirming}
             onClick={() => {
               setOpenSuccess(false);
+              refetch();
               navigate(`/dashboard/events/${slug}`);
             }}
           />
