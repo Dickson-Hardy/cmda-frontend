@@ -38,7 +38,6 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading, onApprove }) =>
         .map(([key, val]) => ({ name: key, amount: +val.amount }))
         .filter((x) => x.amount),
     };
-    console.log("PAYLOAD", payload);
     if (await trigger()) {
       // Run validation on all fields
       return onSubmit(payload); // Call the onSubmit prop if form is valid
