@@ -6,7 +6,7 @@ import PaypalPaymentButton from "./PaypalPaymentButton";
 
 const ConfirmSubscriptionModal = ({ isOpen, onClose, onSubmit, loading, onApprove, isGlobalMember }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="m-4" maxWidth={480}>
+    <Modal isOpen={isOpen} onClose={onClose} className="m-2" maxWidth={480}>
       <div className="flex flex-col gap-4">
         <span
           className={classNames(
@@ -32,7 +32,7 @@ const ConfirmSubscriptionModal = ({ isOpen, onClose, onSubmit, loading, onApprov
           {isGlobalMember ? (
             <PaypalPaymentButton onApprove={onApprove} createOrder={onSubmit} />
           ) : (
-            <Button className="w-full mb-1.5" loading={loading} onClick={onSubmit}>
+            <Button className="w-full mb-1.5" loading={loading} large onClick={onSubmit}>
               Yes, Proceed
             </Button>
           )}
