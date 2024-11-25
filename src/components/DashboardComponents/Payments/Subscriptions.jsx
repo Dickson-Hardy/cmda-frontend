@@ -37,7 +37,7 @@ const Subscriptions = () => {
       ) : col.accessor === "createdAt" || col.accessor === "expiryDate" ? (
         <span className="whitespace-nowrap">{formatDate(value).dateTime}</span>
       ) : col.accessor === "amount" ? (
-        formatCurrency(value)
+        formatCurrency(value, user.role === "GlobalNetwork" ? "USD" : "NGN")
       ) : (
         value || "--"
       );

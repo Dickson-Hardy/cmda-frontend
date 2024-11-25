@@ -1,14 +1,17 @@
 import { useMemo } from "react";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import BackButton from "~/components/Global/BackButton/BackButton";
 import StatusChip from "~/components/Global/StatusChip/StatusChip";
 import { useGetSingleOrderQuery } from "~/redux/api/products/productsApi";
+import { selectAuth } from "~/redux/features/auth/authSlice";
 import convertToCapitalizedWords from "~/utilities/convertToCapitalizedWords";
 import formatDate from "~/utilities/fomartDate";
-import { formatCurrency } from "~/utilities/formatCurrency";
+import { formatCurrency, formatProductPrice } from "~/utilities/formatCurrency";
 
 const SingleOrder = () => {
   const { id } = useParams();
+  const { user } = useSelector(selectAuth);
   const { data: order = {} } = useGetSingleOrderQuery(id, { skip: !id, refetchOnMountOrArgChange: true });
 
   const DETAILS = useMemo(
@@ -16,7 +19,7 @@ const SingleOrder = () => {
       status: <StatusChip status={order.status} />,
       paymentReference: order.paymentReference,
       orderedOn: formatDate(order.createdAt).dateTime,
-      totalAmount: formatCurrency(order.totalAmount),
+      totalAmount: formatCurrency(order.totalAmount, order.currency),
       shippingContactName: order.shippingContactName,
       shippingContactPhone: order.shippingContactPhone,
       shippingContactEmail: order.shippingContactEmail,
@@ -64,7 +67,7 @@ const SingleOrder = () => {
                             ) : null}
                           </div>
                         </td>
-                        <td className="px-2 py-1 font-medium">{formatCurrency(item.product.price)}</td>
+                        <td className="px-2 py-1 font-medium">{formatProductPrice(item.product, user.role)}</td>
                       </tr>
                     ))}
                   </tbody>
