@@ -29,7 +29,7 @@ const PaypalPaymentButton = ({ createOrder, onApprove, currency = "USD" }) => {
   const clientId = import.meta.env.VITE_PAYPAL_CLIENT_ID;
 
   return (
-    <PayPalScriptProvider options={{ clientId, environment: "sandbox", currency }}>
+    <PayPalScriptProvider options={{ clientId, environment: "production", currency }}>
       <PayPalButtonWrapper createOrder={createOrder} onApprove={onApprove} currency={currency} />
     </PayPalScriptProvider>
   );
