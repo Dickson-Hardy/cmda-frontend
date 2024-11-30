@@ -153,12 +153,12 @@ const DashboardStoreSingleProductPage = () => {
                     </div>
                   </div>
                 ) : null}
-                {product?.additionalImages?.filter((x) => !!x.color).length ? (
+                {product?.additionalImages?.filter((x) => !!x.color && !x.name.startsWith("Additional")).length ? (
                   <div className="mb-4">
                     <h4 className="font-bold mb-2 text-sm">Colors</h4>
                     <div className="flex gap-3">
                       {product?.additionalImages
-                        ?.filter((x) => !!x.color)
+                        ?.filter((x) => !!x.color && !x.name.startsWith("Additional"))
                         .map((x) => (
                           <div key={x.imageUrl} className="flex flex-col gap-0.5 items-center text-center">
                             <button
