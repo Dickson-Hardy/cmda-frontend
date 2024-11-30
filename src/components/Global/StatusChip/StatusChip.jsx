@@ -20,7 +20,7 @@ const StatusChip = ({ status }) => {
   const { bgClass, textClass, iconClass } = getColorClass(status?.toLowerCase());
 
   return (
-    <div
+    <span
       className={classNames(
         "inline-flex items-center gap-0.5 px-2.5 h-7 rounded-2xl text-xs capitalize font-medium",
         bgClass
@@ -28,7 +28,7 @@ const StatusChip = ({ status }) => {
     >
       <span className={classNames("text-base", iconClass)}>{icons.dot}</span>
       <span className={textClass}>{status}</span>
-    </div>
+    </span>
   );
 };
 

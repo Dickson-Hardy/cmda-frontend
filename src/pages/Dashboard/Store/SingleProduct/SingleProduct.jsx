@@ -34,6 +34,8 @@ const DashboardStoreSingleProductPage = () => {
     if (product?.featuredImageUrl) {
       setCurrentImage(product?.featuredImageUrl);
     }
+    if (!product?.sizes?.length) setSize("");
+    if (!product?.additionalImages?.filter((x) => !!x.color).length) setColor("");
   }, [product]);
   const [currentImage, setCurrentImage] = useState(product?.featuredImageUrl);
 

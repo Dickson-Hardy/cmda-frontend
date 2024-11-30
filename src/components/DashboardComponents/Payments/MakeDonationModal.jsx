@@ -44,6 +44,16 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading, onApprove }) =>
     }
   };
 
+  const onPreSubmit = (payload) => {
+    payload = {
+      ...payload,
+      areasOfNeed: Object.entries(payload.areasOfNeed)
+        .map(([key, val]) => ({ name: key, amount: +val.amount }))
+        .filter((x) => x.amount),
+    };
+    onSubmit(payload);
+  };
+
   useEffect(() => {
     const { unsubscribe } = watch((value) => {
       const totalAmount = Object.values(value.areasOfNeed).reduce(
@@ -66,7 +76,7 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading, onApprove }) =>
     <Modal maxWidth={560} isOpen={isOpen} onClose={onClose} title="Make a Donation">
       {/* Paypal button */}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-2 sm:gap-3">
+      <form onSubmit={handleSubmit(onPreSubmit)} className="grid grid-cols-2 gap-2 sm:gap-3">
         <div className="col-span-2">
           <Select
             label="currency"
@@ -87,7 +97,7 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading, onApprove }) =>
           <Select label="frequency" options={["Monthly", "Annually"]} control={control} required />
         ) : null}
 
-        <div className="col-span-2 space-y-1 sm:space-y-2">
+        <div className="col-span-2 space-y-1 sm:space-y-2 max-h-64 overflow-y-auto bg-onPrimary py-1 px-2 -mx-1">
           {[...(user.role === "GlobalNetwork" ? AREAS_OF_NEED_GLOBAL : AREAS_OF_NEED)].map((item) => (
             <div key={item} className="flex gap-4 items-center">
               <div className="w-3/4">
@@ -104,7 +114,6 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading, onApprove }) =>
                   type="number"
                   showTitleLabel={false}
                   register={register}
-                  required={watch(`areasOfNeed[${item}].value`) && "Required"}
                   errors={errors}
                   placeholder={"e.g. 500"}
                   disabled={!watch(`areasOfNeed[${item}].value`)}

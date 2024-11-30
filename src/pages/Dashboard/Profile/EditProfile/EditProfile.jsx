@@ -67,6 +67,7 @@ const DashboardEditProfile = () => {
       gender: payload.gender,
       dateOfBirth: payload.dateOfBirth,
       bio: payload?.bio,
+      leadershipPosition: payload.leadershipPosition,
       socials: socials,
       ...(user?.role == "Student" && {
         admissionYear: payload.admissionYear.toString(),
@@ -279,6 +280,9 @@ const DashboardEditProfile = () => {
                   </div>
                 </>
               )}
+              <div>
+                <TextInput label="leadershipPosition" register={register} errors={errors} />
+              </div>
             </div>
           </form>
 

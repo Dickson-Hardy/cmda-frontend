@@ -91,40 +91,42 @@ const DashboardCheckoutPage = () => {
           <section>
             <h3 className="text-lg font-bold mb-2">Order Summary</h3>
             <table className="table-auto w-full">
-              {cartItems.map((item) => (
-                <tr key={item._id} className="text-sm md:text-base">
-                  <td className="px-1 py-1 font-semibold text-base">{item.quantity}</td>
-                  <td className="px-1 py-1 font-medium">
-                    {item.name}
-                    <br />
-                    <span className="font-normal text-sm">({formatProductPrice(item, user.role)})</span>
-                    {item?.selected?.size || item?.selected?.color ? (
-                      <>
-                        <br />
-                        <span>
-                          {[
-                            item?.selected?.size,
-                            item?.selected?.color
-                              ? item.additionalImages.find((x) => x.color === item?.selected?.color)?.name
-                              : false,
-                          ]
-                            .filter(Boolean)
-                            .join(", ")}
-                        </span>
-                      </>
-                    ) : null}
-                  </td>
-                  <td className="p-1">=</td>
-                  <td className="p-1 text-right">
-                    <b>
-                      {formatProductPrice(
-                        { price: item?.quantity * item?.price, priceUSD: item?.quantity * item?.priceUSD },
-                        user.role
-                      )}
-                    </b>
-                  </td>
-                </tr>
-              ))}
+              <tbody>
+                {cartItems.map((item) => (
+                  <tr key={item._id} className="text-sm md:text-base">
+                    <td className="px-1 py-1 font-semibold text-base">{item.quantity}</td>
+                    <td className="px-1 py-1 font-medium">
+                      {item.name}
+                      <br />
+                      <span className="font-normal text-sm">({formatProductPrice(item, user.role)})</span>
+                      {item?.selected?.size || item?.selected?.color ? (
+                        <>
+                          <br />
+                          <span>
+                            {[
+                              item?.selected?.size,
+                              item?.selected?.color
+                                ? item.additionalImages.find((x) => x.color === item?.selected?.color)?.name
+                                : false,
+                            ]
+                              .filter(Boolean)
+                              .join(", ")}
+                          </span>
+                        </>
+                      ) : null}
+                    </td>
+                    <td className="p-1">=</td>
+                    <td className="p-1 text-right">
+                      <b>
+                        {formatProductPrice(
+                          { price: item?.quantity * item?.price, priceUSD: item?.quantity * item?.priceUSD },
+                          user.role
+                        )}
+                      </b>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
           </section>
           <hr />
