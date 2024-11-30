@@ -2,7 +2,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { FAQS } from "~/constants/faqs";
 import { FOOTER_LINKS, OFFICES } from "~/constants/footer";
 import Button from "~/components/Global/Button/Button";
-import Logo from "~/components/Global/Logo/Logo";
 import doctorPng from "~/assets/images/cheerful-doctor.png";
 import studentsPng from "~/assets/images/students.png";
 import lecturerPng from "~/assets/images/lecturer.png";
@@ -104,7 +103,13 @@ const IndexPage = () => {
         <div className="max-w-screen-xl mx-auto px-8 xl:px-0">
           <section className="flex flex-col lg:flex-row gap-16">
             <div className="w-full lg:w-1/4">
-              <Logo />
+              <div className="inline-flex items-center">
+                <img src="/CMDALOGO_white.png" className="w-20 md:w-16 object-contain -ml-6 md:-ml-3" />
+                <h3 className="text-white font-bold text-sm md:text-xs -ml-3">
+                  CHRISTIAN MEDICAL AND DENTAL ASSOCIATION OF NIGERIA <br />
+                  <span className="font-light">(CMDA NIGERIA)</span>
+                </h3>
+              </div>
               <p className="text-sm mt-6">Design amazing digital experiences that create more happy in the world.</p>
             </div>
             <div className="w-full lg:w-3/4 grid grid-cols-2 gap-10 md:grid-cols-3 lg:grid-cols-5">
@@ -138,7 +143,7 @@ const IndexPage = () => {
           <section className="text-center py-8 lg:py-12 mt-8">
             <p className="text-sm">&copy; {new Date().getFullYear()} CMDA Nigeria | All rights reserved.</p>
             <p className="text-xs mt-1">
-              Built by{" "}
+              Powered by{" "}
               <a
                 href="https://www.danisoftsolution.com/en/"
                 target="_blank"
