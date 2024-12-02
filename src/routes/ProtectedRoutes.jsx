@@ -7,7 +7,7 @@ const ProtectedRoutes = () => {
   const dispatch = useDispatch();
 
   if (isAuthenticated) {
-    if (user.emailVerified) {
+    if (!user.emailVerified) {
       dispatch(setVerifyEmail(user.email));
       return <Navigate to="/verify-email" />;
     }
