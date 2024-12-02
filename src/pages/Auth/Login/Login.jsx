@@ -29,6 +29,11 @@ const Login = () => {
         dispatch(setUser(data?.user));
         dispatch(setTokens({ accessToken: data?.accessToken }));
         toast.success("Login successful");
+        if (!data.user.emailVerified) {
+          dispatch(setVerifyEmail(payload.email));
+          navigate("/verify-email");
+          return;
+        }
         const redirectUrl = localStorage.getItem("redirectUrl");
         if (redirectUrl && redirectUrl.includes("dashboard")) navigate(redirectUrl);
         else navigate("/dashboard");
