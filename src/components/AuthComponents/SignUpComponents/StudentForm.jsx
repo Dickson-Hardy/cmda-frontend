@@ -14,6 +14,7 @@ import {
   genderOptions,
   studentChapterOptions,
 } from "~/utilities/reusableVariables";
+import { eighteenYrsAgo } from "~/utilities/fomartDate";
 
 const StudentForm = () => {
   const navigate = useNavigate();
@@ -76,6 +77,19 @@ const StudentForm = () => {
             errors={errors}
             required
             placeholder="Enter your last name"
+          />
+        </div>
+
+        <div>
+          <TextInput
+            title="Date of Birth"
+            label="dateOfBirth"
+            register={register}
+            errors={errors}
+            placeholder="Enter email address"
+            type="date"
+            max={eighteenYrsAgo}
+            required
           />
         </div>
 

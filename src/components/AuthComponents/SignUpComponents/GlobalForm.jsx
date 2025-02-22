@@ -10,6 +10,7 @@ import Button from "../../Global/Button/Button";
 import { setVerifyEmail } from "~/redux/features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { genderOptions, globalRegionsData } from "~/utilities/reusableVariables";
+import { eighteenYrsAgo } from "~/utilities/fomartDate";
 
 const GlobalForm = () => {
   const navigate = useNavigate();
@@ -72,6 +73,19 @@ const GlobalForm = () => {
             errors={errors}
             required
             placeholder="Enter your last name"
+          />
+        </div>
+
+        <div>
+          <TextInput
+            title="Date of Birth"
+            label="dateOfBirth"
+            register={register}
+            errors={errors}
+            placeholder="Enter email address"
+            type="date"
+            max={eighteenYrsAgo}
+            required
           />
         </div>
 
