@@ -111,7 +111,7 @@ const ChatBox = ({ userId, recipientId }) => {
                   <Message
                     key={item._id}
                     content={item.content}
-                    timestamp={item.updatedAt}
+                    timestamp={item.createdAt}
                     isSender={item.sender === userId}
                   />
                 )
