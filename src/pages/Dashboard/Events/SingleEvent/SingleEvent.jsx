@@ -202,9 +202,13 @@ const DashboardStoreSingleEventPage = () => {
         {new Date(singleEvent?.eventDateTime).getTime() > Date.now() && (
           <div className="flex flex-wrap gap-2 lg:gap-4 justify-end mt-4 mb-4">
             <Button
-              label={singleEvent?.registeredUsers?.includes(user._id) ? "Already Registered" : "Register for Event"}
+              label={
+                singleEvent?.registeredUsers?.find((x) => x.userId == user._id)
+                  ? "Already Registered"
+                  : "Register for Event"
+              }
               large
-              disabled={singleEvent?.registeredUsers?.includes(user._id)}
+              disabled={singleEvent?.registeredUsers?.find((x) => x.userId == user._id)}
               onClick={() => setConfirmRegister(true)}
             />
           </div>
@@ -222,15 +226,26 @@ const DashboardStoreSingleEventPage = () => {
             {icons.calendar}
           </span>
 
-          <div className="text-center">
-            <h4 className={classNames("text-lg font-semibold mb-1")}>Register For This Event?</h4>
+          <div>
+            <h4 className={classNames("text-lg font-semibold mb-1 text-center")}>Register For This Event?</h4>
             <p className={classNames("text-sm capitalize")}>
               <b>NAME:</b> {singleEvent?.name}
             </p>
             <p className={classNames("text-sm")}>
-              <b>DATE & LOCATION:</b>{" "}
-              {singleEvent?.linkOrLocation + " --- " + formatDate(singleEvent?.eventDateTime).dateTime}
+              <b>DATE:</b> {formatDate(singleEvent?.eventDateTime).dateTime}
             </p>
+            <p className={classNames("text-sm")}>
+              <b>LOCATION:</b> {singleEvent?.linkOrLocation}
+            </p>
+
+            {singleEvent?.isPaid && (
+              <p className={classNames("text-sm mt-1")}>
+                <b className="text-error font-bold">NOTE:</b> This is a paid event, you will be redirected to pay a
+                payment channel to complete payment. After completing your payment, you will be automatically redirected
+                back to the website. Please be patient and wait for the redirection to ensure your payment is logged
+                correctly.
+              </p>
+            )}
           </div>
 
           <div className={classNames("grid grid-cols-2 gap-4 items-center")}>
@@ -248,8 +263,8 @@ const DashboardStoreSingleEventPage = () => {
                 createOrder={handleRegisterEvent}
               />
             ) : (
-              <Button className="w-full mb-1.5" loading={isRegistering || isPaying} onClick={handleRegisterEvent}>
-                Yes, Proceed
+              <Button className="w-full mb-1.5" large loading={isRegistering || isPaying} onClick={handleRegisterEvent}>
+                {singleEvent?.isPaid ? "Yes, Make Payment" : "Yes, Proceed"}
               </Button>
             )}
           </div>
