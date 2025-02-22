@@ -17,6 +17,8 @@ const Donations = () => {
 
   const COLUMNS = [
     { header: "Date", accessor: "createdAt" },
+    { header: "Reference", accessor: "reference" },
+    { header: "Source", accessor: "source" },
     { header: "Total Amount", accessor: "totalAmount" },
     { header: "Recurring", accessor: "recurring" },
     { header: "Frequency", accessor: "frequency" },
@@ -64,7 +66,7 @@ const Donations = () => {
           <h3 className="text-lg font-semibold">Donation History</h3>
           <div className="flex flex-row-reverse justify-between md:flex-row items-center gap-4">
             <Button label="Export" variant="outlined" loading={isExporting} onClick={handleExport} />
-            <SearchBar onSearch={setSearchBy} />
+            <SearchBar onSearch={setSearchBy} placeholder="reference or amount" />
           </div>
         </div>
         <Table
