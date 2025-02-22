@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { MdInfoOutline } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import icons from "~/assets/js/icons";
@@ -7,6 +8,7 @@ import Donations from "~/components/DashboardComponents/Payments/Donations";
 import MakeDonationModal from "~/components/DashboardComponents/Payments/MakeDonationModal";
 import Subscriptions from "~/components/DashboardComponents/Payments/Subscriptions";
 import Button from "~/components/Global/Button/Button";
+import Modal from "~/components/Global/Modal/Modal";
 import Tabs from "~/components/Global/Tabs/Tabs";
 import { useInitDonationSessionMutation } from "~/redux/api/payments/donationApi";
 import { useInitSubscriptionSessionMutation } from "~/redux/api/payments/subscriptionApi";
@@ -29,14 +31,23 @@ const DashboardPaymentsPage = () => {
 
   const onSubmit = async (payload) => {
     const res = await initDonation({ ...payload, amount: +payload.amount }).unwrap();
-    if (user.role === "GlobalNetwork") return res.id;
-    else window.open(res.checkout_url, "_self");
+    setResponse(res);
+    setRedirectModal(true);
+  };
+
+  const [response, setResponse] = useState(null);
+  const [redirectModal, setRedirectModal] = useState(false);
+
+  const handleNextStep = () => {
+    setRedirectModal(false);
+    if (user.role === "GlobalNetwork") return response.id;
+    else window.open(response.checkout_url, "_self");
   };
 
   const onSubscribe = async () => {
     const res = await initSubscription({}).unwrap();
-    if (user.role === "GlobalNetwork") return res.id;
-    else window.open(res.checkout_url, "_self");
+    setResponse(res);
+    setRedirectModal(true);
   };
 
   return (
@@ -80,6 +91,18 @@ const DashboardPaymentsPage = () => {
         }}
         isGlobalMember={user.role === "GlobalNetwork"}
       />
+
+      <Modal isOpen={redirectModal} onClose={() => {}}>
+        <div className="flex flex-col justify-center items-center gap-3">
+          <MdInfoOutline className="text-primary h-14 w-14" />
+          <h3 className="text-lg font-medium">Redirecting to Payment Channel...</h3>
+          <p className="text-center">
+            After completing your payment, you will be automatically redirected back to the website. Please be patient
+            and wait for the redirection to ensure your payment is logged correctly.
+          </p>
+          <Button label="I Understand" className="w-full" onClick={handleNextStep} />
+        </div>
+      </Modal>
     </div>
   );
 };
