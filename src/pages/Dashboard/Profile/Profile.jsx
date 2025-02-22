@@ -187,7 +187,7 @@ const DashboardProfilePage = () => {
       </section>
 
       <section className="my-8 flex flex-col md:flex-row gap-8">
-        <div className="w-full md:w-2/3 bg-white rounded-2xl shadow pt-2">
+        <div className="w-full bg-white rounded-2xl shadow pt-2">
           <div className="w-full  px-4 py-4">
             <h3 className="text-base font-bold mb-4">Training Records</h3>
             <Table
@@ -199,7 +199,7 @@ const DashboardProfilePage = () => {
           </div>
         </div>
 
-        <div className="w-full md:w-1/3 bg-white shadow px-4 py-4 rounded-xl">
+        {/* <div className="w-full md:w-1/3 bg-white shadow px-4 py-4 rounded-xl">
           <h3 className="text-base font-bold mb-2">Community Statistics</h3>
           <ul className="space-y-4 capitalize">
             <li className="flex items-center gap-4">
@@ -232,7 +232,7 @@ const DashboardProfilePage = () => {
               </div>
             </li>
           </ul>
-        </div>
+        </div> */}
       </section>
 
       <TransitionModal

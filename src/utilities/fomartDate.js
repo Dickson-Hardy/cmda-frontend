@@ -23,4 +23,8 @@ function formatDate(dateString) {
   };
 }
 
+export const eighteenYrsAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 18))
+  .toISOString()
+  .split("T")[0];
+
 export default formatDate;
