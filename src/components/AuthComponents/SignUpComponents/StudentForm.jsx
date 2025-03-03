@@ -14,7 +14,7 @@ import {
   genderOptions,
   studentChapterOptions,
 } from "~/utilities/reusableVariables";
-import { eighteenYrsAgo } from "~/utilities/fomartDate";
+import { fourteenYrsAgo } from "~/utilities/fomartDate";
 
 const StudentForm = () => {
   const navigate = useNavigate();
@@ -88,7 +88,7 @@ const StudentForm = () => {
             errors={errors}
             placeholder="Enter email address"
             type="date"
-            max={eighteenYrsAgo}
+            max={fourteenYrsAgo}
             required
           />
         </div>

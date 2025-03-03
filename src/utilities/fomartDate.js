@@ -27,4 +27,8 @@ export const eighteenYrsAgo = new Date(new Date().setFullYear(new Date().getFull
   .toISOString()
   .split("T")[0];
 
+export const fourteenYrsAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 14))
+  .toISOString()
+  .split("T")[0];
+
 export default formatDate;

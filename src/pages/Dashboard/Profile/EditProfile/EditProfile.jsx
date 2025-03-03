@@ -12,6 +12,7 @@ import TextArea from "~/components/Global/FormElements/TextArea/TextArea";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import { useEditProfileMutation } from "~/redux/api/profile/profileApi";
 import { setUser } from "~/redux/features/auth/authSlice";
+import { fourteenYrsAgo } from "~/utilities/fomartDate";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 import {
   admissionYearOptions,
@@ -89,8 +90,6 @@ const DashboardEditProfile = () => {
         navigate("/dashboard/profile");
       });
   };
-
-  const eighteenYrsAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split("T")[0];
 
   return (
     <div>
@@ -200,7 +199,7 @@ const DashboardEditProfile = () => {
                   errors={errors}
                   placeholder="Enter email address"
                   type="date"
-                  max={eighteenYrsAgo}
+                  max={fourteenYrsAgo}
                   required
                 />
               </div>

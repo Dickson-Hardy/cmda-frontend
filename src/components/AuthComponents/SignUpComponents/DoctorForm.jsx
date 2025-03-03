@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { setVerifyEmail } from "~/redux/features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { doctorsRegionLists, genderOptions } from "~/utilities/reusableVariables";
-import { eighteenYrsAgo } from "~/utilities/fomartDate";
+import { fourteenYrsAgo } from "~/utilities/fomartDate";
 
 const DoctorForm = () => {
   const navigate = useNavigate();
@@ -84,7 +84,7 @@ const DoctorForm = () => {
             errors={errors}
             placeholder="Enter email address"
             type="date"
-            max={eighteenYrsAgo}
+            max={fourteenYrsAgo}
             required
           />
         </div>
