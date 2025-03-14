@@ -2,9 +2,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { FAQS } from "~/constants/faqs";
 import { FOOTER_LINKS, OFFICES } from "~/constants/footer";
 import Button from "~/components/Global/Button/Button";
-import doctorPng from "~/assets/images/cheerful-doctor.png";
-import studentsPng from "~/assets/images/students.png";
-import lecturerPng from "~/assets/images/lecturer.png";
+import welcomePng from "~/assets/images/welcome.webp";
+import faqPng from "~/assets/images/faq.webp";
+import studentsPng from "~/assets/images/auth/signup-student-img.webp";
+import doctorPng from "~/assets/images/auth/signup-doctor-img.webp";
+import globalPng from "~/assets/images/auth/signup-global-img.webp";
 import { classNames } from "~/utilities/classNames";
 
 const IndexPage = () => {
@@ -27,14 +29,14 @@ const IndexPage = () => {
       name: "Global Network Members Arm",
       more: "Connecting medical and dental professionals around the world to share experiences, resources, and promote global health initiatives.",
       colors: ["bg-tertiary/70", "bg-tertiary"],
-      image: lecturerPng,
+      image: globalPng,
     },
   ];
 
   return (
     <div>
-      <section className="bg-gray-200 py-10 lg:py-10 bg-center" style={{ backgroundImage: `url(${doctorPng})` }}>
-        <div className="max-w-screen-xl mx-auto px-8 xl:px-0 flex items-center min-h-[500px]">
+      <section className="bg-gray-200 py-10 lg:py-10 bg-contain" style={{ backgroundImage: `url(${welcomePng})` }}>
+        <div className="max-w-screen-xl mx-auto px-8 xl:px-0 flex items-center min-h-[600px]">
           <div className="p-8 lg:p-12 bg-white rounded-3xl w-full lg:w-1/2">
             <h3 className="font-bold text-3xl lg:text-4xl">Welcome to CMDA Nigeria</h3>
             <p className="my-6 lg:text-lg">
@@ -55,9 +57,8 @@ const IndexPage = () => {
             <div
               key={x}
               className={classNames(
-                "h-64 group rounded-3xl relative bg-cover transition-all cursor-pointer text-onPrimary",
-                x > 1 && "lg:col-span-2",
-                "bg-center"
+                "group rounded-3xl relative bg-cover transition-all cursor-pointer text-onPrimary",
+                x > 1 ? "lg:col-span-2 h-[300px] bg-contain" : "h-96 bg-top"
               )}
               style={{ backgroundImage: `url(${item.image})` }}
             >
@@ -71,8 +72,8 @@ const IndexPage = () => {
                   "h-0 opacity-0 group-hover:h-full group-hover:opacity-100 rounded-3xl p-10 transition-all duration-500 ease-in-out"
                 )}
               >
-                <h4 className="text-base font-semibold mb-2">{item.name}</h4>
-                <p className="text-sm">{item.more}</p>
+                <h4 className="text-base font-semibold mb-2 lg:text-xl">{item.name}</h4>
+                <p className="text-sm lg:text-lg">{item.more}</p>
               </div>
             </div>
           ))}
@@ -81,7 +82,7 @@ const IndexPage = () => {
 
       <section className="bg-primary py-10 lg:py-10">
         <div className="max-w-screen-xl mx-auto px-8 xl:px-0 flex flex-col lg:flex-row gap-10">
-          <img className="bg-onPrimaryContainer rounded-3xl w-full lg:w-1/2 h-auto hidden lg:block" src={studentsPng} />
+          <img className="bg-onPrimaryContainer rounded-3xl w-full lg:w-1/2 h-auto hidden lg:block" src={faqPng} />
           <div className="p-8 lg:p-12 bg-onPrimary rounded-3xl w-full lg:w-1/2">
             <h3 className="font-bold text-2xl lg:text-3xl mb-4">Frequently Asked Questions</h3>
             <div className="space-y-2 max-h-[500px] overflow-y-auto">
@@ -112,7 +113,7 @@ const IndexPage = () => {
               </div>
               <p className="text-sm mt-6">Design amazing digital experiences that create more happy in the world.</p>
             </div>
-            <div className="w-full lg:w-3/4 grid grid-cols-2 gap-10 md:grid-cols-3 lg:grid-cols-5">
+            <div className="w-full lg:w-3/4 grid grid-cols-2 gap-10 md:grid-cols-3 lg:grid-cols-6">
               {Object.keys(FOOTER_LINKS).map((key) => (
                 <div key={key}>
                   <h4 className="text-sm font-semibold capitalize mb-4">{key}</h4>
@@ -127,7 +128,7 @@ const IndexPage = () => {
                   </ul>
                 </div>
               ))}
-              <div className="col-span-2 lg:col-span-1">
+              <div className="col-span-2">
                 <h4 className="text-sm font-semibold capitalize mb-4">Visit Us</h4>
                 <ul className="space-y-3 list-none">
                   {OFFICES.map((item) => (

@@ -1,9 +1,9 @@
 import Logo from "~/components/Global/Logo/Logo";
 import { Outlet, useLocation } from "react-router-dom";
-import loginImg from "~/assets/images/auth/login-img.png";
-import doctorImg from "~/assets/images/auth/signup-doctor-img.png";
-import studentImg from "~/assets/images/auth/signup-student-img.png";
-import globalImg from "~/assets/images/auth/signup-global-img.png";
+import loginImg from "~/assets/images/auth/login-img.webp";
+import doctorImg from "~/assets/images/auth/signup-doctor-img.webp";
+import studentImg from "~/assets/images/auth/signup-student-img.webp";
+import globalImg from "~/assets/images/auth/signup-global-img.webp";
 import { useEffect, useState } from "react";
 import { classNames } from "~/utilities/classNames";
 
@@ -13,9 +13,7 @@ const AuthLayout = ({ withOutlet = true, children }) => {
   const [currentPage, setCurrentPage] = useState("getStarted");
 
   useEffect(() => {
-    if (pathname === "/login") {
-      setCurrentPage("login");
-    } else if (pathname === "/signup" && new URLSearchParams(location.search).get("type") == undefined) {
+    if (pathname === "/signup" && new URLSearchParams(location.search).get("type") == undefined) {
       setCurrentPage("getStarted");
     } else if (pathname === "/signup" && new URLSearchParams(location.search).get("type") == "student") {
       setCurrentPage("student");
@@ -24,7 +22,7 @@ const AuthLayout = ({ withOutlet = true, children }) => {
     } else if (pathname === "/signup" && new URLSearchParams(location.search).get("type") == "global member") {
       setCurrentPage("global");
     } else {
-      return;
+      setCurrentPage("login");
     }
   }, [pathname, location.search]);
 
@@ -40,12 +38,7 @@ const AuthLayout = ({ withOutlet = true, children }) => {
 
   return (
     <div className="h-screen flex w-full">
-      <div
-        className={classNames(
-          "h-full w-full hidden lg:flex flex-col relative",
-          ["/login", "/signup"].includes(pathname) && currentPage !== "getStarted" ? "lg:flex" : "lg:hidden"
-        )}
-      >
+      <div className={classNames("h-full w-full hidden lg:flex flex-col relative")}>
         <div className="p-8 relative z-30 ">
           <Logo />
         </div>
@@ -60,13 +53,13 @@ const AuthLayout = ({ withOutlet = true, children }) => {
           (pathname !== "/signup" || currentPage === "getStarted") && "justify-center"
         )}
       >
-        <div className={["/login", "/signup"].includes(pathname) && currentPage !== "getStarted" ? "lg:hidden" : ""}>
+        <div className={"lg:hidden"}>
           <Logo />
         </div>
         <div
           className={classNames(
             "w-full px-4 md:px-8 py-8 bg-white  rounded-lg",
-            pathname === "/signup" && currentPage == "getStarted" ? "max-w-3xl" : "max-w-md"
+            pathname === "/signup" && currentPage == "getStarted" ? "max-w-3xl" : "max-w-xl"
           )}
         >
           {withOutlet ? <Outlet /> : children}
