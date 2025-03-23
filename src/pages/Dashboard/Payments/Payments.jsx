@@ -24,7 +24,7 @@ const DashboardPaymentsPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const activeTab = searchParams.get("active");
-  const [activeIndex, setActiveIndex] = useState(+activeTab || 0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     if (activeTab) setActiveIndex(Number(activeTab));
