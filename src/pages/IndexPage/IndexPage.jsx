@@ -7,36 +7,44 @@ import faqPng from "~/assets/images/faq.webp";
 import studentsPng from "~/assets/images/auth/signup-student-img.webp";
 import doctorPng from "~/assets/images/auth/signup-doctor-img.webp";
 import globalPng from "~/assets/images/auth/signup-global-img.webp";
+import globalNetworkPng from "~/assets/images/globalnetwork.webp";
 import { classNames } from "~/utilities/classNames";
+import { useMemo } from "react";
+import { useIsSmallScreen } from "~/hooks/useIsSmallScreen";
 
 const IndexPage = () => {
   const navigate = useNavigate();
 
-  const CATEGORIES = [
-    {
-      name: "Students Arm",
-      more: "Providing support and resources for medical and dental students to foster their professional and spiritual growth.",
-      colors: ["bg-primary/70", "bg-primary"],
-      image: studentsPng,
-    },
-    {
-      name: "Doctors Arm",
-      more: "Facilitating a network for practicing medical and dental doctors to collaborate, share knowledge, and strengthen their faith.",
-      colors: ["bg-secondary/70", "bg-secondary"],
-      image: doctorPng,
-    },
-    {
-      name: "Global Network Members Arm",
-      more: "Connecting medical and dental professionals around the world to share experiences, resources, and promote global health initiatives.",
-      colors: ["bg-tertiary/70", "bg-tertiary"],
-      image: globalPng,
-    },
-  ];
+  const isMobile = useIsSmallScreen("1023px");
+
+  const CATEGORIES = useMemo(
+    () => [
+      {
+        name: "Students Arm",
+        more: "Providing support and resources for medical and dental students to foster their professional and spiritual growth.",
+        colors: ["bg-primary/70", "bg-primary"],
+        image: studentsPng,
+      },
+      {
+        name: "Doctors Arm",
+        more: "Facilitating a network for practicing medical and dental doctors to collaborate, share knowledge, and strengthen their faith.",
+        colors: ["bg-secondary/70", "bg-secondary"],
+        image: doctorPng,
+      },
+      {
+        name: "Global Network Members Arm",
+        more: "Connecting medical and dental professionals around the world to share experiences, resources, and promote global health initiatives.",
+        colors: ["bg-tertiary/70", "bg-tertiary"],
+        image: isMobile ? globalPng : globalNetworkPng,
+      },
+    ],
+    [isMobile]
+  );
 
   return (
     <div>
-      <section className="bg-gray-200 py-10 lg:py-10 bg-contain" style={{ backgroundImage: `url(${welcomePng})` }}>
-        <div className="max-w-screen-xl mx-auto px-8 xl:px-0 flex items-center min-h-[600px]">
+      <section className="bg-gray-200 py-10 lg:py-10 bg-cover" style={{ backgroundImage: `url(${welcomePng})` }}>
+        <div className="px-8 xl:px-28 flex items-center min-h-[600px]">
           <div className="p-8 lg:p-12 bg-white rounded-3xl w-full lg:w-1/2">
             <h3 className="font-bold text-3xl lg:text-4xl">Welcome to CMDA Nigeria</h3>
             <p className="my-6 lg:text-lg">
@@ -52,7 +60,7 @@ const IndexPage = () => {
       </section>
 
       <section className="bg-white py-10 lg:py-10">
-        <div className="max-w-screen-xl mx-auto px-8 xl:px-0 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="px-8 xl:px-28 grid grid-cols-1 lg:grid-cols-2 gap-6">
           {CATEGORIES.map((item, x) => (
             <div
               key={x}
@@ -81,7 +89,7 @@ const IndexPage = () => {
       </section>
 
       <section className="bg-primary py-10 lg:py-10">
-        <div className="max-w-screen-xl mx-auto px-8 xl:px-0 flex flex-col lg:flex-row gap-10">
+        <div className="px-8 xl:px-28 flex flex-col lg:flex-row gap-10">
           <img className="bg-onPrimaryContainer rounded-3xl w-full lg:w-1/2 h-auto hidden lg:block" src={faqPng} />
           <div className="p-8 lg:p-12 bg-onPrimary rounded-3xl w-full lg:w-1/2">
             <h3 className="font-bold text-2xl lg:text-3xl mb-4">Frequently Asked Questions</h3>
@@ -100,8 +108,8 @@ const IndexPage = () => {
         </div>
       </section>
 
-      <div className="bg-black pt-14 text-onPrimary">
-        <div className="max-w-screen-xl mx-auto px-8 xl:px-0">
+      <footer className="bg-black pt-14 text-onPrimary">
+        <div className="px-8 xl:px-28">
           <section className="flex flex-col lg:flex-row gap-16">
             <div className="w-full lg:w-1/4">
               <div className="inline-flex items-center">
@@ -111,7 +119,6 @@ const IndexPage = () => {
                   <span className="font-light">(CMDA NIGERIA)</span>
                 </h3>
               </div>
-              <p className="text-sm mt-6">Design amazing digital experiences that create more happy in the world.</p>
             </div>
             <div className="w-full lg:w-3/4 grid grid-cols-2 gap-10 md:grid-cols-3 lg:grid-cols-6">
               {Object.keys(FOOTER_LINKS).map((key) => (
@@ -156,7 +163,7 @@ const IndexPage = () => {
             </p>
           </section>
         </div>
-      </div>
+      </footer>
     </div>
   );
 };
