@@ -41,13 +41,15 @@ const DashboardStoreSingleEventPage = () => {
     setConfirmRegister(false);
     if (wasCalled.current) return;
     if (paymentSuccess && reference) {
-      wasCalled.current = true;
       setOpenSuccess(true);
-      confirmPayment({ reference, source })
-        .unwrap()
-        .then(() => {
-          toast.success("Event registeration successfully");
-        });
+      if (source === "PAYPAL") {
+        wasCalled.current = true;
+        confirmPayment({ reference, source })
+          .unwrap()
+          .then(() => {
+            toast.success("Event registeration successfully");
+          });
+      }
     }
   }, [reference, paymentSuccess, source, confirmPayment]);
 

@@ -21,30 +21,34 @@ const Button = ({
     switch (color) {
       case "primary":
         return {
-          filled: "bg-primary text-white hover:bg-primaryContainer",
-          outlined: "bg-transparent text-primary border-[1.5px] border-primary hover:bg-onPrimary",
-          text: "bg-tranparent text-primary hover:bg-onPrimary",
+          filled: "bg-primary text-white hover:bg-primaryContainer disabled:hover:bg-primary",
+          outlined:
+            "bg-transparent text-primary border-[1.5px] border-primary hover:bg-onPrimary disabled:hover:bg-transparent",
+          text: "bg-tranparent text-primary hover:bg-onPrimary disabled:hover:bg-transparent",
         };
       case "tertiary":
         // Define styles for tertiary color
         return {
-          filled: "bg-tertiary text-white hover:bg-tertiaryContainer",
-          outlined: "bg-transparent text-tertiary border-[1.5px] border-tertiary hover:bg-onTertiary",
-          text: "bg-tranparent text-tertiary hover:bg-onTertiary",
+          filled: "bg-tertiary text-white hover:bg-tertiaryContainer disabled:hover:bg-tertiary",
+          outlined:
+            "bg-transparent text-tertiary border-[1.5px] border-tertiary hover:bg-onTertiary disabled:hover:bg-transparent",
+          text: "bg-tranparent text-tertiary hover:bg-onTertiary disabled:hover:bg-transparent",
         };
       case "secondary":
         // Define styles for secondary color
         return {
-          filled: "bg-secondary text-white hover:bg-secondaryContainer",
-          outlined: "bg-transparent text-secondary border-[1.5px] border-secondary hover:bg-onSecondary",
-          text: "bg-tranparent text-secondary hover:bg-onSecondary",
+          filled: "bg-secondary text-white hover:bg-secondaryContainer disabled:hover:bg-secondary",
+          outlined:
+            "bg-transparent text-secondary border-[1.5px] border-secondary hover:bg-onSecondary disabled:hover:bg-transparent",
+          text: "bg-tranparent text-secondary hover:bg-onSecondary disabled:hover:bg-transparent",
         };
       case "error":
         // Define styles for error color
         return {
           filled: "bg-error text-white hover:bg-error",
-          outlined: "bg-transparent text-error border-[1.5px] border-error hover:bg-error/20",
-          text: "bg-tranparent text-error hover:bg-error/20",
+          outlined:
+            "bg-transparent text-error border-[1.5px] border-error hover:bg-error/20 disabled:hover:bg-transparent",
+          text: "bg-tranparent text-error hover:bg-error/20 disabled:hover:bg-transparent",
         };
       default:
         // Default to black color styles if an invalid color is provided
@@ -68,8 +72,7 @@ const Button = ({
         variant === "filled" && colorStyles.filled,
         variant === "outlined" && colorStyles.outlined,
         variant === "text" && colorStyles.text,
-        "disabled:cursor-not-allowed",
-        disabled && "bg-opacity-50",
+        "disabled:cursor-not-allowed disabled:bg-opacity-50 disabled:hover:bg-opacity-50",
         "focus:ring-4 focus:outline-none hover:bg-opacity-90 transition-all duration-150",
         color === "error"
           ? "focus:ring-error/20"

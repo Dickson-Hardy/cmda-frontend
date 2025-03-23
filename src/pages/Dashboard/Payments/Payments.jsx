@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdInfoOutline } from "react-icons/md";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import ConfirmSubscriptionModal from "~/components/DashboardComponents/Payments/ConfirmSubscriptionModal";
@@ -12,7 +12,8 @@ import Modal from "~/components/Global/Modal/Modal";
 import Tabs from "~/components/Global/Tabs/Tabs";
 import { useInitDonationSessionMutation } from "~/redux/api/payments/donationApi";
 import { useInitSubscriptionSessionMutation } from "~/redux/api/payments/subscriptionApi";
-import { selectAuth } from "~/redux/features/auth/authSlice";
+import { useGetProfileQuery } from "~/redux/api/profile/profileApi";
+import { selectAuth, setUser } from "~/redux/features/auth/authSlice";
 
 const DashboardPaymentsPage = () => {
   const PAYMENT_TABS = [
@@ -24,15 +25,35 @@ const DashboardPaymentsPage = () => {
   const [searchParams] = useSearchParams();
   const activeTab = searchParams.get("active");
   const [activeIndex, setActiveIndex] = useState(+activeTab || 0);
+
+  useEffect(() => {
+    if (activeTab) setActiveIndex(Number(activeTab));
+    else setActiveIndex(0);
+  }, [activeTab]);
+
   const [openDonate, setOpenDonate] = useState(false);
   const [initDonation, { isLoading }] = useInitDonationSessionMutation();
   const [openSubscribe, setOpenSubscribe] = useState(false);
   const [initSubscription, { isLoading: isSubscribing }] = useInitSubscriptionSessionMutation();
 
+  const { data: myProfile } = useGetProfileQuery(null, { refetchOnMountOrArgChange: true });
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (myProfile && myProfile?.email) {
+      dispatch(setUser(myProfile));
+    }
+  }, [myProfile, dispatch]);
+
   const onSubmit = async (payload) => {
     const res = await initDonation({ ...payload, amount: +payload.amount }).unwrap();
-    setResponse(res);
-    setRedirectModal(true);
+    if (user.role === "GlobalNetwork") {
+      return res.id;
+    } else {
+      setResponse(res);
+      setOpenDonate(false);
+      setRedirectModal(true);
+    }
   };
 
   const [response, setResponse] = useState(null);
@@ -40,14 +61,18 @@ const DashboardPaymentsPage = () => {
 
   const handleNextStep = () => {
     setRedirectModal(false);
-    if (user.role === "GlobalNetwork") return response.id;
-    else window.open(response.checkout_url, "_self");
+    window.open(response.checkout_url, "_self");
   };
 
   const onSubscribe = async () => {
     const res = await initSubscription({}).unwrap();
-    setResponse(res);
-    setRedirectModal(true);
+    if (user.role === "GlobalNetwork") {
+      return res.id;
+    } else {
+      setResponse(res);
+      setOpenSubscribe(false);
+      setRedirectModal(true);
+    }
   };
 
   return (
