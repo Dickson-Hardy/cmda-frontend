@@ -42,8 +42,8 @@ const DashboardStoreSingleEventPage = () => {
     if (wasCalled.current) return;
     if (paymentSuccess && reference) {
       setOpenSuccess(true);
-      if (source === "PAYPAL") {
-        wasCalled.current = true;
+      wasCalled.current = true;
+      if (source?.toUpperCase() === "PAYPAL") {
         confirmPayment({ reference, source })
           .unwrap()
           .then(() => {

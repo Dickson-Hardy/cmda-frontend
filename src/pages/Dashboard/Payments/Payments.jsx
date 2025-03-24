@@ -24,12 +24,7 @@ const DashboardPaymentsPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const activeTab = searchParams.get("active");
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  useEffect(() => {
-    if (activeTab) setActiveIndex(Number(activeTab));
-    else setActiveIndex(0);
-  }, [activeTab]);
+  const [activeIndex, setActiveIndex] = useState(+activeTab || 0);
 
   const [openDonate, setOpenDonate] = useState(false);
   const [initDonation, { isLoading }] = useInitDonationSessionMutation();

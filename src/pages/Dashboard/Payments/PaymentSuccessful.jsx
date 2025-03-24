@@ -25,7 +25,7 @@ const PaymentSuccessful = () => {
     if (wasCalled.current) return;
     wasCalled.current = true;
     if (reference) {
-      if (source === "PAYPAL") {
+      if (source?.toUpperCase() === "PAYPAL") {
         if (type === "donation") {
           saveDonation({ reference, source: source })
             .unwrap()
