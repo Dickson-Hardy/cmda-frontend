@@ -24,6 +24,12 @@ const ConfirmSubscriptionModal = ({ isOpen, onClose, onSubmit, loading, onApprov
           </p>
         </div>
 
+        {isGlobalMember && (
+          <div className="text-sm text-center text-tertiary font-medium">
+            If the PayPal button does not appear, please reload the page.
+          </div>
+        )}
+
         <div className={classNames("grid grid-cols-2 gap-2 items-center")}>
           <Button className="w-full mb-1.5" variant="outlined" large onClick={onClose}>
             No, Cancel

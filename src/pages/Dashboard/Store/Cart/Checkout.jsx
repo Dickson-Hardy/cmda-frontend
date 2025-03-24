@@ -139,6 +139,12 @@ const DashboardCheckoutPage = () => {
             </div>
           </section>
 
+          {user?.role === "GlobalNetwork" && (
+            <div className="text-sm text-center text-tertiary font-medium">
+              If the PayPal button does not appear, please reload the page.
+            </div>
+          )}
+
           <div className="flex justify-center">
             {user?.role === "GlobalNetwork" ? (
               <div className="w-full md:w-1/2">

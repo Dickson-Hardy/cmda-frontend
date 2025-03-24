@@ -130,15 +130,24 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading, onApprove }) =>
             register={register}
             required="Please select and enter amount for an area of need"
             rules={{
-              validate: (value) =>
-                value > (user.role === "GlobalNetwork" ? 5 : 500) ||
-                "Total amount must not be less than " +
-                  (user.role === "GlobalNetwork" ? formatCurrency(5, watch("currency")) : formatCurrency(500)),
+              validate: (value) => {
+                const minAmount = user.role === "GlobalNetwork" ? 5 : 500;
+                return (
+                  value >= minAmount ||
+                  `Total amount must not be less than ${formatCurrency(minAmount, watch("currency"))}`
+                );
+              },
             }}
             errors={errors}
             disabled
           />
         </div>
+
+        {user?.role === "GlobalNetwork" && (
+          <div className="col-span-2 text-sm text-center text-tertiary font-medium">
+            If the PayPal button does not appear, please reload the page.
+          </div>
+        )}
 
         <div className="col-span-2">
           {user?.role === "GlobalNetwork" ? (
