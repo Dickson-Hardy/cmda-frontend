@@ -28,6 +28,13 @@ const PayPalButtonWrapper = ({ createOrder, onApprove, currency }) => {
 const PaypalPaymentButton = ({ createOrder, onApprove, currency = "USD" }) => {
   const clientId = import.meta.env.VITE_PAYPAL_CLIENT_ID;
 
+  useEffect(() => {
+    const removeOldScript = () => {
+      document.querySelectorAll("script[src*='paypal.com']").forEach((el) => el.remove());
+    };
+    removeOldScript();
+  }, [currency]);
+
   return (
     <PayPalScriptProvider options={{ clientId, environment: "production", currency }}>
       <PayPalButtonWrapper createOrder={createOrder} onApprove={onApprove} currency={currency} />
