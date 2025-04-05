@@ -38,7 +38,12 @@ const AuthLayout = ({ withOutlet = true, children }) => {
 
   return (
     <div className="h-screen flex w-full">
-      <div className={classNames("h-full w-full hidden lg:flex flex-col relative")}>
+      <div
+        className={classNames(
+          "h-full w-full hidden lg:flex flex-col relative",
+          ["/login", "/signup"].includes(pathname) && currentPage !== "getStarted" ? "lg:flex" : "lg:hidden"
+        )}
+      >
         <div className="p-8 relative z-30 ">
           <Logo />
         </div>

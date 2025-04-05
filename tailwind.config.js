@@ -7,15 +7,15 @@ export default {
         sans: ["Raleway", "sans-serif"],
       },
       colors: {
-        primary: "#994279",
+        primary: "#994279", // student
         onPrimary: "#F5ECF2",
         primaryContainer: "#2C1323",
         onPrimaryContainer: "#E0C6D7",
-        secondary: "#117E45",
+        secondary: "#117E45", // doctor
         onSecondary: "#E7F2EC",
         secondaryContainer: "#03140B",
         onSecondaryContainer: "#B8D8C7",
-        tertiary: "#0E05A1",
+        tertiary: "#0E05A1", // global member
         onTertiary: "#F3F2FA",
         tertiaryContainer: "#030014",
         onTertiaryContainer: "#DBD9F1",

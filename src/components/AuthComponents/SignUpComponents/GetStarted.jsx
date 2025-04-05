@@ -1,5 +1,7 @@
 import { classNames } from "~/utilities/classNames";
 import studentImg from "~/assets/images/auth/student.svg";
+import doctorImg from "~/assets/images/auth/doctor.svg";
+import globalImg from "~/assets/images/auth/global.svg";
 import { useState } from "react";
 import Button from "../../Global/Button/Button";
 import { useSearchParams } from "react-router-dom";
@@ -10,9 +12,9 @@ const GetStarted = () => {
   let [, setSearchParams] = useSearchParams();
 
   const getStartedList = [
-    { title: "student", bg: "bg-onSecondary", border: "ring ring-secondary" },
-    { title: "doctor", bg: "bg-onPrimary", border: "ring ring-primary" },
-    { title: "global member", bg: "bg-onTertiary", border: "ring ring-tertiary" },
+    { title: "student", bg: "bg-onPrimary", border: "ring ring-primary", image: studentImg },
+    { title: "doctor", bg: "bg-onSecondary", border: "ring ring-secondary", image: doctorImg },
+    { title: "global member", bg: "bg-onTertiary", border: "ring ring-tertiary", image: globalImg },
   ];
 
   // the continue button adds the selected account type to the url as search params
@@ -37,7 +39,7 @@ const GetStarted = () => {
         <p className="text-gray-dark mt-2">Select account type to create</p>
       </div>
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 place-items-center gap-4 cursor-pointer">
-        {getStartedList.map(({ title, bg, border }) => (
+        {getStartedList.map(({ title, bg, border, image }) => (
           <div
             key={title}
             className={classNames(
@@ -47,7 +49,8 @@ const GetStarted = () => {
             )}
             onClick={() => setAccountType(title)}
           >
-            <img src={studentImg} alt="Student Icon" className="size-[3rem] object-contain" />
+            <img src={image} alt="Student Icon" className="size-[3rem] object-contain" />
+
             <p className="text-black text-sm font-bold capitalize">
               {title === "global member" ? "Global Network Member" : title}
             </p>

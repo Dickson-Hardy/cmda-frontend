@@ -43,13 +43,13 @@ const DashboardStoreSingleEventPage = () => {
     if (paymentSuccess && reference) {
       setOpenSuccess(true);
       wasCalled.current = true;
-      if (source?.toUpperCase() === "PAYPAL") {
-        confirmPayment({ reference, source })
-          .unwrap()
-          .then(() => {
-            toast.success("Event registeration successfully");
-          });
-      }
+      // if (source?.toUpperCase() === "PAYPAL") {
+      confirmPayment({ reference, source })
+        .unwrap()
+        .then(() => {
+          toast.success("Event registeration successfully");
+        });
+      // }
     }
   }, [reference, paymentSuccess, source, confirmPayment]);
 

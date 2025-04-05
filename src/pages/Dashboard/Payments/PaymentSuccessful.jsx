@@ -25,33 +25,33 @@ const PaymentSuccessful = () => {
     if (wasCalled.current) return;
     wasCalled.current = true;
     if (reference) {
-      if (source?.toUpperCase() === "PAYPAL") {
-        if (type === "donation") {
-          saveDonation({ reference, source: source })
-            .unwrap()
-            .then(() => setLoading(false))
-            .catch((err) => {
-              if (err.status === 409) setAlreadyConfirmed(true);
-            })
-            .finally(() => setLoading(false));
-        }
-        if (type === "subscription") {
-          saveSubscription({ reference, source: source })
-            .unwrap()
-            .then((res) => {
-              dispatch(setUser(res.user));
-              setLoading(false);
-            })
-            .catch((err) => {
-              if (err.status === 409) setAlreadyConfirmed(true);
-            })
-            .finally(() => setLoading(false));
-        }
-      } else {
-        setTimeout(() => {
-          setLoading(false);
-        }, 2000);
+      // if (source?.toUpperCase() === "PAYPAL") {
+      if (type === "donation") {
+        saveDonation({ reference, source: source })
+          .unwrap()
+          .then(() => setLoading(false))
+          .catch((err) => {
+            if (err.status === 409) setAlreadyConfirmed(true);
+          })
+          .finally(() => setLoading(false));
       }
+      if (type === "subscription") {
+        saveSubscription({ reference, source: source })
+          .unwrap()
+          .then((res) => {
+            dispatch(setUser(res.user));
+            setLoading(false);
+          })
+          .catch((err) => {
+            if (err.status === 409) setAlreadyConfirmed(true);
+          })
+          .finally(() => setLoading(false));
+      }
+      // } else {
+      //   setTimeout(() => {
+      //     setLoading(false);
+      //   }, 2000);
+      // }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
