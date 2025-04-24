@@ -7,7 +7,7 @@ export const FAQS = [
   {
     question: "What are the dues associated with being a member?",
     answer:
-      "The dues associated with membership is called “Annual Subscription” and it is categorized thus:\n- Student – N1,000\n- Junior Doctor (less than or equals 5 years since induction) – N5,000\n- Senior Doctor (Above 5 years of practice since induction) – N10,000",
+    " The dues associated with membership is called “Annual Subscription” and it is categorized thus:\n- Student – N1,000\n- Junior Doctor (less than or equals 5 years since induction) – N10,000\n- Senior Doctor (Above 5 years of practice since induction) – N20,000\n- Life-time Membership – A one-time payment of N250,000.",
   },
   {
     question: "If I join mid-year, will my dues pay for one full year or just through the end of December?",
