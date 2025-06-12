@@ -25,7 +25,7 @@ const PayPalButtonWrapper = ({ createOrder, onApprove, currency }) => {
   );
 };
 
-const PaypalPaymentButton = ({ createOrder, onApprove, currency = "USD" }) => {
+const PaypalPaymentButton = ({ createOrder, onApprove, currency = "USD", amount }) => {
   const clientId = import.meta.env.VITE_PAYPAL_CLIENT_ID;
 
   useEffect(() => {
@@ -35,8 +35,31 @@ const PaypalPaymentButton = ({ createOrder, onApprove, currency = "USD" }) => {
     removeOldScript();
   }, [currency]);
 
+  if (!clientId) {
+    return (
+      <div className="w-full bg-red-50 text-red-600 p-3 rounded text-center text-sm">
+        PayPal Client ID not configured
+      </div>
+    );
+  }
+
+  if (!amount || amount <= 0) {
+    return (
+      <div className="w-full bg-yellow-50 text-yellow-600 p-3 rounded text-center text-sm">
+        Please select a valid amount
+      </div>
+    );
+  }
+
   return (
-    <PayPalScriptProvider options={{ clientId, environment: "production", currency }}>
+    <PayPalScriptProvider
+      options={{
+        clientId,
+        environment: "sandbox", // Changed to sandbox for testing
+        currency,
+        intent: "capture",
+      }}
+    >
       <PayPalButtonWrapper createOrder={createOrder} onApprove={onApprove} currency={currency} />
     </PayPalScriptProvider>
   );

@@ -3,8 +3,8 @@ import { useForm } from "react-hook-form";
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
-import Select from "~/components/Global/Select/Select";
-import TextInput from "~/components/Global/TextInput/TextInput";
+import Select from "~/components/Global/FormElements/Select/Select";
+import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import { GLOBAL_INCOME_BASED_PRICING, LIFETIME_MEMBERSHIPS, INCOME_BRACKETS } from "~/constants/subscription";
 import { classNames } from "~/utilities/classNames";
 import { formatCurrency } from "~/utilities/formatCurrency";
@@ -244,9 +244,21 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
 
             <PaypalPaymentButton
               onApprove={onApprove}
-              createOrder={() => handleSubmit(handleFormSubmit)()}
+              createOrder={async () => {
+                // Validate form and create order
+                const isValid = await handleSubmit((data) => {
+                  const subscriptionData = {
+                    ...data,
+                    selectedTab,
+                    paymentFrequency,
+                    amount: getCurrentPrice(),
+                    currency: "USD",
+                  };
+                  return onSubmit(subscriptionData);
+                })();
+                return isValid;
+              }}
               amount={selectedTab === "donations" ? watch("donationAmount") : getCurrentPrice()}
-              isRecurring={selectedTab === "donations" || paymentFrequency === "monthly"}
             />
           </div>
         </form>
