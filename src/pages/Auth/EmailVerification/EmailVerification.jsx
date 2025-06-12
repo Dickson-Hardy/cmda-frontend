@@ -14,14 +14,26 @@ const EmailVerification = () => {
   const verifyEmail = useSelector((state) => state.auth.verifyEmail);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const handleVerify = () => {
     verifyUser({ code: token, email: verifyEmail })
       .unwrap()
       .then(() => {
         toast.success("Email Verified, Login to continue");
-        navigate("/login");
+
+        // Check if user was trying to register for a conference
+        const conferenceSlug = localStorage.getItem("conferenceSlug");
+        if (conferenceSlug) {
+          // Redirect to login with conference info
+          navigate(`/login?conference=${conferenceSlug}&email=${verifyEmail}`);
+        } else {
+          navigate("/login");
+        }
+
         dispatch(setVerifyEmail(""));
+      })
+      .catch((error) => {
+        const message = error?.data?.message || "Verification failed, please try again";
+        toast.error(message);
       });
   };
 

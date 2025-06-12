@@ -2,14 +2,14 @@ import { classNames } from "~/utilities/classNames";
 import studentImg from "~/assets/images/auth/student.svg";
 import doctorImg from "~/assets/images/auth/doctor.svg";
 import globalImg from "~/assets/images/auth/global.svg";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "../../Global/Button/Button";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const GetStarted = () => {
   const [accountType, setAccountType] = useState(""); //to get the selected account type
-  let [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const getStartedList = [
     { title: "student", bg: "bg-onPrimary", border: "ring ring-primary", image: studentImg },
@@ -17,10 +17,26 @@ const GetStarted = () => {
     { title: "global member", bg: "bg-onTertiary", border: "ring ring-tertiary", image: globalImg },
   ];
 
+  // Get conference and email params if any
+  const conferenceSlug = searchParams.get("conference");
+  const email = searchParams.get("email");
+
+  // Store conference in localStorage if present
+  useEffect(() => {
+    if (conferenceSlug) {
+      localStorage.setItem("conferenceSlug", conferenceSlug);
+    }
+  }, [conferenceSlug]);
+
   // the continue button adds the selected account type to the url as search params
   const handleSelectedAccount = () => {
     if (accountType) {
-      setSearchParams({ type: accountType });
+      // Preserve conference and email parameters when setting account type
+      const newParams = { type: accountType };
+      if (conferenceSlug) newParams.conference = conferenceSlug;
+      if (email) newParams.email = email;
+
+      setSearchParams(newParams);
     } else {
       toast.error("Please select an account type");
     }

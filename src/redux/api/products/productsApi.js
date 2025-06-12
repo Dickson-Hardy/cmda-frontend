@@ -34,6 +34,11 @@ const productsApi = api.injectEndpoints({
       query: (id) => ({ url: `/orders/${id}` }),
       transformResponse: (response) => response.data,
     }),
+    syncOrderPaymentStatus: build.mutation({
+      query: (body) => ({ url: "/orders/sync-payment-status", body, method: "POST" }),
+      transformResponse: (response) => response.data,
+      invalidatesTags: ["ORDERS"],
+    }),
   }),
 });
 
@@ -44,6 +49,7 @@ export const {
   useCreateOrderMutation,
   useGetOrderHistoryQuery,
   useGetSingleOrderQuery,
+  useSyncOrderPaymentStatusMutation,
 } = productsApi;
 
 export default productsApi;

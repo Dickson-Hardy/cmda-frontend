@@ -32,6 +32,11 @@ const donationApi = api.injectEndpoints({
         return { data: null };
       },
     }),
+    syncDonationPaymentStatus: build.mutation({
+      query: (body) => ({ url: "/donations/sync-payment-status", body, method: "POST" }),
+      transformResponse: (response) => response.data,
+      invalidatesTags: ["DONATIONS"],
+    }),
   }),
 });
 
@@ -40,6 +45,7 @@ export const {
   useSaveDonationMutation,
   useGetAllDonationsQuery,
   useExportDonationsMutation,
+  useSyncDonationPaymentStatusMutation,
 } = donationApi;
 
 export default donationApi;

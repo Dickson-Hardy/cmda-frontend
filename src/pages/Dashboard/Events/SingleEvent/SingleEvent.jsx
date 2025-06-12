@@ -139,9 +139,15 @@ const DashboardStoreSingleEventPage = () => {
           {singleEvent?.isPaid ? (
             <div>
               <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Payment Plans</h4>
-              {singleEvent?.paymentPlans.map((x) => (
-                <p className="text-sm mb-2" key={x.role}>
-                  {x.role + " - " + formatCurrency(x.price, x.role === "GlobalNetwork" ? "USD" : "NGN")}
+              {singleEvent?.paymentPlans.map((x, index) => (
+                <p
+                  className="text-sm mb-2"
+                  key={`payment-plan-${x.role}-${index}-${x.registrationPeriod || "regular"}`}
+                >
+                  {x.role}
+                  {x.registrationPeriod ? ` - ${x.registrationPeriod}` : ""}
+                  {" - "}
+                  {formatCurrency(x.price, x.role === "GlobalNetwork" ? "USD" : "NGN")}
                 </p>
               ))}
             </div>
@@ -153,9 +159,10 @@ const DashboardStoreSingleEventPage = () => {
           <div className="col-span-2">
             <h4 className="text-sm text-gray-600 font-semibold uppercase mb-2">Members Group</h4>
             <p className="flex flex-wrap gap-4">
-              {singleEvent?.membersGroup?.map((grp) => (
+              {" "}
+              {singleEvent?.membersGroup?.map((grp, index) => (
                 <span
-                  key={grp}
+                  key={`member-group-${grp}-${index}`}
                   className={classNames(
                     "capitalize px-4 py-2 rounded text-xs font-medium",
                     grp === "Student"
@@ -178,8 +185,12 @@ const DashboardStoreSingleEventPage = () => {
         </div>
 
         <div className="flex flex-wrap gap-4 my-6">
-          {singleEvent?.eventTags?.map((tag) => (
-            <span key={tag} className="capitalize bg-gray-light px-4 py-2 rounded text-xs font-medium">
+          {" "}
+          {singleEvent?.eventTags?.map((tag, index) => (
+            <span
+              key={`event-tag-${tag}-${index}`}
+              className="capitalize bg-gray-light px-4 py-2 rounded text-xs font-medium"
+            >
               {tag}
             </span>
           ))}

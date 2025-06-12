@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
 import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
 import TextInput from "../../Global/FormElements/TextInput/TextInput";
@@ -14,17 +14,34 @@ import { fourteenYrsAgo } from "~/utilities/fomartDate";
 
 const GlobalForm = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const {
     control,
     register,
     formState: { errors },
     handleSubmit,
     watch,
+    setValue,
   } = useForm({ mode: "all" });
 
   const [signUp, { isLoading }] = useSignUpMutation();
   const dispatch = useDispatch();
 
+  // Get email from URL parameters if present
+  useEffect(() => {
+    const email = searchParams.get("email");
+    const conferenceSlug = searchParams.get("conference");
+
+    // Pre-fill email field if it's provided in the URL
+    if (email) {
+      setValue("email", email);
+    }
+
+    // Store conference slug in localStorage if present
+    if (conferenceSlug) {
+      localStorage.setItem("conferenceSlug", conferenceSlug);
+    }
+  }, [searchParams, setValue]);
   const handleSignUp = (payload) => {
     signUp({ ...payload, role: "GlobalNetwork" })
       .unwrap()
@@ -32,6 +49,10 @@ const GlobalForm = () => {
         toast.success("Global account created successfully, Check email for token");
         dispatch(setVerifyEmail(payload.email));
         navigate("/verify-email");
+      })
+      .catch((error) => {
+        const message = error?.data?.message || "Sign up failed, please try again";
+        toast.error(message);
       });
   };
 

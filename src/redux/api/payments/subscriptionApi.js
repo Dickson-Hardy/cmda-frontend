@@ -32,6 +32,11 @@ const subscriptionApi = api.injectEndpoints({
         return { data: null };
       },
     }),
+    syncSubscriptionPaymentStatus: build.mutation({
+      query: (body) => ({ url: "/subscriptions/sync-payment-status", body, method: "POST" }),
+      transformResponse: (response) => response.data,
+      invalidatesTags: ["SUBSCRIPTION"],
+    }),
   }),
 });
 
@@ -40,6 +45,7 @@ export const {
   useSaveSubscriptionMutation,
   useGetAllSubscriptionsQuery,
   useExportSubscriptionsMutation,
+  useSyncSubscriptionPaymentStatusMutation,
 } = subscriptionApi;
 
 export default subscriptionApi;

@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Button from "../../Global/Button/Button";
 import TextInput from "../../Global/FormElements/TextInput/TextInput";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
@@ -15,20 +15,38 @@ import {
   studentChapterOptions,
 } from "~/utilities/reusableVariables";
 import { fourteenYrsAgo } from "~/utilities/fomartDate";
+import { useEffect } from "react";
 
 const StudentForm = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const {
     control,
     register,
     formState: { errors },
     handleSubmit,
     watch,
+    setValue,
   } = useForm({ mode: "all" });
 
   const [signUp, { isLoading }] = useSignUpMutation();
   const dispatch = useDispatch();
 
+  // Get email from URL parameters if present
+  useEffect(() => {
+    const email = searchParams.get("email");
+    const conferenceSlug = searchParams.get("conference");
+
+    // Pre-fill email field if it's provided in the URL
+    if (email) {
+      setValue("email", email);
+    }
+
+    // Store conference slug in localStorage if present
+    if (conferenceSlug) {
+      localStorage.setItem("conferenceSlug", conferenceSlug);
+    }
+  }, [searchParams, setValue]);
   const handleSignUp = (payload) => {
     signUp({ ...payload, role: "Student" })
       .unwrap()
@@ -36,6 +54,10 @@ const StudentForm = () => {
         toast.success("Student account created successfully, Check email for token");
         dispatch(setVerifyEmail(payload.email));
         navigate("/verify-email");
+      })
+      .catch((error) => {
+        const message = error?.data?.message || "Sign up failed, please try again";
+        toast.error(message);
       });
   };
 

@@ -4,8 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import ConfirmSubscriptionModal from "~/components/DashboardComponents/Payments/ConfirmSubscriptionModal";
+import GlobalSubscriptionModal from "~/components/DashboardComponents/Payments/GlobalSubscriptionModal";
 import Donations from "~/components/DashboardComponents/Payments/Donations";
 import MakeDonationModal from "~/components/DashboardComponents/Payments/MakeDonationModal";
+import PaymentSync from "~/components/DashboardComponents/Payments/PaymentSync";
 import Subscriptions from "~/components/DashboardComponents/Payments/Subscriptions";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
@@ -58,15 +60,20 @@ const DashboardPaymentsPage = () => {
     setRedirectModal(false);
     window.open(response.checkout_url, "_self");
   };
-
-  const onSubscribe = async () => {
-    const res = await initSubscription({}).unwrap();
-    if (user.role === "GlobalNetwork") {
+  const onSubscribe = async (subscriptionData) => {
+    // Handle different subscription types for Global Network members
+    if (user.role === "GlobalNetwork" && subscriptionData) {
+      const res = await initSubscription(subscriptionData).unwrap();
       return res.id;
     } else {
-      setResponse(res);
-      setOpenSubscribe(false);
-      setRedirectModal(true);
+      const res = await initSubscription({}).unwrap();
+      if (user.role === "GlobalNetwork") {
+        return res.id;
+      } else {
+        setResponse(res);
+        setOpenSubscribe(false);
+        setRedirectModal(true);
+      }
     }
   };
 
@@ -90,6 +97,10 @@ const DashboardPaymentsPage = () => {
       <div className="my-6">
         <Tabs tabs={PAYMENT_TABS} setActiveIndex={setActiveIndex} activeIndex={activeIndex} />
       </div>
+      {/* Payment Sync Section */}
+      <div className="mb-6">
+        <PaymentSync compact />
+      </div>
       {/*  */}
       <MakeDonationModal
         isOpen={openDonate}
@@ -99,19 +110,28 @@ const DashboardPaymentsPage = () => {
         onApprove={(data) => {
           navigate(`/dashboard/payments/successful?type=donation&source=paypal&reference=${data.orderID}`);
         }}
-      />
-
-      <ConfirmSubscriptionModal
-        isOpen={openSubscribe}
-        onClose={() => setOpenSubscribe(false)}
-        onSubmit={onSubscribe}
-        loading={isSubscribing}
-        onApprove={(data) => {
-          navigate(`/dashboard/payments/successful?type=subscription&source=paypal&reference=${data.orderID}`);
-        }}
-        isGlobalMember={user.role === "GlobalNetwork"}
-      />
-
+      />{" "}
+      {user.role === "GlobalNetwork" ? (
+        <GlobalSubscriptionModal
+          isOpen={openSubscribe}
+          onClose={() => setOpenSubscribe(false)}
+          onSubmit={onSubscribe}
+          onApprove={(data) => {
+            navigate(`/dashboard/payments/successful?type=subscription&source=paypal&reference=${data.orderID}`);
+          }}
+        />
+      ) : (
+        <ConfirmSubscriptionModal
+          isOpen={openSubscribe}
+          onClose={() => setOpenSubscribe(false)}
+          onSubmit={onSubscribe}
+          loading={isSubscribing}
+          onApprove={(data) => {
+            navigate(`/dashboard/payments/successful?type=subscription&source=paypal&reference=${data.orderID}`);
+          }}
+          isGlobalMember={false}
+        />
+      )}
       <Modal isOpen={redirectModal} onClose={() => {}}>
         <div className="flex flex-col justify-center items-center gap-3">
           <MdInfoOutline className="text-primary h-14 w-14" />

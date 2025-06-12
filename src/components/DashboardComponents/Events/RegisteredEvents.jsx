@@ -14,9 +14,8 @@ const RegisteredEvents = ({ row, isSmallScreen }) => {
   const [openFilter, setOpenFilter] = useState(false);
 
   const { data: events, isLoading } = useGetRegisteredEventsQuery({ page, limit: 10, searchBy });
-
   useEffect(() => {
-    if (events) {
+    if (events && events.items && Array.isArray(events.items)) {
       setRegisteredEvents((prevEvts) => {
         const combinedEvents = [...prevEvts, ...events.items];
         const uniqueEvents = Array.from(new Set(combinedEvents.map((evt) => evt._id))).map((_id) =>
@@ -25,7 +24,7 @@ const RegisteredEvents = ({ row, isSmallScreen }) => {
         return uniqueEvents;
       });
 
-      setTotalPages(events.meta?.totalPages);
+      setTotalPages(events.meta?.totalPages || 0);
     }
   }, [events]);
 
@@ -41,18 +40,18 @@ const RegisteredEvents = ({ row, isSmallScreen }) => {
         />
       </div>
 
-      <div className={`flex gap-8  ${row || isSmallScreen ? "flex-col" : "flex-row flex-wrap"}`}>
-        {registeredEvents?.length ? (
+      <div className={`flex gap-8 ${row || isSmallScreen ? "flex-col" : "flex-row flex-wrap"}`}>
+        {registeredEvents && registeredEvents.length > 0 ? (
           registeredEvents.map((evt) => (
-            <Link key={evt.slug} to={`/dashboard/events/${evt.slug}`}>
+            <Link key={evt?.slug || evt?._id} to={`/dashboard/events/${evt?.slug}`}>
               <EventCard
                 row={row && !isSmallScreen}
                 width={row ? "auto" : isSmallScreen ? "100%" : 330}
-                title={evt.name}
-                date={evt.eventDateTime}
-                image={evt.featuredImageUrl}
-                type={evt.eventType}
-                location={evt.linkOrLocation}
+                title={evt?.name}
+                date={evt?.eventDateTime}
+                image={evt?.featuredImageUrl}
+                type={evt?.eventType}
+                location={evt?.linkOrLocation}
                 description={evt?.description}
               />
             </Link>
@@ -67,7 +66,7 @@ const RegisteredEvents = ({ row, isSmallScreen }) => {
         )}
       </div>
 
-      {registeredEvents?.length ? (
+      {registeredEvents && registeredEvents.length > 0 ? (
         <div className="flex justify-center p-2 mt-6">
           <Button
             large

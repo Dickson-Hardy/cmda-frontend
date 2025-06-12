@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import Button from "~/components/Global/Button/Button";
 import StatusChip from "~/components/Global/StatusChip/StatusChip";
 import Table from "~/components/Global/Table/Table";
-import { SUBSCRIPTION_PRICES } from "~/constants/subscription";
+import { SUBSCRIPTION_PRICES, GLOBAL_INCOME_BASED_PRICING } from "~/constants/subscription";
 import { useExportSubscriptionsMutation, useGetAllSubscriptionsQuery } from "~/redux/api/payments/subscriptionApi";
 import { selectAuth } from "~/redux/features/auth/authSlice";
 import { downloadFile } from "~/utilities/fileDownloader";
@@ -63,15 +63,41 @@ const Subscriptions = () => {
         </div>
         <div className="border p-4 bg-white rounded-xl">
           <h6 className="text-gray text-sm font-medium mb-4">Subscription Package</h6>
-          <p className="font-semibold">
-            {formatCurrency(
-              user.role === "Doctor" && user.yearsOfExperience?.toLowerCase()?.includes("above")
-                ? SUBSCRIPTION_PRICES["DoctorSenior"]
-                : SUBSCRIPTION_PRICES[user.role],
-              user.role === "GlobalNetwork" ? "USD" : "NGN"
-            )}{" "}
-            / Annually
-          </p>
+          {user.role === "GlobalNetwork" ? (
+            <div>
+              {user.incomeBracket ? (
+                <div>
+                  <p className="font-semibold text-sm mb-2">Income-Based Pricing</p>
+                  <p className="text-xs text-gray-600 mb-1">
+                    Income Level: {GLOBAL_INCOME_BASED_PRICING[user.incomeBracket]?.label}
+                  </p>
+                  <p className="font-semibold">
+                    Annual: {formatCurrency(GLOBAL_INCOME_BASED_PRICING[user.incomeBracket]?.annual || 100, "USD")}
+                    {" | "}
+                    Monthly: {formatCurrency(GLOBAL_INCOME_BASED_PRICING[user.incomeBracket]?.monthly || 10, "USD")}
+                  </p>
+                  {user.hasLifetimeMembership && (
+                    <p className="text-sm text-success mt-2">✓ Lifetime Member ({user.lifetimeMembershipType})</p>
+                  )}
+                </div>
+              ) : (
+                <p className="font-semibold">
+                  {formatCurrency(SUBSCRIPTION_PRICES[user.role], "USD")} / Annually
+                  <span className="block text-xs text-orange-600 mt-1">Consider upgrading to income-based pricing</span>
+                </p>
+              )}
+            </div>
+          ) : (
+            <p className="font-semibold">
+              {formatCurrency(
+                user.role === "Doctor" && user.yearsOfExperience?.toLowerCase()?.includes("above")
+                  ? SUBSCRIPTION_PRICES["DoctorSenior"]
+                  : SUBSCRIPTION_PRICES[user.role],
+                "NGN"
+              )}{" "}
+              / Annually
+            </p>
+          )}
         </div>
       </div>
 

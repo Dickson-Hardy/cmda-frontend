@@ -54,6 +54,7 @@ const IndexPage = () => {
             <div className="flex flex-col sm:flex-row gap-3">
               <Button onClick={() => navigate("/signup")} large label="Join us Now" />
               <Button onClick={() => navigate("/login")} large variant="outlined" label="Login Now" />
+              <Button onClick={() => navigate("/conferences")} large variant="tertiary" label="View Conferences" />
             </div>
           </div>
         </div>

@@ -39,6 +39,11 @@ const authApi = api.injectEndpoints({
       query: (body) => ({ url: "/users/settings", method: "PATCH", body }),
       invalidatesTags: ["USER_SETTINGS"],
     }),
+    // CHECK USER EXISTS
+    checkUserExists: build.mutation({
+      query: (body) => ({ url: "/auth/check-user", method: "POST", body }),
+      transformResponse: (response) => response.data,
+    }),
   }),
 });
 
@@ -51,6 +56,7 @@ export const {
   useResendVerifyCodeMutation,
   useGetSettingsQuery,
   useUpdateSettingsMutation,
+  useCheckUserExistsMutation,
 } = authApi;
 
 export default authApi;

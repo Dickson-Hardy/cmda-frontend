@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import Button from "~/components/Global/Button/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useLoginMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
@@ -9,19 +9,37 @@ import { useDispatch } from "react-redux";
 import { setUser, setVerifyEmail } from "~/redux/features/auth/authSlice";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 import { setTokens } from "~/redux/features/auth/tokenSlice";
+import { useEffect } from "react";
 
 const Login = () => {
   const {
     register,
     formState: { errors },
     handleSubmit,
+    setValue,
   } = useForm({ mode: "all" });
 
   const navigate = useNavigate();
-
+  const location = useLocation();
   const [login, { isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
 
+  // Extract conference and email from URL parameters if present
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const email = searchParams.get("email");
+    const conference = searchParams.get("conference");
+
+    // Pre-fill email field if it's provided in the URL
+    if (email) {
+      setValue("email", email);
+    }
+
+    // Store conference slug in localStorage if present
+    if (conference) {
+      localStorage.setItem("conferenceSlug", conference);
+    }
+  }, [location.search, setValue]);
   const handleLogin = (payload) => {
     login(payload)
       .unwrap()
@@ -29,11 +47,24 @@ const Login = () => {
         dispatch(setUser(data?.user));
         dispatch(setTokens({ accessToken: data?.accessToken }));
         toast.success("Login successful");
+
         if (!data.user.emailVerified) {
           dispatch(setVerifyEmail(payload.email));
           navigate("/verify-email");
           return;
         }
+
+        // Check if user was trying to register for a conference
+        const conferenceSlug = localStorage.getItem("conferenceSlug");
+        if (conferenceSlug) {
+          // Remove the stored conference slug
+          localStorage.removeItem("conferenceSlug");
+          // Redirect to conference registration
+          navigate(`/dashboard/conferences/${conferenceSlug}`);
+          return;
+        }
+
+        // Otherwise use the standard redirect logic
         const redirectUrl = localStorage.getItem("redirectUrl");
         if (redirectUrl && redirectUrl.includes("dashboard")) navigate(redirectUrl);
         else navigate("/dashboard");
@@ -43,6 +74,8 @@ const Login = () => {
         if (message && message.includes("not verified")) {
           dispatch(setVerifyEmail(payload.email));
           navigate("/verify-email");
+        } else {
+          toast.error(message || "Login failed. Please try again.");
         }
       });
   };
