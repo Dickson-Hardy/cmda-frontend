@@ -3,7 +3,7 @@ import Button from "~/components/Global/Button/Button";
 import Select from "~/components/Global/FormElements/Select/Select";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import Modal from "~/components/Global/Modal/Modal";
-import { conferenceTypes, conferenceZones, conferenceRegions } from "~/constants/conferences";
+import { conferenceTypes, conferenceZones, conferenceRegions, memberGroups } from "~/constants/conferences";
 
 const ConferenceFilterModal = ({ isOpen, onClose, onSubmit = console.log }) => {
   const { control, handleSubmit, register, reset } = useForm({ mode: "all" });
@@ -12,13 +12,7 @@ const ConferenceFilterModal = ({ isOpen, onClose, onSubmit = console.log }) => {
     <Modal isOpen={isOpen} onClose={onClose} maxWidth={400} title="Filter Conferences">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Select label="eventType" control={control} options={["Physical", "Virtual"]} required={false} errors={{}} />
-        <Select
-          label="membersGroup"
-          control={control}
-          options={["Student", "Doctor", "GlobalNetwork"]}
-          required={false}
-          errors={{}}
-        />
+        <Select label="membersGroup" control={control} options={memberGroups} required={false} errors={{}} />
         <Select
           label="conferenceType"
           control={control}

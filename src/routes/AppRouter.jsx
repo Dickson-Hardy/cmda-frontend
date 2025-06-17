@@ -13,7 +13,6 @@ import DashboardHomePage from "~/pages/Dashboard/Home/Home";
 import DashboardEventsPage from "~/pages/Dashboard/Events/Events";
 import DashboardConferencesPage from "~/pages/Dashboard/Events/Conferences";
 import PublicConferences from "~/pages/Public/Conferences/PublicConferences";
-import SingleConferencePage from "~/pages/Dashboard/Events/SingleConference/SingleConference";
 import DashboardProfilePage from "~/pages/Dashboard/Profile/Profile";
 import ProtectedRoutes from "./ProtectedRoutes";
 import DashboardResources from "~/pages/Dashboard/Resources/Resources";
@@ -92,7 +91,6 @@ export default function AppRouter() {
             { path: "events", element: <DashboardEventsPage /> },
             { path: "events/:slug", element: <DashboardStoreSingleEventPage /> },
             { path: "conferences", element: <DashboardConferencesPage /> },
-            { path: "conferences/:slug", element: <SingleConferencePage /> },
             { path: "profile", element: <DashboardProfilePage /> },
             { path: "faith-entry", element: <DashboardFaithEntryPage /> },
             { path: "resources", element: <DashboardResources /> },

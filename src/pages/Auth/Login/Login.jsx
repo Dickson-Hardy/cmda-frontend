@@ -60,7 +60,7 @@ const Login = () => {
           // Remove the stored conference slug
           localStorage.removeItem("conferenceSlug");
           // Redirect to conference registration
-          navigate(`/dashboard/conferences/${conferenceSlug}`);
+          navigate(`/dashboard/events/${conferenceSlug}`);
           return;
         }
 

@@ -1,7 +1,7 @@
 import Button from "~/components/Global/Button/Button";
 import EventCard from "./EventCard";
 import { useEffect, useState } from "react";
-import { useGetAllConferencesQuery } from "~/redux/api/events/eventsApi";
+import { useGetUserConferencesQuery } from "~/redux/api/events/eventsApi";
 import { Link } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
@@ -15,24 +15,21 @@ const AllConferences = ({ row, isSmallScreen }) => {
   const [searchBy, setSearchBy] = useState();
   const [openFilter, setOpenFilter] = useState(false);
   const [eventDate, setEventDate] = useState("");
-  const [membersGroup, setMembersGroup] = useState("");
   const [eventType, setEventType] = useState("");
   const [conferenceType, setConferenceType] = useState("");
   const [zone, setZone] = useState("");
   const [region, setRegion] = useState("");
-
   const {
     data: conferences,
     isLoading,
     isFetching,
-  } = useGetAllConferencesQuery(
+  } = useGetUserConferencesQuery(
     {
       page,
       limit: 10,
       searchBy,
       fromToday: true,
       eventDate,
-      membersGroup,
       eventType,
       conferenceType,
       zone,
@@ -122,11 +119,10 @@ const AllConferences = ({ row, isSmallScreen }) => {
       <ConferenceFilterModal
         isOpen={openFilter}
         onClose={() => setOpenFilter(false)}
-        onSubmit={({ eventDate, eventType, membersGroup, conferenceType, zone, region }) => {
+        onSubmit={({ eventDate, eventType, conferenceType, zone, region }) => {
           setAllConferences([]);
           setEventDate(eventDate);
           setEventType(eventType);
-          setMembersGroup(membersGroup);
           setConferenceType(conferenceType);
           setZone(zone);
           setRegion(region);

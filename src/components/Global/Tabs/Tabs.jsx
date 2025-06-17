@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { classNames } from "~/utilities/classNames";
 
 const Tabs = ({ tabs, equalTab = true, setActiveIndex, activeIndex, addonElement }) => {
@@ -33,7 +33,7 @@ const Tabs = ({ tabs, equalTab = true, setActiveIndex, activeIndex, addonElement
           ))}
         </div>
 
-        {addonElement}
+        {addonElement && typeof addonElement === "function" && React.createElement(addonElement)}
       </div>
 
       {/* Tab Content */}

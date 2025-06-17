@@ -11,11 +11,11 @@ import Modal from "~/components/Global/Modal/Modal";
 import {
   useConfirmEventPaymentMutation,
   useGetSingleEventQuery,
+  useGetUserPaymentPlansQuery,
   usePayForEventMutation,
   useRegisterForEventMutation,
 } from "~/redux/api/events/eventsApi";
 import { selectAuth } from "~/redux/features/auth/authSlice";
-import { classNames } from "~/utilities/classNames";
 import formatDate from "~/utilities/fomartDate";
 import { formatCurrency } from "~/utilities/formatCurrency";
 import { conferenceTypes, conferenceZones, conferenceRegions } from "~/constants/conferences";
@@ -28,8 +28,12 @@ const SingleConferencePage = () => {
   const source = searchParams.get("source");
   const shouldRegister = searchParams.get("register");
   const navigate = useNavigate();
-
   const { data: conference, refetch } = useGetSingleEventQuery(slug, {
+    refetchOnMountOrArgChange: true,
+  });
+
+  const { data: paymentPlansData } = useGetUserPaymentPlansQuery(slug, {
+    skip: !slug,
     refetchOnMountOrArgChange: true,
   });
 
@@ -40,7 +44,7 @@ const SingleConferencePage = () => {
   const { user } = useSelector(selectAuth);
   const [openSuccess, setOpenSuccess] = useState(false);
 
-  const [confirmPayment, { isLoading: isConfirming }] = useConfirmEventPaymentMutation();
+  const [confirmPayment] = useConfirmEventPaymentMutation();
 
   const wasCalled = useRef(false);
 
@@ -103,32 +107,26 @@ const SingleConferencePage = () => {
   const getConferenceRegionLabel = (region) => {
     return conferenceRegions.find((r) => r.value === region)?.label || region;
   };
-
   const getCurrentRegistrationPeriod = () => {
-    if (!conference?.conferenceConfig?.registrationPeriods) return null;
-
-    const now = new Date();
-    const regularEnd = new Date(conference.conferenceConfig.registrationPeriods.regular.endDate);
-
-    return now <= regularEnd ? "regular" : "late";
+    if (!paymentPlansData?.registrationInfo) return null;
+    return paymentPlansData.registrationInfo.currentPeriod?.toLowerCase();
   };
 
   const getCurrentPrice = () => {
-    if (!conference?.conferenceConfig?.registrationPeriods) return 0;
+    if (!paymentPlansData?.paymentPlans || paymentPlansData.paymentPlans.length === 0) return 0;
 
-    const period = getCurrentRegistrationPeriod();
-    if (!period) return 0;
+    const currentPeriod = getCurrentRegistrationPeriod();
+    if (!currentPeriod) return 0;
 
-    return conference.conferenceConfig.registrationPeriods[period].price || 0;
+    // Find the payment plan for the current registration period
+    const plan = paymentPlansData.paymentPlans.find((p) => p.registrationPeriod?.toLowerCase() === currentPeriod);
+
+    return plan?.price || 0;
   };
 
   const isRegistrationOpen = () => {
-    if (!conference?.conferenceConfig?.registrationPeriods) return false;
-
-    const now = new Date();
-    const lateEnd = new Date(conference.conferenceConfig.registrationPeriods.late.endDate);
-
-    return now <= lateEnd;
+    if (!paymentPlansData?.registrationInfo) return false;
+    return paymentPlansData.registrationInfo.isRegistrationOpen;
   };
 
   const handleRegisterConference = async () => {
@@ -185,10 +183,12 @@ const SingleConferencePage = () => {
 
   return (
     <div>
-      <Helmet>
-        <title>{conference.title} - CMDA Conferences</title>
-        <meta name="description" content={conference.description} />
-      </Helmet>
+      {conference && typeof conference.title === "string" && (
+        <Helmet>
+          <title>{conference.title} - CMDA Conferences</title>
+          <meta name="description" content={conference.description} />
+        </Helmet>
+      )}
 
       <div className="pb-8">
         <BackButton />
@@ -222,7 +222,7 @@ const SingleConferencePage = () => {
                   <FiCalendar className="w-5 h-5 mr-3" />
                   <div>
                     <p className="font-medium">Start Date</p>
-                    <p className="text-sm">{formatDate(conference.startDate)}</p>
+                    <p className="text-sm">{formatDate(conference.startDate).date}</p>
                   </div>
                 </div>
 
@@ -230,7 +230,7 @@ const SingleConferencePage = () => {
                   <FiClock className="w-5 h-5 mr-3" />
                   <div>
                     <p className="font-medium">End Date</p>
-                    <p className="text-sm">{formatDate(conference.endDate)}</p>
+                    <p className="text-sm">{formatDate(conference.endDate).date}</p>
                   </div>
                 </div>
 
@@ -417,7 +417,7 @@ const SingleConferencePage = () => {
               <div className="w-full">
                 <PaypalPaymentButton
                   amount={getCurrentPrice()}
-                  onSuccess={(details) => handlePayment("paypal")}
+                  onSuccess={() => handlePayment("paypal")}
                   className="w-full"
                 />
               </div>
@@ -447,7 +447,7 @@ const SingleConferencePage = () => {
           <Button
             onClick={() => {
               setOpenSuccess(false);
-              navigate("/dashboard/conferences");
+              navigate("/dashboard/events");
             }}
             className="w-full"
           >

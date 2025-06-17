@@ -48,6 +48,31 @@ const eventsApi = api.injectEndpoints({
       transformResponse: (response) => response.data,
       providesTags: ["CONFERENCES"],
     }),
+    getUserConferences: build.query({
+      query: ({ limit, page, searchBy, eventDate, eventType, fromToday, conferenceType, zone, region } = {}) => ({
+        url: "/events/user-conferences",
+        params: {
+          limit,
+          page,
+          ...(searchBy ? { searchBy } : {}),
+          ...(eventDate ? { eventDate } : {}),
+          ...(eventType ? { eventType } : {}),
+          ...(fromToday ? { fromToday } : {}),
+          ...(conferenceType ? { conferenceType } : {}),
+          ...(zone ? { zone } : {}),
+          ...(region ? { region } : {}),
+        },
+      }),
+      transformResponse: (response) => response.data,
+      providesTags: ["USER_CONFERENCES"],
+    }),
+    getUserPaymentPlans: build.query({
+      query: (slug) => ({
+        url: `/events/${slug}/payment-plans`,
+      }),
+      transformResponse: (response) => response.data,
+      providesTags: (result, error, slug) => [{ type: "PAYMENT_PLANS", id: slug }],
+    }),
     getSingleEvent: build.query({
       query: (slug) => `/events/${slug}`,
       transformResponse: (response) => response.data,
@@ -189,6 +214,7 @@ const eventsApi = api.injectEndpoints({
 export const {
   useGetAllEventsQuery,
   useGetAllConferencesQuery,
+  useGetUserConferencesQuery,
   useGetSingleEventQuery,
   useGetAllTrainingsQuery,
   useRegisterForEventMutation,
@@ -198,6 +224,7 @@ export const {
   useSyncEventPaymentStatusMutation,
   useGetPublicConferencesQuery,
   useCheckUserExistsMutation,
+  useGetUserPaymentPlansQuery,
 } = eventsApi;
 
 export default eventsApi;
