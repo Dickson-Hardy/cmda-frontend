@@ -103,16 +103,22 @@ const SingleConferencePage = () => {
   const getConferenceZoneLabel = (zone) => {
     return conferenceZones.find((z) => z.value === zone)?.label || zone;
   };
-
   const getConferenceRegionLabel = (region) => {
     return conferenceRegions.find((r) => r.value === region)?.label || region;
   };
+
   const getCurrentRegistrationPeriod = () => {
     if (!paymentPlansData?.registrationInfo) return null;
     return paymentPlansData.registrationInfo.currentPeriod?.toLowerCase();
   };
 
   const getCurrentPrice = () => {
+    // Use the paymentBreakdown if available (includes fees)
+    if (paymentPlansData?.paymentBreakdown) {
+      return paymentPlansData.paymentBreakdown.chargeAmount || 0;
+    }
+
+    // Fallback to payment plans
     if (!paymentPlansData?.paymentPlans || paymentPlansData.paymentPlans.length === 0) return 0;
 
     const currentPeriod = getCurrentRegistrationPeriod();
@@ -122,6 +128,12 @@ const SingleConferencePage = () => {
     const plan = paymentPlansData.paymentPlans.find((p) => p.registrationPeriod?.toLowerCase() === currentPeriod);
 
     return plan?.price || 0;
+  };
+  const getPaymentBreakdown = () => {
+    console.log("Full paymentPlansData:", paymentPlansData);
+    const breakdown = paymentPlansData?.paymentBreakdown || null;
+    console.log("Payment breakdown:", breakdown);
+    return breakdown;
   };
 
   const isRegistrationOpen = () => {
@@ -251,7 +263,6 @@ const SingleConferencePage = () => {
                     <p className="text-sm">{getConferenceTypeLabel(conference.conferenceConfig?.type)}</p>
                   </div>
                 </div>
-
                 {conference.conferenceConfig?.zone && (
                   <div className="flex items-center text-gray-700">
                     <FiGlobe className="w-5 h-5 mr-3" />
@@ -261,7 +272,6 @@ const SingleConferencePage = () => {
                     </div>
                   </div>
                 )}
-
                 {conference.conferenceConfig?.region && (
                   <div className="flex items-center text-gray-700">
                     <FiGlobe className="w-5 h-5 mr-3" />
@@ -270,8 +280,7 @@ const SingleConferencePage = () => {
                       <p className="text-sm">{getConferenceRegionLabel(conference.conferenceConfig.region)}</p>
                     </div>
                   </div>
-                )}
-
+                )}{" "}
                 {getCurrentPrice() > 0 && (
                   <div className="flex items-center text-green-600">
                     <FiDollarSign className="w-5 h-5 mr-3" />
@@ -282,11 +291,26 @@ const SingleConferencePage = () => {
                         {getCurrentRegistrationPeriod() === "late" && (
                           <span className="text-orange-500 ml-1">(Late Registration)</span>
                         )}
+                        {getPaymentBreakdown() && getPaymentBreakdown().includesFees && (
+                          <span className="text-gray-500 ml-1">(includes processing fees)</span>
+                        )}
                       </p>
+
+                      {/* Debug info */}
+                      <div className="text-xs text-red-500 mt-1">
+                        DEBUG: Has breakdown: {getPaymentBreakdown() ? "Yes" : "No"} | Includes fees:{" "}
+                        {getPaymentBreakdown()?.includesFees ? "Yes" : "No"}
+                      </div>
+
+                      {getPaymentBreakdown() && getPaymentBreakdown().includesFees && (
+                        <div className="text-xs text-gray-500 mt-1">
+                          Conference: {formatCurrency(getPaymentBreakdown().baseAmount)} + Processing:{" "}
+                          {formatCurrency(getPaymentBreakdown().feeBreakdown.totalFees)}
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
-
                 {getCurrentPrice() === 0 && (
                   <div className="flex items-center text-green-600">
                     <FiDollarSign className="w-5 h-5 mr-3" />
@@ -371,12 +395,52 @@ const SingleConferencePage = () => {
 
           {getCurrentPrice() > 0 && (
             <div className="bg-blue-50 p-4 rounded-lg mb-6">
-              <p className="text-blue-800">
-                <strong>Registration Fee:</strong> {formatCurrency(getCurrentPrice())}
-                {getCurrentRegistrationPeriod() === "late" && (
-                  <span className="text-orange-600 ml-1">(Late Registration)</span>
-                )}
+              <p className="text-blue-800 mb-2">
+                <strong>Registration Fee Details:</strong>
               </p>
+
+              {getPaymentBreakdown() && getPaymentBreakdown().includesFees ? (
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span>Conference Fee:</span>
+                    <span>{formatCurrency(getPaymentBreakdown().baseAmount)}</span>
+                  </div>
+                  <div className="flex justify-between text-gray-600">
+                    <span>Payment Processing Fees:</span>
+                    <span>{formatCurrency(getPaymentBreakdown().feeBreakdown.totalFees)}</span>
+                  </div>
+
+                  <div className="text-xs text-gray-500 ml-4">
+                    •{" "}
+                    {(
+                      (getPaymentBreakdown().feeBreakdown.percentageFee / getPaymentBreakdown().chargeAmount) *
+                      100
+                    ).toFixed(2)}
+                    % + {formatCurrency(getPaymentBreakdown().feeBreakdown.fixedFee)} processing fee
+                  </div>
+                  <div className="border-t pt-2 flex justify-between font-semibold">
+                    <span>Total Amount to Pay:</span>
+                    <span className="text-blue-600">{formatCurrency(getCurrentPrice())}</span>
+                  </div>
+                  <div className="text-xs text-gray-600 mt-1">
+                    <strong>Note:</strong> The processing fee ensures the organization receives the full conference fee
+                    of {formatCurrency(getPaymentBreakdown().baseAmount)}.
+                  </div>
+                </div>
+              ) : (
+                <p className="text-blue-800">
+                  <strong>Registration Fee:</strong> {formatCurrency(getCurrentPrice())}
+                  {getCurrentRegistrationPeriod() === "late" && (
+                    <span className="text-orange-600 ml-1">(Late Registration)</span>
+                  )}
+                </p>
+              )}
+
+              {getCurrentRegistrationPeriod() === "late" && (
+                <div className="mt-2 text-orange-600 text-sm">
+                  <strong>Late Registration</strong> - Higher fees apply after the early bird period.
+                </div>
+              )}
             </div>
           )}
 

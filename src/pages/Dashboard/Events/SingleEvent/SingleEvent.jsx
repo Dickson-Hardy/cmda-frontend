@@ -11,6 +11,7 @@ import Modal from "~/components/Global/Modal/Modal";
 import {
   useConfirmEventPaymentMutation,
   useGetSingleEventQuery,
+  useGetUserPaymentPlansQuery,
   usePayForEventMutation,
   useRegisterForEventMutation,
 } from "~/redux/api/events/eventsApi";
@@ -27,6 +28,12 @@ const DashboardStoreSingleEventPage = () => {
   const source = searchParams.get("source");
   const navigate = useNavigate();
   const { data: singleEvent, refetch } = useGetSingleEventQuery(slug, { refetchOnMountOrArgChange: true });
+
+  const { data: paymentPlansData } = useGetUserPaymentPlansQuery(slug, {
+    skip: !slug,
+    refetchOnMountOrArgChange: true,
+  });
+
   const [registerForEvent, { isLoading: isRegistering }] = useRegisterForEventMutation();
   const [payForEvent, { isLoading: isPaying }] = usePayForEventMutation();
   const [confirmRegister, setConfirmRegister] = useState(false);
@@ -52,6 +59,22 @@ const DashboardStoreSingleEventPage = () => {
       // }
     }
   }, [reference, paymentSuccess, source, confirmPayment]);
+  const getPaymentBreakdown = () => {
+    return paymentPlansData?.paymentBreakdown || null;
+  };
+
+  const getCurrentPrice = () => {
+    // Use the paymentBreakdown if available (includes fees)
+    if (paymentPlansData?.paymentBreakdown) {
+      return paymentPlansData.paymentBreakdown.chargeAmount || 0;
+    }
+
+    // Fallback to payment plans from singleEvent
+    if (!singleEvent?.paymentPlans || singleEvent.paymentPlans.length === 0) return 0;
+
+    const plan = singleEvent.paymentPlans.find((p) => p.role === user?.role);
+    return plan?.price || 0;
+  };
 
   const handleSocialsShare = (social) => {
     const pageUrl = encodeURIComponent(window.location.href);
@@ -136,6 +159,7 @@ const DashboardStoreSingleEventPage = () => {
         </div>
 
         <div className="grid grid-cols-2 gap-6 mt-6">
+          {" "}
           {singleEvent?.isPaid ? (
             <div>
               <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">Payment Plans</h4>
@@ -147,9 +171,71 @@ const DashboardStoreSingleEventPage = () => {
                   {x.role}
                   {x.registrationPeriod ? ` - ${x.registrationPeriod}` : ""}
                   {" - "}
-                  {formatCurrency(x.price, x.role === "GlobalNetwork" ? "USD" : "NGN")}
+                  {formatCurrency(x.price, x.role === "GlobalNetwork" ? "USD" : "NGN")}{" "}
                 </p>
               ))}
+              {/* Payment Breakdown */}
+              {getPaymentBreakdown() && (
+                <div className="bg-blue-50 p-3 rounded-lg mt-3">
+                  <h5 className="text-sm font-semibold text-blue-800 mb-2">
+                    {getPaymentBreakdown().includesFees ? "Your Payment Breakdown:" : "Payment Information:"}
+                  </h5>
+                  <div className="space-y-1 text-xs">
+                    {getPaymentBreakdown().includesFees ? (
+                      // Show detailed breakdown when fees are included
+                      <>
+                        <div className="flex justify-between">
+                          <span>Event Fee:</span>
+                          <span>
+                            {formatCurrency(
+                              getPaymentBreakdown().baseAmount,
+                              user?.role === "GlobalNetwork" ? "USD" : "NGN"
+                            )}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-gray-600">
+                          <span>Processing Fee:</span>
+                          <span>
+                            {formatCurrency(
+                              getPaymentBreakdown().feeBreakdown.totalFees,
+                              user?.role === "GlobalNetwork" ? "USD" : "NGN"
+                            )}
+                          </span>
+                        </div>
+                        <div className="border-t pt-1 flex justify-between font-semibold text-blue-800">
+                          <span>Total Amount:</span>
+                          <span>
+                            {formatCurrency(getCurrentPrice(), user?.role === "GlobalNetwork" ? "USD" : "NGN")}
+                          </span>
+                        </div>
+                        <div className="text-xs text-gray-600 mt-1">
+                          <strong>Note:</strong> Processing fee ensures the organization receives the full event fee.
+                        </div>
+                      </>
+                    ) : (
+                      // Show simple payment info when no fees
+                      <>
+                        <div className="flex justify-between font-semibold text-blue-800">
+                          <span>Registration Fee:</span>
+                          <span>
+                            {formatCurrency(
+                              getPaymentBreakdown().baseAmount,
+                              user?.role === "GlobalNetwork" ? "USD" : "NGN"
+                            )}
+                          </span>
+                        </div>
+                        <div className="text-xs text-gray-600 mt-1">
+                          <strong>Payment Method:</strong> {getPaymentBreakdown().paymentMethod} (
+                          {getPaymentBreakdown().currency})
+                        </div>
+                        <div className="text-xs text-orange-600 mt-1">
+                          <strong>Note:</strong> This event does not include additional processing fees.
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           ) : null}
           <div>
@@ -249,15 +335,71 @@ const DashboardStoreSingleEventPage = () => {
             </p>
             <p className={classNames("text-sm")}>
               <b>LOCATION:</b> {singleEvent?.linkOrLocation}
-            </p>
-
+            </p>{" "}
             {singleEvent?.isPaid && (
-              <p className={classNames("text-sm mt-1")}>
-                <b className="text-error font-bold">NOTE:</b> This is a paid event, you will be redirected to pay a
-                payment channel to complete payment. After completing your payment, you will be automatically redirected
-                back to the website. Please be patient and wait for the redirection to ensure your payment is logged
-                correctly.
-              </p>
+              <div>
+                <p className={classNames("text-sm mt-1")}>
+                  <b className="text-error font-bold">NOTE:</b> This is a paid event, you will be redirected to pay a
+                  payment channel to complete payment. After completing your payment, you will be automatically
+                  redirected back to the website. Please be patient and wait for the redirection to ensure your payment
+                  is logged correctly.
+                </p>{" "}
+                {/* Fee Breakdown in Modal */}
+                {getPaymentBreakdown() && (
+                  <div className="bg-blue-50 p-3 rounded-lg mt-3">
+                    <p className="text-sm font-semibold text-blue-800 mb-2">
+                      {getPaymentBreakdown().includesFees ? "Payment Details:" : "Payment Information:"}
+                    </p>
+                    <div className="space-y-1 text-xs">
+                      {getPaymentBreakdown().includesFees ? (
+                        // Show detailed breakdown when fees are included
+                        <>
+                          <div className="flex justify-between">
+                            <span>Event Fee:</span>
+                            <span>
+                              {formatCurrency(
+                                getPaymentBreakdown().baseAmount,
+                                user?.role === "GlobalNetwork" ? "USD" : "NGN"
+                              )}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-gray-600">
+                            <span>Processing Fee:</span>
+                            <span>
+                              {formatCurrency(
+                                getPaymentBreakdown().feeBreakdown.totalFees,
+                                user?.role === "GlobalNetwork" ? "USD" : "NGN"
+                              )}
+                            </span>
+                          </div>
+                          <div className="border-t pt-1 flex justify-between font-semibold text-blue-800">
+                            <span>Total Amount:</span>
+                            <span>
+                              {formatCurrency(getCurrentPrice(), user?.role === "GlobalNetwork" ? "USD" : "NGN")}
+                            </span>
+                          </div>
+                        </>
+                      ) : (
+                        // Show simple payment info when no fees
+                        <>
+                          <div className="flex justify-between font-semibold text-blue-800">
+                            <span>Registration Fee:</span>
+                            <span>
+                              {formatCurrency(
+                                getPaymentBreakdown().baseAmount,
+                                user?.role === "GlobalNetwork" ? "USD" : "NGN"
+                              )}
+                            </span>
+                          </div>
+                          <div className="text-xs text-gray-600 mt-1">
+                            <strong>Payment Method:</strong> {getPaymentBreakdown().paymentMethod}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
