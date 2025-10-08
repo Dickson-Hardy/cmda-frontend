@@ -481,7 +481,13 @@ const SingleConferencePage = () => {
               <div className="w-full">
                 <PaypalPaymentButton
                   amount={getCurrentPrice()}
-                  onSuccess={() => handlePayment("paypal")}
+                  currency="USD"
+                  createOrder={() => handlePayment("paypal")}
+                  onApprove={(data) => {
+                    navigate(
+                      `/dashboard/events/conference/${conference.slug}?payment=successful&reference=${data.orderID}&source=PAYPAL`
+                    );
+                  }}
                   className="w-full"
                 />
               </div>

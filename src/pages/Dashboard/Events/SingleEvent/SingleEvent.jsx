@@ -416,6 +416,8 @@ const DashboardStoreSingleEventPage = () => {
 
             {user.role === "GlobalNetwork" && singleEvent?.isPaid ? (
               <PaypalPaymentButton
+                amount={getCurrentPrice()}
+                currency="USD"
                 onApprove={(data) => {
                   navigate(
                     `/dashboard/events/${singleEvent.slug}?payment=successful&reference=${data.orderID}&source=PAYPAL`

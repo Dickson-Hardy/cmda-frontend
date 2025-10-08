@@ -4,7 +4,6 @@ import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
 import Select from "~/components/Global/FormElements/Select/Select";
-import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import { GLOBAL_INCOME_BASED_PRICING, LIFETIME_MEMBERSHIPS, INCOME_BRACKETS } from "~/constants/subscription";
 import { classNames } from "~/utilities/classNames";
 import { formatCurrency } from "~/utilities/formatCurrency";
@@ -16,9 +15,9 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
 
   const {
     control,
-    register,
     watch,
     handleSubmit,
+    trigger,
     formState: { errors },
     reset,
   } = useForm({
@@ -60,8 +59,7 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
   };
 
   const tabs = [
-    { id: "subscriptions", label: "Subscriptions", icon: icons.card },
-    { id: "donations", label: "Donations/Vision Partners", icon: icons.heart },
+    { id: "subscriptions", label: "Annual Subscriptions", icon: icons.card },
     { id: "lifetime", label: "Lifetime Membership", icon: icons.star },
   ];
 
@@ -88,14 +86,14 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
               key={tab.id}
               onClick={() => setSelectedTab(tab.id)}
               className={classNames(
-                "flex-1 flex items-center justify-center gap-2 py-3 px-4 text-sm font-medium border-b-2 transition-colors",
+                "flex-1 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium border-b-2 transition-colors",
                 selectedTab === tab.id
                   ? "border-primary text-primary bg-onPrimary"
                   : "border-transparent text-gray-500 hover:text-gray-700"
               )}
             >
               <span className="text-lg">{tab.icon}</span>
-              <span className="hidden sm:inline">{tab.label}</span>
+              <span className="text-center leading-tight">{tab.label}</span>
             </button>
           ))}
         </div>
@@ -159,40 +157,6 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
             </div>
           )}
 
-          {/* Donations/Vision Partners Tab */}
-          {selectedTab === "donations" && (
-            <div className="space-y-4">
-              <div className="text-center p-6 bg-gradient-to-r from-secondary to-tertiary text-white rounded-lg">
-                <h5 className="text-lg font-semibold mb-2">Vision Partner Program</h5>
-                <p className="text-sm opacity-90">
-                  Join our vision partners and support CMDA&apos;s mission with monthly contributions
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <TextInput
-                  label="donationAmount"
-                  title="Monthly Donation Amount (USD)"
-                  type="number"
-                  placeholder="Enter amount"
-                  register={register}
-                  errors={errors}
-                  required
-                  min="1"
-                />
-
-                <Select
-                  label="incomeBracket"
-                  title="Income Level (Optional)"
-                  placeholder="Select your income bracket"
-                  options={INCOME_BRACKETS}
-                  control={control}
-                  errors={errors}
-                />
-              </div>
-            </div>
-          )}
-
           {/* Lifetime Membership Tab */}
           {selectedTab === "lifetime" && (
             <div className="space-y-4">
@@ -231,9 +195,7 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
 
           {/* Payment Note */}
           <div className="text-sm text-center text-tertiary font-medium bg-yellow-50 p-3 rounded-lg">
-            {selectedTab === "donations"
-              ? "Monthly donations will be processed automatically via PayPal"
-              : "If the PayPal button does not appear, please reload the page."}
+            If the PayPal button does not appear, please reload the page.
           </div>
 
           {/* Action Buttons */}
@@ -245,20 +207,30 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
             <PaypalPaymentButton
               onApprove={onApprove}
               createOrder={async () => {
-                // Validate form and create order
-                const isValid = await handleSubmit((data) => {
-                  const subscriptionData = {
-                    ...data,
-                    selectedTab,
-                    paymentFrequency,
-                    amount: getCurrentPrice(),
-                    currency: "USD",
-                  };
-                  return onSubmit(subscriptionData);
-                })();
-                return isValid;
+                // Validate form first
+                const isValid = await trigger();
+                if (!isValid) {
+                  throw new Error("Please fill in all required fields");
+                }
+
+                // Get form values and create order
+                const data = watch();
+                const subscriptionData = {
+                  ...data,
+                  selectedTab,
+                  paymentFrequency,
+                  amount: getCurrentPrice(),
+                  currency: "USD",
+                };
+
+                const orderId = await onSubmit(subscriptionData);
+                if (!orderId) {
+                  throw new Error("Failed to create PayPal order");
+                }
+                return orderId;
               }}
-              amount={selectedTab === "donations" ? watch("donationAmount") : getCurrentPrice()}
+              amount={getCurrentPrice()}
+              currency="USD"
             />
           </div>
         </form>

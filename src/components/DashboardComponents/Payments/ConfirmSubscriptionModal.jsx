@@ -2,9 +2,8 @@ import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
 import { classNames } from "~/utilities/classNames";
-import PaypalPaymentButton from "./PaypalPaymentButton";
 
-const ConfirmSubscriptionModal = ({ isOpen, onClose, onSubmit, loading, onApprove, isGlobalMember }) => {
+const ConfirmSubscriptionModal = ({ isOpen, onClose, onSubmit, loading }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="m-2" maxWidth={480}>
       <div className="flex flex-col gap-4">
@@ -24,24 +23,14 @@ const ConfirmSubscriptionModal = ({ isOpen, onClose, onSubmit, loading, onApprov
           </p>
         </div>
 
-        {isGlobalMember && (
-          <div className="text-sm text-center text-tertiary font-medium">
-            If the PayPal button does not appear, please reload the page.
-          </div>
-        )}
-
         <div className={classNames("grid grid-cols-2 gap-2 items-center")}>
           <Button className="w-full mb-1.5" variant="outlined" large onClick={onClose}>
             No, Cancel
           </Button>
 
-          {isGlobalMember ? (
-            <PaypalPaymentButton onApprove={onApprove} createOrder={onSubmit} />
-          ) : (
-            <Button className="w-full mb-1.5" loading={loading} large onClick={onSubmit}>
-              Yes, Proceed
-            </Button>
-          )}
+          <Button className="w-full mb-1.5" loading={loading} large onClick={onSubmit}>
+            Yes, Proceed
+          </Button>
         </div>
       </div>
     </Modal>

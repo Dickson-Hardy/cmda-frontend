@@ -1,38 +1,65 @@
 import { PayPalScriptProvider, PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const PayPalButtonWrapper = ({ createOrder, onApprove, currency }) => {
-  const [{ options, isPending }, dispatch] = usePayPalScriptReducer();
+  const [{ options, isPending, isResolved }, dispatch] = usePayPalScriptReducer();
 
   useEffect(() => {
-    // Reset PayPal options when currency changes
-    dispatch({
-      type: "resetOptions",
-      value: { ...options, currency },
-    });
+    // Only reset if currency actually changed and SDK is loaded
+    if (isResolved && options.currency !== currency) {
+      dispatch({
+        type: "resetOptions",
+        value: { ...options, currency },
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currency, dispatch]);
+  }, [currency, isResolved]);
 
-  if (isPending) return <div>Loading...</div>;
+  if (isPending) {
+    return <div className="w-full bg-gray-100 text-gray-600 p-3 rounded text-center text-sm">Loading PayPal...</div>;
+  }
 
   return (
     <PayPalButtons
-      createOrder={createOrder}
-      onApprove={onApprove}
+      createOrder={async (data, actions) => {
+        try {
+          const orderId = await createOrder(data, actions);
+          if (!orderId) {
+            throw new Error("No order ID returned from createOrder");
+          }
+          return orderId;
+        } catch (error) {
+          console.error("Error creating PayPal order:", error);
+          throw error;
+        }
+      }}
+      onApprove={async (data, actions) => {
+        try {
+          await onApprove(data, actions);
+        } catch (error) {
+          console.error("Error approving PayPal payment:", error);
+        }
+      }}
       style={{ layout: "horizontal", label: "pay", height: 48 }}
       fundingSource="paypal"
+      forceReRender={[currency]}
+      onError={(err) => {
+        console.error("PayPal Button Error:", err);
+      }}
+      onCancel={(data) => {
+        console.log("PayPal payment cancelled:", data);
+      }}
     />
   );
 };
 
 const PaypalPaymentButton = ({ createOrder, onApprove, currency = "USD", amount }) => {
   const clientId = import.meta.env.VITE_PAYPAL_CLIENT_ID;
+  const [key, setKey] = useState(0);
 
+  // Force remount when currency changes to avoid zoid errors
   useEffect(() => {
-    const removeOldScript = () => {
-      document.querySelectorAll("script[src*='paypal.com']").forEach((el) => el.remove());
-    };
-    removeOldScript();
+    setKey((prev) => prev + 1);
   }, [currency]);
 
   if (!clientId) {
@@ -53,12 +80,15 @@ const PaypalPaymentButton = ({ createOrder, onApprove, currency = "USD", amount 
 
   return (
     <PayPalScriptProvider
+      key={key}
       options={{
         clientId,
-        environment: "sandbox", // Changed to sandbox for testing
         currency,
         intent: "capture",
+        disableFunding: "card,credit",
+        vault: false,
       }}
+      deferLoading={false}
     >
       <PayPalButtonWrapper createOrder={createOrder} onApprove={onApprove} currency={currency} />
     </PayPalScriptProvider>

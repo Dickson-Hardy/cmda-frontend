@@ -38,10 +38,19 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading, onApprove }) =>
         .map(([key, val]) => ({ name: key, amount: +val.amount }))
         .filter((x) => x.amount),
     };
-    if (await trigger()) {
-      // Run validation on all fields
-      return onSubmit(payload); // Call the onSubmit prop if form is valid
+
+    // Run validation on all fields
+    const isValid = await trigger();
+    if (!isValid) {
+      throw new Error("Please fill in all required fields");
     }
+
+    // Call the onSubmit prop and return order ID
+    const orderId = await onSubmit(payload);
+    if (!orderId) {
+      throw new Error("Failed to create PayPal order");
+    }
+    return orderId;
   };
 
   const onPreSubmit = (payload) => {
@@ -151,7 +160,12 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading, onApprove }) =>
 
         <div className="col-span-2">
           {user?.role === "GlobalNetwork" ? (
-            <PaypalPaymentButton createOrder={handlePayPalOrder} onApprove={onApprove} currency={watch("currency")} />
+            <PaypalPaymentButton
+              amount={watch("totalAmount")}
+              createOrder={handlePayPalOrder}
+              onApprove={onApprove}
+              currency={watch("currency")}
+            />
           ) : (
             <Button type="submit" className="w-full" label="Donate Now" large loading={loading} />
           )}

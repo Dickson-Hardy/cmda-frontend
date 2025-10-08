@@ -52,9 +52,16 @@ const DashboardCheckoutPage = () => {
 
   const handlePayPalOrder = async () => {
     const values = getValues();
-    if (await trigger()) {
-      return onSubmit(values);
+    const isValid = await trigger();
+    if (!isValid) {
+      throw new Error("Please fill in all required shipping details");
     }
+
+    const orderId = await onSubmit(values);
+    if (!orderId) {
+      throw new Error("Failed to create PayPal order");
+    }
+    return orderId;
   };
 
   return (
@@ -149,6 +156,8 @@ const DashboardCheckoutPage = () => {
             {user?.role === "GlobalNetwork" ? (
               <div className="w-full md:w-1/2">
                 <PaypalPaymentButton
+                  amount={totalPriceUSD}
+                  currency="USD"
                   createOrder={handlePayPalOrder}
                   onApprove={(data) => {
                     navigate(`/dashboard/store/orders/successful?source=paypal&reference=${data.orderID}`);

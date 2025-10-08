@@ -1,7 +1,12 @@
 import Button from "../../Global/Button/Button";
 import Table from "../../Global/Table/Table";
+import { useSelector } from "react-redux";
+import { selectAuth } from "~/redux/features/auth/authSlice";
+import { SUBSCRIPTION_PRICES } from "~/constants/subscription";
+import { formatCurrency } from "~/utilities/formatCurrency";
 
 const ProfileTabManageSubscriptions = () => {
+  const { user } = useSelector(selectAuth);
   const COLUMNS = [
     { header: "Date", accessor: "id" },
     { header: "Subscription package", accessor: "package" },
@@ -39,7 +44,15 @@ const ProfileTabManageSubscriptions = () => {
           <div>
             <h6 className="text-gray text-sm font-medium">Current Subscription</h6>
             <p className="font-semibold my-2">Annually</p>
-            <p className="text-sm">NGN 12,000/year</p>
+            <p className="text-sm">
+              {formatCurrency(
+                user?.role === "Doctor" && user?.yearsOfExperience?.toLowerCase()?.includes("above")
+                  ? SUBSCRIPTION_PRICES["DoctorSenior"]
+                  : SUBSCRIPTION_PRICES[user?.role] || SUBSCRIPTION_PRICES["Student"],
+                "NGN"
+              )}
+              /year
+            </p>
           </div>
           <Button label="Manage" variant="outlined" />
         </div>
