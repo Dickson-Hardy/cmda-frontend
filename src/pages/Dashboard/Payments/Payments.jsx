@@ -8,6 +8,7 @@ import GlobalSubscriptionModal from "~/components/DashboardComponents/Payments/G
 import Donations from "~/components/DashboardComponents/Payments/Donations";
 import MakeDonationModal from "~/components/DashboardComponents/Payments/MakeDonationModal";
 import PaymentSync from "~/components/DashboardComponents/Payments/PaymentSync";
+import PaymentIntents from "~/components/DashboardComponents/Payments/PaymentIntents";
 import Subscriptions from "~/components/DashboardComponents/Payments/Subscriptions";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
@@ -97,9 +98,9 @@ const DashboardPaymentsPage = () => {
       <div className="my-6">
         <Tabs tabs={PAYMENT_TABS} setActiveIndex={setActiveIndex} activeIndex={activeIndex} />
       </div>
-      {/* Payment Sync Section */}
+      {/* Payment Intents - Show all transactions with requery buttons */}
       <div className="mb-6">
-        <PaymentSync compact />
+        <PaymentIntents />
       </div>
       {/*  */}
       <MakeDonationModal

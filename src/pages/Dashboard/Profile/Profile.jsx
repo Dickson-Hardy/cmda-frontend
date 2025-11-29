@@ -11,7 +11,7 @@ import { useGetAllTrainingsQuery } from "~/redux/api/events/eventsApi";
 import StatusChip from "~/components/Global/StatusChip/StatusChip";
 import Table from "~/components/Global/Table/Table";
 import TransitionModal from "~/components/DashboardComponents/Members/TransitionModal";
-import PaymentSync from "~/components/DashboardComponents/Payments/PaymentSync";
+import PaymentIntents from "~/components/DashboardComponents/Payments/PaymentIntents";
 import {
   useCreateUpdateTransitionMutation,
   useGetProfileQuery,
@@ -187,9 +187,9 @@ const DashboardProfilePage = () => {
         </div>
       </section>
 
-      {/* Payment Sync Section */}
+      {/* Payment Intents Section */}
       <section className="my-8">
-        <PaymentSync />
+        <PaymentIntents />
       </section>
 
       <section className="my-8 flex flex-col md:flex-row gap-8">
