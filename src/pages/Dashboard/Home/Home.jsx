@@ -68,6 +68,26 @@ const DashboardHomePage = () => {
             here to subscribe now.
           </button>
         </div>
+      ) : user.hasLifetimeMembership ? (
+        <div className="mb-4 border px-6 py-3 bg-gradient-to-r from-yellow-100 to-orange-100 border-yellow-400 rounded-lg overflow-hidden text-sm font-medium">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">👑</span>
+            <div>
+              <p className="font-bold text-orange-800">Lifetime Member</p>
+              <p className="text-xs text-orange-700">
+                You have{" "}
+                {user.lifetimeMembershipType === "lifetime"
+                  ? "Nigerian Lifetime Membership"
+                  : `Lifetime ${user.lifetimeMembershipType.charAt(0).toUpperCase() + user.lifetimeMembershipType.slice(1)} Membership`}{" "}
+                until{" "}
+                {new Date(user.lifetimeMembershipExpiry).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                })}
+              </p>
+            </div>
+          </div>
+        </div>
       ) : null}
 
       <section className="h-[400px] w-full rounded-3xl mb-8" style={{ backgroundImage: `url(${doctorPng})` }}>

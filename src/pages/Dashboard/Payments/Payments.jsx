@@ -5,6 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import ConfirmSubscriptionModal from "~/components/DashboardComponents/Payments/ConfirmSubscriptionModal";
 import GlobalSubscriptionModal from "~/components/DashboardComponents/Payments/GlobalSubscriptionModal";
+import NigerianLifetimeModal from "~/components/DashboardComponents/Payments/NigerianLifetimeModal";
 import Donations from "~/components/DashboardComponents/Payments/Donations";
 import MakeDonationModal from "~/components/DashboardComponents/Payments/MakeDonationModal";
 import PaymentSync from "~/components/DashboardComponents/Payments/PaymentSync";
@@ -32,6 +33,7 @@ const DashboardPaymentsPage = () => {
   const [openDonate, setOpenDonate] = useState(false);
   const [initDonation, { isLoading }] = useInitDonationSessionMutation();
   const [openSubscribe, setOpenSubscribe] = useState(false);
+  const [openLifetime, setOpenLifetime] = useState(false);
   const [initSubscription, { isLoading: isSubscribing }] = useInitSubscriptionSessionMutation();
 
   const { data: myProfile } = useGetProfileQuery(null, { refetchOnMountOrArgChange: true });
@@ -85,14 +87,19 @@ const DashboardPaymentsPage = () => {
         {activeIndex ? (
           <Button label="Make a Donation" onClick={() => setOpenDonate(true)} />
         ) : (
-          <Button
-            icon={user?.subscribed ? icons.checkAlt : null}
-            label={user?.subscribed ? "Subscribed" : "Subscribe Now"}
-            color={user?.subscribed ? "secondary" : "primary"}
-            disabled={user?.subscribed}
-            onClick={() => setOpenSubscribe(true)}
-            className="ml-auto"
-          />
+          <div className="flex gap-3">
+            {user?.role !== "GlobalNetwork" && !user?.subscribed && (
+              <Button label="Lifetime Membership" variant="outlined" onClick={() => setOpenLifetime(true)} />
+            )}
+            <Button
+              icon={user?.subscribed ? icons.checkAlt : null}
+              label={user?.subscribed ? "Subscribed" : "Subscribe Now"}
+              color={user?.subscribed ? "secondary" : "primary"}
+              disabled={user?.subscribed}
+              onClick={() => setOpenSubscribe(true)}
+              className="ml-auto"
+            />
+          </div>
         )}
       </div>
       <div className="my-6">
@@ -133,6 +140,12 @@ const DashboardPaymentsPage = () => {
           isGlobalMember={false}
         />
       )}
+      <NigerianLifetimeModal
+        isOpen={openLifetime}
+        onClose={() => setOpenLifetime(false)}
+        onSubmit={onSubscribe}
+        isLoading={isSubscribing}
+      />
       <Modal isOpen={redirectModal} onClose={() => {}}>
         <div className="flex flex-col justify-center items-center gap-3">
           <MdInfoOutline className="text-primary h-14 w-14" />

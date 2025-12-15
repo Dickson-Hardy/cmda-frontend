@@ -156,8 +156,14 @@ const SingleConferencePage = () => {
           setConfirmRegister(false);
           refetch();
         })
-        .catch(() => {
-          toast.error("Failed to register for conference");
+        .catch((error) => {
+          if (error?.status === 403 || error?.data?.message?.includes("subscription")) {
+            toast.error("You must have an active subscription to register for conferences. Please subscribe first.");
+            navigate("/dashboard/payments");
+          } else {
+            toast.error(error?.data?.message || "Failed to register for conference");
+          }
+          setConfirmRegister(false);
         });
     }
   };
@@ -178,7 +184,13 @@ const SingleConferencePage = () => {
         window.open(res.checkout_url, "_self");
       }
     } catch (error) {
-      toast.error("Payment failed. Please try again.");
+      if (error?.status === 403 || error?.data?.message?.includes("subscription")) {
+        toast.error("You must have an active subscription to register for conferences. Please subscribe first.");
+        navigate("/dashboard/payments");
+        setShowPaymentModal(false);
+      } else {
+        toast.error(error?.data?.message || "Payment failed. Please try again.");
+      }
     }
   };
 
@@ -325,6 +337,14 @@ const SingleConferencePage = () => {
 
             {/* Registration Button */}
             <div className="border-t pt-6">
+              {!user.subscribed && (
+                <div className="mb-4 border px-6 py-3 bg-error/20 border-error rounded-lg text-sm font-medium text-error">
+                  You need an active subscription to register for conferences.{" "}
+                  <button type="button" className="underline font-bold" onClick={() => navigate("/dashboard/payments")}>
+                    Click here to subscribe now.
+                  </button>
+                </div>
+              )}
               {conference.isRegistered ? (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                   <p className="text-green-800 font-medium">✓ You are registered for this conference</p>
@@ -332,6 +352,7 @@ const SingleConferencePage = () => {
               ) : isRegistrationOpen() ? (
                 <Button
                   onClick={() => setConfirmRegister(true)}
+                  disabled={!user.subscribed}
                   className="w-full md:w-auto bg-blue-600 hover:bg-blue-700"
                 >
                   Register for Conference

@@ -104,18 +104,28 @@ const DashboardStoreSingleEventPage = () => {
   };
 
   const handleRegisterEvent = async () => {
-    if (singleEvent?.isPaid) {
-      const res = await payForEvent({ slug }).unwrap();
-      if (user.role === "GlobalNetwork") return res.id;
-      else window.open(res.checkout_url, "_self");
-      //
-    } else {
-      registerForEvent({ slug })
-        .unwrap()
-        .then(() => {
-          toast.success("Registered for event successfully");
-          setConfirmRegister(false);
-        });
+    try {
+      if (singleEvent?.isPaid) {
+        const res = await payForEvent({ slug }).unwrap();
+        if (user.role === "GlobalNetwork") return res.id;
+        else window.open(res.checkout_url, "_self");
+        //
+      } else {
+        registerForEvent({ slug })
+          .unwrap()
+          .then(() => {
+            toast.success("Registered for event successfully");
+            setConfirmRegister(false);
+          });
+      }
+    } catch (error) {
+      if (error?.status === 403 || error?.data?.message?.includes("subscription")) {
+        toast.error("You must have an active subscription to register for events. Please subscribe first.");
+        navigate("/dashboard/payments");
+      } else {
+        toast.error(error?.data?.message || "Failed to register for event");
+      }
+      setConfirmRegister(false);
     }
   };
 
@@ -298,6 +308,15 @@ const DashboardStoreSingleEventPage = () => {
           </div>
         </div>
 
+        {!user.subscribed && (
+          <div className="mt-6 mb-4 border px-6 py-3 bg-error/20 border-error rounded-lg text-sm font-medium text-error">
+            You need an active subscription to register for events.{" "}
+            <button type="button" className="underline font-bold" onClick={() => navigate("/dashboard/payments")}>
+              Click here to subscribe now.
+            </button>
+          </div>
+        )}
+
         {new Date(singleEvent?.eventDateTime).getTime() > Date.now() && (
           <div className="flex flex-wrap gap-2 lg:gap-4 justify-end mt-4 mb-4">
             <Button
@@ -307,7 +326,7 @@ const DashboardStoreSingleEventPage = () => {
                   : "Register for Event"
               }
               large
-              disabled={singleEvent?.registeredUsers?.find((x) => x.userId == user._id)}
+              disabled={!user.subscribed || singleEvent?.registeredUsers?.find((x) => x.userId == user._id)}
               onClick={() => setConfirmRegister(true)}
             />
           </div>

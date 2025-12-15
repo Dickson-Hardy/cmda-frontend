@@ -60,6 +60,19 @@ const Subscriptions = () => {
         <div className="border p-4 bg-white rounded-xl">
           <h6 className="text-gray text-sm font-medium mb-4">Subscription Status</h6>
           <StatusChip status={user.subscribed ? "Active" : "Inactive"} />
+          {user.hasLifetimeMembership && (
+            <div className="mt-3 flex items-center gap-2 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-300 rounded-lg p-3">
+              <span className="text-2xl">👑</span>
+              <div>
+                <p className="text-sm font-bold text-orange-700">Lifetime Member</p>
+                <p className="text-xs text-orange-600">
+                  {user.lifetimeMembershipType === "lifetime"
+                    ? "Nigerian Lifetime"
+                    : `${user.lifetimeMembershipType.charAt(0).toUpperCase() + user.lifetimeMembershipType.slice(1)}`}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
         <div className="border p-4 bg-white rounded-xl">
           <h6 className="text-gray text-sm font-medium mb-4">Subscription Package</h6>
