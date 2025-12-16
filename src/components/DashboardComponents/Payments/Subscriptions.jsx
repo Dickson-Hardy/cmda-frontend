@@ -21,7 +21,8 @@ const Subscriptions = () => {
   const handleDownloadReceipt = async (subscriptionId, downloadOnly = false) => {
     try {
       setLoadingReceipt(subscriptionId);
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/subscriptions/${subscriptionId}/receipt`, {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, ""); // Remove trailing slash
+      const response = await fetch(`${baseUrl}/subscriptions/${subscriptionId}/receipt`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -34,16 +35,16 @@ const Subscriptions = () => {
       }
 
       const blob = await response.blob();
-      if (blob.size === 0) throw new Error("Empty image received");
+      if (blob.size === 0) throw new Error("Empty PDF received");
 
-      // Create an image blob
-      const imageBlob = new Blob([blob], { type: "image/png" });
-      const url = window.URL.createObjectURL(imageBlob);
+      // Create a PDF blob
+      const pdfBlob = new Blob([blob], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(pdfBlob);
 
       if (downloadOnly) {
         const a = document.createElement("a");
         a.href = url;
-        a.download = `CMDA-Receipt-${subscriptionId}.png`;
+        a.download = `CMDA-Receipt-${subscriptionId}.pdf`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
