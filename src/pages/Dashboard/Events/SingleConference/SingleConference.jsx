@@ -5,6 +5,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FiCalendar, FiMapPin, FiUsers, FiDollarSign, FiClock, FiGlobe } from "react-icons/fi";
 import PaypalPaymentButton from "~/components/DashboardComponents/Payments/PaypalPaymentButton";
+import VirtualMeetingCard from "~/components/DashboardComponents/Events/VirtualMeetingCard";
 import BackButton from "~/components/Global/BackButton/BackButton";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
@@ -337,9 +338,9 @@ const SingleConferencePage = () => {
 
             {/* Registration Button */}
             <div className="border-t pt-6">
-              {!user.subscribed && (
+              {conference?.requiresSubscription !== false && !user.subscribed && (
                 <div className="mb-4 border px-6 py-3 bg-error/20 border-error rounded-lg text-sm font-medium text-error">
-                  You need an active subscription to register for conferences.{" "}
+                  You need an active subscription to register for this conference.{" "}
                   <button type="button" className="underline font-bold" onClick={() => navigate("/dashboard/payments")}>
                     Click here to subscribe now.
                   </button>
@@ -352,7 +353,7 @@ const SingleConferencePage = () => {
               ) : isRegistrationOpen() ? (
                 <Button
                   onClick={() => setConfirmRegister(true)}
-                  disabled={!user.subscribed}
+                  disabled={conference?.requiresSubscription !== false && !user.subscribed}
                   className="w-full md:w-auto bg-blue-600 hover:bg-blue-700"
                 >
                   Register for Conference
@@ -374,6 +375,16 @@ const SingleConferencePage = () => {
             dangerouslySetInnerHTML={{ __html: conference.description }}
           />
         </div>
+
+        {/* Virtual Meeting Info */}
+        {(conference?.eventType === "Virtual" || conference?.eventType === "Hybrid") &&
+          conference?.virtualMeetingInfo &&
+          conference?.isRegistered && (
+            <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Join Virtual Conference</h3>
+              <VirtualMeetingCard meetingInfo={conference.virtualMeetingInfo} eventName={conference.name} />
+            </div>
+          )}
 
         {/* Share Section */}
         <div className="bg-white rounded-lg shadow-lg p-6">

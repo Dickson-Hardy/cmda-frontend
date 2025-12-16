@@ -5,6 +5,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import icons from "~/assets/js/icons";
 import PaypalPaymentButton from "~/components/DashboardComponents/Payments/PaypalPaymentButton";
+import VirtualMeetingCard from "~/components/DashboardComponents/Events/VirtualMeetingCard";
 import BackButton from "~/components/Global/BackButton/BackButton";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
@@ -280,6 +281,15 @@ const DashboardStoreSingleEventPage = () => {
           <p className="text-base mb-1">{singleEvent?.additionalInformation}</p>
         </div>
 
+        {/* Virtual Meeting Info */}
+        {(singleEvent?.eventType === "Virtual" || singleEvent?.eventType === "Hybrid") &&
+          singleEvent?.virtualMeetingInfo &&
+          singleEvent?.registeredUsers?.find((x) => x.userId == user._id) && (
+            <div className="mt-6">
+              <VirtualMeetingCard meetingInfo={singleEvent.virtualMeetingInfo} eventName={singleEvent.name} />
+            </div>
+          )}
+
         <div className="flex flex-wrap gap-4 my-6">
           {" "}
           {singleEvent?.eventTags?.map((tag, index) => (
@@ -308,9 +318,9 @@ const DashboardStoreSingleEventPage = () => {
           </div>
         </div>
 
-        {!user.subscribed && (
+        {singleEvent?.requiresSubscription !== false && !user.subscribed && (
           <div className="mt-6 mb-4 border px-6 py-3 bg-error/20 border-error rounded-lg text-sm font-medium text-error">
-            You need an active subscription to register for events.{" "}
+            You need an active subscription to register for this event.{" "}
             <button type="button" className="underline font-bold" onClick={() => navigate("/dashboard/payments")}>
               Click here to subscribe now.
             </button>
@@ -326,7 +336,10 @@ const DashboardStoreSingleEventPage = () => {
                   : "Register for Event"
               }
               large
-              disabled={!user.subscribed || singleEvent?.registeredUsers?.find((x) => x.userId == user._id)}
+              disabled={
+                (singleEvent?.requiresSubscription !== false && !user.subscribed) ||
+                singleEvent?.registeredUsers?.find((x) => x.userId == user._id)
+              }
               onClick={() => setConfirmRegister(true)}
             />
           </div>
