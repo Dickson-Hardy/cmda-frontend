@@ -54,6 +54,13 @@ const Login = () => {
           return;
         }
 
+        // Check if user needs to change their temporary password (admin-created accounts)
+        if (data.requirePasswordChange || data.user.requirePasswordChange) {
+          toast.info("Please change your temporary password to continue");
+          navigate("/change-password");
+          return;
+        }
+
         // Check if user was trying to register for a conference
         const conferenceSlug = localStorage.getItem("conferenceSlug");
         if (conferenceSlug) {

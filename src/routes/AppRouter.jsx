@@ -7,6 +7,7 @@ import WelcomePage from "~/pages/Welcome";
 import Login from "~/pages/Auth/Login/Login";
 import ForgotPassword from "~/pages/Auth/ForgotPassword/ForgotPassword";
 import NewPassword from "~/pages/Auth/NewPassword/NewPassword";
+import ChangePassword from "~/pages/Auth/ChangePassword/ChangePassword";
 import SignUp from "~/pages/Auth/SignUp/SignUp";
 import EmailVerification from "~/pages/Auth/EmailVerification/EmailVerification";
 import DashboardHomePage from "~/pages/Dashboard/Home/Home";
@@ -77,6 +78,16 @@ export default function AppRouter() {
         { path: "/reset-password", element: <NewPassword /> },
         { path: "/signup", element: <SignUp /> },
         { path: "/verify-email", element: <EmailVerification /> },
+      ],
+      errorElement: <ErrorDisplay />,
+    },
+    {
+      element: <ProtectedRoutes />,
+      children: [
+        {
+          element: <AuthLayout />,
+          children: [{ path: "/change-password", element: <ChangePassword /> }],
+        },
       ],
       errorElement: <ErrorDisplay />,
     },

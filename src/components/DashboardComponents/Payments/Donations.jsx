@@ -9,11 +9,15 @@ import { downloadFile } from "~/utilities/fileDownloader";
 import formatDate from "~/utilities/fomartDate";
 import { formatCurrency } from "~/utilities/formatCurrency";
 
+// Selector for token from Redux store
+const selectToken = (state) => state.token?.accessToken;
+
 const Donations = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchBy, setSearchBy] = useState("");
   const { data: donations, isLoading } = useGetAllDonationsQuery({ page, limit, searchBy });
+  const accessToken = useSelector(selectToken);
 
   const [loadingReceipt, setLoadingReceipt] = useState(null);
 
@@ -23,7 +27,7 @@ const Donations = () => {
       const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, ""); // Remove trailing slash
       const response = await fetch(`${baseUrl}/donations/${donationId}/receipt`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
