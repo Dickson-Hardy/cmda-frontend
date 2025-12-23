@@ -452,18 +452,18 @@ const TutorialModal = ({
   const mobileStyles = isMobile ? {
     position: 'fixed',
     // Position above the bottom nav (64px height)
-    bottom: '64px',
+    bottom: 0,
     left: 0,
     right: 0,
     top: 'auto',
     transform: 'none',
-    borderRadius: '16px 16px 0 0',
-    maxHeight: 'calc(70vh - 64px)',
+    borderRadius: '20px 20px 0 0',
+    maxHeight: '50vh',
     width: '100%',
     margin: 0,
     overflowY: 'auto',
     // Safe area padding for devices with home indicators
-    paddingBottom: 'env(safe-area-inset-bottom, 8px)'
+    paddingBottom: 'env(safe-area-inset-bottom, 16px)'
   } : {};
 
   // Desktop positioned styles
@@ -544,9 +544,9 @@ const TutorialModal = ({
       {/* Mobile drag handle - visual affordance for bottom sheet */}
       {/* Requirements: 7.1 - Add drag handle for visual affordance */}
       {isMobile && (
-        <div className="flex justify-center pt-3 pb-1">
+        <div className="flex justify-center pt-3 pb-2">
           <div 
-            className="w-10 h-1 bg-gray-300 rounded-full"
+            className="w-12 h-1.5 bg-gray-300 rounded-full"
             aria-hidden="true"
           />
         </div>
@@ -568,18 +568,19 @@ const TutorialModal = ({
         `}
       >
         {/* Header */}
-        <div className="flex items-start justify-between px-6 pt-5 pb-2">
+        <div className={`flex items-start justify-between ${isMobile ? 'px-5 pt-2 pb-1' : 'px-6 pt-5 pb-2'}`}>
           <h2 
             id="tutorial-modal-title"
-            className="text-lg font-bold text-gray-900 pr-4"
+            className={`font-bold text-gray-900 pr-4 ${isMobile ? 'text-base' : 'text-lg'}`}
           >
             {step.title}
           </h2>
           <button
             onClick={onSkip}
-            className="text-sm text-gray-500 hover:text-gray-700 transition-colors
+            className={`text-gray-500 hover:text-gray-700 transition-colors
                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
-                       focus:bg-blue-50 rounded px-2 py-1 -mr-2 -mt-1"
+                       focus:bg-blue-50 rounded px-2 py-1 -mr-2 -mt-1
+                       ${isMobile ? 'text-xs' : 'text-sm'}`}
             aria-label="Skip tutorial"
           >
             Skip
@@ -587,10 +588,10 @@ const TutorialModal = ({
         </div>
 
         {/* Body */}
-        <div className="px-6 py-3">
+        <div className={`${isMobile ? 'px-5 py-2' : 'px-6 py-3'}`}>
           <p 
             id="tutorial-modal-description"
-            className="text-sm text-gray-600 leading-relaxed"
+            className={`text-gray-600 leading-relaxed ${isMobile ? 'text-sm' : 'text-sm'}`}
           >
             {step.description}
           </p>
@@ -599,11 +600,10 @@ const TutorialModal = ({
 
       {/* Footer */}
       <div className={`
-        px-6 pb-5 pt-3
-        ${isMobile ? 'pb-8' : ''} 
+        ${isMobile ? 'px-5 pb-4 pt-2' : 'px-6 pb-5 pt-3'}
       `}>
         {/* Progress Indicator */}
-        <div className="mb-4">
+        <div className={`${isMobile ? 'mb-3' : 'mb-4'}`}>
           <ProgressIndicator 
             currentStep={currentIndex} 
             totalSteps={totalSteps} 
@@ -611,25 +611,22 @@ const TutorialModal = ({
         </div>
 
         {/* Navigation Buttons */}
-        {/* Requirements: 7.1 - Adjust button layout for mobile (stacked on small screens) */}
-        <div className={`
-          flex gap-3
-          ${isMobile || isVerySmallScreen ? 'flex-col' : 'flex-row justify-between'}
-        `}>
+        {/* Requirements: 7.1 - Adjust button layout for mobile (side by side on mobile) */}
+        <div className="flex gap-3 flex-row">
           {/* Back Button - only show if not first step */}
           {/* Requirements: 8.1, 8.4 - Add visible focus indicators on all interactive elements */}
           {!isFirstStep ? (
             <button
               onClick={onPrev}
               className={`
-                px-4 py-2.5 text-sm font-medium text-gray-700 
+                px-4 py-2.5 font-medium text-gray-700 
                 bg-white border border-gray-300 rounded-lg
                 hover:bg-gray-50 hover:border-gray-400
                 active:bg-gray-100
                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
                 focus:border-blue-500 focus:bg-blue-50
                 transition-all duration-200
-                ${isMobile ? 'w-full order-2 min-h-[44px]' : ''}
+                ${isMobile ? 'flex-1 text-sm min-h-[40px]' : 'text-sm'}
               `}
               aria-label="Go to previous step"
             >
@@ -637,7 +634,7 @@ const TutorialModal = ({
             </button>
           ) : (
             // Spacer for alignment when Back button is hidden
-            !isMobile && <div />
+            <div className={isMobile ? 'flex-1' : ''} />
           )}
 
           {/* Next/Complete Button */}
@@ -645,14 +642,14 @@ const TutorialModal = ({
           <button
             onClick={isLastStep ? onComplete : onNext}
             className={`
-              px-6 py-2.5 text-sm font-medium text-white 
-              bg-blue-600 rounded-lg
-              hover:bg-blue-700
-              active:bg-blue-800
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-              focus:ring-offset-white focus:bg-blue-700
+              px-6 py-2.5 font-medium text-white 
+              bg-primary rounded-lg
+              hover:bg-primary/90
+              active:bg-primary/80
+              focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+              focus:ring-offset-white
               transition-all duration-200
-              ${isMobile ? 'w-full order-1 min-h-[44px]' : ''}
+              ${isMobile ? 'flex-1 text-sm min-h-[40px]' : 'text-sm'}
             `}
             aria-label={isLastStep ? 'Complete tutorial and start using the dashboard' : 'Go to next step'}
           >

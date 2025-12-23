@@ -195,9 +195,9 @@ const TutorialOverlay = ({
         top: 0,
         left: 0,
         right: 0,
-        // On mobile, stop overlay above the bottom nav (64px height)
-        bottom: isMobile ? '64px' : 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        // Full screen overlay on all devices
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         zIndex: 9998,
         clipPath: generateClipPath(),
         // Requirements: 3.6 - Smooth fade-in transition for spotlight
