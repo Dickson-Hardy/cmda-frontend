@@ -7,7 +7,7 @@ import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import { useUpdatePasswordMutation } from "~/redux/api/profile/profileApi";
 import { setUser } from "~/redux/features/auth/authSlice";
 import { selectAuth } from "~/redux/features/auth/authSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const ChangePassword = () => {
   const {
@@ -19,15 +19,28 @@ const ChangePassword = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user } = useSelector(selectAuth);
+  const { user, isAuthenticated } = useSelector(selectAuth);
   const [updatePassword, { isLoading }] = useUpdatePasswordMutation();
+  const [hasCheckedUser, setHasCheckedUser] = useState(false);
 
   // Redirect if user doesn't need to change password
+  // Only redirect after we've confirmed the user state is loaded
   useEffect(() => {
-    if (!user?.requirePasswordChange) {
-      navigate("/dashboard");
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
     }
-  }, [user, navigate]);
+    
+    // Wait for user to be loaded before checking requirePasswordChange
+    if (user !== null) {
+      setHasCheckedUser(true);
+      // Only redirect if user explicitly has requirePasswordChange set to false
+      // Don't redirect if the field is undefined (might be loading)
+      if (user.requirePasswordChange === false) {
+        navigate("/dashboard");
+      }
+    }
+  }, [user, isAuthenticated, navigate]);
 
   const handleChangePassword = (payload) => {
     const { oldPassword, newPassword, confirmPassword } = payload;
@@ -45,9 +58,23 @@ const ChangePassword = () => {
         navigate("/dashboard");
       })
       .catch((error) => {
-        toast.error(error || "Failed to change password. Please try again.");
+        toast.error(error?.data?.message || error?.message || "Failed to change password. Please try again.");
       });
   };
+
+  // Show loading while checking user state
+  if (!hasCheckedUser || !user) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  // If user doesn't need password change, don't render the form (redirect will happen)
+  if (!user.requirePasswordChange) {
+    return null;
+  }
 
   return (
     <div>

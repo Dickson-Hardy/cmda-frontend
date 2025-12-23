@@ -24,7 +24,7 @@ const NigerianLifetimeModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">{NIGERIAN_LIFETIME_MEMBERSHIP.lifetime.label}</h2>
           <p className="text-gray-600">
-            Secure your CMDA membership for {NIGERIAN_LIFETIME_MEMBERSHIP.lifetime.years} years!
+            Secure your CMDA membership for life!
           </p>
         </div>
 
@@ -34,7 +34,7 @@ const NigerianLifetimeModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
             <p className="text-4xl font-bold text-primary mb-2">
               {formatCurrency(NIGERIAN_LIFETIME_MEMBERSHIP.lifetime.price, "NGN")}
             </p>
-            <p className="text-sm text-gray-600">Valid for {NIGERIAN_LIFETIME_MEMBERSHIP.lifetime.years} years</p>
+            <p className="text-sm text-gray-600">Valid for Lifetime</p>
           </div>
         </div>
 
@@ -47,7 +47,7 @@ const NigerianLifetimeModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
             <li className="flex items-start gap-2">
               <MdCheckCircle className="text-green-600 mt-1 flex-shrink-0" />
               <span>
-                Access to all CMDA events and conferences for {NIGERIAN_LIFETIME_MEMBERSHIP.lifetime.years} years
+                Access to all CMDA events and conferences for life
               </span>
             </li>
             <li className="flex items-start gap-2">
@@ -87,7 +87,7 @@ const NigerianLifetimeModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
           <label htmlFor="confirm-lifetime" className="text-sm text-gray-700">
             I understand that this is a one-time payment of{" "}
             {formatCurrency(NIGERIAN_LIFETIME_MEMBERSHIP.lifetime.price, "NGN")}
-            for a {NIGERIAN_LIFETIME_MEMBERSHIP.lifetime.years}-year membership.
+            {" "}for a lifetime membership.
           </label>
         </div>
 

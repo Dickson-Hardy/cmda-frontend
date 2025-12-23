@@ -15,7 +15,8 @@ const ProtectedRoutes = () => {
     
     // Check if user needs to change their temporary password
     // Allow access to change-password page, but redirect from other pages
-    if (user.requirePasswordChange && location.pathname !== "/change-password") {
+    // Use strict equality check to ensure we only redirect when requirePasswordChange is explicitly true
+    if (user.requirePasswordChange === true && location.pathname !== "/change-password") {
       return <Navigate to="/change-password" />;
     }
     

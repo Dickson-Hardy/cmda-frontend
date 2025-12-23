@@ -83,12 +83,16 @@ const Donations = () => {
     cell: (info) => {
       const [value, item] = [info.getValue(), info.row.original];
       return col.accessor === "_id" ? (
-        <button
-          onClick={() => handleDownloadReceipt(value)}
-          className="text-primary hover:text-primary-dark underline text-sm font-medium"
-        >
-          Download PDF
-        </button>
+        item.isPaid ? (
+          <button
+            onClick={() => handleDownloadReceipt(value)}
+            className="text-primary hover:text-primary-dark underline text-sm font-medium"
+          >
+            Download PDF
+          </button>
+        ) : (
+          <span className="text-gray-400 text-sm">Pending Payment</span>
+        )
       ) : col.accessor === "recurring" ? (
         `${value ? "Yes" : "No"}`
       ) : col.accessor === "createdAt" ? (
@@ -110,6 +114,9 @@ const Donations = () => {
 
   const { user } = useSelector(selectAuth);
 
+  // Filter to show only paid donations
+  const paidDonations = (donations?.items || []).filter((don) => don.isPaid);
+
   const [exportDonations, { isLoading: isExporting }] = useExportDonationsMutation();
 
   const handleExport = async () => {
@@ -120,7 +127,7 @@ const Donations = () => {
   };
 
   return (
-    <div>
+    <div data-tutorial="donation-section">
       <div className="bg-white shadow py-6 rounded-xl">
         <div className="mb-4 px-4 md:px-6 flex flex-col md:flex-row md:items-center gap-4 justify-between">
           <h3 className="text-lg font-semibold">Donation History</h3>
@@ -130,14 +137,14 @@ const Donations = () => {
           </div>
         </div>
         <Table
-          tableData={donations?.items || []}
+          tableData={paidDonations}
           tableColumns={formattedColumns}
           loading={isLoading}
           emptyDataTitle="No Donation History"
           emptyDataSubtitle="You have not made any donation yet. All donations made will appear here. Click the 'Make a Donation' button to make one."
           serverSidePagination
-          totalItemsCount={donations?.meta?.totalItems}
-          totalPageCount={donations?.meta?.totalPages}
+          totalItemsCount={paidDonations.length}
+          totalPageCount={Math.ceil(paidDonations.length / limit)}
           onPaginationChange={({ currentPage, perPage }) => {
             setPage(currentPage);
             setLimit(perPage);

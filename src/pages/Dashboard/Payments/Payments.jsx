@@ -69,12 +69,14 @@ const DashboardPaymentsPage = () => {
       const res = await initSubscription(subscriptionData).unwrap();
       return res.id;
     } else {
-      const res = await initSubscription({}).unwrap();
+      // Pass subscriptionData for Nigerian lifetime membership
+      const res = await initSubscription(subscriptionData || {}).unwrap();
       if (user.role === "GlobalNetwork") {
         return res.id;
       } else {
         setResponse(res);
         setOpenSubscribe(false);
+        setOpenLifetime(false);
         setRedirectModal(true);
       }
     }

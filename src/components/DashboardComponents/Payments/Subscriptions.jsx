@@ -81,13 +81,18 @@ const Subscriptions = () => {
     ...col,
     cell: (info) => {
       const value = info.getValue();
+      const row = info.row.original;
       return col.accessor === "_id" ? (
-        <button
-          onClick={() => handleDownloadReceipt(value)}
-          className="text-primary hover:text-primary-dark underline text-sm font-medium"
-        >
-          Download PDF
-        </button>
+        row.isPaid ? (
+          <button
+            onClick={() => handleDownloadReceipt(value)}
+            className="text-primary hover:text-primary-dark underline text-sm font-medium"
+          >
+            Download PDF
+          </button>
+        ) : (
+          <span className="text-gray-400 text-sm">Pending Payment</span>
+        )
       ) : col.accessor === "recurring" ? (
         value ? (
           "Yes"
@@ -105,6 +110,9 @@ const Subscriptions = () => {
     enableSorting: false,
   }));
 
+  // Filter to show only paid subscriptions
+  const paidSubscriptions = (subscriptions?.items || []).filter((sub) => sub.isPaid);
+
   const [exportSubscriptions, { isLoading: isExporting }] = useExportSubscriptionsMutation();
 
   const handleExport = async () => {
@@ -115,7 +123,7 @@ const Subscriptions = () => {
   };
 
   return (
-    <div>
+    <div data-tutorial="subscription-section">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6">
         <div className="border p-4 bg-white rounded-xl">
           <h6 className="text-gray text-sm font-medium mb-4">Subscription Status</h6>
@@ -180,12 +188,12 @@ const Subscriptions = () => {
           <Button label="Export" variant="outlined" loading={isExporting} className="ml-auto" onClick={handleExport} />
         </div>
         <Table
-          tableData={subscriptions?.items || []}
+          tableData={paidSubscriptions}
           tableColumns={formattedColumns}
           loading={isLoading}
           serverSidePagination
-          totalItemsCount={subscriptions?.meta?.totalItems}
-          totalPageCount={subscriptions?.meta?.totalPages}
+          totalItemsCount={paidSubscriptions.length}
+          totalPageCount={Math.ceil(paidSubscriptions.length / limit)}
           onPaginationChange={({ currentPage, perPage }) => {
             setPage(currentPage);
             setLimit(perPage);

@@ -18,9 +18,11 @@ import {
   useGetTransitionQuery,
 } from "~/redux/api/profile/profileApi";
 import { toast } from "react-toastify";
+import { useTutorial } from "~/components/Tutorial/TutorialContext";
 
 const DashboardProfilePage = () => {
   const { user } = useSelector(selectAuth);
+  const { restartTutorial } = useTutorial();
 
   const [openTransit, setOpenTransit] = useState(false);
   const { data: allTrainings, isLoading: isLoadingTrainings } = useGetAllTrainingsQuery(
@@ -138,7 +140,16 @@ const DashboardProfilePage = () => {
                   </a>
                 ))}
               </div>
-              <div className="flex justify-end text-sm">
+              <div className="flex justify-between items-center text-sm">
+                {/* Restart Tutorial Button - Requirements: 6.1, 6.2, 6.3 */}
+                <button
+                  onClick={restartTutorial}
+                  className="text-gray-600 hover:text-primary font-medium flex items-center gap-1.5 transition-colors"
+                  aria-label="Restart the dashboard tutorial"
+                >
+                  <span className="text-base">{icons.clockCounter}</span>
+                  <span>Restart Tutorial</span>
+                </button>
                 <Link to="/dashboard/edit-profile" className="text-primary font-semibold underline">
                   Edit Profile
                 </Link>

@@ -6,6 +6,25 @@ import { setUser } from "~/redux/features/auth/authSlice";
 import { clearTokens } from "~/redux/features/auth/tokenSlice";
 import Logo from "~/components/Global/Logo/Logo";
 
+/**
+ * Map nav item titles to tutorial data attributes
+ * Used for tutorial targeting (Requirements 2.2)
+ */
+const getTutorialAttribute = (title) => {
+  const titleMap = {
+    'Home': 'nav-home',
+    'Events': 'nav-events',
+    'Resources': 'nav-resources',
+    'Manage Payments': 'nav-payments',
+    'Connect with Others': 'nav-members',
+    'Volunteer': 'nav-volunteer',
+    'Faith Entry': 'nav-faith',
+    'Messaging': 'nav-messaging',
+    'Store': 'nav-store'
+  };
+  return titleMap[title] || null;
+};
+
 const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [], unreadMessagesCount }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
@@ -41,7 +60,12 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [], unreadMessagesCount }
           )}
           <div className="truncate">
             <h5 className="font-bold text-base truncate text-white">{user ? user.fullName : "No Name"}</h5>
-            <Link to="/dashboard/profile" className="text-white text-sm hover:underline" onClick={onToggleSidebar}>
+            <Link 
+              to="/dashboard/profile" 
+              className="text-white text-sm hover:underline" 
+              onClick={onToggleSidebar}
+              data-tutorial="nav-profile"
+            >
               View Profile
             </Link>
           </div>
@@ -49,28 +73,32 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [], unreadMessagesCount }
 
         <nav>
           <ul className="flex-1 space-y-2">
-            {navLinks.map((navItem) => (
-              <li key={navItem.title}>
-                <NavLink
-                  to={navItem.link}
-                  className={({ isActive }) =>
-                    classNames(
-                      "flex items-center gap-4 px-4 py-2.5 cursor-pointer text-sm font-semibold rounded-lg transition-all",
-                      isActive ? "bg-white text-primary" : "bg-transparent text-white hover:bg-onPrimary/20"
-                    )
-                  }
-                  end={navItem.link === "/dashboard"}
-                  onClick={onToggleSidebar}
-                >
-                  <span className="text-lg">{navItem.icon}</span> {navItem.title}
-                  {navItem.title === "Messaging" && unreadMessagesCount ? (
-                    <span className="ml-auto inline-flex items-center justify-center w-6 h-6 text-[10px] font-bold text-white bg-primary border border-white rounded-full -top-2 -end-2">
-                      {unreadMessagesCount}
-                    </span>
-                  ) : null}
-                </NavLink>
-              </li>
-            ))}
+            {navLinks.map((navItem) => {
+              const tutorialAttr = getTutorialAttribute(navItem.title);
+              return (
+                <li key={navItem.title}>
+                  <NavLink
+                    to={navItem.link}
+                    className={({ isActive }) =>
+                      classNames(
+                        "flex items-center gap-4 px-4 py-2.5 cursor-pointer text-sm font-semibold rounded-lg transition-all",
+                        isActive ? "bg-white text-primary" : "bg-transparent text-white hover:bg-onPrimary/20"
+                      )
+                    }
+                    end={navItem.link === "/dashboard"}
+                    onClick={onToggleSidebar}
+                    {...(tutorialAttr && { 'data-tutorial': tutorialAttr })}
+                  >
+                    <span className="text-lg">{navItem.icon}</span> {navItem.title}
+                    {navItem.title === "Messaging" && unreadMessagesCount ? (
+                      <span className="ml-auto inline-flex items-center justify-center w-6 h-6 text-[10px] font-bold text-white bg-primary border border-white rounded-full -top-2 -end-2">
+                        {unreadMessagesCount}
+                      </span>
+                    ) : null}
+                  </NavLink>
+                </li>
+              );
+            })}
             <li
               className={classNames(
                 "flex items-center gap-4 px-4 py-2.5 cursor-pointer text-sm font-semibold rounded-lg transition-all",
