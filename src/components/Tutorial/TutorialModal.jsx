@@ -1,8 +1,8 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
-import PropTypes from 'prop-types';
-import ProgressIndicator from './ProgressIndicator';
-import AnimatedPointer from './AnimatedPointer';
-import { MOBILE_BREAKPOINT } from '~/constants/tutorial';
+import { useEffect, useState, useCallback, useRef } from "react";
+import PropTypes from "prop-types";
+import ProgressIndicator from "./ProgressIndicator";
+import AnimatedPointer from "./AnimatedPointer";
+import { MOBILE_BREAKPOINT } from "~/constants/tutorial";
 
 /**
  * Custom hook to detect reduced motion preference
@@ -12,15 +12,15 @@ const useReducedMotion = () => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     setPrefersReducedMotion(mediaQuery.matches);
 
     const handleChange = (e) => {
       setPrefersReducedMotion(e.matches);
     };
 
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
   return prefersReducedMotion;
@@ -36,7 +36,7 @@ const useFocusTrap = (modalRef, isVisible) => {
     if (!isVisible || !modalRef.current) return;
 
     const modal = modalRef.current;
-    
+
     // Get all focusable elements within the modal
     const getFocusableElements = () => {
       return modal.querySelectorAll(
@@ -45,7 +45,7 @@ const useFocusTrap = (modalRef, isVisible) => {
     };
 
     const handleKeyDown = (e) => {
-      if (e.key !== 'Tab') return;
+      if (e.key !== "Tab") return;
 
       const focusableElements = getFocusableElements();
       if (focusableElements.length === 0) return;
@@ -69,10 +69,10 @@ const useFocusTrap = (modalRef, isVisible) => {
     };
 
     // Add event listener for Tab key
-    modal.addEventListener('keydown', handleKeyDown);
+    modal.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      modal.removeEventListener('keydown', handleKeyDown);
+      modal.removeEventListener("keydown", handleKeyDown);
     };
   }, [modalRef, isVisible]);
 };
@@ -92,21 +92,21 @@ const TutorialModal = ({
   onSkip,
   onComplete,
   targetSelector,
-  isVisible
+  isVisible,
 }) => {
-  const [position, setPosition] = useState({ top: '50%', left: '50%' });
+  const [position, setPosition] = useState({ top: "50%", left: "50%" });
   const [isMobile, setIsMobile] = useState(false);
   const [isVerySmallScreen, setIsVerySmallScreen] = useState(false);
   const [modalRect, setModalRect] = useState(null);
   const [targetRect, setTargetRect] = useState(null);
   const modalRef = useRef(null);
-  
+
   // Track step transitions for animation direction
   // Requirements: 3.7 - Smooth modal transitions between steps
   const [prevStepIndex, setPrevStepIndex] = useState(currentIndex);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [transitionDirection, setTransitionDirection] = useState('forward');
-  
+  const [transitionDirection, setTransitionDirection] = useState("forward");
+
   // Check for reduced motion preference
   // Requirements: 8.5 - Respect reduced-motion preference
   const prefersReducedMotion = useReducedMotion();
@@ -119,10 +119,10 @@ const TutorialModal = ({
       setIsMobile(width < MOBILE_BREAKPOINT);
       setIsVerySmallScreen(width < 400); // Very small screens get stacked buttons
     };
-    
+
     checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    return () => window.removeEventListener('resize', checkScreenSize);
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
   /**
@@ -132,16 +132,19 @@ const TutorialModal = ({
   useEffect(() => {
     if (currentIndex !== prevStepIndex && isVisible) {
       // Determine transition direction
-      const direction = currentIndex > prevStepIndex ? 'forward' : 'backward';
+      const direction = currentIndex > prevStepIndex ? "forward" : "backward";
       setTransitionDirection(direction);
       setIsTransitioning(true);
-      
+
       // Reset transition state after animation completes
-      const timer = setTimeout(() => {
-        setIsTransitioning(false);
-        setPrevStepIndex(currentIndex);
-      }, prefersReducedMotion ? 50 : 350); // Shorter duration for reduced motion
-      
+      const timer = setTimeout(
+        () => {
+          setIsTransitioning(false);
+          setPrevStepIndex(currentIndex);
+        },
+        prefersReducedMotion ? 50 : 350
+      ); // Shorter duration for reduced motion
+
       return () => clearTimeout(timer);
     }
   }, [currentIndex, prevStepIndex, isVisible, prefersReducedMotion]);
@@ -156,7 +159,7 @@ const TutorialModal = ({
    * Get the effective position (mobile-aware)
    * Uses computedPosition from step if available
    */
-  const effectivePosition = step?.computedPosition ?? step?.position ?? 'center';
+  const effectivePosition = step?.computedPosition ?? step?.position ?? "center";
 
   /**
    * Calculate modal position relative to target element
@@ -168,21 +171,21 @@ const TutorialModal = ({
     // On mobile, always use bottom sheet positioning
     if (isMobile) {
       return {
-        top: 'auto',
+        top: "auto",
         left: 0,
         right: 0,
         bottom: 0,
-        transform: 'none',
-        position: 'bottom-sheet'
+        transform: "none",
+        position: "bottom-sheet",
       };
     }
 
     // Center positioning fallback
-    const centerPosition = { 
-      top: '50%', 
-      left: '50%', 
-      transform: 'translate(-50%, -50%)',
-      position: 'center'
+    const centerPosition = {
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      position: "center",
     };
 
     if (!effectiveTargetSelector || !step) {
@@ -198,18 +201,26 @@ const TutorialModal = ({
       }
 
       const targetRect = targetElement.getBoundingClientRect();
-      
+
       // Validate the rect has valid dimensions
       // Requirements: Error Handling - Handle invalid getBoundingClientRect (use center positioning)
       if (!targetRect || targetRect.width === 0 || targetRect.height === 0) {
-        console.warn(`Tutorial: Target element "${effectiveTargetSelector}" has invalid dimensions, using center positioning`);
+        console.warn(
+          `Tutorial: Target element "${effectiveTargetSelector}" has invalid dimensions, using center positioning`
+        );
         return centerPosition;
       }
 
       // Check for NaN or Infinity values
-      if (!Number.isFinite(targetRect.top) || !Number.isFinite(targetRect.left) || 
-          !Number.isFinite(targetRect.right) || !Number.isFinite(targetRect.bottom)) {
-        console.warn(`Tutorial: Target element "${effectiveTargetSelector}" has invalid rect values, using center positioning`);
+      if (
+        !Number.isFinite(targetRect.top) ||
+        !Number.isFinite(targetRect.left) ||
+        !Number.isFinite(targetRect.right) ||
+        !Number.isFinite(targetRect.bottom)
+      ) {
+        console.warn(
+          `Tutorial: Target element "${effectiveTargetSelector}" has invalid rect values, using center positioning`
+        );
         return centerPosition;
       }
 
@@ -224,53 +235,53 @@ const TutorialModal = ({
       let calculatedPosition = {};
 
       switch (preferredPosition) {
-        case 'right':
+        case "right":
           calculatedPosition = {
             top: Math.max(padding, Math.min(targetRect.top, viewportHeight - modalHeight - padding)),
             left: Math.min(targetRect.right + padding, viewportWidth - modalWidth - padding),
-            transform: 'none',
-            position: 'right'
+            transform: "none",
+            position: "right",
           };
           break;
-        
-        case 'left':
+
+        case "left":
           calculatedPosition = {
             top: Math.max(padding, Math.min(targetRect.top, viewportHeight - modalHeight - padding)),
             left: Math.max(padding, targetRect.left - modalWidth - padding),
-            transform: 'none',
-            position: 'left'
+            transform: "none",
+            position: "left",
           };
           break;
-        
-        case 'bottom':
+
+        case "bottom":
           calculatedPosition = {
             top: Math.min(targetRect.bottom + padding, viewportHeight - modalHeight - padding),
             left: Math.max(padding, Math.min(targetRect.left, viewportWidth - modalWidth - padding)),
-            transform: 'none',
-            position: 'bottom'
+            transform: "none",
+            position: "bottom",
           };
           break;
-        
-        case 'top':
+
+        case "top":
           calculatedPosition = {
             top: Math.max(padding, targetRect.top - modalHeight - padding),
             left: Math.max(padding, Math.min(targetRect.left, viewportWidth - modalWidth - padding)),
-            transform: 'none',
-            position: 'top'
+            transform: "none",
+            position: "top",
           };
           break;
-        
+
         default: // center
           calculatedPosition = centerPosition;
       }
 
       // Final validation - ensure calculated values are valid numbers
-      if (typeof calculatedPosition.top === 'number' && !Number.isFinite(calculatedPosition.top)) {
-        console.warn('Tutorial: Calculated invalid top position, using center');
+      if (typeof calculatedPosition.top === "number" && !Number.isFinite(calculatedPosition.top)) {
+        console.warn("Tutorial: Calculated invalid top position, using center");
         return centerPosition;
       }
-      if (typeof calculatedPosition.left === 'number' && !Number.isFinite(calculatedPosition.left)) {
-        console.warn('Tutorial: Calculated invalid left position, using center');
+      if (typeof calculatedPosition.left === "number" && !Number.isFinite(calculatedPosition.left)) {
+        console.warn("Tutorial: Calculated invalid left position, using center");
         return centerPosition;
       }
 
@@ -298,7 +309,7 @@ const TutorialModal = ({
             right: rect.right,
             bottom: rect.bottom,
             width: rect.width,
-            height: rect.height
+            height: rect.height,
           });
         } else {
           setTargetRect(null);
@@ -323,18 +334,18 @@ const TutorialModal = ({
               right: rect.right,
               bottom: rect.bottom,
               width: rect.width,
-              height: rect.height
+              height: rect.height,
             });
           }
         }
       };
 
-      window.addEventListener('scroll', handleUpdate, true);
-      window.addEventListener('resize', handleUpdate);
+      window.addEventListener("scroll", handleUpdate, true);
+      window.addEventListener("resize", handleUpdate);
 
       return () => {
-        window.removeEventListener('scroll', handleUpdate, true);
-        window.removeEventListener('resize', handleUpdate);
+        window.removeEventListener("scroll", handleUpdate, true);
+        window.removeEventListener("resize", handleUpdate);
       };
     }
   }, [isVisible, calculatePosition, effectiveTargetSelector]);
@@ -352,7 +363,7 @@ const TutorialModal = ({
             right: rect.right,
             bottom: rect.bottom,
             width: rect.width,
-            height: rect.height
+            height: rect.height,
           });
         }
       });
@@ -377,7 +388,7 @@ const TutorialModal = ({
       const focusableElements = modalRef.current.querySelectorAll(
         'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled])'
       );
-      
+
       if (focusableElements.length > 0) {
         // Small delay to ensure modal is fully rendered
         requestAnimationFrame(() => {
@@ -401,19 +412,19 @@ const TutorialModal = ({
       if (!isVisible) return;
 
       switch (e.key) {
-        case 'Escape':
+        case "Escape":
           // Escape key triggers skip confirmation
           e.preventDefault();
           e.stopPropagation();
           onSkip?.();
           break;
-        case 'Enter':
+        case "Enter":
           // Enter key activates the focused button (handled natively by buttons)
           // This is here for documentation - buttons handle Enter natively
           break;
-        case 'ArrowRight':
+        case "ArrowRight":
           // Optional: Arrow right to go to next step
-          if (!e.target.matches('input, textarea, select')) {
+          if (!e.target.matches("input, textarea, select")) {
             e.preventDefault();
             if (currentIndex < totalSteps - 1) {
               onNext?.();
@@ -422,9 +433,9 @@ const TutorialModal = ({
             }
           }
           break;
-        case 'ArrowLeft':
+        case "ArrowLeft":
           // Optional: Arrow left to go to previous step
-          if (!e.target.matches('input, textarea, select') && currentIndex > 0) {
+          if (!e.target.matches("input, textarea, select") && currentIndex > 0) {
             e.preventDefault();
             onPrev?.();
           }
@@ -434,8 +445,8 @@ const TutorialModal = ({
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isVisible, onSkip, onNext, onPrev, onComplete, currentIndex, totalSteps]);
 
   if (!isVisible || !step) {
@@ -449,49 +460,49 @@ const TutorialModal = ({
    * Mobile bottom sheet styles
    * Requirements: 7.1 - Bottom sheet styling with rounded top corners
    */
-  const mobileStyles = isMobile ? {
-    position: 'fixed',
-    // Position above the bottom nav (64px height)
-    bottom: 0,
-    left: 0,
-    right: 0,
-    top: 'auto',
-    transform: 'none',
-    borderRadius: '20px 20px 0 0',
-    maxHeight: '50vh',
-    width: '100%',
-    margin: 0,
-    overflowY: 'auto',
-    // Safe area padding for devices with home indicators
-    paddingBottom: 'env(safe-area-inset-bottom, 16px)'
-  } : {};
+  const mobileStyles = isMobile
+    ? {
+        position: "fixed",
+        // Position above the bottom nav (64px height)
+        bottom: 0,
+        left: 0,
+        right: 0,
+        top: "auto",
+        transform: "none",
+        borderRadius: "20px 20px 0 0",
+        maxHeight: "50vh",
+        width: "100%",
+        margin: 0,
+        overflowY: "auto",
+        // Safe area padding for devices with home indicators
+        paddingBottom: "env(safe-area-inset-bottom, 16px)",
+      }
+    : {};
 
   // Desktop positioned styles
-  const desktopStyles = !isMobile ? {
-    position: 'fixed',
-    top: typeof position.top === 'number' ? `${position.top}px` : position.top,
-    left: typeof position.left === 'number' ? `${position.left}px` : position.left,
-    transform: position.transform || 'none',
-    maxWidth: '360px',
-    width: '100%'
-  } : {};
+  const desktopStyles = !isMobile
+    ? {
+        position: "fixed",
+        top: typeof position.top === "number" ? `${position.top}px` : position.top,
+        left: typeof position.left === "number" ? `${position.left}px` : position.left,
+        transform: position.transform || "none",
+        maxWidth: "360px",
+        width: "100%",
+      }
+    : {};
 
   /**
    * Determine pointer direction based on modal position
    * For mobile bottom sheet, pointer should point upward to target
    * Requirements: 7.2 - Adjust pointer direction for mobile
    */
-  const pointerDirection = isMobile ? 'top' : (step?.position || 'center');
+  const pointerDirection = isMobile ? "top" : step?.position || "center";
 
   return (
     <>
       {/* Animated Pointer - only show on desktop when there's a target */}
-      {!isMobile && targetRect && modalRect && pointerDirection !== 'center' && (
-        <AnimatedPointer
-          fromRect={modalRect}
-          toRect={targetRect}
-          direction={pointerDirection}
-        />
+      {!isMobile && targetRect && modalRect && pointerDirection !== "center" && (
+        <AnimatedPointer fromRect={modalRect} toRect={targetRect} direction={pointerDirection} />
       )}
 
       {/* 
@@ -516,109 +527,98 @@ const TutorialModal = ({
         tabIndex={-1}
         className={`
           bg-white shadow-2xl z-[9999]
-          ${isMobile 
-            ? 'rounded-t-2xl tutorial-bottom-sheet' 
-            : `rounded-xl ${!isTransitioning ? 'animate-fade-in' : ''}`
+          ${
+            isMobile ? "rounded-t-2xl tutorial-bottom-sheet" : `rounded-xl ${!isTransitioning ? "animate-fade-in" : ""}`
           }
-          ${!prefersReducedMotion && !isMobile ? 'tutorial-modal-transitioning' : ''}
+          ${!prefersReducedMotion && !isMobile ? "tutorial-modal-transitioning" : ""}
         `}
         style={{
           ...desktopStyles,
           ...mobileStyles,
-          boxShadow: isMobile 
-            ? '0 -10px 40px rgba(0, 0, 0, 0.15)' 
-            : '0 20px 40px rgba(0, 0, 0, 0.15)'
+          boxShadow: isMobile ? "0 -10px 40px rgba(0, 0, 0, 0.15)" : "0 20px 40px rgba(0, 0, 0, 0.15)",
         }}
       >
-      {/* Visually hidden live region for screen reader announcements */}
-      {/* Requirements: 8.2 - Accessibility for screen readers */}
-      <div 
-        className="sr-only" 
-        role="status" 
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        {`Tutorial step ${currentIndex + 1} of ${totalSteps}: ${step.title}`}
-      </div>
-
-      {/* Mobile drag handle - visual affordance for bottom sheet */}
-      {/* Requirements: 7.1 - Add drag handle for visual affordance */}
-      {isMobile && (
-        <div className="flex justify-center pt-3 pb-2">
-          <div 
-            className="w-12 h-1.5 bg-gray-300 rounded-full"
-            aria-hidden="true"
-          />
+        {/* Visually hidden live region for screen reader announcements */}
+        {/* Requirements: 8.2 - Accessibility for screen readers */}
+        <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+          {`Tutorial step ${currentIndex + 1} of ${totalSteps}: ${step.title}`}
         </div>
-      )}
 
-      {/* 
+        {/* Mobile drag handle - visual affordance for bottom sheet */}
+        {/* Requirements: 7.1 - Add drag handle for visual affordance */}
+        {isMobile && (
+          <div className="flex justify-center pt-3 pb-2">
+            <div className="w-12 h-1.5 bg-gray-300 rounded-full" aria-hidden="true" />
+          </div>
+        )}
+
+        {/* 
         Header and Body with step transition animations
         Requirements: 3.7 - Animate smoothly when transitioning between steps
       */}
-      <div 
-        key={`step-content-${currentIndex}`}
-        className={`
-          ${isTransitioning && !prefersReducedMotion 
-            ? transitionDirection === 'forward' 
-              ? 'tutorial-step-content-enter' 
-              : 'tutorial-step-content-enter-reverse'
-            : ''
+        <div
+          key={`step-content-${currentIndex}`}
+          className={`
+          ${
+            isTransitioning && !prefersReducedMotion
+              ? transitionDirection === "forward"
+                ? "tutorial-step-content-enter"
+                : "tutorial-step-content-enter-reverse"
+              : ""
           }
         `}
-      >
-        {/* Header */}
-        <div className={`flex items-start justify-between ${isMobile ? 'px-5 pt-2 pb-1' : 'px-6 pt-5 pb-2'}`}>
-          <h2 
-            id="tutorial-modal-title"
-            className={`font-bold text-gray-900 pr-4 ${isMobile ? 'text-base' : 'text-lg'}`}
-          >
-            {step.title}
-          </h2>
-          <button
-            onClick={onSkip}
-            className={`text-gray-500 hover:text-gray-700 transition-colors
+        >
+          {/* Header */}
+          <div className={`flex items-start justify-between ${isMobile ? "px-5 pt-2 pb-1" : "px-6 pt-5 pb-2"}`}>
+            <h2
+              id="tutorial-modal-title"
+              className={`font-bold text-gray-900 pr-4 ${isMobile ? "text-base" : "text-lg"}`}
+            >
+              {step.title}
+            </h2>
+            <button
+              onClick={onSkip}
+              className={`text-gray-500 hover:text-gray-700 transition-colors
                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
                        focus:bg-blue-50 rounded px-2 py-1 -mr-2 -mt-1
-                       ${isMobile ? 'text-xs' : 'text-sm'}`}
-            aria-label="Skip tutorial"
-          >
-            Skip
-          </button>
+                       ${isMobile ? "text-xs" : "text-sm"}`}
+              aria-label="Skip tutorial"
+            >
+              Skip
+            </button>
+          </div>
+
+          {/* Body */}
+          <div className={`${isMobile ? "px-5 py-2" : "px-6 py-3"}`}>
+            <p
+              id="tutorial-modal-description"
+              className={`text-gray-600 leading-relaxed ${isMobile ? "text-sm" : "text-sm"}`}
+            >
+              {step.description}
+            </p>
+          </div>
         </div>
 
-        {/* Body */}
-        <div className={`${isMobile ? 'px-5 py-2' : 'px-6 py-3'}`}>
-          <p 
-            id="tutorial-modal-description"
-            className={`text-gray-600 leading-relaxed ${isMobile ? 'text-sm' : 'text-sm'}`}
-          >
-            {step.description}
-          </p>
-        </div>
-      </div>
+        {/* Footer */}
+        <div
+          className={`
+        ${isMobile ? "px-5 pb-4 pt-2" : "px-6 pb-5 pt-3"}
+      `}
+        >
+          {/* Progress Indicator */}
+          <div className={`${isMobile ? "mb-3" : "mb-4"}`}>
+            <ProgressIndicator currentStep={currentIndex} totalSteps={totalSteps} />
+          </div>
 
-      {/* Footer */}
-      <div className={`
-        ${isMobile ? 'px-5 pb-4 pt-2' : 'px-6 pb-5 pt-3'}
-      `}>
-        {/* Progress Indicator */}
-        <div className={`${isMobile ? 'mb-3' : 'mb-4'}`}>
-          <ProgressIndicator 
-            currentStep={currentIndex} 
-            totalSteps={totalSteps} 
-          />
-        </div>
-
-        {/* Navigation Buttons */}
-        {/* Requirements: 7.1 - Adjust button layout for mobile (side by side on mobile) */}
-        <div className="flex gap-3 flex-row">
-          {/* Back Button - only show if not first step */}
-          {/* Requirements: 8.1, 8.4 - Add visible focus indicators on all interactive elements */}
-          {!isFirstStep ? (
-            <button
-              onClick={onPrev}
-              className={`
+          {/* Navigation Buttons */}
+          {/* Requirements: 7.1 - Adjust button layout for mobile (side by side on mobile) */}
+          <div className="flex gap-3 flex-row">
+            {/* Back Button - only show if not first step */}
+            {/* Requirements: 8.1, 8.4 - Add visible focus indicators on all interactive elements */}
+            {!isFirstStep ? (
+              <button
+                onClick={onPrev}
+                className={`
                 px-4 py-2.5 font-medium text-gray-700 
                 bg-white border border-gray-300 rounded-lg
                 hover:bg-gray-50 hover:border-gray-400
@@ -626,22 +626,22 @@ const TutorialModal = ({
                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
                 focus:border-blue-500 focus:bg-blue-50
                 transition-all duration-200
-                ${isMobile ? 'flex-1 text-sm min-h-[40px]' : 'text-sm'}
+                ${isMobile ? "flex-1 text-sm min-h-[40px]" : "text-sm"}
               `}
-              aria-label="Go to previous step"
-            >
-              Back
-            </button>
-          ) : (
-            // Spacer for alignment when Back button is hidden
-            <div className={isMobile ? 'flex-1' : ''} />
-          )}
+                aria-label="Go to previous step"
+              >
+                Back
+              </button>
+            ) : (
+              // Spacer for alignment when Back button is hidden
+              <div className={isMobile ? "flex-1" : ""} />
+            )}
 
-          {/* Next/Complete Button */}
-          {/* Requirements: 8.1, 8.4 - Add visible focus indicators on all interactive elements */}
-          <button
-            onClick={isLastStep ? onComplete : onNext}
-            className={`
+            {/* Next/Complete Button */}
+            {/* Requirements: 8.1, 8.4 - Add visible focus indicators on all interactive elements */}
+            <button
+              onClick={isLastStep ? onComplete : onNext}
+              className={`
               px-6 py-2.5 font-medium text-white 
               bg-primary rounded-lg
               hover:bg-primary/90
@@ -649,15 +649,15 @@ const TutorialModal = ({
               focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
               focus:ring-offset-white
               transition-all duration-200
-              ${isMobile ? 'flex-1 text-sm min-h-[40px]' : 'text-sm'}
+              ${isMobile ? "flex-1 text-sm min-h-[40px]" : "text-sm"}
             `}
-            aria-label={isLastStep ? 'Complete tutorial and start using the dashboard' : 'Go to next step'}
-          >
-            {isLastStep ? 'Get Started' : 'Next'}
-          </button>
+              aria-label={isLastStep ? "Complete tutorial and start using the dashboard" : "Go to next step"}
+            >
+              {isLastStep ? "Get Started" : "Next"}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 };
@@ -669,9 +669,9 @@ TutorialModal.propTypes = {
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     targetSelector: PropTypes.string,
-    position: PropTypes.oneOf(['top', 'bottom', 'left', 'right', 'center']),
+    position: PropTypes.oneOf(["top", "bottom", "left", "right", "center"]),
     route: PropTypes.string,
-    requiresSidebar: PropTypes.bool
+    requiresSidebar: PropTypes.bool,
   }),
   /** Current step index (0-based) */
   currentIndex: PropTypes.number.isRequired,
@@ -688,12 +688,12 @@ TutorialModal.propTypes = {
   /** CSS selector for the target element */
   targetSelector: PropTypes.string,
   /** Whether the modal is visible */
-  isVisible: PropTypes.bool.isRequired
+  isVisible: PropTypes.bool.isRequired,
 };
 
 TutorialModal.defaultProps = {
   step: null,
-  targetSelector: null
+  targetSelector: null,
 };
 
 export default TutorialModal;

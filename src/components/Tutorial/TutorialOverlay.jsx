@@ -1,6 +1,6 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { MOBILE_BREAKPOINT } from '~/constants/tutorial';
+import { useEffect, useState, useCallback, useRef } from "react";
+import PropTypes from "prop-types";
+import { MOBILE_BREAKPOINT } from "~/constants/tutorial";
 
 /**
  * Custom hook to detect reduced motion preference
@@ -10,15 +10,15 @@ const useReducedMotion = () => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     setPrefersReducedMotion(mediaQuery.matches);
 
     const handleChange = (e) => {
       setPrefersReducedMotion(e.matches);
     };
 
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
   return prefersReducedMotion;
@@ -29,17 +29,12 @@ const useReducedMotion = () => {
  * Creates a full-screen overlay with spotlight effect on the target element
  * Requirements: 2.2, 4.5, 3.6 - Smooth fade-in transition for spotlight
  */
-const TutorialOverlay = ({ 
-  targetSelector, 
-  isVisible, 
-  onClickOutside,
-  padding = 8 
-}) => {
+const TutorialOverlay = ({ targetSelector, isVisible, onClickOutside, padding = 8 }) => {
   const [targetRect, setTargetRect] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const overlayRef = useRef(null);
   const prevTargetSelector = useRef(targetSelector);
-  
+
   // Check for reduced motion preference
   // Requirements: 8.5 - Respect reduced-motion preference
   const prefersReducedMotion = useReducedMotion();
@@ -49,10 +44,10 @@ const TutorialOverlay = ({
     const checkMobile = () => {
       setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
     };
-    
+
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   /**
@@ -68,7 +63,7 @@ const TutorialOverlay = ({
 
     try {
       const targetElement = document.querySelector(targetSelector);
-      
+
       if (!targetElement) {
         console.warn(`Tutorial: Target element not found for selector "${targetSelector}"`);
         setTargetRect(null);
@@ -76,7 +71,7 @@ const TutorialOverlay = ({
       }
 
       const rect = targetElement.getBoundingClientRect();
-      
+
       // Validate the rect has valid dimensions
       // Requirements: Error Handling - Handle invalid getBoundingClientRect
       if (!rect || rect.width === 0 || rect.height === 0) {
@@ -86,8 +81,12 @@ const TutorialOverlay = ({
       }
 
       // Check for NaN or Infinity values
-      if (!Number.isFinite(rect.top) || !Number.isFinite(rect.left) || 
-          !Number.isFinite(rect.width) || !Number.isFinite(rect.height)) {
+      if (
+        !Number.isFinite(rect.top) ||
+        !Number.isFinite(rect.left) ||
+        !Number.isFinite(rect.width) ||
+        !Number.isFinite(rect.height)
+      ) {
         console.warn(`Tutorial: Target element "${targetSelector}" has invalid rect values, using center positioning`);
         setTargetRect(null);
         return;
@@ -97,10 +96,10 @@ const TutorialOverlay = ({
       setTargetRect({
         top: rect.top - padding,
         left: rect.left - padding,
-        width: rect.width + (padding * 2),
-        height: rect.height + (padding * 2),
+        width: rect.width + padding * 2,
+        height: rect.height + padding * 2,
         // Store original rect for reference
-        originalRect: rect
+        originalRect: rect,
       });
     } catch (error) {
       console.warn(`Tutorial: Error getting target element bounds for "${targetSelector}":`, error.message);
@@ -112,14 +111,14 @@ const TutorialOverlay = ({
   useEffect(() => {
     if (isVisible) {
       updateTargetPosition();
-      
+
       // Update position on scroll and resize
-      window.addEventListener('scroll', updateTargetPosition, true);
-      window.addEventListener('resize', updateTargetPosition);
-      
+      window.addEventListener("scroll", updateTargetPosition, true);
+      window.addEventListener("resize", updateTargetPosition);
+
       return () => {
-        window.removeEventListener('scroll', updateTargetPosition, true);
-        window.removeEventListener('resize', updateTargetPosition);
+        window.removeEventListener("scroll", updateTargetPosition, true);
+        window.removeEventListener("resize", updateTargetPosition);
       };
     }
   }, [isVisible, updateTargetPosition]);
@@ -131,10 +130,13 @@ const TutorialOverlay = ({
   useEffect(() => {
     if (targetSelector !== prevTargetSelector.current && isVisible) {
       // Reset transition state after animation completes
-      const timer = setTimeout(() => {
-        prevTargetSelector.current = targetSelector;
-      }, prefersReducedMotion ? 50 : 350);
-      
+      const timer = setTimeout(
+        () => {
+          prevTargetSelector.current = targetSelector;
+        },
+        prefersReducedMotion ? 50 : 350
+      );
+
       return () => clearTimeout(timer);
     }
   }, [targetSelector, isVisible, prefersReducedMotion]);
@@ -143,12 +145,15 @@ const TutorialOverlay = ({
    * Handle click on overlay (outside the spotlight)
    * Triggers skip confirmation per Requirements 4.5
    */
-  const handleOverlayClick = useCallback((e) => {
-    // Only trigger if clicking directly on the overlay, not on children
-    if (e.target === overlayRef.current && onClickOutside) {
-      onClickOutside();
-    }
-  }, [onClickOutside]);
+  const handleOverlayClick = useCallback(
+    (e) => {
+      // Only trigger if clicking directly on the overlay, not on children
+      if (e.target === overlayRef.current && onClickOutside) {
+        onClickOutside();
+      }
+    },
+    [onClickOutside]
+  );
 
   // Don't render if not visible
   if (!isVisible) {
@@ -162,7 +167,7 @@ const TutorialOverlay = ({
   const generateClipPath = () => {
     if (!targetRect) {
       // No target - full overlay without cutout
-      return 'none';
+      return "none";
     }
 
     const { top, left, width, height } = targetRect;
@@ -188,22 +193,22 @@ const TutorialOverlay = ({
   return (
     <div
       ref={overlayRef}
-      className={`tutorial-overlay ${!prefersReducedMotion ? 'tutorial-overlay-transitioning' : ''}`}
+      className={`tutorial-overlay ${!prefersReducedMotion ? "tutorial-overlay-transitioning" : ""}`}
       onClick={handleOverlayClick}
       style={{
-        position: 'fixed',
+        position: "fixed",
         top: 0,
         left: 0,
         right: 0,
         // Full screen overlay on all devices
         bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
         zIndex: 9998,
         clipPath: generateClipPath(),
         // Requirements: 3.6 - Smooth fade-in transition for spotlight
         // Transition is handled by CSS class for better performance
         opacity: isVisible ? 1 : 0,
-        pointerEvents: targetRect ? 'auto' : 'none'
+        pointerEvents: targetRect ? "auto" : "none",
       }}
       aria-hidden="true"
     />
@@ -218,13 +223,13 @@ TutorialOverlay.propTypes = {
   /** Callback when user clicks outside the spotlight */
   onClickOutside: PropTypes.func,
   /** Padding around the spotlight cutout in pixels */
-  padding: PropTypes.number
+  padding: PropTypes.number,
 };
 
 TutorialOverlay.defaultProps = {
   targetSelector: null,
   onClickOutside: null,
-  padding: 8
+  padding: 8,
 };
 
 export default TutorialOverlay;
