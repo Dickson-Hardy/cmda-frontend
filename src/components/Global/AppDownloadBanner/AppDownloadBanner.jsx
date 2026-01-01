@@ -31,8 +31,10 @@ const AppDownloadBanner = () => {
   };
 
   const handleDownload = () => {
-    // Replace with your actual APK download URL
-    const apkUrl = "https://api.cmdanigeria.net/downloads/cmda-mobile.apk";
+    // Using GitHub Releases for APK distribution
+    // Update the version number when you create a new release
+    const apkUrl = "https://github.com/Dickson-Hardy/cmda-backend/releases/latest/download/cmda-mobile.apk";
+    
     window.open(apkUrl, "_blank");
   };
 

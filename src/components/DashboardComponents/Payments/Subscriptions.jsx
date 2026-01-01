@@ -83,7 +83,7 @@ const Subscriptions = () => {
       const value = info.getValue();
       const row = info.row.original;
       return col.accessor === "_id" ? (
-        row.isPaid ? (
+        row.expiryDate ? (
           <button
             onClick={() => handleDownloadReceipt(value)}
             className="text-primary hover:text-primary-dark underline text-sm font-medium"
@@ -110,8 +110,13 @@ const Subscriptions = () => {
     enableSorting: false,
   }));
 
-  // Filter to show only paid subscriptions
-  const paidSubscriptions = (subscriptions?.items || []).filter((sub) => sub.isPaid);
+  // Show only valid paid subscriptions:
+  // - Must have expiryDate (indicates payment was processed)
+  // - Must NOT have INT- reference (those are pending payment intents)
+  // - Valid references: Paystack/PayPal codes or ADMIN
+  const paidSubscriptions = (subscriptions?.items || []).filter((sub) =>
+    sub.expiryDate && (!sub.reference || !sub.reference.startsWith('INT-'))
+  );
 
   const [exportSubscriptions, { isLoading: isExporting }] = useExportSubscriptionsMutation();
 
@@ -188,12 +193,12 @@ const Subscriptions = () => {
           <Button label="Export" variant="outlined" loading={isExporting} className="ml-auto" onClick={handleExport} />
         </div>
         <Table
-          tableData={paidSubscriptions}
+          tableData={allSubscriptions}
           tableColumns={formattedColumns}
           loading={isLoading}
           serverSidePagination
-          totalItemsCount={paidSubscriptions.length}
-          totalPageCount={Math.ceil(paidSubscriptions.length / limit)}
+          totalItemsCount={subscriptions?.totalItems || 0}
+          totalPageCount={subscriptions?.totalPages || 1}
           onPaginationChange={({ currentPage, perPage }) => {
             setPage(currentPage);
             setLimit(perPage);

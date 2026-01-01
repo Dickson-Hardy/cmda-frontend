@@ -4,6 +4,11 @@ import Modal from "~/components/Global/Modal/Modal";
 import { classNames } from "~/utilities/classNames";
 
 const ConfirmSubscriptionModal = ({ isOpen, onClose, onSubmit, loading }) => {
+  const handleSubmit = () => {
+    // Pass standard annual subscription payload for Nigerian members
+    onSubmit({ isAnnualSubscription: true });
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="m-2" maxWidth={480}>
       <div className="flex flex-col gap-4">
@@ -28,7 +33,7 @@ const ConfirmSubscriptionModal = ({ isOpen, onClose, onSubmit, loading }) => {
             No, Cancel
           </Button>
 
-          <Button className="w-full mb-1.5" loading={loading} large onClick={onSubmit}>
+          <Button className="w-full mb-1.5" loading={loading} large onClick={handleSubmit}>
             Yes, Proceed
           </Button>
         </div>

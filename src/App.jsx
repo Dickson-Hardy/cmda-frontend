@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 import { HelmetProvider } from "react-helmet-async";
 import { useEffect, useState } from "react";
 import ErrorBoundary from "./components/Global/ErrorBoundary/ErrorBoundary";
-import AppDownloadBanner from "./components/Global/AppDownloadBanner";
+// import AppDownloadBanner from "./components/Global/AppDownloadBanner"; // Paused for now
 import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
@@ -67,7 +67,7 @@ export default function App() {
       <HelmetProvider>
         <Provider store={store}>
           <PersistGate loading={<LoadingComponent />} persistor={persistor}>
-            <AppDownloadBanner />
+            {/* <AppDownloadBanner /> */}
             {(persistorReady || loadingTimeout) && <AppRouter />}
 
             <ToastContainer
