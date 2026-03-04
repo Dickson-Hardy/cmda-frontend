@@ -11,7 +11,8 @@ import PaypalPaymentButton from "./PaypalPaymentButton";
 
 const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
   const [selectedTab, setSelectedTab] = useState("subscriptions");
-  const [paymentFrequency, setPaymentFrequency] = useState("annual");
+  const currentYear = new Date().getFullYear();
+  const [targetYear, setTargetYear] = useState(currentYear);
 
   const {
     control,
@@ -37,14 +38,15 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
     }
 
     const bracket = GLOBAL_INCOME_BASED_PRICING[watchedIncomeBracket];
-    return bracket ? bracket[paymentFrequency] : 0;
+    return bracket ? bracket.annual : 0;
   };
 
   const handleFormSubmit = (data) => {
     const subscriptionData = {
       ...data,
       selectedTab,
-      paymentFrequency,
+      paymentFrequency: "annual",
+      targetYear,
       amount: getCurrentPrice(),
       currency: "USD",
     };
@@ -54,9 +56,11 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
   const handleModalClose = () => {
     reset();
     setSelectedTab("subscriptions");
-    setPaymentFrequency("annual");
+    setTargetYear(currentYear);
     onClose();
   };
+
+  const availableYears = Array.from({ length: 8 }, (_, index) => currentYear - 2 + index);
 
   const tabs = [
     { id: "subscriptions", label: "Annual Subscriptions", icon: icons.card },
@@ -114,33 +118,18 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
                 />
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Payment Frequency</label>
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setPaymentFrequency("monthly")}
-                      className={classNames(
-                        "flex-1 py-2 px-4 text-sm rounded-lg border transition-colors",
-                        paymentFrequency === "monthly"
-                          ? "bg-primary text-white border-primary"
-                          : "bg-white text-gray-700 border-gray-300 hover:border-primary"
-                      )}
-                    >
-                      Monthly
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPaymentFrequency("annual")}
-                      className={classNames(
-                        "flex-1 py-2 px-4 text-sm rounded-lg border transition-colors",
-                        paymentFrequency === "annual"
-                          ? "bg-primary text-white border-primary"
-                          : "bg-white text-gray-700 border-gray-300 hover:border-primary"
-                      )}
-                    >
-                      Annual
-                    </button>
-                  </div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Subscription Year</label>
+                  <select
+                    value={targetYear}
+                    onChange={(event) => setTargetYear(Number(event.target.value))}
+                    className="w-full py-2 px-3 text-sm rounded-lg border border-gray-300 focus:border-primary focus:outline-none"
+                  >
+                    {availableYears.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -151,7 +140,7 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
                     {GLOBAL_INCOME_BASED_PRICING[watchedIncomeBracket]?.label}
                   </h5>
                   <div className="text-3xl font-bold text-primary mb-2">{formatCurrency(getCurrentPrice(), "USD")}</div>
-                  <p className="text-sm text-gray-600 capitalize">{paymentFrequency} Payment</p>
+                  <p className="text-sm text-gray-600">Calendar Year {targetYear} (Jan 1 - Dec 31)</p>
                 </div>
               </div>
             </div>
@@ -218,7 +207,8 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
                 const subscriptionData = {
                   ...data,
                   selectedTab,
-                  paymentFrequency,
+                  paymentFrequency: "annual",
+                  targetYear,
                   amount: getCurrentPrice(),
                   currency: "USD",
                 };

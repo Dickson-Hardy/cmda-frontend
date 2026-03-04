@@ -90,8 +90,8 @@ const DashboardHomePage = () => {
         </div>
       ) : null}
 
-      <section 
-        className="h-[400px] w-full rounded-3xl mb-8" 
+      <section
+        className="h-[400px] w-full rounded-3xl mb-8"
         style={{ backgroundImage: `url(${doctorPng})` }}
         data-tutorial="home-section"
       >
@@ -112,6 +112,31 @@ const DashboardHomePage = () => {
               </button>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Impact Fund Section */}
+      <section className="mb-6">
+        <div className="relative bg-gradient-to-r from-primary to-secondary rounded-xl p-6 text-white text-center shadow-lg overflow-visible">
+          <span className="absolute -top-3 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg shadow-red-500/50 tracking-wider animate-pulse">
+            FEATURED
+          </span>
+          <div className="flex justify-center mb-3">
+            <img 
+              src="/Impact  LOGO.png" 
+              alt="Impact Fund" 
+              className="h-16 w-16 object-contain bg-white rounded-full p-2 shadow-xl"
+            />
+          </div>
+          <h3 className="text-xl font-bold mb-3">Join us in Sustaining the vision of caring for the whole Man</h3>
+          <a
+            href="https://impact.cmdanigeria.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-white text-primary px-6 py-2.5 rounded-lg font-semibold hover:bg-gray-100 transition-all shadow-md hover:shadow-lg"
+          >
+            Learn More & Contribute
+          </a>
         </div>
       </section>
 

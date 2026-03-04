@@ -56,6 +56,24 @@ const IndexPage = () => {
               <Button onClick={() => navigate("/login")} large variant="outlined" label="Login Now" />
               <Button onClick={() => navigate("/conferences")} large variant="tertiary" label="View Conferences" />
             </div>
+            <div className="mt-4">
+              <a
+                href="https://impact.cmdanigeria.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative inline-flex items-center gap-3 bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl overflow-visible"
+              >
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg shadow-red-500/50 tracking-wider animate-pulse">
+                  NEW
+                </span>
+                <img 
+                  src="/Impact  LOGO.png" 
+                  alt="Impact Fund" 
+                  className="h-8 w-8 object-contain bg-white rounded-full p-1 shadow-md"
+                />
+                <span>Join us in Sustaining the vision of caring for the whole Man</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>

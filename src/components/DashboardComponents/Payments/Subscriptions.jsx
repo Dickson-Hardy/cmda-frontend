@@ -114,8 +114,8 @@ const Subscriptions = () => {
   // - Must have expiryDate (indicates payment was processed)
   // - Must NOT have INT- reference (those are pending payment intents)
   // - Valid references: Paystack/PayPal codes or ADMIN
-  const paidSubscriptions = (subscriptions?.items || []).filter((sub) =>
-    sub.expiryDate && (!sub.reference || !sub.reference.startsWith('INT-'))
+  const paidSubscriptions = (subscriptions?.items || []).filter(
+    (sub) => sub.expiryDate && (!sub.reference || !sub.reference.startsWith("INT-"))
   );
 
   const [exportSubscriptions, { isLoading: isExporting }] = useExportSubscriptionsMutation();
@@ -159,8 +159,6 @@ const Subscriptions = () => {
                   </p>
                   <p className="font-semibold">
                     Annual: {formatCurrency(GLOBAL_INCOME_BASED_PRICING[user.incomeBracket]?.annual || 100, "USD")}
-                    {" | "}
-                    Monthly: {formatCurrency(GLOBAL_INCOME_BASED_PRICING[user.incomeBracket]?.monthly || 10, "USD")}
                   </p>
                   {user.hasLifetimeMembership && (
                     <p className="text-sm text-success mt-2">✓ Lifetime Member ({user.lifetimeMembershipType})</p>
@@ -193,7 +191,7 @@ const Subscriptions = () => {
           <Button label="Export" variant="outlined" loading={isExporting} className="ml-auto" onClick={handleExport} />
         </div>
         <Table
-          tableData={allSubscriptions}
+          tableData={paidSubscriptions}
           tableColumns={formattedColumns}
           loading={isLoading}
           serverSidePagination
