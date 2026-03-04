@@ -17,11 +17,9 @@ import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 import {
   admissionYearOptions,
   currentYearOptions,
-  doctorsRegionLists,
   genderOptions,
-  globalRegionsData,
-  studentChapterOptions,
 } from "~/utilities/reusableVariables";
+import { useChapters } from "~/hooks/useChapters";
 
 const DashboardEditProfile = () => {
   const user = useSelector((state) => state.auth.user);
@@ -30,6 +28,12 @@ const DashboardEditProfile = () => {
   const [addSocialVisible, setAddSocialVisible] = useState(false);
   const [editProfile, { isLoading }] = useEditProfileMutation();
   const dispatch = useDispatch();
+  
+  // Fetch chapters dynamically based on user role
+  const { chapters: chapterOptions, isLoading: isLoadingChapters } = useChapters(
+    user.role === "Doctor" ? "Doctor" : user.role === "Student" ? "Student" : "GlobalNetwork"
+  );
+  
   const {
     control,
     register,
@@ -166,17 +170,12 @@ const DashboardEditProfile = () => {
                 <Select
                   label="region"
                   control={control}
-                  options={
-                    user.role == "Doctor"
-                      ? doctorsRegionLists
-                      : user.role == "Student"
-                        ? studentChapterOptions
-                        : globalRegionsData
-                  }
+                  options={chapterOptions}
                   errors={errors}
                   required
                   title="Chapter/Region"
-                  placeholder="choose your chapter/region"
+                  placeholder={isLoadingChapters ? "Loading chapters..." : "choose your chapter/region"}
+                  disabled={isLoadingChapters}
                 />
               </div>
 
