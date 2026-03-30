@@ -20,6 +20,7 @@ import { selectAuth } from "~/redux/features/auth/authSlice";
 import { classNames } from "~/utilities/classNames";
 import formatDate from "~/utilities/fomartDate";
 import { formatCurrency } from "~/utilities/formatCurrency";
+import { toClickableUrl } from "~/utilities/isExternalUrl";
 
 const DashboardStoreSingleEventPage = () => {
   const { slug } = useParams();
@@ -42,6 +43,7 @@ const DashboardStoreSingleEventPage = () => {
   const [openSuccess, setOpenSuccess] = useState(false);
 
   const [confirmPayment, { isLoading: isConfirming }] = useConfirmEventPaymentMutation();
+  const clickableEventUrl = toClickableUrl(singleEvent?.linkOrLocation);
 
   const wasCalled = useRef(false);
 
@@ -166,7 +168,18 @@ const DashboardStoreSingleEventPage = () => {
           <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">
             Event {singleEvent?.eventType === "Physical" ? "Location" : "Link"}
           </h4>
-          <p className="text-base mb-1">{singleEvent?.linkOrLocation}</p>
+          {clickableEventUrl ? (
+            <a
+              href={clickableEventUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-base mb-1 text-primary underline break-all inline-block"
+            >
+              {singleEvent?.linkOrLocation}
+            </a>
+          ) : (
+            <p className="text-base mb-1">{singleEvent?.linkOrLocation}</p>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-6 mt-6">
