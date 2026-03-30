@@ -70,6 +70,7 @@ const Subscriptions = () => {
 
   const COLUMNS = [
     { header: "Reference", accessor: "reference" },
+    { header: "Year", accessor: "subscriptionYear" },
     { header: "Date", accessor: "createdAt" },
     { header: "Amount", accessor: "amount" },
     { header: "Frequency", accessor: "frequency" },
@@ -99,6 +100,10 @@ const Subscriptions = () => {
         ) : (
           "No"
         )
+      ) : col.accessor === "subscriptionYear" ? (
+        <span className="whitespace-nowrap">
+          {value || (row.expiryDate ? new Date(row.expiryDate).getFullYear() : "--")}
+        </span>
       ) : col.accessor === "createdAt" || col.accessor === "expiryDate" ? (
         <span className="whitespace-nowrap">{formatDate(value).dateTime}</span>
       ) : col.accessor === "amount" ? (
