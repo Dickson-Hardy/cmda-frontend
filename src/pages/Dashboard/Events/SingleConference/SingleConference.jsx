@@ -19,6 +19,7 @@ import {
 import { selectAuth } from "~/redux/features/auth/authSlice";
 import formatDate from "~/utilities/fomartDate";
 import { formatCurrency } from "~/utilities/formatCurrency";
+import { toClickableUrl } from "~/utilities/isExternalUrl";
 import { conferenceTypes, conferenceZones, conferenceRegions } from "~/constants/conferences";
 
 const SingleConferencePage = () => {
@@ -46,6 +47,8 @@ const SingleConferencePage = () => {
   const [openSuccess, setOpenSuccess] = useState(false);
 
   const [confirmPayment] = useConfirmEventPaymentMutation();
+  const clickableExternalUrl = toClickableUrl(conference?.externalUrl);
+  const hasExternalAction = Boolean(clickableExternalUrl);
 
   const wasCalled = useRef(false);
 
@@ -338,7 +341,7 @@ const SingleConferencePage = () => {
 
             {/* Registration Button */}
             <div className="border-t pt-6">
-              {conference?.requiresSubscription !== false && !user.subscribed && (
+              {conference?.requiresSubscription !== false && !user.subscribed && !hasExternalAction && (
                 <div className="mb-4 border px-6 py-3 bg-error/20 border-error rounded-lg text-sm font-medium text-error">
                   You need an active subscription to register for this conference.{" "}
                   <button type="button" className="underline font-bold" onClick={() => navigate("/dashboard/payments")}>
@@ -346,7 +349,14 @@ const SingleConferencePage = () => {
                   </button>
                 </div>
               )}
-              {conference.isRegistered ? (
+              {hasExternalAction ? (
+                <Button
+                  onClick={() => window.open(clickableExternalUrl, "_blank", "noopener,noreferrer")}
+                  className="w-full md:w-auto bg-blue-600 hover:bg-blue-700"
+                >
+                  Open Conference Link
+                </Button>
+              ) : conference.isRegistered ? (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                   <p className="text-green-800 font-medium">✓ You are registered for this conference</p>
                 </div>

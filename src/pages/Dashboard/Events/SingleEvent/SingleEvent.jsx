@@ -44,6 +44,8 @@ const DashboardStoreSingleEventPage = () => {
 
   const [confirmPayment, { isLoading: isConfirming }] = useConfirmEventPaymentMutation();
   const clickableEventUrl = toClickableUrl(singleEvent?.linkOrLocation);
+  const clickableExternalUrl = toClickableUrl(singleEvent?.externalUrl);
+  const hasExternalAction = Boolean(clickableExternalUrl);
 
   const wasCalled = useRef(false);
 
@@ -181,6 +183,20 @@ const DashboardStoreSingleEventPage = () => {
             <p className="text-base mb-1">{singleEvent?.linkOrLocation}</p>
           )}
         </div>
+
+        {singleEvent?.externalUrl && (
+          <div className="mt-4">
+            <h4 className="text-sm text-gray-600 font-semibold uppercase mb-1">External URL</h4>
+            <a
+              href={clickableExternalUrl || singleEvent?.externalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-base mb-1 text-primary underline break-all inline-block"
+            >
+              {singleEvent?.externalUrl}
+            </a>
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-6 mt-6">
           {" "}
@@ -331,7 +347,7 @@ const DashboardStoreSingleEventPage = () => {
           </div>
         </div>
 
-        {singleEvent?.requiresSubscription !== false && !user.subscribed && (
+        {singleEvent?.requiresSubscription !== false && !user.subscribed && !hasExternalAction && (
           <div className="mt-6 mb-4 border px-6 py-3 bg-error/20 border-error rounded-lg text-sm font-medium text-error">
             You need an active subscription to register for this event.{" "}
             <button type="button" className="underline font-bold" onClick={() => navigate("/dashboard/payments")}>
@@ -342,19 +358,27 @@ const DashboardStoreSingleEventPage = () => {
 
         {new Date(singleEvent?.eventDateTime).getTime() > Date.now() && (
           <div className="flex flex-wrap gap-2 lg:gap-4 justify-end mt-4 mb-4">
-            <Button
-              label={
-                singleEvent?.registeredUsers?.find((x) => x.userId == user._id)
-                  ? "Already Registered"
-                  : "Register for Event"
-              }
-              large
-              disabled={
-                (singleEvent?.requiresSubscription !== false && !user.subscribed) ||
-                singleEvent?.registeredUsers?.find((x) => x.userId == user._id)
-              }
-              onClick={() => setConfirmRegister(true)}
-            />
+            {hasExternalAction ? (
+              <Button
+                label="Open Event Link"
+                large
+                onClick={() => window.open(clickableExternalUrl, "_blank", "noopener,noreferrer")}
+              />
+            ) : (
+              <Button
+                label={
+                  singleEvent?.registeredUsers?.find((x) => x.userId == user._id)
+                    ? "Already Registered"
+                    : "Register for Event"
+                }
+                large
+                disabled={
+                  (singleEvent?.requiresSubscription !== false && !user.subscribed) ||
+                  singleEvent?.registeredUsers?.find((x) => x.userId == user._id)
+                }
+                onClick={() => setConfirmRegister(true)}
+              />
+            )}
           </div>
         )}
       </section>
