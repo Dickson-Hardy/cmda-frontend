@@ -60,7 +60,7 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
     onClose();
   };
 
-  const availableYears = Array.from({ length: 8 }, (_, index) => currentYear - 2 + index);
+  const availableYears = Array.from({ length: 3 }, (_, index) => currentYear - 2 + index);
 
   const tabs = [
     { id: "subscriptions", label: "Annual Subscriptions", icon: icons.card },

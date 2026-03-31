@@ -102,7 +102,7 @@ const Subscriptions = () => {
         )
       ) : col.accessor === "subscriptionYear" ? (
         <span className="whitespace-nowrap">
-          {value || (row.expiryDate ? new Date(row.expiryDate).getFullYear() : "--")}
+          {value || (row.createdAt ? new Date(row.createdAt).getFullYear() : "--")}
         </span>
       ) : col.accessor === "createdAt" || col.accessor === "expiryDate" ? (
         <span className="whitespace-nowrap">{formatDate(value).dateTime}</span>

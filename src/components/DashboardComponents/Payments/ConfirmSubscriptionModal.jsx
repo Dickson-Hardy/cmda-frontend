@@ -7,7 +7,7 @@ import { useState } from "react";
 const ConfirmSubscriptionModal = ({ isOpen, onClose, onSubmit, loading }) => {
   const currentYear = new Date().getFullYear();
   const [targetYear, setTargetYear] = useState(currentYear);
-  const availableYears = Array.from({ length: 8 }, (_, index) => currentYear - 2 + index);
+  const availableYears = Array.from({ length: 3 }, (_, index) => currentYear - 2 + index);
 
   const handleSubmit = () => {
     // Pass standard annual subscription payload for Nigerian members
@@ -29,7 +29,7 @@ const ConfirmSubscriptionModal = ({ isOpen, onClose, onSubmit, loading }) => {
         <div className="text-center">
           <h4 className={classNames("text-lg font-semibold mb-1")}>Pay Annual Subscription</h4>
           <p className={classNames("text-sm")}>
-            Choose a subscription year. Access runs from January 1 to December 31 of that year.
+            Select payment year. Access runs from January 1 to December 31 of that same year.
           </p>
         </div>
 
