@@ -105,8 +105,37 @@ const ChangePassword = () => {
           placeholder="Enter your new password"
           rules={{
             minLength: { value: 8, message: "Password must be at least 8 characters" },
+            pattern: {
+              value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+              message: "Password must contain uppercase, lowercase, number and special character",
+            },
           }}
         />
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 -mt-2">
+          <p className="text-sm font-semibold text-gray-700 mb-2">Password Requirements:</p>
+          <ul className="text-sm text-gray-600 space-y-1">
+            <li className="flex items-center gap-2">
+              <span className="text-primary">&#8226;</span>
+              At least 8 characters long
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-primary">&#8226;</span>
+              At least one uppercase letter (A-Z)
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-primary">&#8226;</span>
+              At least one lowercase letter (a-z)
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-primary">&#8226;</span>
+              At least one number (0-9)
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-primary">&#8226;</span>
+              At least one special character (@$!%*?&)
+            </li>
+          </ul>
+        </div>
         <TextInput
           label="confirmPassword"
           title="Confirm New Password"
