@@ -160,7 +160,9 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
   .animate-slide-up,
+  .animate-slide-down,
   .tutorial-bottom-sheet,
+  .tutorial-top-sheet,
   .tutorial-step-content-enter,
   .tutorial-step-content-enter-reverse {
     animation: none;
@@ -191,6 +193,29 @@
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15) !important;
 }
 
+/* Tutorial Top Sheet Styles - for when target is in bottom half */
+.tutorial-top-sheet {
+  animation: tutorial-slide-down 0.3s ease-out forwards;
+  z-index: 10000 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 0 0 20px 20px !important;
+}
+
+@keyframes tutorial-slide-down {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 /* Bottom sheet step transition animation */
 @keyframes tutorial-step-transition {
   0% {
@@ -209,7 +234,8 @@
 
 /* Mobile touch-friendly button styles */
 @media (max-width: 750px) {
-  .tutorial-bottom-sheet button {
+  .tutorial-bottom-sheet button,
+  .tutorial-top-sheet button {
     min-height: 40px; /* Touch target size */
     touch-action: manipulation;
   }
@@ -221,6 +247,15 @@
     max-height: 50vh;
     overflow-y: auto;
     border-radius: 20px 20px 0 0 !important;
+  }
+  
+  /* Make sure top sheet is visible at screen top */
+  .tutorial-top-sheet {
+    margin-top: 0;
+    padding-top: calc(12px + env(safe-area-inset-top, 0px));
+    max-height: 40vh;
+    overflow-y: auto;
+    border-radius: 0 0 20px 20px !important;
   }
   
   /* Ensure skip confirmation dialog is also above everything */
