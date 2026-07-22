@@ -164,19 +164,46 @@ const TutorialModal = ({
   /**
    * Calculate modal position relative to target element
    * Ensures modal doesn't overlap with the highlighted element
-   * On mobile, uses bottom sheet positioning
+   * On mobile, uses bottom sheet positioning but avoids covering targets
    * Requirements: Error Handling - Handle invalid getBoundingClientRect (use center positioning)
    */
   const calculatePosition = useCallback(() => {
-    // On mobile, always use bottom sheet positioning
+    // On mobile, use bottom sheet positioning but check if target would be covered
     if (isMobile) {
+      // If there's a target element, position modal to not cover it
+      if (effectiveTargetSelector) {
+        try {
+          const targetElement = document.querySelector(effectiveTargetSelector);
+          if (targetElement) {
+            const targetRect = targetElement.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
+            const targetBottom = targetRect.bottom;
+            
+            // If target is in bottom half of screen, position modal at top instead
+            if (targetBottom > viewportHeight * 0.5) {
+              return {
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 'auto',
+                transform: 'none',
+                position: 'top-sheet',
+                maxHeight: '40vh',
+              };
+            }
+          }
+        } catch (e) {
+          // Fall through to default bottom sheet
+        }
+      }
+      
       return {
-        top: "auto",
+        top: 'auto',
         left: 0,
         right: 0,
         bottom: 0,
-        transform: "none",
-        position: "bottom-sheet",
+        transform: 'none',
+        position: 'bottom-sheet',
       };
     }
 
@@ -458,24 +485,34 @@ const TutorialModal = ({
 
   /**
    * Mobile bottom sheet styles
-   * Requirements: 7.1 - Bottom sheet styling with rounded top corners
+   * Requirements: 7.1 - Bottom sheet styling with rounded corners
+   * Now supports both bottom and top positioning to avoid covering targets
    */
   const mobileStyles = isMobile
     ? {
-        position: "fixed",
-        // Position above the bottom nav (64px height)
-        bottom: 0,
+        position: 'fixed',
+        ...(position.position === 'top-sheet'
+          ? {
+              top: 0,
+              bottom: 'auto',
+              borderRadius: '0 0 20px 20px',
+              maxHeight: '40vh',
+            }
+          : {
+              bottom: 0,
+              top: 'auto',
+              borderRadius: '20px 20px 0 0',
+              maxHeight: '50vh',
+            }),
         left: 0,
         right: 0,
-        top: "auto",
-        transform: "none",
-        borderRadius: "20px 20px 0 0",
-        maxHeight: "50vh",
-        width: "100%",
+        transform: 'none',
+        width: '100%',
         margin: 0,
-        overflowY: "auto",
+        overflowY: 'auto',
         // Safe area padding for devices with home indicators
-        paddingBottom: "env(safe-area-inset-bottom, 16px)",
+        paddingBottom: 'env(safe-area-inset-bottom, 16px)',
+        paddingTop: 'env(safe-area-inset-top, 16px)',
       }
     : {};
 
@@ -494,9 +531,12 @@ const TutorialModal = ({
   /**
    * Determine pointer direction based on modal position
    * For mobile bottom sheet, pointer should point upward to target
+   * For mobile top sheet, pointer should point downward to target
    * Requirements: 7.2 - Adjust pointer direction for mobile
    */
-  const pointerDirection = isMobile ? "top" : step?.position || "center";
+  const pointerDirection = isMobile 
+    ? position.position === 'top-sheet' ? 'bottom' : 'top'
+    : step?.position || 'center';
 
   return (
     <>
@@ -528,9 +568,13 @@ const TutorialModal = ({
         className={`
           bg-white shadow-2xl z-[9999]
           ${
-            isMobile ? "rounded-t-2xl tutorial-bottom-sheet" : `rounded-xl ${!isTransitioning ? "animate-fade-in" : ""}`
+            isMobile 
+              ? position.position === 'top-sheet' 
+                ? 'tutorial-top-sheet' 
+                : 'rounded-t-2xl tutorial-bottom-sheet' 
+              : `rounded-xl ${!isTransitioning ? 'animate-fade-in' : ''}`
           }
-          ${!prefersReducedMotion && !isMobile ? "tutorial-modal-transitioning" : ""}
+          ${!prefersReducedMotion && !isMobile ? 'tutorial-modal-transitioning' : ''}
         `}
         style={{
           ...desktopStyles,
@@ -544,10 +588,10 @@ const TutorialModal = ({
           {`Tutorial step ${currentIndex + 1} of ${totalSteps}: ${step.title}`}
         </div>
 
-        {/* Mobile drag handle - visual affordance for bottom sheet */}
+        {/* Mobile drag handle - visual affordance for bottom/top sheet */}
         {/* Requirements: 7.1 - Add drag handle for visual affordance */}
         {isMobile && (
-          <div className="flex justify-center pt-3 pb-2">
+          <div className={`flex justify-center ${position.position === 'top-sheet' ? 'pt-2 pb-1' : 'pt-3 pb-2'}`}>
             <div className="w-12 h-1.5 bg-gray-300 rounded-full" aria-hidden="true" />
           </div>
         )}
@@ -569,19 +613,24 @@ const TutorialModal = ({
         `}
         >
           {/* Header */}
-          <div className={`flex items-start justify-between ${isMobile ? "px-5 pt-2 pb-1" : "px-6 pt-5 pb-2"}`}>
-            <h2
-              id="tutorial-modal-title"
-              className={`font-bold text-gray-900 pr-4 ${isMobile ? "text-base" : "text-lg"}`}
-            >
-              {step.title}
-            </h2>
+          <div className={`flex items-start justify-between ${isMobile ? 'px-5 pt-2 pb-1' : 'px-6 pt-5 pb-2'}`}>
+            <div className="flex items-center gap-2">
+              {isMobile && step.icon && (
+                <span className="text-2xl" aria-hidden="true">{step.icon}</span>
+              )}
+              <h2
+                id="tutorial-modal-title"
+                className={`font-bold text-gray-900 pr-4 ${isMobile ? 'text-base' : 'text-lg'}`}
+              >
+                {step.title}
+              </h2>
+            </div>
             <button
               onClick={onSkip}
               className={`text-gray-500 hover:text-gray-700 transition-colors
                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
                        focus:bg-blue-50 rounded px-2 py-1 -mr-2 -mt-1
-                       ${isMobile ? "text-xs" : "text-sm"}`}
+                       ${isMobile ? 'text-xs' : 'text-sm'}`}
               aria-label="Skip tutorial"
             >
               Skip

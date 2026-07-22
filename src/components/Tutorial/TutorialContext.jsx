@@ -1,10 +1,13 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { 
   TUTORIAL_STEPS, 
+  MOBILE_TUTORIAL_STEPS,
   TUTORIAL_STORAGE_KEY, 
   TOTAL_TUTORIAL_STEPS,
+  TOTAL_MOBILE_TUTORIAL_STEPS,
   MOBILE_BREAKPOINT,
   getTargetSelector,
+  getTutorialSteps,
   requiresSidebarForStep,
   getStepPosition
 } from '~/constants/tutorial';
@@ -180,11 +183,12 @@ const validateTargetElement = (selector) => {
  * @returns {number} - The next valid step index, or -1 if none found
  */
 const findNextValidStep = (startIndex, isMobile, direction = 1) => {
-  const maxSteps = TUTORIAL_STEPS.length;
+  const steps = getTutorialSteps(isMobile);
+  const maxSteps = steps.length;
   let currentIndex = startIndex;
 
   while (currentIndex >= 0 && currentIndex < maxSteps) {
-    const step = TUTORIAL_STEPS[currentIndex];
+    const step = steps[currentIndex];
     const targetSelector = getTargetSelector(step, isMobile);
     
     // Steps without targets (centered modals) are always valid
@@ -237,6 +241,10 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
     }
   }, []);
 
+  // Get the appropriate steps for current screen size
+  const currentSteps = useMemo(() => getTutorialSteps(isMobile), [isMobile]);
+  const totalSteps = isMobile ? TOTAL_MOBILE_TUTORIAL_STEPS : TOTAL_TUTORIAL_STEPS;
+
   /**
    * Scroll target element into view if off-screen
    * Requirements: 7.3 - Handle scroll into view for off-screen elements
@@ -277,7 +285,7 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
    * Requirements: 7.4 - For sidebar items on mobile: open sidebar before highlighting
    */
   const prepareStepForDisplay = useCallback(async (stepIndex) => {
-    const step = TUTORIAL_STEPS[stepIndex];
+    const step = currentSteps[stepIndex];
     if (!step) return;
 
     setIsPreparingStep(true);
@@ -304,12 +312,12 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
     }
 
     setIsPreparingStep(false);
-  }, [isMobile, isSidebarOpen, onOpenSidebar, onCloseSidebar, scrollTargetIntoView]);
+  }, [isMobile, isSidebarOpen, onOpenSidebar, onCloseSidebar, scrollTargetIntoView, currentSteps]);
 
   // Get current step data with mobile-aware selectors
   const currentStepData = useMemo(() => {
-    if (currentStep >= 0 && currentStep < TUTORIAL_STEPS.length) {
-      const step = TUTORIAL_STEPS[currentStep];
+    if (currentStep >= 0 && currentStep < currentSteps.length) {
+      const step = currentSteps[currentStep];
       // Return step with computed mobile-aware properties
       return {
         ...step,
@@ -322,7 +330,7 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
       };
     }
     return null;
-  }, [currentStep, isMobile]);
+  }, [currentStep, isMobile, currentSteps]);
 
   /**
    * Skip the tutorial without completing
@@ -387,11 +395,11 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
    * Requirements: Error Handling - Handle target element not found (skip to next valid step)
    */
   const nextStep = useCallback(async () => {
-    if (currentStep < TOTAL_TUTORIAL_STEPS - 1) {
+    if (currentStep < totalSteps - 1) {
       // Find the next valid step (skipping steps with missing targets)
       const nextValidIndex = findNextValidStep(currentStep + 1, isMobile, 1);
       
-      if (nextValidIndex === -1 || nextValidIndex >= TOTAL_TUTORIAL_STEPS) {
+      if (nextValidIndex === -1 || nextValidIndex >= totalSteps) {
         // No more valid steps, complete the tutorial
         console.warn('Tutorial: No more valid steps found, completing tutorial');
         completeTutorial();
@@ -405,7 +413,7 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
       // On last step, complete the tutorial
       completeTutorial();
     }
-  }, [currentStep, isMobile, prepareStepForDisplay, completeTutorial]);
+  }, [currentStep, isMobile, prepareStepForDisplay, completeTutorial, totalSteps]);
 
   /**
    * Go back to the previous tutorial step
@@ -462,7 +470,7 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
     // State
     isActive,
     currentStep,
-    totalSteps: TOTAL_TUTORIAL_STEPS,
+    totalSteps,
     currentStepData,
     hasCompleted,
     hasSkipped,
@@ -486,6 +494,7 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
   }), [
     isActive,
     currentStep,
+    totalSteps,
     currentStepData,
     hasCompleted,
     hasSkipped,

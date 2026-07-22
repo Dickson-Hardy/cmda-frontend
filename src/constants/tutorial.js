@@ -8,18 +8,22 @@
  * - Other items require opening sidebar on mobile
  * - mobileTargetSelector: alternative selector for mobile BottomNav items
  * - requiresSidebar: true means sidebar must be opened on mobile
+ * 
+ * MOBILE SIMPLIFIED FLOW:
+ * - Fewer steps (6 vs 12) for better mobile UX
+ * - No sidebar-requiring steps (taught via "More" button)
+ * - Larger touch targets, clearer descriptions
  */
 
-export const TUTORIAL_STEPS = [
+// Desktop tutorial steps (full experience)
+const DESKTOP_STEPS = [
   // Welcome
   {
     id: 'welcome',
     title: 'Welcome to CMDA!',
     description: 'Let us show you around the dashboard. This quick tour will help you get started with managing your membership.',
     targetSelector: null,
-    mobileTargetSelector: null,
-    position: 'center',
-    mobilePosition: 'center'
+    position: 'center'
   },
   // Home Overview
   {
@@ -27,127 +31,96 @@ export const TUTORIAL_STEPS = [
     title: 'Your Dashboard Home',
     description: 'This is your home base. Here you can see daily devotionals, upcoming events, resources, and connect with other members.',
     targetSelector: '[data-tutorial="home-section"]',
-    mobileTargetSelector: '[data-tutorial="home-section"]',
-    position: 'bottom',
-    mobilePosition: 'top'
+    position: 'bottom'
   },
   // Payments - Priority (Requirements 2.1)
-  // On mobile, Payments is in BottomNav (4th item)
   {
     id: 'payments-nav',
     title: 'Manage Your Payments',
     description: 'Access all your payment options here - subscriptions, donations, and payment history.',
     targetSelector: '[data-tutorial="nav-payments"]',
-    mobileTargetSelector: '[data-tutorial="bottomnav-payments"]',
     route: '/dashboard',
     position: 'right',
-    mobilePosition: 'top',
-    requiresSidebar: true,
-    mobileRequiresSidebar: false // Available in BottomNav
+    requiresSidebar: true
   },
   {
     id: 'subscription',
     title: 'Your Subscription',
     description: 'View and manage your CMDA membership subscription. Keep your membership active to access all premium features.',
     targetSelector: '[data-tutorial="subscription-section"]',
-    mobileTargetSelector: '[data-tutorial="subscription-section"]',
     route: '/dashboard/payments',
-    position: 'bottom',
-    mobilePosition: 'top'
+    position: 'bottom'
   },
   {
     id: 'donation',
     title: 'Make a Donation',
     description: "Support CMDA's mission by making donations. You can give one-time or set up recurring donations.",
     targetSelector: '[data-tutorial="donation-section"]',
-    mobileTargetSelector: '[data-tutorial="donation-section"]',
     route: '/dashboard/payments',
-    position: 'bottom',
-    mobilePosition: 'top'
+    position: 'bottom'
   },
-  // Events - On mobile, Events is in BottomNav (2nd item)
+  // Events
   {
     id: 'events',
     title: 'Events & Training',
     description: 'Discover upcoming conferences, training sessions, and fellowship events. Register and stay connected.',
     targetSelector: '[data-tutorial="nav-events"]',
-    mobileTargetSelector: '[data-tutorial="bottomnav-events"]',
     position: 'right',
-    mobilePosition: 'top',
-    requiresSidebar: true,
-    mobileRequiresSidebar: false // Available in BottomNav
+    requiresSidebar: true
   },
-  // Resources - On mobile, Resources is in BottomNav (3rd item)
+  // Resources
   {
     id: 'resources',
     title: 'Resource Library',
     description: 'Access devotionals, articles, videos, and other resources to support your faith and professional journey.',
     targetSelector: '[data-tutorial="nav-resources"]',
-    mobileTargetSelector: '[data-tutorial="bottomnav-resources"]',
     position: 'right',
-    mobilePosition: 'top',
-    requiresSidebar: true,
-    mobileRequiresSidebar: false // Available in BottomNav
+    requiresSidebar: true
   },
-  // Members - Requires sidebar on mobile
+  // Members
   {
     id: 'members',
     title: 'Connect with Others',
     description: 'Find and connect with fellow CMDA members. Build relationships within the community.',
     targetSelector: '[data-tutorial="nav-members"]',
-    mobileTargetSelector: '[data-tutorial="nav-members"]',
     position: 'right',
-    mobilePosition: 'left',
-    requiresSidebar: true,
-    mobileRequiresSidebar: true
+    requiresSidebar: true
   },
-  // Faith Entry - Requires sidebar on mobile
+  // Faith Entry
   {
     id: 'faith-entry',
     title: 'Faith Entry',
     description: 'Share testimonies, prayer requests, and comments with the community. Support and encourage one another.',
     targetSelector: '[data-tutorial="nav-faith"]',
-    mobileTargetSelector: '[data-tutorial="nav-faith"]',
     position: 'right',
-    mobilePosition: 'left',
-    requiresSidebar: true,
-    mobileRequiresSidebar: true
+    requiresSidebar: true
   },
-  // Messaging - Requires sidebar on mobile
+  // Messaging
   {
     id: 'messaging',
     title: 'Messaging',
     description: 'Send private messages to other members. Stay in touch and build meaningful connections.',
     targetSelector: '[data-tutorial="nav-messaging"]',
-    mobileTargetSelector: '[data-tutorial="nav-messaging"]',
     position: 'right',
-    mobilePosition: 'left',
-    requiresSidebar: true,
-    mobileRequiresSidebar: true
+    requiresSidebar: true
   },
-  // Store - Requires sidebar on mobile
+  // Store
   {
     id: 'store',
     title: 'CMDA Store',
     description: 'Browse and purchase CMDA merchandise, books, and other items.',
     targetSelector: '[data-tutorial="nav-store"]',
-    mobileTargetSelector: '[data-tutorial="nav-store"]',
     position: 'right',
-    mobilePosition: 'left',
-    requiresSidebar: true,
-    mobileRequiresSidebar: true
+    requiresSidebar: true
   },
-  // Profile - Requires sidebar on mobile
+  // Profile
   {
     id: 'profile',
     title: 'Your Profile',
     description: 'Update your personal information, preferences, and account settings. You can also restart this tutorial from here.',
     targetSelector: '[data-tutorial="nav-profile"]',
-    mobileTargetSelector: '[data-tutorial="nav-profile"]',
     position: 'right',
-    mobilePosition: 'left',
-    requiresSidebar: true,
-    mobileRequiresSidebar: true
+    requiresSidebar: true
   },
   // Completion
   {
@@ -155,11 +128,90 @@ export const TUTORIAL_STEPS = [
     title: "You're All Set!",
     description: 'You now know your way around CMDA. If you ever need this tour again, you can restart it from your Profile settings.',
     targetSelector: null,
-    mobileTargetSelector: null,
-    position: 'center',
-    mobilePosition: 'center'
+    position: 'center'
   }
 ];
+
+// Mobile tutorial steps (simplified, no sidebar steps, with icons)
+const MOBILE_STEPS = [
+  {
+    id: 'welcome',
+    title: 'Welcome to CMDA!',
+    description: 'Let us show you around! This quick tour covers the essentials.',
+    targetSelector: null,
+    mobileTargetSelector: null,
+    position: 'center',
+    mobilePosition: 'center',
+    icon: '👋'
+  },
+  {
+    id: 'home-overview',
+    title: 'Your Dashboard',
+    description: 'See daily devotionals, events, and connect with members right here.',
+    targetSelector: '[data-tutorial="home-section"]',
+    mobileTargetSelector: '[data-tutorial="home-section"]',
+    position: 'bottom',
+    mobilePosition: 'top',
+    icon: '🏠'
+  },
+  {
+    id: 'events',
+    title: 'Events',
+    description: 'Find conferences, training, and fellowship events. Tap to explore!',
+    targetSelector: '[data-tutorial="nav-events"]',
+    mobileTargetSelector: '[data-tutorial="bottomnav-events"]',
+    position: 'right',
+    mobilePosition: 'top',
+    mobileRequiresSidebar: false,
+    icon: '📅'
+  },
+  {
+    id: 'resources',
+    title: 'Resources',
+    description: 'Access devotionals, articles, and videos for your faith journey.',
+    targetSelector: '[data-tutorial="nav-resources"]',
+    mobileTargetSelector: '[data-tutorial="bottomnav-resources"]',
+    position: 'right',
+    mobilePosition: 'top',
+    mobileRequiresSidebar: false,
+    icon: '📚'
+  },
+  {
+    id: 'payments',
+    title: 'Payments',
+    description: 'Manage subscriptions, donations, and payment history here.',
+    targetSelector: '[data-tutorial="nav-payments"]',
+    mobileTargetSelector: '[data-tutorial="bottomnav-payments"]',
+    position: 'right',
+    mobilePosition: 'top',
+    mobileRequiresSidebar: false,
+    icon: '💳'
+  },
+  {
+    id: 'more-menu',
+    title: 'More Options',
+    description: 'Tap "More" to access Members, Messaging, Store, and Profile settings.',
+    targetSelector: null,
+    mobileTargetSelector: '[data-tutorial="bottomnav-more"]',
+    position: 'right',
+    mobilePosition: 'top',
+    mobileRequiresSidebar: false,
+    icon: '☰'
+  },
+  {
+    id: 'complete',
+    title: "You're All Set!",
+    description: 'Need this tour again? Find it in your Profile settings.',
+    targetSelector: null,
+    mobileTargetSelector: null,
+    position: 'center',
+    mobilePosition: 'center',
+    icon: '🎉'
+  }
+];
+
+export const TUTORIAL_STEPS = DESKTOP_STEPS;
+export const MOBILE_TUTORIAL_STEPS = MOBILE_STEPS;
 
 /**
  * Helper function to get the appropriate target selector based on screen size
@@ -196,11 +248,22 @@ export const getStepPosition = (step, isMobile) => {
   return step.position || 'center';
 };
 
+/**
+ * Get the appropriate step list based on screen size
+ * Mobile uses simplified steps (7 vs 12)
+ */
+export const getTutorialSteps = (isMobile) => {
+  return isMobile ? MOBILE_TUTORIAL_STEPS : TUTORIAL_STEPS;
+};
+
 // Local storage key for tutorial state persistence
 export const TUTORIAL_STORAGE_KEY = 'cmda_tutorial_state';
 
 // Mobile breakpoint (matches existing useIsSmallScreen hook)
 export const MOBILE_BREAKPOINT = 750;
 
-// Total number of tutorial steps
+// Total number of tutorial steps (desktop)
 export const TOTAL_TUTORIAL_STEPS = TUTORIAL_STEPS.length;
+
+// Total number of mobile tutorial steps
+export const TOTAL_MOBILE_TUTORIAL_STEPS = MOBILE_TUTORIAL_STEPS.length;
