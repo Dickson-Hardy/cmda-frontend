@@ -12,14 +12,15 @@ import { useSocket } from "~/utilities/socket";
 const ChatBox = ({ userId, recipientId }) => {
   const [inputValue, setInputValue] = useState("");
   const [inputHeight, setInputHeight] = useState(48); // Initial height
+  const [page, setPage] = useState(1);
   const navigate = useNavigate();
   const maxInputHeight = 160;
 
   const {
-    data: allChatsBetweenUsers,
+    data: chatData,
     isLoading,
     isFetching,
-  } = useGetChatHistoryQuery(recipientId, { refetchOnMountOrArgChange: true });
+  } = useGetChatHistoryQuery({ id: recipientId, page, limit: 50 }, { refetchOnMountOrArgChange: true });
   const { data: recipientData, isLoading: loadingRecipientData } = useGetSingleUserQuery(recipientId, {
     skip: recipientId === "admin",
   });
@@ -45,10 +46,10 @@ const ChatBox = ({ userId, recipientId }) => {
   };
 
   useEffect(() => {
-    if (allChatsBetweenUsers) {
-      setAllMessages(allChatsBetweenUsers);
+    if (chatData?.messages) {
+      setAllMessages(chatData.messages);
     }
-  }, [allChatsBetweenUsers]);
+  }, [chatData]);
 
   useEffect(() => {
     if (!socket) return;
@@ -67,10 +68,27 @@ const ChatBox = ({ userId, recipientId }) => {
   }, [socket, recipientId, userId]);
 
   const scrollRef = useRef(null);
+  const messagesContainerRef = useRef(null);
 
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [allMessages]);
+    // Only auto-scroll on new messages or first page load, not on "load more"
+    if (page === 1) {
+      scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [allMessages, page]);
+
+  const handleLoadMore = () => {
+    if (chatData?.pagination?.hasMore && !isFetching) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  const handleScroll = () => {
+    const container = messagesContainerRef.current;
+    if (container && container.scrollTop < 50 && chatData?.pagination?.hasMore && !isFetching) {
+      setPage((prev) => prev + 1);
+    }
+  };
 
   return (
     <div className="w-full lg:w-3/5 flex flex-col rounded-xl">
@@ -99,12 +117,28 @@ const ChatBox = ({ userId, recipientId }) => {
         )}
       </div>
       <div className="w-full bg-onPrimary h-[calc(100vh-400px)] md:h-[calc(100vh-320px)]">
-        {isLoading || isFetching ? (
+        {isLoading ? (
           <div className="w-full h-full flex items-center justify-center">
             <Loading className="text-primary h-16 w-16" />
           </div>
         ) : (
-          <div className="w-full h-full overflow-y-auto flex flex-col">
+          <div
+            ref={messagesContainerRef}
+            className="w-full h-full overflow-y-auto flex flex-col"
+            onScroll={handleScroll}
+          >
+            {/* Load More Button */}
+            {chatData?.pagination?.hasMore && (
+              <div className="flex justify-center py-3">
+                <button
+                  onClick={handleLoadMore}
+                  disabled={isFetching}
+                  className="text-sm text-primary hover:text-primary/80 font-medium px-4 py-2 rounded-lg hover:bg-primary/10 transition-colors disabled:opacity-50"
+                >
+                  {isFetching ? "Loading..." : "Load older messages"}
+                </button>
+              </div>
+            )}
             {allMessages.map(
               (item) =>
                 item.content && (
