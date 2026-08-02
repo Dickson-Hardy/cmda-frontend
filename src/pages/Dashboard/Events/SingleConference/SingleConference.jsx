@@ -43,6 +43,8 @@ const SingleConferencePage = () => {
   const [payForEvent, { isLoading: isPaying }] = usePayForEventMutation();
   const [confirmRegister, setConfirmRegister] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedAccommodationOptionId, setSelectedAccommodationOptionId] = useState("");
+  const [customResponses, setCustomResponses] = useState({});
   const { user } = useSelector(selectAuth);
   const [openSuccess, setOpenSuccess] = useState(false);
 
@@ -133,6 +135,19 @@ const SingleConferencePage = () => {
 
     return plan?.price || 0;
   };
+  const accountCurrency = user?.role === "GlobalNetwork" ? "USD" : "NGN";
+  const accommodationOptions = conference?.accommodationOptions || [];
+  const selectedAccommodation = accommodationOptions.find((option) => option.id === selectedAccommodationOptionId);
+  const getAccommodationPrice = (option) => {
+    if (!option?.isPriced) return 0;
+    const value = accountCurrency === "USD" ? option.priceUsd : option.priceNgn;
+    return value == null ? null : Number(value);
+  };
+  const getRegistrationTotal = () => getCurrentPrice() + (getAccommodationPrice(selectedAccommodation) || 0);
+  const registrationFields = conference?.registrationFields || [];
+  const setCustomResponse = (fieldId, value) => {
+    setCustomResponses((current) => ({ ...current, [fieldId]: value }));
+  };
   const getPaymentBreakdown = () => {
     console.log("Full paymentPlansData:", paymentPlansData);
     const breakdown = paymentPlansData?.paymentBreakdown || null;
@@ -146,14 +161,36 @@ const SingleConferencePage = () => {
   };
 
   const handleRegisterConference = async () => {
-    const currentPrice = getCurrentPrice();
+    if (conference?.accommodationSelectionRequired && !selectedAccommodationOptionId) {
+      toast.error("Please select an accommodation option");
+      return;
+    }
+    if (selectedAccommodation?.isPriced && getAccommodationPrice(selectedAccommodation) == null) {
+      toast.error(`This accommodation option does not have a ${accountCurrency} price`);
+      return;
+    }
+    const missingField = registrationFields.find((field) => {
+      const value = customResponses[field.id];
+      return field.required &&
+        (field.type === "checkbox" ? value !== true : value == null || String(value).trim() === "");
+    });
+    if (missingField) {
+      toast.error(`Please complete ${missingField.label}`);
+      return;
+    }
+
+    const currentPrice = getRegistrationTotal();
 
     if (currentPrice > 0) {
       // Paid conference - proceed to payment
       setShowPaymentModal(true);
     } else {
       // Free conference - register directly
-      registerForEvent({ slug })
+      registerForEvent({
+        slug,
+        accommodationOptionId: selectedAccommodationOptionId || undefined,
+        customResponses,
+      })
         .unwrap()
         .then(() => {
           toast.success("Registered for conference successfully");
@@ -179,6 +216,8 @@ const SingleConferencePage = () => {
         paymentMethod,
         amount: getCurrentPrice(),
         period: getCurrentRegistrationPeriod(),
+        accommodationOptionId: selectedAccommodationOptionId || undefined,
+        customResponses,
       }).unwrap();
 
       if (paymentMethod === "paypal" || user.role === "GlobalNetwork") {
@@ -435,7 +474,122 @@ const SingleConferencePage = () => {
             Are you sure you want to register for <strong>{conference.title}</strong>?
           </p>
 
-          {getCurrentPrice() > 0 && (
+          {registrationFields.length > 0 && (
+            <div className="mb-6 space-y-4">
+              <p className="font-semibold text-gray-900">Additional Registration Details</p>
+              {registrationFields.map((field) => {
+                const value = customResponses[field.id];
+                return (
+                  <label key={field.id} className="block text-sm font-medium text-gray-900">
+                    <span>{field.label}{field.required ? " *" : ""}</span>
+                    {field.helpText ? <span className="mt-1 block text-xs font-normal text-gray-500">{field.helpText}</span> : null}
+
+                    {field.type === "checkbox" ? (
+                      <span className="mt-2 flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={value === true}
+                          onChange={(event) => setCustomResponse(field.id, event.target.checked)}
+                        />
+                        <span>Yes, I confirm</span>
+                      </span>
+                    ) : field.type === "select" ? (
+                      <select
+                        value={value || ""}
+                        onChange={(event) => setCustomResponse(field.id, event.target.value)}
+                        className="mt-2 block h-12 w-full rounded-lg border border-gray-300 bg-white p-3"
+                      >
+                        <option value="">Select an option</option>
+                        {(field.options || []).map((option) => <option key={option} value={option}>{option}</option>)}
+                      </select>
+                    ) : field.type === "radio" ? (
+                      <span className="mt-2 block space-y-2">
+                        {(field.options || []).map((option) => (
+                          <span key={option} className="flex items-center gap-2 rounded-lg border border-gray-200 p-2">
+                            <input
+                              type="radio"
+                              name={`registration-${field.id}`}
+                              value={option}
+                              checked={value === option}
+                              onChange={(event) => setCustomResponse(field.id, event.target.value)}
+                            />
+                            <span>{option}</span>
+                          </span>
+                        ))}
+                      </span>
+                    ) : field.type === "longText" ? (
+                      <textarea
+                        rows={4}
+                        value={value || ""}
+                        onChange={(event) => setCustomResponse(field.id, event.target.value)}
+                        placeholder={field.placeholder || field.label}
+                        className="mt-2 block w-full rounded-lg border border-gray-300 p-3"
+                      />
+                    ) : (
+                      <input
+                        type={field.type === "email" ? "email" : field.type === "number" ? "number" : field.type === "date" ? "date" : "text"}
+                        value={value || ""}
+                        onChange={(event) => setCustomResponse(field.id, event.target.value)}
+                        placeholder={field.placeholder || field.label}
+                        className="mt-2 block h-12 w-full rounded-lg border border-gray-300 p-3"
+                      />
+                    )}
+                  </label>
+                );
+              })}
+            </div>
+          )}
+
+          {accommodationOptions.length > 0 && (
+            <div className="mb-6">
+              <p className="font-semibold text-gray-900 mb-2">
+                Accommodation {conference.accommodationSelectionRequired ? "(Required)" : "(Optional)"}
+              </p>
+              <div className="space-y-2">
+                {accommodationOptions.map((option) => {
+                  const price = getAccommodationPrice(option);
+                  const unavailable = option.isPriced && price == null;
+                  return (
+                    <label
+                      key={option.id}
+                      className={`flex cursor-pointer items-start gap-3 rounded-lg border p-3 ${
+                        selectedAccommodationOptionId === option.id
+                          ? "border-primary bg-primary/5"
+                          : "border-gray-200"
+                      } ${unavailable ? "cursor-not-allowed opacity-50" : ""}`}
+                    >
+                      <input
+                        type="radio"
+                        name="accommodationOption"
+                        value={option.id}
+                        checked={selectedAccommodationOptionId === option.id}
+                        disabled={unavailable}
+                        onChange={(event) => setSelectedAccommodationOptionId(event.target.value)}
+                        className="mt-1"
+                      />
+                      <span className="flex-1">
+                        <span className="flex items-center justify-between gap-3 font-medium text-gray-900">
+                          <span>{option.name}</span>
+                          <span className={unavailable ? "text-error" : "text-primary"}>
+                            {unavailable
+                              ? `${accountCurrency} unavailable`
+                              : option.isPriced
+                              ? `+${formatCurrency(price, accountCurrency)}`
+                              : "No extra charge"}
+                          </span>
+                        </span>
+                        {option.description ? (
+                          <span className="mt-1 block text-sm text-gray-600">{option.description}</span>
+                        ) : null}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {getRegistrationTotal() > 0 && (
             <div className="bg-blue-50 p-4 rounded-lg mb-6">
               <p className="text-blue-800 mb-2">
                 <strong>Registration Fee Details:</strong>
@@ -462,7 +616,7 @@ const SingleConferencePage = () => {
                   </div>
                   <div className="border-t pt-2 flex justify-between font-semibold">
                     <span>Total Amount to Pay:</span>
-                    <span className="text-blue-600">{formatCurrency(getCurrentPrice())}</span>
+                    <span className="text-blue-600">{formatCurrency(getRegistrationTotal(), accountCurrency)}</span>
                   </div>
                   <div className="text-xs text-gray-600 mt-1">
                     <strong>Note:</strong> The processing fee ensures the organization receives the full conference fee
@@ -471,7 +625,7 @@ const SingleConferencePage = () => {
                 </div>
               ) : (
                 <p className="text-blue-800">
-                  <strong>Registration Fee:</strong> {formatCurrency(getCurrentPrice())}
+                  <strong>Registration Total:</strong> {formatCurrency(getRegistrationTotal(), accountCurrency)}
                   {getCurrentRegistrationPeriod() === "late" && (
                     <span className="text-orange-600 ml-1">(Late Registration)</span>
                   )}
@@ -495,7 +649,7 @@ const SingleConferencePage = () => {
               isLoading={isRegistering}
               className="flex-1 bg-blue-600 hover:bg-blue-700"
             >
-              {getCurrentPrice() > 0 ? "Proceed to Payment" : "Register"}
+              {getRegistrationTotal() > 0 ? "Proceed to Payment" : "Register"}
             </Button>
           </div>
         </div>
@@ -505,7 +659,7 @@ const SingleConferencePage = () => {
       <Modal isOpen={showPaymentModal} onClose={() => setShowPaymentModal(false)} title="Choose Payment Method">
         <div className="p-6">
           <p className="text-gray-700 mb-6">
-            Select your preferred payment method for {formatCurrency(getCurrentPrice())}
+            Select your preferred payment method for {formatCurrency(getRegistrationTotal(), accountCurrency)}
           </p>
 
           <div className="space-y-4">
@@ -522,7 +676,7 @@ const SingleConferencePage = () => {
             {(user?.role === "GlobalNetwork" || conference.conferenceConfig?.paymentMethods?.includes("paypal")) && (
               <div className="w-full">
                 <PaypalPaymentButton
-                  amount={getCurrentPrice()}
+                  amount={getRegistrationTotal()}
                   currency="USD"
                   createOrder={() => handlePayment("paypal")}
                   onApprove={(data) => {
