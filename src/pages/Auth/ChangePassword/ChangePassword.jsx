@@ -30,7 +30,7 @@ const ChangePassword = () => {
       navigate("/login");
       return;
     }
-    
+
     // Wait for user to be loaded before checking requirePasswordChange
     if (user !== null) {
       setHasCheckedUser(true);

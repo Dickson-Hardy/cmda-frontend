@@ -4,8 +4,13 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FiCalendar, FiMapPin, FiUsers, FiDollarSign, FiClock, FiGlobe } from "react-icons/fi";
+import DOMPurify from "dompurify";
 import PaypalPaymentButton from "~/components/DashboardComponents/Payments/PaypalPaymentButton";
 import VirtualMeetingCard from "~/components/DashboardComponents/Events/VirtualMeetingCard";
+import ReactionBar from "~/components/DashboardComponents/Events/ReactionBar";
+import EventCommentsSection from "~/components/DashboardComponents/Events/EventCommentsSection";
+import EventFeedbackModal from "~/components/DashboardComponents/Events/EventFeedbackModal";
+import EventAttendeesList from "~/components/DashboardComponents/Events/EventAttendeesList";
 import BackButton from "~/components/Global/BackButton/BackButton";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
@@ -16,6 +21,7 @@ import {
   usePayForEventMutation,
   useRegisterForEventMutation,
 } from "~/redux/api/events/eventsApi";
+import { useCreateEventReminderMutation } from "~/redux/api/personalEventsApi";
 import { selectAuth } from "~/redux/features/auth/authSlice";
 import formatDate from "~/utilities/fomartDate";
 import { formatCurrency } from "~/utilities/formatCurrency";
@@ -49,8 +55,14 @@ const SingleConferencePage = () => {
   const [openSuccess, setOpenSuccess] = useState(false);
 
   const [confirmPayment] = useConfirmEventPaymentMutation();
+  const [createEventReminder, { isLoading: isSettingReminder }] = useCreateEventReminderMutation();
   const clickableExternalUrl = toClickableUrl(conference?.externalUrl);
   const hasExternalAction = Boolean(clickableExternalUrl);
+
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [showAttendees, setShowAttendees] = useState(false);
+  const [reminderDate, setReminderDate] = useState("");
+  const [showReminder, setShowReminder] = useState(false);
 
   const wasCalled = useRef(false);
 
@@ -237,6 +249,23 @@ const SingleConferencePage = () => {
     }
   };
 
+  const handleSetReminder = async () => {
+    if (!reminderDate) return;
+    try {
+      await createEventReminder({
+        eventId: conference?._id || conference?.slug,
+        reminderDate,
+      }).unwrap();
+      toast.success("Reminder set successfully");
+      setShowReminder(false);
+      setReminderDate("");
+    } catch (err) {
+      toast.error(err?.data?.message || "Failed to set reminder");
+    }
+  };
+
+  const isPastConference = conference?.endDate && new Date(conference.endDate).getTime() < Date.now();
+
   if (!conference) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -282,6 +311,8 @@ const SingleConferencePage = () => {
 
           <div className="p-6">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">{conference.title}</h1>
+
+            {conference._id && <ReactionBar parentType="event" parentId={conference._id} />}
 
             <div className="grid md:grid-cols-2 gap-6 mb-6">
               <div className="space-y-4">
@@ -421,7 +452,7 @@ const SingleConferencePage = () => {
           <h2 className="text-2xl font-bold text-gray-900 mb-4">About This Conference</h2>
           <div
             className="prose max-w-none text-gray-700"
-            dangerouslySetInnerHTML={{ __html: conference.description }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(conference.description || "") }}
           />
         </div>
 
@@ -465,6 +496,70 @@ const SingleConferencePage = () => {
             </button>
           </div>
         </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap gap-3 mt-6">
+          <Button
+            label="See Attendees"
+            variant="outlined"
+            onClick={() => setShowAttendees(!showAttendees)}
+          />
+          {isPastConference && (
+            <Button
+              label="Rate This Conference"
+              variant="outlined"
+              color="tertiary"
+              onClick={() => setShowFeedback(true)}
+            />
+          )}
+          <Button
+            label="Set Reminder"
+            variant="outlined"
+            color="secondary"
+            onClick={() => setShowReminder(!showReminder)}
+          />
+        </div>
+
+        {/* Reminder Input */}
+        {showReminder && (
+          <div className="mt-4 flex items-end gap-3 p-4 bg-white rounded-lg shadow-lg">
+            <div className="flex-1">
+              <label className="block text-sm font-semibold mb-1">Reminder Date &amp; Time</label>
+              <input
+                type="datetime-local"
+                value={reminderDate}
+                onChange={(e) => setReminderDate(e.target.value)}
+                className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+              />
+            </div>
+            <Button
+              label="Set"
+              loading={isSettingReminder}
+              disabled={!reminderDate}
+              onClick={handleSetReminder}
+            />
+            <Button
+              label="Cancel"
+              variant="text"
+              onClick={() => { setShowReminder(false); setReminderDate(""); }}
+            />
+          </div>
+        )}
+
+        {/* Attendees List */}
+        {showAttendees && conference._id && (
+          <EventAttendeesList eventId={conference._id} />
+        )}
+
+        {/* Feedback Modal */}
+        <EventFeedbackModal
+          eventId={conference._id}
+          isOpen={showFeedback}
+          onClose={() => setShowFeedback(false)}
+        />
+
+        {/* Comments Section */}
+        {conference._id && <EventCommentsSection eventId={conference._id} />}
       </div>
 
       {/* Registration Confirmation Modal */}

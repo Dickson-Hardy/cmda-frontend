@@ -1,30 +1,30 @@
-import { useEffect, useState, useMemo } from 'react';
-import PropTypes from 'prop-types';
+import { useEffect, useState, useMemo } from "react";
+import PropTypes from "prop-types";
 
 /**
  * AnimatedPointer Component
  * SVG-based curved arrow that points from the modal to the highlighted element
  * Requirements: 3.4, 3.5, 8.5
  */
-const AnimatedPointer = ({ 
-  fromRect, 
-  toRect, 
+const AnimatedPointer = ({
+  fromRect,
+  toRect,
   direction,
-  color = '#2563EB' // Primary blue color
+  color = "#2563EB", // Primary blue color
 }) => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   // Check for reduced motion preference (Requirements 8.5)
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     setPrefersReducedMotion(mediaQuery.matches);
 
     const handleChange = (e) => {
       setPrefersReducedMotion(e.matches);
     };
 
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
   /**
@@ -47,7 +47,7 @@ const AnimatedPointer = ({
     let controlX, controlY; // Control point for the curve
 
     switch (direction) {
-      case 'right':
+      case "right":
         // Modal is to the right of target, arrow points left
         startX = fromRect.left;
         startY = fromCenterY;
@@ -57,7 +57,7 @@ const AnimatedPointer = ({
         controlY = startY + (endY - startY) * 0.3;
         break;
 
-      case 'left':
+      case "left":
         // Modal is to the left of target, arrow points right
         startX = fromRect.right;
         startY = fromCenterY;
@@ -67,7 +67,7 @@ const AnimatedPointer = ({
         controlY = startY + (endY - startY) * 0.3;
         break;
 
-      case 'bottom':
+      case "bottom":
         // Modal is below target, arrow points up
         startX = fromCenterX;
         startY = fromRect.top;
@@ -77,7 +77,7 @@ const AnimatedPointer = ({
         controlY = (startY + endY) / 2;
         break;
 
-      case 'top':
+      case "top":
         // Modal is above target, arrow points down
         startX = fromCenterX;
         startY = fromRect.bottom;
@@ -120,12 +120,12 @@ const AnimatedPointer = ({
       path: `M ${normStartX} ${normStartY} Q ${normControlX} ${normControlY} ${normEndX} ${normEndY}`,
       arrowX: normEndX,
       arrowY: normEndY,
-      arrowRotation: angle
+      arrowRotation: angle,
     };
   }, [fromRect, toRect, direction]);
 
   // Don't render if no valid configuration or center position
-  if (!pointerConfig || direction === 'center') {
+  if (!pointerConfig || direction === "center") {
     return null;
   }
 
@@ -133,16 +133,16 @@ const AnimatedPointer = ({
 
   return (
     <svg
-      className={`animated-pointer ${prefersReducedMotion ? '' : 'animate-pulse-pointer'}`}
+      className={`animated-pointer ${prefersReducedMotion ? "" : "animate-pulse-pointer"}`}
       style={{
-        position: 'fixed',
+        position: "fixed",
         left: `${left}px`,
         top: `${top}px`,
         width: `${width}px`,
         height: `${height}px`,
-        pointerEvents: 'none',
+        pointerEvents: "none",
         zIndex: 9999,
-        overflow: 'visible'
+        overflow: "visible",
       }}
       viewBox={viewBox}
       aria-hidden="true"
@@ -179,14 +179,7 @@ const AnimatedPointer = ({
       </defs>
 
       {/* Curved path */}
-      <path
-        d={path}
-        fill="none"
-        stroke={color}
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeDasharray="none"
-      />
+      <path d={path} fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeDasharray="none" />
 
       {/* Arrowhead */}
       <polygon
@@ -206,7 +199,7 @@ AnimatedPointer.propTypes = {
     right: PropTypes.number.isRequired,
     bottom: PropTypes.number.isRequired,
     width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired
+    height: PropTypes.number.isRequired,
   }),
   /** Bounding rectangle of the target element (destination) */
   toRect: PropTypes.shape({
@@ -215,19 +208,19 @@ AnimatedPointer.propTypes = {
     right: PropTypes.number.isRequired,
     bottom: PropTypes.number.isRequired,
     width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired
+    height: PropTypes.number.isRequired,
   }),
   /** Direction the pointer should point */
-  direction: PropTypes.oneOf(['top', 'bottom', 'left', 'right', 'center']),
+  direction: PropTypes.oneOf(["top", "bottom", "left", "right", "center"]),
   /** Color of the pointer (default: primary blue) */
-  color: PropTypes.string
+  color: PropTypes.string,
 };
 
 AnimatedPointer.defaultProps = {
   fromRect: null,
   toRect: null,
-  direction: 'right',
-  color: '#2563EB'
+  direction: "right",
+  color: "var(--color-primary, #2563EB)",
 };
 
 export default AnimatedPointer;

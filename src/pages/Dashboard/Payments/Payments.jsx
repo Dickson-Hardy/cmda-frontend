@@ -8,7 +8,6 @@ import GlobalSubscriptionModal from "~/components/DashboardComponents/Payments/G
 import NigerianLifetimeModal from "~/components/DashboardComponents/Payments/NigerianLifetimeModal";
 import Donations from "~/components/DashboardComponents/Payments/Donations";
 import MakeDonationModal from "~/components/DashboardComponents/Payments/MakeDonationModal";
-import PaymentSync from "~/components/DashboardComponents/Payments/PaymentSync";
 import PaymentIntents from "~/components/DashboardComponents/Payments/PaymentIntents";
 import Subscriptions from "~/components/DashboardComponents/Payments/Subscriptions";
 import Button from "~/components/Global/Button/Button";

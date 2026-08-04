@@ -62,7 +62,8 @@ const SingleOrder = () => {
                             <h5 className="truncate text-sm font-medium">{item?.product.name}</h5>
                             {item.size || item.color ? (
                               <p className="text-xs">
-                                {item?.size ? "Size: " + item.size : ""} {item?.color ? "Color: " + item.color : ""}{" "}
+                                {item?.size ? "Size: " + item.size : ""}{" "}
+                                {item?.color ? "Color: " + item.color : ""}{" "}
                               </p>
                             ) : null}
                           </div>

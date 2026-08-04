@@ -86,9 +86,10 @@ const Donations = () => {
         item.isPaid ? (
           <button
             onClick={() => handleDownloadReceipt(value)}
+            disabled={loadingReceipt === value}
             className="text-primary hover:text-primary-dark underline text-sm font-medium"
           >
-            Download PDF
+            {loadingReceipt === value ? "Preparing..." : "Download PDF"}
           </button>
         ) : (
           <span className="text-gray-400 text-sm">Pending Payment</span>

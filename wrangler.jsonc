@@ -2,8 +2,17 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "cmda-frontend",
   "compatibility_date": "2026-03-30",
+  "main": "worker.js",
   "assets": {
+    "binding": "ASSETS",
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
-  }
+    "not_found_handling": "single-page-application",
+    "run_worker_first": true
+  },
+  "r2_buckets": [
+    {
+      "binding": "CMDA_STORAGE",
+      "bucket_name": "cmda-app-storage"
+    }
+  ]
 }

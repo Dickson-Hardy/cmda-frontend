@@ -26,6 +26,7 @@ import DashboardEditProfile from "~/pages/Dashboard/Profile/EditProfile/EditProf
 import DashboardCartPage from "~/pages/Dashboard/Store/Cart/Cart";
 import DashboardVolunteersPage from "~/pages/Dashboard/Volunteers/Volunteers";
 import DashboardVolunteerDetailsPage from "~/pages/Dashboard/Volunteers/VolunteerDetails/VolunteerDetails";
+import MyVolunteerApplications from "~/pages/Dashboard/Volunteers/MyVolunteerApplications";
 import DashboardCheckoutPage from "~/pages/Dashboard/Store/Cart/Checkout";
 import DashboardMembersPage from "~/pages/Dashboard/Members/Members";
 import DashboardMemberDetailsPage from "~/pages/Dashboard/Members/MemberDetails/MemberDetails";
@@ -115,6 +116,7 @@ export default function AppRouter() {
             { path: "store/orders/:id", element: <SingleOrder /> },
             { path: "store/:slug", element: <DashboardStoreSingleProductPage /> },
             { path: "jobs", element: <DashboardVolunteersPage /> },
+            { path: "jobs/my-applications", element: <MyVolunteerApplications /> },
             { path: "jobs/:id", element: <DashboardVolunteerDetailsPage /> },
             { path: "members", element: <DashboardMembersPage /> },
             { path: "members/:id", element: <DashboardMemberDetailsPage /> },

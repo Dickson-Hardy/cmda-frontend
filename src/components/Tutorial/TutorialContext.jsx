@@ -1,16 +1,14 @@
-import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
-import { 
-  TUTORIAL_STEPS, 
-  MOBILE_TUTORIAL_STEPS,
-  TUTORIAL_STORAGE_KEY, 
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
+import {
+  TUTORIAL_STORAGE_KEY,
   TOTAL_TUTORIAL_STEPS,
   TOTAL_MOBILE_TUTORIAL_STEPS,
   MOBILE_BREAKPOINT,
   getTargetSelector,
   getTutorialSteps,
   requiresSidebarForStep,
-  getStepPosition
-} from '~/constants/tutorial';
+  getStepPosition,
+} from "~/constants/tutorial";
 
 /**
  * Tutorial Context
@@ -26,7 +24,7 @@ const TutorialContext = createContext(null);
  */
 const isLocalStorageAvailable = () => {
   try {
-    const testKey = '__tutorial_storage_test__';
+    const testKey = "__tutorial_storage_test__";
     localStorage.setItem(testKey, testKey);
     localStorage.removeItem(testKey);
     return true;
@@ -41,7 +39,7 @@ const isLocalStorageAvailable = () => {
  */
 const isSessionStorageAvailable = () => {
   try {
-    const testKey = '__tutorial_storage_test__';
+    const testKey = "__tutorial_storage_test__";
     sessionStorage.setItem(testKey, testKey);
     sessionStorage.removeItem(testKey);
     return true;
@@ -54,15 +52,17 @@ const isSessionStorageAvailable = () => {
 let storageType = null;
 const getAvailableStorage = () => {
   if (storageType !== null) return storageType;
-  
+
   if (isLocalStorageAvailable()) {
-    storageType = 'localStorage';
+    storageType = "localStorage";
   } else if (isSessionStorageAvailable()) {
-    storageType = 'sessionStorage';
-    console.warn('Tutorial: Local storage unavailable, falling back to session storage. Tutorial state will not persist across sessions.');
+    storageType = "sessionStorage";
+    console.warn(
+      "Tutorial: Local storage unavailable, falling back to session storage. Tutorial state will not persist across sessions."
+    );
   } else {
-    storageType = 'none';
-    console.warn('Tutorial: No storage available. Tutorial state will not persist.');
+    storageType = "none";
+    console.warn("Tutorial: No storage available. Tutorial state will not persist.");
   }
   return storageType;
 };
@@ -74,32 +74,32 @@ const getAvailableStorage = () => {
  */
 const getStoredTutorialState = () => {
   const storage = getAvailableStorage();
-  
+
   try {
-    if (storage === 'localStorage') {
+    if (storage === "localStorage") {
       const stored = localStorage.getItem(TUTORIAL_STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
         // Validate the stored state has expected properties
-        if (typeof parsed === 'object' && parsed !== null) {
+        if (typeof parsed === "object" && parsed !== null) {
           return parsed;
         }
-        console.warn('Tutorial: Invalid stored state format, resetting');
+        console.warn("Tutorial: Invalid stored state format, resetting");
         return null;
       }
-    } else if (storage === 'sessionStorage') {
+    } else if (storage === "sessionStorage") {
       const stored = sessionStorage.getItem(TUTORIAL_STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (typeof parsed === 'object' && parsed !== null) {
+        if (typeof parsed === "object" && parsed !== null) {
           return parsed;
         }
-        console.warn('Tutorial: Invalid stored state format, resetting');
+        console.warn("Tutorial: Invalid stored state format, resetting");
         return null;
       }
     }
   } catch (error) {
-    console.warn('Tutorial: Error reading stored state:', error.message);
+    console.warn("Tutorial: Error reading stored state:", error.message);
   }
   return null;
 };
@@ -111,19 +111,19 @@ const getStoredTutorialState = () => {
  */
 const saveTutorialState = (state) => {
   const storage = getAvailableStorage();
-  
+
   try {
     const stateString = JSON.stringify(state);
-    
-    if (storage === 'localStorage') {
+
+    if (storage === "localStorage") {
       localStorage.setItem(TUTORIAL_STORAGE_KEY, stateString);
-    } else if (storage === 'sessionStorage') {
+    } else if (storage === "sessionStorage") {
       sessionStorage.setItem(TUTORIAL_STORAGE_KEY, stateString);
     } else {
-      console.warn('Tutorial: Unable to save state - no storage available');
+      console.warn("Tutorial: Unable to save state - no storage available");
     }
   } catch (error) {
-    console.warn('Tutorial: Error saving state:', error.message);
+    console.warn("Tutorial: Error saving state:", error.message);
   }
 };
 
@@ -140,27 +140,28 @@ const validateTargetElement = (selector) => {
 
   try {
     const element = document.querySelector(selector);
-    
+
     if (!element) {
       console.warn(`Tutorial: Target element not found for selector "${selector}"`);
       return { element: null, rect: null, isValid: false };
     }
 
     const rect = element.getBoundingClientRect();
-    
+
     // Validate the rect has valid dimensions
     if (!rect || rect.width === 0 || rect.height === 0) {
-      console.warn(`Tutorial: Target element "${selector}" has invalid dimensions (width: ${rect?.width}, height: ${rect?.height})`);
+      console.warn(
+        `Tutorial: Target element "${selector}" has invalid dimensions (width: ${rect?.width}, height: ${rect?.height})`
+      );
       return { element, rect: null, isValid: false };
     }
 
     // Check if element is within viewport bounds (not completely off-screen)
-    const isInDocument = (
+    const isInDocument =
       rect.bottom >= 0 &&
       rect.right >= 0 &&
       rect.top <= (window.innerHeight || document.documentElement.clientHeight) + 1000 &&
-      rect.left <= (window.innerWidth || document.documentElement.clientWidth) + 1000
-    );
+      rect.left <= (window.innerWidth || document.documentElement.clientWidth) + 1000;
 
     if (!isInDocument) {
       console.warn(`Tutorial: Target element "${selector}" is outside document bounds`);
@@ -190,7 +191,7 @@ const findNextValidStep = (startIndex, isMobile, direction = 1) => {
   while (currentIndex >= 0 && currentIndex < maxSteps) {
     const step = steps[currentIndex];
     const targetSelector = getTargetSelector(step, isMobile);
-    
+
     // Steps without targets (centered modals) are always valid
     if (!targetSelector) {
       return currentIndex;
@@ -226,10 +227,10 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
     const checkMobile = () => {
       setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
     };
-    
+
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   // Load stored state on mount
@@ -256,18 +257,17 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
       const targetElement = document.querySelector(targetSelector);
       if (targetElement) {
         const rect = targetElement.getBoundingClientRect();
-        const isInViewport = (
+        const isInViewport =
           rect.top >= 0 &&
           rect.left >= 0 &&
           rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-          rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-        );
+          rect.right <= (window.innerWidth || document.documentElement.clientWidth);
 
         if (!isInViewport) {
           targetElement.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-            inline: 'center'
+            behavior: "smooth",
+            block: "center",
+            inline: "center",
           });
           // Wait for scroll animation to complete
           setTimeout(resolve, 400);
@@ -284,35 +284,38 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
    * Prepare step for display - handles sidebar opening and scrolling
    * Requirements: 7.4 - For sidebar items on mobile: open sidebar before highlighting
    */
-  const prepareStepForDisplay = useCallback(async (stepIndex) => {
-    const step = currentSteps[stepIndex];
-    if (!step) return;
+  const prepareStepForDisplay = useCallback(
+    async (stepIndex) => {
+      const step = currentSteps[stepIndex];
+      if (!step) return;
 
-    setIsPreparingStep(true);
+      setIsPreparingStep(true);
 
-    // Check if we need to open sidebar on mobile
-    const needsSidebar = requiresSidebarForStep(step, isMobile);
-    
-    if (isMobile && needsSidebar && !isSidebarOpen && onOpenSidebar) {
-      // Open sidebar and wait for animation
-      onOpenSidebar();
-      await new Promise(resolve => setTimeout(resolve, 300));
-    } else if (isMobile && !needsSidebar && isSidebarOpen && onCloseSidebar) {
-      // Close sidebar if not needed for this step
-      onCloseSidebar();
-      await new Promise(resolve => setTimeout(resolve, 300));
-    }
+      // Check if we need to open sidebar on mobile
+      const needsSidebar = requiresSidebarForStep(step, isMobile);
 
-    // Get the appropriate target selector
-    const targetSelector = getTargetSelector(step, isMobile);
-    
-    // Scroll target into view
-    if (targetSelector) {
-      await scrollTargetIntoView(targetSelector);
-    }
+      if (isMobile && needsSidebar && !isSidebarOpen && onOpenSidebar) {
+        // Open sidebar and wait for animation
+        onOpenSidebar();
+        await new Promise((resolve) => setTimeout(resolve, 300));
+      } else if (isMobile && !needsSidebar && isSidebarOpen && onCloseSidebar) {
+        // Close sidebar if not needed for this step
+        onCloseSidebar();
+        await new Promise((resolve) => setTimeout(resolve, 300));
+      }
 
-    setIsPreparingStep(false);
-  }, [isMobile, isSidebarOpen, onOpenSidebar, onCloseSidebar, scrollTargetIntoView, currentSteps]);
+      // Get the appropriate target selector
+      const targetSelector = getTargetSelector(step, isMobile);
+
+      // Scroll target into view
+      if (targetSelector) {
+        await scrollTargetIntoView(targetSelector);
+      }
+
+      setIsPreparingStep(false);
+    },
+    [isMobile, isSidebarOpen, onOpenSidebar, onCloseSidebar, scrollTargetIntoView, currentSteps]
+  );
 
   // Get current step data with mobile-aware selectors
   const currentStepData = useMemo(() => {
@@ -326,7 +329,7 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
         // Computed position based on screen size
         computedPosition: getStepPosition(step, isMobile),
         // Whether sidebar is needed for this step
-        computedRequiresSidebar: requiresSidebarForStep(step, isMobile)
+        computedRequiresSidebar: requiresSidebarForStep(step, isMobile),
       };
     }
     return null;
@@ -341,11 +344,11 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
     setIsActive(false);
     setHasSkipped(true);
     setCurrentStep(0);
-    
+
     const newState = {
       hasCompleted: false,
       hasSkipped: true,
-      skippedAt: new Date().toISOString()
+      skippedAt: new Date().toISOString(),
     };
     saveTutorialState(newState);
   }, []);
@@ -359,11 +362,11 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
     setIsActive(false);
     setHasCompleted(true);
     setCurrentStep(0);
-    
+
     const newState = {
       hasCompleted: true,
       hasSkipped: false,
-      completedAt: new Date().toISOString()
+      completedAt: new Date().toISOString(),
     };
     saveTutorialState(newState);
   }, []);
@@ -376,9 +379,9 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
   const startTutorial = useCallback(async () => {
     // Find the first valid step
     const firstValidIndex = findNextValidStep(0, isMobile, 1);
-    
+
     if (firstValidIndex === -1) {
-      console.warn('Tutorial: No valid steps found, cannot start tutorial');
+      console.warn("Tutorial: No valid steps found, cannot start tutorial");
       return;
     }
 
@@ -398,10 +401,10 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
     if (currentStep < totalSteps - 1) {
       // Find the next valid step (skipping steps with missing targets)
       const nextValidIndex = findNextValidStep(currentStep + 1, isMobile, 1);
-      
+
       if (nextValidIndex === -1 || nextValidIndex >= totalSteps) {
         // No more valid steps, complete the tutorial
-        console.warn('Tutorial: No more valid steps found, completing tutorial');
+        console.warn("Tutorial: No more valid steps found, completing tutorial");
         completeTutorial();
         return;
       }
@@ -424,10 +427,10 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
     if (currentStep > 0) {
       // Find the previous valid step (skipping steps with missing targets)
       const prevValidIndex = findNextValidStep(currentStep - 1, isMobile, -1);
-      
+
       if (prevValidIndex === -1 || prevValidIndex < 0) {
         // No previous valid steps, stay on current step
-        console.warn('Tutorial: No previous valid steps found, staying on current step');
+        console.warn("Tutorial: No previous valid steps found, staying on current step");
         return;
       }
 
@@ -447,12 +450,12 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
     setHasSkipped(false);
     setCurrentStep(0);
     setIsActive(true);
-    
+
     // Clear stored state to allow fresh start
     const newState = {
       hasCompleted: false,
       hasSkipped: false,
-      restartedAt: new Date().toISOString()
+      restartedAt: new Date().toISOString(),
     };
     saveTutorialState(newState);
   }, []);
@@ -466,57 +469,56 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
   }, [hasCompleted, hasSkipped]);
 
   // Context value
-  const value = useMemo(() => ({
-    // State
-    isActive,
-    currentStep,
-    totalSteps,
-    currentStepData,
-    hasCompleted,
-    hasSkipped,
-    shouldAutoTrigger,
-    isMobile,
-    isPreparingStep,
-    isSidebarOpen,
-    
-    // Methods
-    startTutorial,
-    nextStep,
-    prevStep,
-    skipTutorial,
-    completeTutorial,
-    restartTutorial,
-    scrollTargetIntoView,
-    prepareStepForDisplay,
-    
-    // Utilities (for external use)
-    validateTargetElement
-  }), [
-    isActive,
-    currentStep,
-    totalSteps,
-    currentStepData,
-    hasCompleted,
-    hasSkipped,
-    shouldAutoTrigger,
-    isMobile,
-    isPreparingStep,
-    isSidebarOpen,
-    startTutorial,
-    nextStep,
-    prevStep,
-    skipTutorial,
-    completeTutorial,
-    restartTutorial,
-    scrollTargetIntoView,
-    prepareStepForDisplay
-  ]);
+  const value = useMemo(
+    () => ({
+      // State
+      isActive,
+      currentStep,
+      totalSteps,
+      currentStepData,
+      hasCompleted,
+      hasSkipped,
+      shouldAutoTrigger,
+      isMobile,
+      isPreparingStep,
+      isSidebarOpen,
 
-  return (
-    <TutorialContext.Provider value={value}>
-      {children}
-    </TutorialContext.Provider>
+      // Methods
+      startTutorial,
+      nextStep,
+      prevStep,
+      skipTutorial,
+      completeTutorial,
+      restartTutorial,
+      scrollTargetIntoView,
+      prepareStepForDisplay,
+
+      // Utilities (for external use)
+      validateTargetElement,
+    }),
+    [
+      isActive,
+      currentStep,
+      totalSteps,
+      currentStepData,
+      hasCompleted,
+      hasSkipped,
+      shouldAutoTrigger,
+      isMobile,
+      isPreparingStep,
+      isSidebarOpen,
+      startTutorial,
+      nextStep,
+      prevStep,
+      skipTutorial,
+      completeTutorial,
+      restartTutorial,
+      scrollTargetIntoView,
+      prepareStepForDisplay,
+    ]
   );
+
+  return <TutorialContext.Provider value={value}>{children}</TutorialContext.Provider>;
 };
 
 /**
@@ -524,10 +526,11 @@ export const TutorialProvider = ({ children, isSidebarOpen, onOpenSidebar, onClo
  * @returns {Object} Tutorial context value
  * @throws {Error} If used outside TutorialProvider
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export const useTutorial = () => {
   const context = useContext(TutorialContext);
   if (!context) {
-    throw new Error('useTutorial must be used within a TutorialProvider');
+    throw new Error("useTutorial must be used within a TutorialProvider");
   }
   return context;
 };

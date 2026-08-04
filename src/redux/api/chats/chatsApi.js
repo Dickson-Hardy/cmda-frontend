@@ -23,7 +23,7 @@ const chatsApi = api.injectEndpoints({
         }
         return {
           ...newItems,
-          messages: [...currentCache.messages, ...newItems.messages],
+          messages: [...newItems.messages, ...currentCache.messages],
         };
       },
       forceRefetch({ currentArg, previousArg }) {
@@ -31,9 +31,14 @@ const chatsApi = api.injectEndpoints({
       },
       invalidatesTags: ["ALL_CONTACTS"],
     }),
+    sendMessage: build.mutation({
+      query: (body) => ({ url: "/chats/messages", method: "POST", body }),
+      transformResponse: (response) => response.data,
+      invalidatesTags: ["ALL_CONTACTS"],
+    }),
   }),
 });
 
-export const { useGetAllContactsQuery, useGetChatHistoryQuery } = chatsApi;
+export const { useGetAllContactsQuery, useGetChatHistoryQuery, useSendMessageMutation } = chatsApi;
 
 export default chatsApi;

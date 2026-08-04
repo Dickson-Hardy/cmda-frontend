@@ -12,14 +12,14 @@ const ProtectedRoutes = () => {
       dispatch(setVerifyEmail(user.email));
       return <Navigate to="/verify-email" />;
     }
-    
+
     // Check if user needs to change their temporary password
     // Allow access to change-password page, but redirect from other pages
     // Use strict equality check to ensure we only redirect when requirePasswordChange is explicitly true
     if (user.requirePasswordChange === true && location.pathname !== "/change-password") {
       return <Navigate to="/change-password" />;
     }
-    
+
     return <Outlet />;
   } else {
     return <Navigate to="/login" />;

@@ -221,6 +221,40 @@ const eventsApi = api.injectEndpoints({
         return response;
       },
     }),
+
+    getEventFeedback: build.query({
+      query: ({ eventId, page = 1, limit = 10 }) =>
+        `/events/${eventId}/feedback?page=${page}&limit=${limit}`,
+      providesTags: ["EVENT_FEEDBACK"],
+    }),
+    submitEventFeedback: build.mutation({
+      query: ({ eventId, ...body }) => ({
+        url: `/events/${eventId}/feedback`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["EVENT_FEEDBACK"],
+    }),
+    getEventAttendees: build.query({
+      query: ({ eventId, page = 1, limit = 20 }) =>
+        `/events/${eventId}/attendees?page=${page}&limit=${limit}`,
+      providesTags: ["EVENT_ATTENDEES"],
+    }),
+    createEventReminder: build.mutation({
+      query: ({ eventId, ...body }) => ({
+        url: `/events/${eventId}/reminders`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["EVENT_REMINDERS"],
+    }),
+    deleteEventReminder: build.mutation({
+      query: (id) => ({
+        url: `/events/reminders/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["EVENT_REMINDERS"],
+    }),
   }),
 });
 
@@ -238,6 +272,11 @@ export const {
   useGetPublicConferencesQuery,
   useCheckUserExistsMutation,
   useGetUserPaymentPlansQuery,
+  useGetEventFeedbackQuery,
+  useSubmitEventFeedbackMutation,
+  useGetEventAttendeesQuery,
+  useCreateEventReminderMutation,
+  useDeleteEventReminderMutation,
 } = eventsApi;
 
 export default eventsApi;

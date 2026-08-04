@@ -122,9 +122,9 @@ const DashboardHomePage = () => {
             FEATURED
           </span>
           <div className="flex justify-center mb-3">
-            <img 
-              src="/Impact  LOGO.png" 
-              alt="Impact Fund" 
+            <img
+              src="/Impact  LOGO.png"
+              alt="Impact Fund"
               className="h-16 w-16 object-contain bg-white rounded-full p-2 shadow-xl"
             />
           </div>

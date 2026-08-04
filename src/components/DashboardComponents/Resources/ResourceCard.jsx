@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 import icons from "~/assets/js/icons";
 import { classNames } from "~/utilities/classNames";
 
@@ -10,7 +11,7 @@ const ResourceCard = ({ title, subtitle, type, image, width = 240, className }) 
           <span>{["Webinar", "Others"].includes(type) ? icons.play : icons.newspaper}</span>
           <h4 className="text-sm font-bold truncate">{title}</h4>
         </div>
-        <p className="text-gray-dark text-xs mt-2 line-clamp-2" dangerouslySetInnerHTML={{ __html: subtitle }} />
+        <p className="text-gray-dark text-xs mt-2 line-clamp-2" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(subtitle || "") }} />
       </div>
     </div>
   );

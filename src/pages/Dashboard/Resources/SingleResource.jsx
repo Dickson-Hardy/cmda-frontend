@@ -1,11 +1,61 @@
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { BiDownload } from "react-icons/bi";
+import DOMPurify from "dompurify";
 import BackButton from "~/components/Global/BackButton/BackButton";
+import Button from "~/components/Global/Button/Button";
 import { useGetResourceBySlugQuery } from "~/redux/api/resources/resourcesApi";
 import formatDate from "~/utilities/fomartDate";
 
+const selectToken = (state) => state.token?.accessToken;
+
+const formatFileSize = (bytes) => {
+  if (!bytes) return "";
+  const units = ["B", "KB", "MB", "GB"];
+  let size = bytes;
+  let unitIndex = 0;
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex++;
+  }
+  return `${size.toFixed(1)} ${units[unitIndex]}`;
+};
+
+const getFileExtension = (url) => {
+  if (!url) return "";
+  const parts = url.split(".");
+  const ext = parts[parts.length - 1]?.split("?")[0]?.split("#")[0];
+  return ext?.toUpperCase() || "";
+};
+
 const SingleResource = () => {
   const { slug } = useParams();
+  const accessToken = useSelector(selectToken);
   const { data: singleRes } = useGetResourceBySlugQuery(slug, { skip: !slug });
+
+  const handleDownload = async () => {
+    if (!singleRes?.fileUrl) return;
+    try {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "");
+      const response = await fetch(`${baseUrl}/resources/${singleRes._id || slug}/download`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      if (!response.ok) throw new Error(`Download failed: ${response.status}`);
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = singleRes.fileName || singleRes.title || "resource";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      window.open(singleRes.fileUrl, "_blank", "noopener,noreferrer");
+    }
+  };
 
   return (
     <div>
@@ -23,7 +73,7 @@ const SingleResource = () => {
         <p
           id="resource-body"
           className="text-gray-dark mb-6"
-          dangerouslySetInnerHTML={{ __html: singleRes?.description }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(singleRes?.description || "") }}
         />
 
         {["Webinar", "Others"].includes(singleRes?.category) && (
@@ -37,6 +87,25 @@ const SingleResource = () => {
               allowFullScreen
               title="Embedded youtube"
             />
+          </div>
+        )}
+
+        {/* Download Button */}
+        {singleRes?.fileUrl && (
+          <div className="mb-6 p-4 bg-gray-50 rounded-xl flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="size-10 bg-primary/10 rounded-lg flex-shrink-0 inline-flex items-center justify-center text-primary">
+                <BiDownload className="text-lg" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-medium truncate">{singleRes.fileName || singleRes.title}</p>
+                <p className="text-xs text-gray-500">
+                  {getFileExtension(singleRes.fileUrl)}
+                  {singleRes.fileSize && ` • ${formatFileSize(singleRes.fileSize)}`}
+                </p>
+              </div>
+            </div>
+            <Button label="Download" small icon={<BiDownload />} onClick={handleDownload} />
           </div>
         )}
 

@@ -6,6 +6,10 @@ import { toast } from "react-toastify";
 import icons from "~/assets/js/icons";
 import PaypalPaymentButton from "~/components/DashboardComponents/Payments/PaypalPaymentButton";
 import VirtualMeetingCard from "~/components/DashboardComponents/Events/VirtualMeetingCard";
+import ReactionBar from "~/components/DashboardComponents/Events/ReactionBar";
+import EventCommentsSection from "~/components/DashboardComponents/Events/EventCommentsSection";
+import EventFeedbackModal from "~/components/DashboardComponents/Events/EventFeedbackModal";
+import EventAttendeesList from "~/components/DashboardComponents/Events/EventAttendeesList";
 import BackButton from "~/components/Global/BackButton/BackButton";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
@@ -16,6 +20,7 @@ import {
   usePayForEventMutation,
   useRegisterForEventMutation,
 } from "~/redux/api/events/eventsApi";
+import { useCreateEventReminderMutation } from "~/redux/api/personalEventsApi";
 import { selectAuth } from "~/redux/features/auth/authSlice";
 import { classNames } from "~/utilities/classNames";
 import formatDate from "~/utilities/fomartDate";
@@ -43,9 +48,15 @@ const DashboardStoreSingleEventPage = () => {
   const [openSuccess, setOpenSuccess] = useState(false);
 
   const [confirmPayment, { isLoading: isConfirming }] = useConfirmEventPaymentMutation();
+  const [createEventReminder, { isLoading: isSettingReminder }] = useCreateEventReminderMutation();
   const clickableEventUrl = toClickableUrl(singleEvent?.linkOrLocation);
   const clickableExternalUrl = toClickableUrl(singleEvent?.externalUrl);
   const hasExternalAction = Boolean(clickableExternalUrl);
+
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [showAttendees, setShowAttendees] = useState(false);
+  const [reminderDate, setReminderDate] = useState("");
+  const [showReminder, setShowReminder] = useState(false);
 
   const wasCalled = useRef(false);
 
@@ -134,6 +145,23 @@ const DashboardStoreSingleEventPage = () => {
     }
   };
 
+  const handleSetReminder = async () => {
+    if (!reminderDate) return;
+    try {
+      await createEventReminder({
+        eventId: singleEvent?._id || singleEvent?.slug,
+        reminderDate,
+      }).unwrap();
+      toast.success("Reminder set successfully");
+      setShowReminder(false);
+      setReminderDate("");
+    } catch (err) {
+      toast.error(err?.data?.message || "Failed to set reminder");
+    }
+  };
+
+  const isPastEvent = singleEvent?.eventDateTime && new Date(singleEvent.eventDateTime).getTime() < Date.now();
+
   return (
     <div>
       {/* SEO Starts */}
@@ -161,6 +189,8 @@ const DashboardStoreSingleEventPage = () => {
         </span>
 
         <h2 className="font-bold mb-4 text-2xl">{singleEvent?.name}</h2>
+
+        {singleEvent?._id && <ReactionBar parentType="event" parentId={singleEvent._id} />}
 
         <img src={singleEvent?.featuredImageUrl} className="w-full max-h-[500px] mb-6" />
 
@@ -347,6 +377,60 @@ const DashboardStoreSingleEventPage = () => {
           </div>
         </div>
 
+        {/* Action Buttons */}
+        <div className="flex flex-wrap gap-3 mt-6">
+          <Button
+            label="See Attendees"
+            variant="outlined"
+            onClick={() => setShowAttendees(!showAttendees)}
+          />
+          {isPastEvent && (
+            <Button
+              label="Rate This Event"
+              variant="outlined"
+              color="tertiary"
+              onClick={() => setShowFeedback(true)}
+            />
+          )}
+          <Button
+            label="Set Reminder"
+            variant="outlined"
+            color="secondary"
+            onClick={() => setShowReminder(!showReminder)}
+          />
+        </div>
+
+        {/* Reminder Input */}
+        {showReminder && (
+          <div className="mt-4 flex items-end gap-3 p-4 bg-gray-50 rounded-lg">
+            <div className="flex-1">
+              <label className="block text-sm font-semibold mb-1">Reminder Date &amp; Time</label>
+              <input
+                type="datetime-local"
+                value={reminderDate}
+                onChange={(e) => setReminderDate(e.target.value)}
+                className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+              />
+            </div>
+            <Button
+              label="Set"
+              loading={isSettingReminder}
+              disabled={!reminderDate}
+              onClick={handleSetReminder}
+            />
+            <Button
+              label="Cancel"
+              variant="text"
+              onClick={() => { setShowReminder(false); setReminderDate(""); }}
+            />
+          </div>
+        )}
+
+        {/* Attendees List */}
+        {showAttendees && singleEvent?._id && (
+          <EventAttendeesList eventId={singleEvent._id} />
+        )}
+
         {singleEvent?.requiresSubscription !== false && !user.subscribed && !hasExternalAction && (
           <div className="mt-6 mb-4 border px-6 py-3 bg-error/20 border-error rounded-lg text-sm font-medium text-error">
             You need an active subscription to register for this event.{" "}
@@ -523,6 +607,16 @@ const DashboardStoreSingleEventPage = () => {
           />
         </div>
       </Modal>
+
+      {/* Feedback Modal */}
+      <EventFeedbackModal
+        eventId={singleEvent?._id}
+        isOpen={showFeedback}
+        onClose={() => setShowFeedback(false)}
+      />
+
+      {/* Comments Section */}
+      {singleEvent?._id && <EventCommentsSection eventId={singleEvent._id} />}
     </div>
   );
 };
