@@ -9,10 +9,10 @@ import { classNames } from "~/utilities/classNames";
  */
 const getTutorialAttribute = (title) => {
   const titleMap = {
-    'Home': 'bottomnav-home',
-    'Events': 'bottomnav-events',
-    'Resources': 'bottomnav-resources',
-    'Manage Payments': 'bottomnav-payments'
+    Home: "bottomnav-home",
+    Events: "bottomnav-events",
+    Resources: "bottomnav-resources",
+    "Manage Payments": "bottomnav-payments",
   };
   return titleMap[title] || null;
 };
@@ -41,7 +41,7 @@ const BottomNav = ({ navLinks, toggleSidebar }) => {
                 activePath === item.link ? "bg-white text-primary" : "text-white"
               )}
               onClick={() => navigate(item.link)}
-              {...(tutorialAttr && { 'data-tutorial': tutorialAttr })}
+              {...(tutorialAttr && { "data-tutorial": tutorialAttr })}
             >
               <span className="text-xl">{item.icon}</span>
               <span className="text-xs truncate font-semibold">

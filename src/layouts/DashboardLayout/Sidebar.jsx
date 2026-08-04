@@ -12,15 +12,15 @@ import Logo from "~/components/Global/Logo/Logo";
  */
 const getTutorialAttribute = (title) => {
   const titleMap = {
-    'Home': 'nav-home',
-    'Events': 'nav-events',
-    'Resources': 'nav-resources',
-    'Manage Payments': 'nav-payments',
-    'Connect with Others': 'nav-members',
-    'Volunteer': 'nav-volunteer',
-    'Faith Entry': 'nav-faith',
-    'Messaging': 'nav-messaging',
-    'Store': 'nav-store'
+    Home: "nav-home",
+    Events: "nav-events",
+    Resources: "nav-resources",
+    "Manage Payments": "nav-payments",
+    "Connect with Others": "nav-members",
+    Volunteer: "nav-volunteer",
+    "Faith Entry": "nav-faith",
+    Messaging: "nav-messaging",
+    Store: "nav-store",
   };
   return titleMap[title] || null;
 };
@@ -60,9 +60,9 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [], unreadMessagesCount }
           )}
           <div className="truncate">
             <h5 className="font-bold text-base truncate text-white">{user ? user.fullName : "No Name"}</h5>
-            <Link 
-              to="/dashboard/profile" 
-              className="text-white text-sm hover:underline" 
+            <Link
+              to="/dashboard/profile"
+              className="text-white text-sm hover:underline"
               onClick={onToggleSidebar}
               data-tutorial="nav-profile"
             >
@@ -87,7 +87,7 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [], unreadMessagesCount }
                     }
                     end={navItem.link === "/dashboard"}
                     onClick={onToggleSidebar}
-                    {...(tutorialAttr && { 'data-tutorial': tutorialAttr })}
+                    {...(tutorialAttr && { "data-tutorial": tutorialAttr })}
                   >
                     <span className="text-lg">{navItem.icon}</span> {navItem.title}
                     {navItem.title === "Messaging" && unreadMessagesCount ? (

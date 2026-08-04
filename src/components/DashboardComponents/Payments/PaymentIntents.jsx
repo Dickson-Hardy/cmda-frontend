@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Button from "~/components/Global/Button/Button";
-import { selectAuth } from "~/redux/features/auth/authSlice";
 import { useGetMyPaymentIntentsQuery, useRequeryPaymentIntentsMutation } from "~/redux/api/payments/paymentIntentsApi";
 
 const getStatusColor = (status) => {
@@ -38,7 +36,6 @@ const getContextLabel = (context) => {
 };
 
 const PaymentIntents = ({ showTitle = true, compact = false }) => {
-  const { user } = useSelector(selectAuth);
   const [requeryingIntents, setRequeryingIntents] = useState([]);
 
   const { data, isLoading, refetch } = useGetMyPaymentIntentsQuery({ page: 1, limit: 100 });

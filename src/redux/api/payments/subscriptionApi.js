@@ -37,6 +37,19 @@ const subscriptionApi = api.injectEndpoints({
       transformResponse: (response) => response.data,
       invalidatesTags: ["SUBSCRIPTION"],
     }),
+    getSubscriptionStatus: build.query({
+      query: () => "/subscriptions/status",
+      transformResponse: (response) => response.data,
+      providesTags: ["SUBSCRIPTION_STATUS"],
+    }),
+    cancelSubscription: build.mutation({
+      query: () => ({ url: "/subscriptions/cancel", method: "POST" }),
+      invalidatesTags: ["SUBSCRIPTION_STATUS", "SUBSCRIPTION"],
+    }),
+    renewSubscription: build.mutation({
+      query: (body) => ({ url: "/subscriptions/renew", method: "POST", body }),
+      invalidatesTags: ["SUBSCRIPTION_STATUS", "SUBSCRIPTION"],
+    }),
   }),
 });
 
@@ -46,6 +59,9 @@ export const {
   useGetAllSubscriptionsQuery,
   useExportSubscriptionsMutation,
   useSyncSubscriptionPaymentStatusMutation,
+  useGetSubscriptionStatusQuery,
+  useCancelSubscriptionMutation,
+  useRenewSubscriptionMutation,
 } = subscriptionApi;
 
 export default subscriptionApi;

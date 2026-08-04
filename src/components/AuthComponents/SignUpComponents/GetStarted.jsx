@@ -4,7 +4,7 @@ import doctorImg from "~/assets/images/auth/doctor.svg";
 import globalImg from "~/assets/images/auth/global.svg";
 import { useState, useEffect } from "react";
 import Button from "../../Global/Button/Button";
-import { useSearchParams, useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const GetStarted = () => {

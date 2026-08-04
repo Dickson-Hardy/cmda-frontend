@@ -45,7 +45,7 @@ const Login = () => {
       .unwrap()
       .then(({ data }) => {
         dispatch(setUser(data?.user));
-        dispatch(setTokens({ accessToken: data?.accessToken }));
+        dispatch(setTokens({ accessToken: data?.accessToken, refreshToken: data?.refreshToken }));
         toast.success("Login successful");
 
         if (!data.user.emailVerified) {

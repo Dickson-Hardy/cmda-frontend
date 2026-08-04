@@ -1,9 +1,8 @@
 import { useState } from "react";
 import icons from "~/assets/js/icons";
-import Button from "~/components/Global/Button/Button";
 import { toast } from "react-toastify";
 
-const VirtualMeetingCard = ({ meetingInfo, eventName }) => {
+const VirtualMeetingCard = ({ meetingInfo }) => {
   const [showPasscode, setShowPasscode] = useState(false);
 
   if (!meetingInfo || !meetingInfo.meetingLink) return null;

@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import PropTypes from "prop-types";
-import { MOBILE_BREAKPOINT } from "~/constants/tutorial";
 
 /**
  * Custom hook to detect reduced motion preference
@@ -31,24 +30,12 @@ const useReducedMotion = () => {
  */
 const TutorialOverlay = ({ targetSelector, isVisible, onClickOutside, padding = 8 }) => {
   const [targetRect, setTargetRect] = useState(null);
-  const [isMobile, setIsMobile] = useState(false);
   const overlayRef = useRef(null);
   const prevTargetSelector = useRef(targetSelector);
 
   // Check for reduced motion preference
   // Requirements: 8.5 - Respect reduced-motion preference
   const prefersReducedMotion = useReducedMotion();
-
-  // Check for mobile viewport
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
 
   /**
    * Calculate and update target element position

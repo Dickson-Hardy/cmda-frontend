@@ -66,9 +66,9 @@ const IndexPage = () => {
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg shadow-red-500/50 tracking-wider animate-pulse">
                   NEW
                 </span>
-                <img 
-                  src="/Impact  LOGO.png" 
-                  alt="Impact Fund" 
+                <img
+                  src="/Impact  LOGO.png"
+                  alt="Impact Fund"
                   className="h-8 w-8 object-contain bg-white rounded-full p-1 shadow-md"
                 />
                 <span>Join us in Sustaining the vision of caring for the whole Man</span>

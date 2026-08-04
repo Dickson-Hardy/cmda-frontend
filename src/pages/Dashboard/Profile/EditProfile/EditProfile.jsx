@@ -14,11 +14,7 @@ import { useEditProfileMutation } from "~/redux/api/profile/profileApi";
 import { setUser } from "~/redux/features/auth/authSlice";
 import { fourteenYrsAgo } from "~/utilities/fomartDate";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
-import {
-  admissionYearOptions,
-  currentYearOptions,
-  genderOptions,
-} from "~/utilities/reusableVariables";
+import { admissionYearOptions, currentYearOptions, genderOptions } from "~/utilities/reusableVariables";
 import { useChapters } from "~/hooks/useChapters";
 
 const DashboardEditProfile = () => {
@@ -28,12 +24,12 @@ const DashboardEditProfile = () => {
   const [addSocialVisible, setAddSocialVisible] = useState(false);
   const [editProfile, { isLoading }] = useEditProfileMutation();
   const dispatch = useDispatch();
-  
+
   // Fetch chapters dynamically based on user role
   const { chapters: chapterOptions, isLoading: isLoadingChapters } = useChapters(
     user.role === "Doctor" ? "Doctor" : user.role === "Student" ? "Student" : "GlobalNetwork"
   );
-  
+
   const {
     control,
     register,

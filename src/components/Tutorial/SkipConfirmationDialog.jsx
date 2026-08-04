@@ -1,5 +1,5 @@
-import { useEffect, useRef, useCallback } from 'react';
-import PropTypes from 'prop-types';
+import { useEffect, useRef, useCallback } from "react";
+import PropTypes from "prop-types";
 
 /**
  * SkipConfirmationDialog Component
@@ -12,8 +12,8 @@ const SkipConfirmationDialog = ({
   isVisible,
   onContinue,
   onSkip,
-  title = 'Skip Tutorial?',
-  description = "Are you sure you want to skip the tutorial? You can restart it anytime from your Profile settings."
+  title = "Skip Tutorial?",
+  description = "Are you sure you want to skip the tutorial? You can restart it anytime from your Profile settings.",
 }) => {
   const dialogRef = useRef(null);
   const continueButtonRef = useRef(null);
@@ -24,48 +24,51 @@ const SkipConfirmationDialog = ({
    * Cycles focus within the dialog when Tab is pressed
    * Requirements: 8.1, 8.4 - Keyboard navigation and focus trap
    */
-  const handleKeyDown = useCallback((e) => {
-    if (!isVisible) return;
+  const handleKeyDown = useCallback(
+    (e) => {
+      if (!isVisible) return;
 
-    if (e.key === 'Escape') {
-      // Escape key continues the tutorial (closes confirmation)
-      e.preventDefault();
-      e.stopPropagation();
-      onContinue?.();
-      return;
-    }
+      if (e.key === "Escape") {
+        // Escape key continues the tutorial (closes confirmation)
+        e.preventDefault();
+        e.stopPropagation();
+        onContinue?.();
+        return;
+      }
 
-    if (e.key === 'Tab' && dialogRef.current) {
-      const focusableElements = dialogRef.current.querySelectorAll(
-        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled])'
-      );
+      if (e.key === "Tab" && dialogRef.current) {
+        const focusableElements = dialogRef.current.querySelectorAll(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled])'
+        );
 
-      if (focusableElements.length === 0) return;
+        if (focusableElements.length === 0) return;
 
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
 
-      if (e.shiftKey) {
-        // Shift + Tab: move focus backward
-        if (document.activeElement === firstElement) {
-          e.preventDefault();
-          lastElement.focus();
-        }
-      } else {
-        // Tab: move focus forward
-        if (document.activeElement === lastElement) {
-          e.preventDefault();
-          firstElement.focus();
+        if (e.shiftKey) {
+          // Shift + Tab: move focus backward
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          // Tab: move focus forward
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
         }
       }
-    }
-  }, [isVisible, onContinue]);
+    },
+    [isVisible, onContinue]
+  );
 
   // Add keyboard event listener
   useEffect(() => {
     if (isVisible) {
-      document.addEventListener('keydown', handleKeyDown);
-      return () => document.removeEventListener('keydown', handleKeyDown);
+      document.addEventListener("keydown", handleKeyDown);
+      return () => document.removeEventListener("keydown", handleKeyDown);
     }
   }, [isVisible, handleKeyDown]);
 
@@ -91,11 +94,14 @@ const SkipConfirmationDialog = ({
   /**
    * Handle backdrop click - clicking outside the dialog continues the tutorial
    */
-  const handleBackdropClick = useCallback((e) => {
-    if (e.target === e.currentTarget) {
-      onContinue?.();
-    }
-  }, [onContinue]);
+  const handleBackdropClick = useCallback(
+    (e) => {
+      if (e.target === e.currentTarget) {
+        onContinue?.();
+      }
+    },
+    [onContinue]
+  );
 
   if (!isVisible) {
     return null;
@@ -122,22 +128,16 @@ const SkipConfirmationDialog = ({
         aria-describedby="skip-confirmation-description"
         className="bg-white rounded-xl shadow-2xl p-6 mx-4 max-w-sm w-full animate-scale-in"
         style={{
-          animation: 'scaleIn 0.2s ease-out'
+          animation: "scaleIn 0.2s ease-out",
         }}
       >
         {/* Title */}
-        <h3
-          id="skip-confirmation-title"
-          className="text-lg font-bold text-gray-900 mb-2"
-        >
+        <h3 id="skip-confirmation-title" className="text-lg font-bold text-gray-900 mb-2">
           {title}
         </h3>
 
         {/* Description */}
-        <p
-          id="skip-confirmation-description"
-          className="text-sm text-gray-600 mb-6 leading-relaxed"
-        >
+        <p id="skip-confirmation-description" className="text-sm text-gray-600 mb-6 leading-relaxed">
           {description}
         </p>
 
@@ -188,7 +188,7 @@ SkipConfirmationDialog.propTypes = {
   /** Dialog title */
   title: PropTypes.string,
   /** Dialog description */
-  description: PropTypes.string
+  description: PropTypes.string,
 };
 
 export default SkipConfirmationDialog;

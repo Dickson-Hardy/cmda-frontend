@@ -26,7 +26,7 @@ const store = configureStore({
       },
       immutableCheck: { warnAfter: 128 },
     }).concat(combinedMiddlewares),
-  devTools: process.env.NODE_ENV !== "production",
+  devTools: import.meta.env.MODE !== "production",
 });
 
 export const persistor = persistStore(store, null, () => {

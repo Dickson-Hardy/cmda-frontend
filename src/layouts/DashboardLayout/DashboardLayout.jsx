@@ -29,7 +29,6 @@ const TutorialIntegration = () => {
     prevStep,
     skipTutorial,
     completeTutorial,
-    isSidebarOpen
   } = useTutorial();
 
   const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
@@ -100,11 +99,7 @@ const TutorialIntegration = () => {
 
       {/* Skip Confirmation Dialog */}
       {/* Requirements: 4.5 - Provide "Continue Tutorial" and "Skip Tutorial" options */}
-      <SkipConfirmationDialog
-        isVisible={showSkipConfirmation}
-        onContinue={handleContinue}
-        onSkip={handleSkipConfirm}
-      />
+      <SkipConfirmationDialog isVisible={showSkipConfirmation} onContinue={handleContinue} onSkip={handleSkipConfirm} />
     </>
   );
 };
@@ -146,11 +141,7 @@ const DashboardLayout = ({ withOutlet = true, children }) => {
   });
 
   return (
-    <TutorialProvider
-      isSidebarOpen={isSidebarOpen}
-      onOpenSidebar={openSidebar}
-      onCloseSidebar={closeSidebar}
-    >
+    <TutorialProvider isSidebarOpen={isSidebarOpen} onOpenSidebar={openSidebar} onCloseSidebar={closeSidebar}>
       <div className="bg-background">
         <Header unreadMessagesCount={unreadMessagesCount} unreadNotificationCount={unreadNotificationCount} />
 

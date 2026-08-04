@@ -25,15 +25,15 @@ export const useChapters = (type) => {
         value: chapter.name,
       }));
     }
-    
+
     // Fallback to hardcoded arrays if API fails or returns empty
     if (error || !data) {
       // Silently fallback to hardcoded data
-      if (type === 'Student') return studentChapterOptions;
-      if (type === 'Doctor') return doctorsRegionLists;
-      if (type === 'GlobalNetwork') return globalRegionsData;
+      if (type === "Student") return studentChapterOptions;
+      if (type === "Doctor") return doctorsRegionLists;
+      if (type === "GlobalNetwork") return globalRegionsData;
     }
-    
+
     return [];
   }, [data, error, type]);
 
@@ -49,13 +49,16 @@ export const useChapters = (type) => {
  * Hook to get all chapters (no filtering)
  */
 export const useAllChapters = () => {
-  const { data, isLoading, error } = useGetAllChaptersQuery({}, {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data, isLoading, error } = useGetAllChaptersQuery(
+    {},
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   const chapters = useMemo(() => {
     if (!data?.items) return [];
-    
+
     return data.items.map((chapter) => ({
       label: chapter.name,
       value: chapter.name,
