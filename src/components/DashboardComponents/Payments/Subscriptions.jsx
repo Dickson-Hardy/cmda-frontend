@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { BiRefresh, BiXCircle } from "react-icons/bi";
 import Button from "~/components/Global/Button/Button";
-import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import StatusChip from "~/components/Global/StatusChip/StatusChip";
 import Table from "~/components/Global/Table/Table";
 import { SUBSCRIPTION_PRICES, GLOBAL_INCOME_BASED_PRICING } from "~/constants/subscription";
@@ -10,15 +8,12 @@ import {
   useExportSubscriptionsMutation,
   useGetAllSubscriptionsQuery,
   useGetSubscriptionStatusQuery,
-  useCancelSubscriptionMutation,
-  useRenewSubscriptionMutation,
 } from "~/redux/api/payments/subscriptionApi";
 import { selectAuth } from "~/redux/features/auth/authSlice";
 import { downloadFile } from "~/utilities/fileDownloader";
 import formatDate from "~/utilities/fomartDate";
 import { formatCurrency } from "~/utilities/formatCurrency";
 import { API_BASE_URL } from "~/utilities/apiBaseUrl";
-import { toast } from "react-toastify";
 
 // Selector for token from Redux store
 const selectToken = (state) => state.token?.accessToken;
@@ -31,30 +26,8 @@ const Subscriptions = () => {
   const { data: subscriptions, isLoading } = useGetAllSubscriptionsQuery({ page, limit });
 
   const [loadingReceipt, setLoadingReceipt] = useState(null);
-  const [confirmCancel, setConfirmCancel] = useState(false);
-  const [confirmRenew, setConfirmRenew] = useState(false);
 
   const { data: subscriptionStatus, isLoading: isLoadingStatus } = useGetSubscriptionStatusQuery();
-  const [cancelSubscription, { isLoading: isCancelling }] = useCancelSubscriptionMutation();
-  const [renewSubscription, { isLoading: isRenewing }] = useRenewSubscriptionMutation();
-
-  const handleCancelSubscription = () => {
-    cancelSubscription()
-      .unwrap()
-      .then(() => {
-        toast.success("Subscription cancelled successfully");
-        setConfirmCancel(false);
-      });
-  };
-
-  const handleRenewSubscription = () => {
-    renewSubscription({})
-      .unwrap()
-      .then(() => {
-        toast.success("Subscription renewed successfully");
-        setConfirmRenew(false);
-      });
-  };
 
   const getDaysUntilExpiry = () => {
     if (!subscriptionStatus?.expiryDate) return null;
@@ -178,7 +151,7 @@ const Subscriptions = () => {
 
   return (
     <div data-tutorial="subscription-section">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
         <div className="border p-4 bg-white rounded-xl">
           <h6 className="text-gray text-sm font-medium mb-4">Subscription Status</h6>
           <StatusChip status={user.subscribed ? "Active" : "Inactive"} />
@@ -262,39 +235,6 @@ const Subscriptions = () => {
             </p>
           )}
         </div>
-
-        <div className="border p-4 bg-white rounded-xl">
-          <h6 className="text-gray text-sm font-medium mb-4">Manage Subscription</h6>
-          <div className="flex flex-col gap-2">
-            {user.subscribed && (
-              <>
-                <Button
-                  label="Renew Now"
-                  small
-                  icon={<BiRefresh />}
-                  onClick={() => setConfirmRenew(true)}
-                  loading={isRenewing}
-                />
-                <Button
-                  label="Cancel Subscription"
-                  small
-                  variant="outlined"
-                  icon={<BiXCircle />}
-                  onClick={() => setConfirmCancel(true)}
-                />
-              </>
-            )}
-            {!user.subscribed && (
-              <Button
-                label="Renew Subscription"
-                small
-                icon={<BiRefresh />}
-                onClick={() => setConfirmRenew(true)}
-                loading={isRenewing}
-              />
-            )}
-          </div>
-        </div>
       </div>
 
       <div className="bg-white shadow py-6 rounded-3xl">
@@ -315,34 +255,6 @@ const Subscriptions = () => {
           }}
         />
       </div>
-
-      <ConfirmationModal
-        icon={<BiXCircle />}
-        title="Cancel Subscription"
-        subtitle="Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your billing period."
-        subAction={() => setConfirmCancel(false)}
-        subActionText="Keep Subscription"
-        maxWidth={400}
-        mainAction={handleCancelSubscription}
-        mainActionText="Cancel Subscription"
-        mainActionLoading={isCancelling}
-        isOpen={confirmCancel}
-        onClose={() => setConfirmCancel(false)}
-      />
-
-      <ConfirmationModal
-        icon={<BiRefresh />}
-        title="Renew Subscription"
-        subtitle="Renew your subscription to continue enjoying all benefits."
-        subAction={() => setConfirmRenew(false)}
-        subActionText="Cancel"
-        maxWidth={400}
-        mainAction={handleRenewSubscription}
-        mainActionText="Renew"
-        mainActionLoading={isRenewing}
-        isOpen={confirmRenew}
-        onClose={() => setConfirmRenew(false)}
-      />
     </div>
   );
 };

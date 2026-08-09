@@ -7,9 +7,9 @@ import Select from "~/components/Global/FormElements/Select/Select";
 import { GLOBAL_INCOME_BASED_PRICING, LIFETIME_MEMBERSHIPS, INCOME_BRACKETS } from "~/constants/subscription";
 import { classNames } from "~/utilities/classNames";
 import { formatCurrency } from "~/utilities/formatCurrency";
-import PaypalPaymentButton from "./PaypalPaymentButton";
+import PayPalRedirectButton from "./PayPalRedirectButton";
 
-const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
+const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit }) => {
   const [selectedTab, setSelectedTab] = useState("regular");
   const currentYear = new Date().getFullYear();
   const [targetYear, setTargetYear] = useState(currentYear);
@@ -180,19 +180,13 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
             </div>
           )}
 
-          {/* Payment Note */}
-          <div className="text-sm text-center text-tertiary font-medium bg-yellow-50 p-3 rounded-lg">
-            If the PayPal button does not appear, please reload the page.
-          </div>
-
           {/* Action Buttons */}
           <div className="grid grid-cols-2 gap-4 pt-4">
             <Button type="button" variant="outlined" large onClick={handleModalClose} className="w-full">
               Cancel
             </Button>
 
-            <PaypalPaymentButton
-              onApprove={onApprove}
+            <PayPalRedirectButton
               createOrder={async () => {
                 // Validate form first
                 const isValid = await trigger();
@@ -209,14 +203,12 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
                     : { incomeBracket: data.incomeBracket, targetYear }),
                 };
 
-                const orderId = await onSubmit(subscriptionData);
-                if (!orderId) {
+                const order = await onSubmit(subscriptionData);
+                if (!order) {
                   throw new Error("Failed to create PayPal order");
                 }
-                return orderId;
+                return order;
               }}
-              amount={getCurrentPrice()}
-              currency="USD"
             />
           </div>
         </form>

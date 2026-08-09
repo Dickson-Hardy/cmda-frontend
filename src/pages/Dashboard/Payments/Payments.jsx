@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { MdInfoOutline } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import icons from "~/assets/js/icons";
 import ConfirmSubscriptionModal from "~/components/DashboardComponents/Payments/ConfirmSubscriptionModal";
 import GlobalSubscriptionModal from "~/components/DashboardComponents/Payments/GlobalSubscriptionModal";
@@ -24,7 +24,6 @@ const DashboardPaymentsPage = () => {
     { label: "Donations", content: <Donations /> },
   ];
   const { user } = useSelector(selectAuth);
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const activeTab = searchParams.get("active");
   const [activeIndex, setActiveIndex] = useState(+activeTab || 0);
@@ -47,7 +46,7 @@ const DashboardPaymentsPage = () => {
   const onSubmit = async (payload) => {
     const res = await initDonation(payload).unwrap();
     if (user.role === "GlobalNetwork") {
-      return res.id;
+      return res;
     } else {
       setResponse(res);
       setOpenDonate(false);
@@ -66,18 +65,14 @@ const DashboardPaymentsPage = () => {
     // Handle different subscription types for Global Network members
     if (user.role === "GlobalNetwork" && subscriptionData) {
       const res = await initSubscription(subscriptionData).unwrap();
-      return res.id;
+      return res;
     } else {
       // Pass subscriptionData for Nigerian lifetime membership
       const res = await initSubscription(subscriptionData || {}).unwrap();
-      if (user.role === "GlobalNetwork") {
-        return res.id;
-      } else {
-        setResponse(res);
-        setOpenSubscribe(false);
-        setOpenLifetime(false);
-        setRedirectModal(true);
-      }
+      setResponse(res);
+      setOpenSubscribe(false);
+      setOpenLifetime(false);
+      setRedirectModal(true);
     }
   };
 
@@ -116,18 +111,12 @@ const DashboardPaymentsPage = () => {
         onClose={() => setOpenDonate(false)}
         loading={isLoading}
         onSubmit={onSubmit}
-        onApprove={(data) => {
-          navigate(`/dashboard/payments/successful?type=donation&source=paypal&reference=${data.orderID}`);
-        }}
       />{" "}
       {user.role === "GlobalNetwork" ? (
         <GlobalSubscriptionModal
           isOpen={openSubscribe}
           onClose={() => setOpenSubscribe(false)}
           onSubmit={onSubscribe}
-          onApprove={(data) => {
-            navigate(`/dashboard/payments/successful?type=subscription&source=paypal&reference=${data.orderID}`);
-          }}
         />
       ) : (
         <ConfirmSubscriptionModal
@@ -135,9 +124,6 @@ const DashboardPaymentsPage = () => {
           onClose={() => setOpenSubscribe(false)}
           onSubmit={onSubscribe}
           loading={isSubscribing}
-          onApprove={(data) => {
-            navigate(`/dashboard/payments/successful?type=subscription&source=paypal&reference=${data.orderID}`);
-          }}
           isGlobalMember={false}
         />
       )}
