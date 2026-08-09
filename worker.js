@@ -2,10 +2,8 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    // Kill-switch for the OLD service worker (/sw.js).
-    // Browsers still registered to /sw.js will fetch this on update,
-    // install it, wipe all caches, unregister, and hard-reload every tab.
-    if (url.pathname === "/sw.js") {
+    // Kill-switch for old service workers (/sw.js and /sw-v2.js).
+    if (url.pathname === "/sw.js" || url.pathname === "/sw-v2.js") {
       const killSw = `
 self.addEventListener('install', (e) => { self.skipWaiting(); });
 self.addEventListener('activate', (e) => {
@@ -62,7 +60,7 @@ self.addEventListener('activate', (e) => {
     }
 
     // Never cache service worker files
-    if (url.pathname === "/sw-v2.js" || url.pathname.startsWith("/workbox-") || url.pathname === "/registerSW.js") {
+    if (url.pathname === "/sw-v3.js" || url.pathname.startsWith("/workbox-") || url.pathname === "/registerSW.js") {
       const response = await env.ASSETS.fetch(request);
       const newHeaders = new Headers(response.headers);
       newHeaders.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
@@ -92,23 +90,36 @@ self.addEventListener('activate', (e) => {
         const kill = `<script id="CMDA_SW_KILL">
 (function(){
   if(!('serviceWorker' in navigator)) return;
-  function isOldSW(url){ return !!url && /\\/sw\\.js(\\?|$)/.test(url); }
+  var DEPLOY_VERSION="2026-08-09-sw-v3";
+  var STORED=localStorage.getItem("CMDA_SW_VER");
+  if(STORED!==DEPLOY_VERSION){
+    localStorage.setItem("CMDA_SW_VER",DEPLOY_VERSION);
+    navigator.serviceWorker.getRegistrations().then(function(regs){
+      return Promise.all(regs.map(function(r){return r.unregister();}));
+    }).then(function(){
+      if(window.caches) return caches.keys().then(function(ks){
+        return Promise.all(ks.map(function(k){return caches.delete(k);}));
+      });
+    }).then(function(){location.reload();});
+    return;
+  }
+  function isOldSW(u){return !!u&&/\\/sw\\.js(\\?|$)/.test(u);}
   function regIsOld(r){
-    return isOldSW(r.active && r.active.scriptURL) ||
-           isOldSW(r.waiting && r.waiting.scriptURL) ||
-           isOldSW(r.installing && r.installing.scriptURL);
+    return isOldSW(r.active&&r.active.scriptURL)||
+           isOldSW(r.waiting&&r.waiting.scriptURL)||
+           isOldSW(r.installing&&r.installing.scriptURL);
   }
   navigator.serviceWorker.getRegistrations().then(function(regs){
-    var oldRegs = regs.filter(regIsOld);
-    var ctrl = navigator.serviceWorker.controller;
-    var ctrlOld = isOldSW(ctrl && ctrl.scriptURL);
-    if(!oldRegs.length && !ctrlOld) return null;
-    return Promise.all(oldRegs.map(function(r){ return r.unregister(); })).then(function(){
+    var old=regs.filter(regIsOld);
+    var c=navigator.serviceWorker.controller;
+    var cOld=isOldSW(c&&c.scriptURL);
+    if(!old.length&&!cOld) return null;
+    return Promise.all(old.map(function(r){return r.unregister();})).then(function(){
       if(!window.caches) return;
-      return caches.keys().then(function(keys){
-        return Promise.all(keys.map(function(k){ return caches.delete(k); }));
+      return caches.keys().then(function(ks){
+        return Promise.all(ks.map(function(k){return caches.delete(k);}));
       });
-    }).then(function(){ location.reload(); });
+    }).then(function(){location.reload();});
   }).catch(function(){});
 })();
 </script>`;
