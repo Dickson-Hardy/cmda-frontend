@@ -7,12 +7,12 @@ import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import Modal from "~/components/Global/Modal/Modal";
 import { AREAS_OF_NEED, AREAS_OF_NEED_GLOBAL, PAYPAL_CURRENCIES } from "~/constants/donations";
 import { selectAuth } from "~/redux/features/auth/authSlice";
-import PaypalPaymentButton from "./PaypalPaymentButton";
+import PayPalRedirectButton from "./PayPalRedirectButton";
 import Checkbox from "~/components/Global/FormElements/Checkbox/Checkbox";
 import { useEffect } from "react";
 import { formatCurrency } from "~/utilities/formatCurrency";
 
-const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading, onApprove }) => {
+const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading }) => {
   const { user } = useSelector(selectAuth);
 
   const {
@@ -46,11 +46,11 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading, onApprove }) =>
     }
 
     // Call the onSubmit prop and return order ID
-    const orderId = await onSubmit(payload);
-    if (!orderId) {
+    const order = await onSubmit(payload);
+    if (!order) {
       throw new Error("Failed to create PayPal order");
     }
-    return orderId;
+    return order;
   };
 
   const onPreSubmit = (payload) => {
@@ -152,20 +152,9 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading, onApprove }) =>
           />
         </div>
 
-        {user?.role === "GlobalNetwork" && (
-          <div className="col-span-2 text-sm text-center text-tertiary font-medium">
-            If the PayPal button does not appear, please reload the page.
-          </div>
-        )}
-
         <div className="col-span-2">
           {user?.role === "GlobalNetwork" ? (
-            <PaypalPaymentButton
-              amount={watch("totalAmount")}
-              createOrder={handlePayPalOrder}
-              onApprove={onApprove}
-              currency={watch("currency")}
-            />
+            <PayPalRedirectButton createOrder={handlePayPalOrder} />
           ) : (
             <Button type="submit" className="w-full" label="Donate Now" large loading={loading} />
           )}

@@ -12,8 +12,9 @@ const PaymentSuccessful = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const type = searchParams.get("type");
-  const reference = searchParams.get("reference");
+  const reference = searchParams.get("reference") || searchParams.get("token");
   const source = searchParams.get("source");
+  const cancelled = searchParams.get("cancelled") === "true";
   const [saveDonation, { isLoading }] = useSaveDonationMutation();
   const [saveSubscription, { isLoading: isSubscribing }] = useSaveSubscriptionMutation();
   const wasCalled = useRef(false);
@@ -27,7 +28,10 @@ const PaymentSuccessful = () => {
     if (wasCalled.current) return;
     wasCalled.current = true;
     setErrorMessage("");
-    if (reference && ["donation", "subscription"].includes(type)) {
+    if (cancelled) {
+      setErrorMessage("The PayPal payment was cancelled. No charge was recorded.");
+      setLoading(false);
+    } else if (reference && ["donation", "subscription"].includes(type)) {
       // if (source?.toUpperCase() === "PAYPAL") {
       if (type === "donation") {
         saveDonation({ reference, source: source })
