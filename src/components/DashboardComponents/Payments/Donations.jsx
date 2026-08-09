@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { API_BASE_URL } from "~/utilities/apiBaseUrl";
 import Button from "~/components/Global/Button/Button";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
 import Table from "~/components/Global/Table/Table";
@@ -24,8 +25,7 @@ const Donations = () => {
   const handleDownloadReceipt = async (donationId, downloadOnly = false) => {
     try {
       setLoadingReceipt(donationId);
-      const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, ""); // Remove trailing slash
-      const response = await fetch(`${baseUrl}/donations/${donationId}/receipt`, {
+      const response = await fetch(`${API_BASE_URL}/donations/${donationId}/receipt`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },

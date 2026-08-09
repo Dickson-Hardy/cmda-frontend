@@ -45,7 +45,7 @@ const DashboardPaymentsPage = () => {
   }, [myProfile, dispatch]);
 
   const onSubmit = async (payload) => {
-    const res = await initDonation({ ...payload, amount: +payload.amount }).unwrap();
+    const res = await initDonation(payload).unwrap();
     if (user.role === "GlobalNetwork") {
       return res.id;
     } else {

@@ -10,8 +10,7 @@ const ConfirmSubscriptionModal = ({ isOpen, onClose, onSubmit, loading }) => {
   const availableYears = Array.from({ length: 3 }, (_, index) => currentYear - 2 + index);
 
   const handleSubmit = () => {
-    // Pass standard annual subscription payload for Nigerian members
-    onSubmit({ isAnnualSubscription: true, targetYear });
+    onSubmit({ targetYear });
   };
 
   return (

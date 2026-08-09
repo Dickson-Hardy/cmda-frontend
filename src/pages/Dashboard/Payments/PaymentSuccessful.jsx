@@ -20,11 +20,14 @@ const PaymentSuccessful = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [alreadyConfirmed, setAlreadyConfirmed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (wasCalled.current) return;
     wasCalled.current = true;
-    if (reference) {
+    setErrorMessage("");
+    if (reference && ["donation", "subscription"].includes(type)) {
       // if (source?.toUpperCase() === "PAYPAL") {
       if (type === "donation") {
         saveDonation({ reference, source: source })
@@ -32,6 +35,7 @@ const PaymentSuccessful = () => {
           .then(() => setLoading(false))
           .catch((err) => {
             if (err.status === 409) setAlreadyConfirmed(true);
+            else setErrorMessage(err?.data?.message || "The donation payment could not be verified.");
           })
           .finally(() => setLoading(false));
       }
@@ -44,6 +48,7 @@ const PaymentSuccessful = () => {
           })
           .catch((err) => {
             if (err.status === 409) setAlreadyConfirmed(true);
+            else setErrorMessage(err?.data?.message || "The subscription payment could not be verified.");
           })
           .finally(() => setLoading(false));
       }
@@ -52,9 +57,22 @@ const PaymentSuccessful = () => {
       //     setLoading(false);
       //   }, 2000);
       // }
+    } else {
+      setErrorMessage(
+        "The payment type or reference is missing or invalid. Check your transaction history before trying again."
+      );
+      setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [attempt]);
+
+  const retryVerification = () => {
+    wasCalled.current = false;
+    setLoading(true);
+    setAlreadyConfirmed(false);
+    setErrorMessage("");
+    setAttempt((value) => value + 1);
+  };
 
   return (
     <section className="h-[70vh] w-full flex justify-center items-center">
@@ -65,17 +83,22 @@ const PaymentSuccessful = () => {
           </div>
         ) : (
           <>
-            <span className="text-6xl text-primary mx-auto">{icons.checkAlt}</span>
+            <span className={`text-6xl mx-auto ${errorMessage ? "text-red-600" : "text-primary"}`}>
+              {errorMessage ? icons.close : icons.checkAlt}
+            </span>
             <h3 className="text-xl font-bold capitalize">
-              {type || "Payment"} {alreadyConfirmed ? "Already Confirmed" : "Successful"}
+              {errorMessage
+                ? "Payment Verification Failed"
+                : `${type || "Payment"} ${alreadyConfirmed ? "Already Confirmed" : "Successful"}`}
             </h3>
-            {type === "donation" && !alreadyConfirmed && (
+            {errorMessage && <p className="text-base text-red-600">{errorMessage}</p>}
+            {type === "donation" && !alreadyConfirmed && !errorMessage && (
               <p className="text-base text-gray-600">
                 Thank you for your generous donation! Your contribution will help us continue our work and make a
                 difference.
               </p>
             )}
-            {type === "subscription" && !alreadyConfirmed && (
+            {type === "subscription" && !alreadyConfirmed && !errorMessage && (
               <p className="text-base text-gray-600">
                 Thank you for subscribing! Your annual subscription is now active, and you can enjoy all the benefits
                 and features available to our subscribers.
@@ -86,18 +109,22 @@ const PaymentSuccessful = () => {
                 Your {type?.toUpperCase()} with this reference {reference} has already been confirmed. If you have any
                 questions, please don&apos;t hesitate to contact us.
               </p>
-            ) : (
+            ) : !errorMessage ? (
               <p className="text-base text-gray-600">
                 An email confirmation has been sent to your inbox. If you have any questions, please don&apos;t hesitate
                 to contact us.
               </p>
+            ) : null}
+            {errorMessage ? (
+              <Button label="Try Verification Again" large onClick={retryVerification} />
+            ) : (
+              <Button
+                label="Continue"
+                large
+                loading={isLoading || isSubscribing}
+                onClick={() => navigate(`/dashboard/payments?active=${type === "donation" ? 1 : 0}`)}
+              />
             )}
-            <Button
-              label="Continue"
-              large
-              loading={isLoading || isSubscribing}
-              onClick={() => navigate(`/dashboard/payments?active=${type === "donation" ? 1 : 0}`)}
-            />
           </>
         )}
       </div>

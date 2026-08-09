@@ -10,7 +10,7 @@ import { formatCurrency } from "~/utilities/formatCurrency";
 import PaypalPaymentButton from "./PaypalPaymentButton";
 
 const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
-  const [selectedTab, setSelectedTab] = useState("subscriptions");
+  const [selectedTab, setSelectedTab] = useState("regular");
   const currentYear = new Date().getFullYear();
   const [targetYear, setTargetYear] = useState(currentYear);
 
@@ -43,19 +43,17 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
 
   const handleFormSubmit = (data) => {
     const subscriptionData = {
-      ...data,
       selectedTab,
-      paymentFrequency: "annual",
-      targetYear,
-      amount: getCurrentPrice(),
-      currency: "USD",
+      ...(selectedTab === "lifetime"
+        ? { lifetimeType: data.lifetimeType }
+        : { incomeBracket: data.incomeBracket, targetYear }),
     };
     onSubmit(subscriptionData);
   };
 
   const handleModalClose = () => {
     reset();
-    setSelectedTab("subscriptions");
+    setSelectedTab("regular");
     setTargetYear(currentYear);
     onClose();
   };
@@ -63,7 +61,7 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
   const availableYears = Array.from({ length: 3 }, (_, index) => currentYear - 2 + index);
 
   const tabs = [
-    { id: "subscriptions", label: "Annual Subscriptions", icon: icons.card },
+    { id: "regular", label: "Annual Subscriptions", icon: icons.card },
     { id: "lifetime", label: "Lifetime Membership", icon: icons.star },
   ];
 
@@ -104,7 +102,7 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
 
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
           {/* Subscriptions Tab */}
-          {selectedTab === "subscriptions" && (
+          {selectedTab === "regular" && (
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Select
@@ -205,12 +203,10 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, onApprove }) => {
                 // Get form values and create order
                 const data = watch();
                 const subscriptionData = {
-                  ...data,
                   selectedTab,
-                  paymentFrequency: "annual",
-                  targetYear,
-                  amount: getCurrentPrice(),
-                  currency: "USD",
+                  ...(selectedTab === "lifetime"
+                    ? { lifetimeType: data.lifetimeType }
+                    : { incomeBracket: data.incomeBracket, targetYear }),
                 };
 
                 const orderId = await onSubmit(subscriptionData);

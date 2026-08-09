@@ -2,9 +2,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setTokens, clearTokens } from "~/redux/features/auth/tokenSlice";
 import { logout } from "~/redux/features/auth/authSlice";
 import { refreshSession } from "~/utilities/refreshSession";
+import { API_BASE_URL } from "~/utilities/apiBaseUrl";
 
-const baseUrl =
-  import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? "https://cmdabackend-38258a63fa98.herokuapp.com" : "http://localhost:3000");
+const baseUrl = API_BASE_URL;
 
 // Only log in development
 if (import.meta.env.DEV) {
@@ -12,25 +12,25 @@ if (import.meta.env.DEV) {
 }
 
 const rawBaseQuery = fetchBaseQuery({
-    baseUrl,
-    prepareHeaders: (headers, { getState }) => {
-      const token = getState().token?.accessToken;
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
+  baseUrl,
+  prepareHeaders: (headers, { getState }) => {
+    const token = getState().token?.accessToken;
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+    return headers;
+  },
+  fetchFn: async (...args) => {
+    try {
+      return await fetch(...args);
+    } catch (error) {
+      if (error.name === "TypeError" && error.message.includes("fetch")) {
+        throw new Error("Network error: Please check your internet connection");
       }
-      return headers;
-    },
-    fetchFn: async (...args) => {
-      try {
-        return await fetch(...args);
-      } catch (error) {
-        if (error.name === "TypeError" && error.message.includes("fetch")) {
-          throw new Error("Network error: Please check your internet connection");
-        }
-        throw error;
-      }
-    },
-  });
+      throw error;
+    }
+  },
+});
 
 const baseQueryWithRefresh = async (args, apiContext, extraOptions) => {
   let result = await rawBaseQuery(args, apiContext, extraOptions);
