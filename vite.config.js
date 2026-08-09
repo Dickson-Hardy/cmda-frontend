@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      filename: "sw-v2.js",
+      filename: "sw-v3.js",
       includeAssets: ["favicon.ico", "CMDALOGO_white.png"],
       manifest: {
         name: "CMDA Nigeria - Christian Medical And Dental Association",
@@ -43,6 +43,7 @@ export default defineConfig({
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
         navigateFallbackDenylist: [/^\/apk\//],
+        cleanupOutdatedCaches: true,
         skipWaiting: true,
         clientsClaim: true,
         runtimeCaching: [
