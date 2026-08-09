@@ -17,6 +17,7 @@ import { selectAuth } from "~/redux/features/auth/authSlice";
 import { downloadFile } from "~/utilities/fileDownloader";
 import formatDate from "~/utilities/fomartDate";
 import { formatCurrency } from "~/utilities/formatCurrency";
+import { API_BASE_URL } from "~/utilities/apiBaseUrl";
 import { toast } from "react-toastify";
 
 // Selector for token from Redux store
@@ -68,8 +69,7 @@ const Subscriptions = () => {
   const handleDownloadReceipt = async (subscriptionId, downloadOnly = false) => {
     try {
       setLoadingReceipt(subscriptionId);
-      const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, ""); // Remove trailing slash
-      const response = await fetch(`${baseUrl}/subscriptions/${subscriptionId}/receipt`, {
+      const response = await fetch(`${API_BASE_URL}/subscriptions/${subscriptionId}/receipt`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -200,13 +200,16 @@ const Subscriptions = () => {
             <div className="mt-3 space-y-2">
               {subscriptionStatus.expiryDate && (
                 <p className="text-xs text-gray-600">
-                  Expires: <span className="font-medium text-black">{formatDate(subscriptionStatus.expiryDate).date}</span>
+                  Expires:{" "}
+                  <span className="font-medium text-black">{formatDate(subscriptionStatus.expiryDate).date}</span>
                 </p>
               )}
               {subscriptionStatus.autoRenew !== undefined && (
                 <p className="text-xs text-gray-600">
                   Auto-Renew:{" "}
-                  <span className={subscriptionStatus.autoRenew ? "text-success font-medium" : "text-error font-medium"}>
+                  <span
+                    className={subscriptionStatus.autoRenew ? "text-success font-medium" : "text-error font-medium"}
+                  >
                     {subscriptionStatus.autoRenew ? "Enabled" : "Disabled"}
                   </span>
                 </p>
