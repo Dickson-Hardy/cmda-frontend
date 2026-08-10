@@ -29,8 +29,13 @@ const EventAttendeesList = ({ eventId }) => {
             {attendees.map((attendee) => (
               <div key={attendee._id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
                 <img
-                  src={attendee.profilePictureUrl || attendee.user?.profilePictureUrl || "/default-avatar.png"}
-                  alt=""
+                  src={
+                    attendee.avatarUrl ||
+                    attendee.profilePictureUrl ||
+                    attendee.user?.avatarUrl ||
+                    "/default-avatar.png"
+                  }
+                  alt={attendee.fullName || "Event attendee"}
                   className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                 />
                 <div className="flex-1 min-w-0">
@@ -42,9 +47,9 @@ const EventAttendeesList = ({ eventId }) => {
                       className={classNames(
                         "inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-medium capitalize",
                         attendee.role === "Student"
-                          ? "bg-onPrimaryContainer text-primary"
+                          ? "bg-onSecondaryContainer text-secondary"
                           : attendee.role === "Doctor"
-                            ? "bg-onSecondaryContainer text-secondary"
+                            ? "bg-onPrimaryContainer text-primary"
                             : "bg-onTertiaryContainer text-tertiary"
                       )}
                     >

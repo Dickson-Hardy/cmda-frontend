@@ -37,9 +37,10 @@ const TextInput = forwardRef(
           })
         : {};
 
-    // Only show error if field has been touched (focused and blurred) or if there's a non-required error
-    const shouldShowError =
-      hasBeenTouched || (errors?.[fieldName] && !errors?.[fieldName]?.message?.includes("required")); // Use fieldName here
+    // React Hook Form only supplies an error after validation has run. Showing
+    // that error immediately gives keyboard and screen-reader users clear
+    // feedback when a submitted field is still empty.
+    const shouldShowError = hasBeenTouched || Boolean(errors?.[fieldName]);
 
     return (
       <div className="w-full">

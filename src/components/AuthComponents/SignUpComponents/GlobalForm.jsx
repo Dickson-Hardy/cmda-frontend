@@ -43,7 +43,8 @@ const GlobalForm = () => {
     }
   }, [searchParams, setValue]);
   const handleSignUp = (payload) => {
-    signUp({ ...payload, role: "GlobalNetwork" })
+    const { confirmPassword, ...data } = payload;
+    signUp({ ...data, role: "GlobalNetwork" })
       .unwrap()
       .then(() => {
         toast.success("Global account created successfully, Check email for token");

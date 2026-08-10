@@ -32,6 +32,11 @@ const DashboardVolunteerDetailsPage = () => {
 
   const [confirmShiftAction, setConfirmShiftAction] = useState(null);
 
+  const isUserOnShift = (shift) =>
+    shift.volunteers?.some(
+      (volunteer) => String(volunteer?.user?._id || volunteer?.user || volunteer) === String(user._id)
+    ) || shift.signedUp;
+
   const handleRegisterForJob = () => {
     registerForJob({ id })
       .unwrap()
@@ -60,8 +65,8 @@ const DashboardVolunteerDetailsPage = () => {
   };
 
   const allShifts = shiftsData?.items || shiftsData || [];
-  const myShifts = allShifts.filter((s) => s.volunteers?.includes(user._id) || s.signedUp);
-  const availableShifts = allShifts.filter((s) => !s.volunteers?.includes(user._id) && !s.signedUp);
+  const myShifts = allShifts.filter(isUserOnShift);
+  const availableShifts = allShifts.filter((shift) => !isUserOnShift(shift));
   const displayShifts = shiftTab === "my" ? myShifts : availableShifts;
 
   return (
@@ -132,18 +137,18 @@ const DashboardVolunteerDetailsPage = () => {
               ) : displayShifts.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {displayShifts.map((shift) => {
-                    const isSignedUp = shift.volunteers?.includes(user._id) || shift.signedUp;
                     const spotsLeft = shift.maxVolunteers
                       ? shift.maxVolunteers - (shift.volunteerCount || shift.volunteers?.length || 0)
                       : null;
 
                     return (
-                      <div key={shift._id} className="border border-gray-200 rounded-xl p-4 hover:border-primary/30 transition-colors">
+                      <div
+                        key={shift._id}
+                        className="border border-gray-200 rounded-xl p-4 hover:border-primary/30 transition-colors"
+                      >
                         <div className="flex items-start justify-between mb-3">
                           <h5 className="font-semibold text-sm">{shift.title}</h5>
-                          {spotsLeft !== null && (
-                            <StatusChip status={spotsLeft > 0 ? "Open" : "Full"} />
-                          )}
+                          {spotsLeft !== null && <StatusChip status={spotsLeft > 0 ? "Open" : "Full"} />}
                         </div>
 
                         <div className="space-y-2 mb-4">
@@ -154,7 +159,7 @@ const DashboardVolunteerDetailsPage = () => {
                           <div className="flex items-center gap-2 text-xs text-gray-600">
                             <BiTime className="text-sm flex-shrink-0" />
                             <span>
-                              {shift.startTime || formatDate(shift.startDate).time} - {shift.endTime || formatDate(shift.endDate).time}
+                              {formatDate(shift.startDate).time} - {formatDate(shift.endDate).time}
                             </span>
                           </div>
                           {spotsLeft !== null && (
@@ -173,14 +178,18 @@ const DashboardVolunteerDetailsPage = () => {
                             label="Sign Up"
                             small
                             disabled={spotsLeft === 0 || !volunteerJob?.isActive}
-                            onClick={() => setConfirmShiftAction({ type: "signUp", shiftId: shift._id, title: shift.title })}
+                            onClick={() =>
+                              setConfirmShiftAction({ type: "signUp", shiftId: shift._id, title: shift.title })
+                            }
                           />
                         ) : (
                           <Button
                             label="Withdraw"
                             small
                             variant="outlined"
-                            onClick={() => setConfirmShiftAction({ type: "withdraw", shiftId: shift._id, title: shift.title })}
+                            onClick={() =>
+                              setConfirmShiftAction({ type: "withdraw", shiftId: shift._id, title: shift.title })
+                            }
                           />
                         )}
                       </div>
@@ -189,7 +198,9 @@ const DashboardVolunteerDetailsPage = () => {
                 </div>
               ) : (
                 <p className="text-sm text-gray-400 text-center py-8">
-                  {shiftTab === "my" ? "You haven't signed up for any shifts yet." : "No shifts available for this job."}
+                  {shiftTab === "my"
+                    ? "You haven't signed up for any shifts yet."
+                    : "No shifts available for this job."}
                 </p>
               )}
             </div>
@@ -223,9 +234,17 @@ const DashboardVolunteerDetailsPage = () => {
             {new Date(volunteerJob?.closingDate).getTime() > Date.now() && (
               <div className="flex flex-wrap gap-2 lg:gap-4 justify-end mt-4 mb-4">
                 <Button
-                  label={volunteerJob?.applicants?.includes(user._id) ? "Already Volunteered" : "Volunteer for Job"}
+                  label={
+                    volunteerJob?.applicants?.some(
+                      (applicant) => String(applicant?.user?._id || applicant?.user || applicant) === String(user._id)
+                    )
+                      ? "Already Volunteered"
+                      : "Volunteer for Job"
+                  }
                   large
-                  disabled={volunteerJob?.applicants?.includes(user._id)}
+                  disabled={volunteerJob?.applicants?.some(
+                    (applicant) => String(applicant?.user?._id || applicant?.user || applicant) === String(user._id)
+                  )}
                   onClick={() => setConfirmRegister(true)}
                 />
               </div>

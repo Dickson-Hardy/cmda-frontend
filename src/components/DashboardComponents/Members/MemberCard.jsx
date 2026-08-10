@@ -12,10 +12,10 @@ const MemberCard = ({ width = 240, fullName, id, memId, avatar, role, region, cl
         <img
           className={classNames(
             "size-20 object-cover p-1 rounded-full mx-auto",
-            role === "student" ? "bg-onSecondary" : role.includes("global") ? "bg-onTertiary" : "bg-onPrimary"
+            role === "Student" ? "bg-onSecondary" : role?.includes("Global") ? "bg-onTertiary" : "bg-onPrimary"
           )}
           src={avatar}
-          alt=""
+          alt={fullName || "CMDA member"}
         />
       ) : (
         <div className="text-center -omt-12">
@@ -23,9 +23,9 @@ const MemberCard = ({ width = 240, fullName, id, memId, avatar, role, region, cl
             className={classNames(
               "inline-flex justify-center items-center text-4xl size-20 p-1 rounded-full",
               role === "Doctor"
-                ? "bg-onSecondary text-secondary"
+                ? "bg-onPrimary text-primary"
                 : role === "Student"
-                  ? "bg-onPrimary text-primary"
+                  ? "bg-onSecondary text-secondary"
                   : "bg-onTertiary text-tertiary"
             )}
           >
@@ -40,10 +40,10 @@ const MemberCard = ({ width = 240, fullName, id, memId, avatar, role, region, cl
           className={classNames(
             "px-2 py-1 capitalize text-xs font-semibold rounded-3xl",
             role === "Doctor"
-              ? "bg-onSecondary text-secondary"
-              : role.includes("Global")
+              ? "bg-onPrimary text-primary"
+              : role?.includes("Global")
                 ? "bg-onTertiary text-tertiary"
-                : "bg-onPrimary text-primary"
+                : "bg-onSecondary text-secondary"
           )}
         >
           {convertToCapitalizedWords(role)}

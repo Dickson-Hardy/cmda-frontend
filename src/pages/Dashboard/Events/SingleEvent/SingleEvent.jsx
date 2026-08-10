@@ -322,9 +322,9 @@ const DashboardStoreSingleEventPage = () => {
                   className={classNames(
                     "capitalize px-4 py-2 rounded text-xs font-medium",
                     grp === "Student"
-                      ? "bg-onPrimaryContainer text-primary"
+                      ? "bg-onSecondaryContainer text-secondary"
                       : grp === "Doctor"
-                        ? "bg-onSecondaryContainer text-secondary"
+                        ? "bg-onPrimaryContainer text-primary"
                         : "bg-onTertiaryContainer text-tertiary"
                   )}
                 >
@@ -379,19 +379,18 @@ const DashboardStoreSingleEventPage = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-3 mt-6">
-          <Button
-            label="See Attendees"
-            variant="outlined"
-            onClick={() => setShowAttendees(!showAttendees)}
-          />
-          {isPastEvent && (
-            <Button
-              label="Rate This Event"
-              variant="outlined"
-              color="tertiary"
-              onClick={() => setShowFeedback(true)}
-            />
-          )}
+          <Button label="See Attendees" variant="outlined" onClick={() => setShowAttendees(!showAttendees)} />
+          {isPastEvent &&
+            singleEvent?.registeredUsers?.find(
+              (registration) => String(registration?.userId?._id || registration?.userId) === String(user._id)
+            ) && (
+              <Button
+                label="Rate This Event"
+                variant="outlined"
+                color="tertiary"
+                onClick={() => setShowFeedback(true)}
+              />
+            )}
           <Button
             label="Set Reminder"
             variant="outlined"
@@ -412,24 +411,20 @@ const DashboardStoreSingleEventPage = () => {
                 className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
               />
             </div>
-            <Button
-              label="Set"
-              loading={isSettingReminder}
-              disabled={!reminderDate}
-              onClick={handleSetReminder}
-            />
+            <Button label="Set" loading={isSettingReminder} disabled={!reminderDate} onClick={handleSetReminder} />
             <Button
               label="Cancel"
               variant="text"
-              onClick={() => { setShowReminder(false); setReminderDate(""); }}
+              onClick={() => {
+                setShowReminder(false);
+                setReminderDate("");
+              }}
             />
           </div>
         )}
 
         {/* Attendees List */}
-        {showAttendees && singleEvent?._id && (
-          <EventAttendeesList eventId={singleEvent._id} />
-        )}
+        {showAttendees && singleEvent?._id && <EventAttendeesList eventId={singleEvent._id} />}
 
         {singleEvent?.requiresSubscription !== false && !user.subscribed && !hasExternalAction && (
           <div className="mt-6 mb-4 border px-6 py-3 bg-error/20 border-error rounded-lg text-sm font-medium text-error">
@@ -609,11 +604,7 @@ const DashboardStoreSingleEventPage = () => {
       </Modal>
 
       {/* Feedback Modal */}
-      <EventFeedbackModal
-        eventId={singleEvent?._id}
-        isOpen={showFeedback}
-        onClose={() => setShowFeedback(false)}
-      />
+      <EventFeedbackModal eventId={singleEvent?._id} isOpen={showFeedback} onClose={() => setShowFeedback(false)} />
 
       {/* Comments Section */}
       {singleEvent?._id && <EventCommentsSection eventId={singleEvent._id} />}

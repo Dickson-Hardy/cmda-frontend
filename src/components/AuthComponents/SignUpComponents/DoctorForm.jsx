@@ -43,8 +43,8 @@ const DoctorForm = () => {
     }
   }, [searchParams, setValue]);
   const handleSignUp = (payload) => {
-    // making request using signUp() from RTK Query
-    signUp({ ...payload, role: "Doctor" })
+    const { confirmPassword, ...data } = payload;
+    signUp({ ...data, role: "Doctor" })
       .unwrap()
       .then(() => {
         toast.success("Doctor account created successfully, Check email for token");

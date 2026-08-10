@@ -99,18 +99,24 @@ const MyVolunteerApplications = () => {
                 const job = app.job || app;
                 const status = app.status || "pending";
                 return (
-                  <div key={app._id} className="flex items-center justify-between gap-4 p-4 border border-gray-200 rounded-xl hover:border-primary/30 transition-colors">
+                  <div
+                    key={app._id}
+                    className="flex items-center justify-between gap-4 p-4 border border-gray-200 rounded-xl hover:border-primary/30 transition-colors"
+                  >
                     <div className="flex items-center gap-4 min-w-0">
                       <span className="size-12 bg-onPrimary rounded-lg flex-shrink-0 inline-flex items-center justify-center text-xl text-primary">
                         <BiBriefcase />
                       </span>
                       <div className="min-w-0">
-                        <Link to={`/dashboard/jobs/${job._id || app.jobId}`} className="font-semibold text-sm hover:text-primary truncate block">
+                        <Link
+                          to={`/dashboard/jobs/${job._id || app.jobId}`}
+                          className="font-semibold text-sm hover:text-primary truncate block"
+                        >
                           {job.title || app.jobTitle}
                         </Link>
                         <p className="text-xs text-gray-500 mt-0.5">{job.companyName || app.companyName}</p>
                         <p className="text-xs text-gray-400 mt-0.5">
-                          Applied: {formatDate(app.createdAt).date}
+                          Applied: {formatDate(app.appliedAt || app.createdAt).date}
                         </p>
                       </div>
                     </div>
@@ -121,7 +127,9 @@ const MyVolunteerApplications = () => {
                           label="Withdraw"
                           small
                           variant="outlined"
-                          onClick={() => setConfirmAction({ type: "application", id: app._id, title: job.title || app.jobTitle })}
+                          onClick={() =>
+                            setConfirmAction({ type: "application", id: app._id, title: job.title || app.jobTitle })
+                          }
                         />
                       )}
                     </div>
@@ -132,7 +140,7 @@ const MyVolunteerApplications = () => {
           ) : (
             <div className="text-center py-12">
               <BiBriefcase className="text-4xl text-gray-300 mx-auto mb-3" />
-              <p className="text-sm text-gray-400">You haven't applied to any volunteer jobs yet.</p>
+              <p className="text-sm text-gray-400">You haven&apos;t applied to any volunteer jobs yet.</p>
               <Link to="/dashboard/jobs">
                 <Button label="Browse Opportunities" small className="mt-4" />
               </Link>
@@ -148,7 +156,10 @@ const MyVolunteerApplications = () => {
           ) : shifts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {shifts.map((shift) => (
-                <div key={shift._id} className="border border-gray-200 rounded-xl p-4 hover:border-primary/30 transition-colors">
+                <div
+                  key={shift._id}
+                  className="border border-gray-200 rounded-xl p-4 hover:border-primary/30 transition-colors"
+                >
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <h5 className="font-semibold text-sm">{shift.title}</h5>
@@ -165,7 +176,7 @@ const MyVolunteerApplications = () => {
                     <div className="flex items-center gap-2 text-xs text-gray-600">
                       <BiTime className="text-sm flex-shrink-0" />
                       <span>
-                        {shift.startTime || formatDate(shift.startDate).time} - {shift.endTime || formatDate(shift.endDate).time}
+                        {formatDate(shift.startDate).time} - {formatDate(shift.endDate).time}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-gray-600">
@@ -186,7 +197,7 @@ const MyVolunteerApplications = () => {
           ) : (
             <div className="text-center py-12">
               <BiCalendar className="text-4xl text-gray-300 mx-auto mb-3" />
-              <p className="text-sm text-gray-400">You haven't signed up for any shifts yet.</p>
+              <p className="text-sm text-gray-400">You haven&apos;t signed up for any shifts yet.</p>
               <Link to="/dashboard/jobs">
                 <Button label="Browse Jobs" small className="mt-4" />
               </Link>
