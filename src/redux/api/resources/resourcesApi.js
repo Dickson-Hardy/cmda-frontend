@@ -16,8 +16,8 @@ const resourceApi = api.injectEndpoints({
     downloadResource: build.query({
       query: (slug) => ({
         url: `/resources/${slug}/download`,
-        responseHandler: (response) => response.blob(),
       }),
+      transformResponse: (response) => response?.data ?? response,
     }),
   }),
 });

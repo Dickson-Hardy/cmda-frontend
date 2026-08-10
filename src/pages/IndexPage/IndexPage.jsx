@@ -11,6 +11,7 @@ import globalNetworkPng from "~/assets/images/globalnetwork.webp";
 import { classNames } from "~/utilities/classNames";
 import { useMemo } from "react";
 import { useIsSmallScreen } from "~/hooks/useIsSmallScreen";
+import AppDownloadBanner from "~/components/Global/AppDownloadBanner";
 
 const IndexPage = () => {
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ const IndexPage = () => {
 
   return (
     <div>
+      <AppDownloadBanner />
       <section className="bg-gray-200 py-10 lg:py-10 bg-cover" style={{ backgroundImage: `url(${welcomePng})` }}>
         <div className="px-8 xl:px-28 flex items-center min-h-[600px]">
           <div className="p-8 lg:p-12 bg-white rounded-3xl w-full lg:w-1/2">

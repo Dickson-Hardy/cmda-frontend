@@ -1,10 +1,13 @@
 import { api } from "./api";
 
+const unwrapData = (response) => response?.data ?? response;
+
 export const commentsReactionsApi = api.injectEndpoints({
   endpoints: (build) => ({
     getComments: build.query({
       query: ({ parentType, parentId, page = 1, limit = 20 }) =>
         `/comments/${parentType}/${parentId}?page=${page}&limit=${limit}`,
+      transformResponse: unwrapData,
       providesTags: (_result, _err, { parentType, parentId }) => [
         { type: "COMMENTS", id: `${parentType}-${parentId}` },
       ],
@@ -24,8 +27,11 @@ export const commentsReactionsApi = api.injectEndpoints({
       invalidatesTags: ["REACTIONS"],
     }),
     getReactions: build.query({
-      query: ({ parentType, parentId }) =>
-        `/reactions/${parentType}/${parentId}`,
+      query: ({ parentType, parentId }) => `/reactions/${parentType}/${parentId}`,
+      transformResponse: (response) => {
+        const data = unwrapData(response);
+        return Array.isArray(data) ? data : [];
+      },
       providesTags: (_result, _err, { parentType, parentId }) => [
         { type: "REACTIONS", id: `${parentType}-${parentId}` },
       ],
@@ -39,13 +45,13 @@ export const commentsReactionsApi = api.injectEndpoints({
       invalidatesTags: ["EVENT_FEEDBACK"],
     }),
     getEventFeedback: build.query({
-      query: ({ eventId, page = 1, limit = 10 }) =>
-        `/events/${eventId}/feedback?page=${page}&limit=${limit}`,
+      query: ({ eventId, page = 1, limit = 10 }) => `/events/${eventId}/feedback?page=${page}&limit=${limit}`,
+      transformResponse: unwrapData,
       providesTags: ["EVENT_FEEDBACK"],
     }),
     getEventAttendees: build.query({
-      query: ({ eventId, page = 1, limit = 20 }) =>
-        `/events/${eventId}/attendees?page=${page}&limit=${limit}`,
+      query: ({ eventId, page = 1, limit = 20 }) => `/events/${eventId}/attendees?page=${page}&limit=${limit}`,
+      transformResponse: unwrapData,
       providesTags: ["EVENT_ATTENDEES"],
     }),
   }),

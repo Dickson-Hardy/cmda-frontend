@@ -6,6 +6,7 @@ import BackButton from "~/components/Global/BackButton/BackButton";
 import Button from "~/components/Global/Button/Button";
 import { useGetResourceBySlugQuery } from "~/redux/api/resources/resourcesApi";
 import formatDate from "~/utilities/fomartDate";
+import { API_BASE_URL } from "~/utilities/apiBaseUrl";
 
 const selectToken = (state) => state.token?.accessToken;
 
@@ -36,14 +37,18 @@ const SingleResource = () => {
   const handleDownload = async () => {
     if (!singleRes?.fileUrl) return;
     try {
-      const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "");
-      const response = await fetch(`${baseUrl}/resources/${singleRes._id || slug}/download`, {
+      const response = await fetch(`${API_BASE_URL}/resources/${slug}/download`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
       if (!response.ok) throw new Error(`Download failed: ${response.status}`);
 
-      const blob = await response.blob();
+      const downloadInfo = await response.json();
+      const fileUrl = downloadInfo?.data?.fileUrl;
+      if (!fileUrl) throw new Error("The resource does not have a downloadable file.");
+      const fileResponse = await fetch(fileUrl);
+      if (!fileResponse.ok) throw new Error(`File download failed: ${fileResponse.status}`);
+      const blob = await fileResponse.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -66,8 +71,12 @@ const SingleResource = () => {
           {singleRes?.category}
         </span>
 
-        {["Artice", "Newsletter"].includes(singleRes?.category) && (
-          <img src={singleRes?.featuredImage} className="w-full max-h-[400px] mb-4" />
+        {["Article", "Newsletter"].includes(singleRes?.category) && singleRes?.featuredImage && (
+          <img
+            src={singleRes.featuredImage}
+            alt={singleRes.title || "Resource"}
+            className="w-full max-h-[400px] object-cover mb-4"
+          />
         )}
         <h2 className="font-bold mb-3 text-lg">{singleRes?.title}</h2>
         <p
@@ -121,7 +130,13 @@ const SingleResource = () => {
           Posted: <span className="text-black font-medium">{formatDate(singleRes?.createdAt).dateTime}</span>{" "}
         </p>
         <div className="inline-flex items-center gap-4">
-          <img src={singleRes?.author?.avatarUrl} className="size-10 rounded-full bg-onPrimary" />
+          {singleRes?.author?.avatarUrl ? (
+            <img
+              src={singleRes.author.avatarUrl}
+              alt={singleRes.author.name || "Resource author"}
+              className="size-10 rounded-full bg-onPrimary"
+            />
+          ) : null}
           <p className="text-base font-semibold">{singleRes?.author?.name}</p>
         </div>
       </section>

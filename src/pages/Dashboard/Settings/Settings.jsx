@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -6,23 +7,62 @@ import Button from "~/components/Global/Button/Button";
 import Switch from "~/components/Global/FormElements/Switch/Switch";
 import { useGetSettingsQuery, useUpdateSettingsMutation } from "~/redux/api/auth/authApi";
 
+const DEFAULT_SETTINGS = {
+  newMessage: false,
+  replies: false,
+  announcements: true,
+  pushNotifications: true,
+  emailNotifications: true,
+  events: true,
+  payments: true,
+  reminders: true,
+  marketing: false,
+};
+
 const DashboardSettingsPage = () => {
   const [updateSettings, { isLoading }] = useUpdateSettingsMutation();
   const { data: userSettings } = useGetSettingsQuery(null, { refetchOnMountOrArgChange: true });
 
-  const { control, handleSubmit } = useForm({
-    defaultValues: {
-      newMessage: !!userSettings?.newMessage,
-      replies: !!userSettings?.replies,
-      announcements: !!userSettings?.announcements || true,
-    },
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: DEFAULT_SETTINGS,
   });
 
-  const handleUpdate = (payload) => {
-    updateSettings(payload)
-      .unwrap()
-      .then(() => toast.success("Changes saved successfully"));
+  useEffect(() => {
+    if (userSettings) reset({ ...DEFAULT_SETTINGS, ...userSettings });
+  }, [reset, userSettings]);
+
+  const handleUpdate = async (payload) => {
+    try {
+      await updateSettings(payload).unwrap();
+      toast.success("Notification preferences saved");
+    } catch (error) {
+      toast.error(error?.data?.message || "Settings could not be saved");
+    }
   };
+
+  const groups = [
+    {
+      title: "Delivery channels",
+      description: "Choose where CMDA can reach you.",
+      items: [
+        ["pushNotifications", "Mobile push notifications"],
+        ["emailNotifications", "Email notifications"],
+      ],
+    },
+    {
+      title: "Activity",
+      description: "Control updates about conversations and CMDA activity.",
+      items: [
+        ["newMessage", "New private messages"],
+        ["replies", "Replies to your activity"],
+        ["announcements", "CMDA announcements"],
+        ["events", "Events and registration updates"],
+        ["payments", "Payments, orders, donations and membership"],
+        ["reminders", "Scheduled reminders"],
+        ["marketing", "Optional campaigns and promotions"],
+      ],
+    },
+  ];
 
   return (
     <div>
@@ -38,19 +78,21 @@ const DashboardSettingsPage = () => {
             <Button type="submit" label="Save Changes" loading={isLoading} loadingText="Saving.." />
           </div>
         </div>
-        <div className="space-y-4 text-sm w-full md:w-1/3">
-          <li className="flex justify-between items-center gap-4">
-            Someone sends a message
-            <Switch control={control} label="newMessage" showStatusText={false} showTitleLabel={false} />
-          </li>
-          <li className="flex justify-between gap-4">
-            Someone replies a message
-            <Switch control={control} label="replies" showStatusText={false} showTitleLabel={false} />
-          </li>
-          <li className="flex justify-between gap-4">
-            Announcements
-            <Switch control={control} label="announcements" showStatusText={false} showTitleLabel={false} />
-          </li>
+        <div className="grid gap-5 md:grid-cols-2">
+          {groups.map((group) => (
+            <section key={group.title} className="rounded-2xl bg-white p-5 shadow-sm">
+              <h4 className="font-bold">{group.title}</h4>
+              <p className="mb-4 mt-1 text-sm text-gray-600">{group.description}</p>
+              <ul className="space-y-4 text-sm">
+                {group.items.map(([key, label]) => (
+                  <li key={key} className="flex items-center justify-between gap-4">
+                    <span>{label}</span>
+                    <Switch control={control} label={key} showStatusText={false} showTitleLabel={false} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
         </div>
       </form>
 

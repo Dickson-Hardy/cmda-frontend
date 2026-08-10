@@ -29,7 +29,7 @@ const AllEvents = ({ row, isSmallScreen }) => {
   useEffect(() => {
     if (events) {
       setAllEvents((prevEvts) => {
-        const combinedEvents = [...prevEvts, ...events.items];
+        const combinedEvents = page === 1 ? events.items : [...prevEvts, ...events.items];
         const uniqueEvents = Array.from(new Set(combinedEvents.map((evt) => evt._id))).map((_id) =>
           combinedEvents.find((evt) => evt._id === _id)
         );
@@ -38,7 +38,7 @@ const AllEvents = ({ row, isSmallScreen }) => {
 
       setTotalPages(events.meta?.totalPages);
     }
-  }, [events]);
+  }, [events, page]);
 
   return (
     <div>
@@ -46,6 +46,7 @@ const AllEvents = ({ row, isSmallScreen }) => {
         <SearchBar
           onSearch={(v) => {
             setAllEvents([]);
+            setPage(1);
             setSearchBy(v);
           }}
         />
@@ -104,6 +105,7 @@ const AllEvents = ({ row, isSmallScreen }) => {
         onClose={() => setOpenFilter(false)}
         onSubmit={({ eventDate, eventType, membersGroup }) => {
           setAllEvents([]);
+          setPage(1);
           setEventDate(eventDate);
           setEventType(eventType);
           setMembersGroup(membersGroup);

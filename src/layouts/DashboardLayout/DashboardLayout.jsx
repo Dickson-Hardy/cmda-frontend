@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useDispatch } from "react-redux";
 import { classNames } from "~/utilities/classNames";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
@@ -11,6 +12,8 @@ import { TutorialProvider, useTutorial } from "~/components/Tutorial/TutorialCon
 import TutorialOverlay from "~/components/Tutorial/TutorialOverlay";
 import TutorialModal from "~/components/Tutorial/TutorialModal";
 import SkipConfirmationDialog from "~/components/Tutorial/SkipConfirmationDialog";
+import { useSocket } from "~/utilities/socket";
+import api from "~/redux/api/api";
 
 /**
  * Tutorial Integration Component
@@ -105,6 +108,8 @@ const TutorialIntegration = () => {
 };
 
 const DashboardLayout = ({ withOutlet = true, children }) => {
+  const dispatch = useDispatch();
+  const { socket } = useSocket();
   const isSmallScreen = useIsSmallScreen("750px");
   const [isSidebarOpen, setSidebarOpen] = useState(!isSmallScreen);
 
@@ -137,8 +142,27 @@ const DashboardLayout = ({ withOutlet = true, children }) => {
   }, [isSmallScreen]);
 
   const { data: { unreadMessagesCount, unreadNotificationCount } = {} } = useGetNotificationStatsQuery(null, {
-    pollingInterval: 900000,
+    pollingInterval: 300000,
   });
+
+  useEffect(() => {
+    if (!socket) return undefined;
+    const refreshNotifications = () => {
+      dispatch(api.util.invalidateTags(["ALL_NOTIFICATIONS", "NOTIFICATIONS_STATS"]));
+    };
+    socket.on("notification:new", refreshNotifications);
+    socket.on("connect", refreshNotifications);
+    return () => {
+      socket.off("notification:new", refreshNotifications);
+      socket.off("connect", refreshNotifications);
+    };
+  }, [dispatch, socket]);
+
+  useEffect(() => {
+    if (!("setAppBadge" in navigator)) return;
+    if (unreadNotificationCount > 0) navigator.setAppBadge(unreadNotificationCount).catch(() => undefined);
+    else if ("clearAppBadge" in navigator) navigator.clearAppBadge().catch(() => undefined);
+  }, [unreadNotificationCount]);
 
   return (
     <TutorialProvider isSidebarOpen={isSidebarOpen} onOpenSidebar={openSidebar} onCloseSidebar={closeSidebar}>

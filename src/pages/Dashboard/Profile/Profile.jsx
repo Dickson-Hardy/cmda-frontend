@@ -7,7 +7,7 @@ import Chip from "~/components/Global/Chip/Chip";
 import { useEffect, useState } from "react";
 import formatDate from "~/utilities/fomartDate";
 import { selectAuth, setUser } from "~/redux/features/auth/authSlice";
-import { useGetAllTrainingsQuery } from "~/redux/api/events/eventsApi";
+import { useGetAllTrainingsQuery, useGetRegisteredEventsQuery } from "~/redux/api/events/eventsApi";
 import StatusChip from "~/components/Global/StatusChip/StatusChip";
 import Table from "~/components/Global/Table/Table";
 import TransitionModal from "~/components/DashboardComponents/Members/TransitionModal";
@@ -23,12 +23,24 @@ import { useTutorial } from "~/components/Tutorial/TutorialContext";
 const DashboardProfilePage = () => {
   const { user } = useSelector(selectAuth);
   const { restartTutorial } = useTutorial();
+  const socialLinks = Array.isArray(user?.socials)
+    ? user.socials
+    : Object.entries(user?.socials || {}).map(([name, link]) => ({ name, link }));
+  const isTrainingCompleted = (training) =>
+    training?.completedUsers?.some(
+      (completedUser) => String(completedUser?._id || completedUser) === String(user?._id)
+    );
 
   const [openTransit, setOpenTransit] = useState(false);
   const { data: allTrainings, isLoading: isLoadingTrainings } = useGetAllTrainingsQuery(
     { membersGroup: user.role },
     { refetchOnMountOrArgChange: true }
   );
+  const { data: registeredEvents, isLoading: isLoadingEvents } = useGetRegisteredEventsQuery({ page: 1, limit: 100 });
+  const eventActivity = (registeredEvents?.items || []).map((event) => ({
+    ...event,
+    activityStatus: new Date(event.eventDateTime).getTime() < Date.now() ? "Past" : "Registered",
+  }));
 
   const { data: transitionInfo } = useGetTransitionQuery(null, { refetchOnMountOrArgChange: true });
   const [postTransition, { isLoading: isTransiting }] = useCreateUpdateTransitionMutation();
@@ -53,13 +65,25 @@ const DashboardProfilePage = () => {
       return col.accessor === "name" ? (
         <span className="capitalize">{value}</span>
       ) : col.accessor === "status" ? (
-        <StatusChip status={item.completedUsers.includes(user._id) ? "completed" : "pending"} />
+        <StatusChip status={isTrainingCompleted(item) ? "completed" : "pending"} />
       ) : (
         value || "--"
       );
     },
     enableSorting: false,
   }));
+  const eventColumns = [
+    { header: "Event", accessor: "name" },
+    {
+      header: "Date",
+      accessor: "eventDateTime",
+      cell: (info) => formatDate(info.getValue()).date,
+    },
+    {
+      header: "Status",
+      accessor: "activityStatus",
+    },
+  ];
 
   const navigate = useNavigate();
 
@@ -111,7 +135,7 @@ const DashboardProfilePage = () => {
                 <span className="text-gray">Type:</span>
                 <Chip
                   className="capitalize text-xs !h-7 !rounded-full"
-                  color={user?.role === "Student" ? "primary" : user?.role === "Doctor" ? "secondary" : "tertiary"}
+                  color={user?.role === "Student" ? "secondary" : user?.role === "Doctor" ? "primary" : "tertiary"}
                   label={user?.role}
                 />
               </p>
@@ -128,7 +152,7 @@ const DashboardProfilePage = () => {
                 <span className="text-gray">Phone: </span> {user?.phone || "---"}
               </p>
               <div className="flex gap-2">
-                {user?.socials?.map((item) => (
+                {socialLinks.map((item) => (
                   <a
                     key={item.name}
                     href={item.link?.startsWith("http") ? item.link : "https://" + item.link}
@@ -216,6 +240,18 @@ const DashboardProfilePage = () => {
           </div>
         </div>
 
+        <div className="w-full bg-white rounded-2xl shadow pt-2">
+          <div className="w-full px-4 py-4">
+            <h3 className="text-base font-bold mb-4">Event Activity</h3>
+            <Table
+              tableData={eventActivity}
+              tableColumns={eventColumns}
+              loading={isLoadingEvents}
+              showPagination={false}
+            />
+          </div>
+        </div>
+
         {/* <div className="w-full md:w-1/3 bg-white shadow px-4 py-4 rounded-xl">
           <h3 className="text-base font-bold mb-2">Community Statistics</h3>
           <ul className="space-y-4 capitalize">
@@ -234,7 +270,7 @@ const DashboardProfilePage = () => {
               </span>
               <div>
                 <span className="font-bold text-lg">
-                  {allTrainings?.filter((x) => x.completedUsers.includes(user._id)).length}
+                  {allTrainings?.filter(isTrainingCompleted).length}
                 </span>
                 <p className="text-xs text-gray-dark">Total trainings attended</p>
               </div>

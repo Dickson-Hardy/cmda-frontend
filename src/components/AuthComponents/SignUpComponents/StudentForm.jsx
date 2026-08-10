@@ -48,7 +48,8 @@ const StudentForm = () => {
     }
   }, [searchParams, setValue]);
   const handleSignUp = (payload) => {
-    signUp({ ...payload, role: "Student" })
+    const { confirmPassword, ...data } = payload;
+    signUp({ ...data, role: "Student" })
       .unwrap()
       .then(() => {
         toast.success("Student account created successfully, Check email for token");

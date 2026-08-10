@@ -1,5 +1,8 @@
 import { api } from "./api";
 
+const unwrapData = (response) => response?.data ?? response;
+const normalizePersonalEvent = (event) => ({ ...event, date: event?.eventDate ?? event?.date });
+
 export const personalEventsApi = api.injectEndpoints({
   endpoints: (build) => ({
     getPersonalEvents: build.query({
@@ -9,18 +12,28 @@ export const personalEventsApi = api.injectEndpoints({
         if (toDate) params.append("toDate", toDate);
         return `/calendar/personal?${params.toString()}`;
       },
+      transformResponse: (response) => {
+        const data = unwrapData(response);
+        return (Array.isArray(data) ? data : []).map(normalizePersonalEvent);
+      },
       providesTags: ["PERSONAL_EVENTS"],
     }),
     createPersonalEvent: build.mutation({
-      query: (body) => ({ url: "/calendar/personal", method: "POST", body }),
+      query: ({ date, ...body }) => ({
+        url: "/calendar/personal",
+        method: "POST",
+        body: { ...body, eventDate: date ?? body.eventDate },
+      }),
+      transformResponse: (response) => normalizePersonalEvent(unwrapData(response)),
       invalidatesTags: ["PERSONAL_EVENTS"],
     }),
     updatePersonalEvent: build.mutation({
-      query: ({ id, ...body }) => ({
+      query: ({ id, date, ...body }) => ({
         url: `/calendar/personal/${id}`,
         method: "PATCH",
-        body,
+        body: { ...body, ...(date ? { eventDate: date } : {}) },
       }),
+      transformResponse: (response) => normalizePersonalEvent(unwrapData(response)),
       invalidatesTags: ["PERSONAL_EVENTS"],
     }),
     deletePersonalEvent: build.mutation({
@@ -40,6 +53,10 @@ export const personalEventsApi = api.injectEndpoints({
     }),
     getEventReminders: build.query({
       query: () => "/events/reminders",
+      transformResponse: (response) => {
+        const data = unwrapData(response);
+        return Array.isArray(data) ? data : [];
+      },
       providesTags: ["EVENT_REMINDERS"],
     }),
     deleteEventReminder: build.mutation({

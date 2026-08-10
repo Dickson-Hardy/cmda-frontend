@@ -17,10 +17,27 @@ import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 import { admissionYearOptions, currentYearOptions, genderOptions } from "~/utilities/reusableVariables";
 import { useChapters } from "~/hooks/useChapters";
 
+const toSocialList = (value) => {
+  if (Array.isArray(value)) return value.filter((item) => item?.name && item?.link);
+  if (value && typeof value === "object") {
+    return Object.entries(value)
+      .filter(([, link]) => typeof link === "string" && link.trim())
+      .map(([name, link]) => ({ name, link }));
+  }
+  return [];
+};
+
+const toSocialRecord = (items) =>
+  Object.fromEntries(
+    items
+      .filter((item) => item.name?.trim() && item.link?.trim())
+      .map((item) => [item.name.trim().toLowerCase(), item.link.trim()])
+  );
+
 const DashboardEditProfile = () => {
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
-  const [socials, setSocials] = useState(user?.socials || []);
+  const [socials, setSocials] = useState(() => toSocialList(user?.socials));
   const [addSocialVisible, setAddSocialVisible] = useState(false);
   const [editProfile, { isLoading }] = useEditProfileMutation();
   const dispatch = useDispatch();
@@ -69,7 +86,7 @@ const DashboardEditProfile = () => {
       dateOfBirth: payload.dateOfBirth,
       bio: payload?.bio,
       leadershipPosition: payload.leadershipPosition,
-      socials: socials,
+      socials: toSocialRecord(socials),
       ...(user?.role == "Student" && {
         admissionYear: payload.admissionYear.toString(),
         yearOfStudy: payload.yearOfStudy,

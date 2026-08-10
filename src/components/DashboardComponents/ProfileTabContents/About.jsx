@@ -6,6 +6,13 @@ import formatDate from "~/utilities/fomartDate";
 
 const ProfileTabAbout = () => {
   const user = useSelector((state) => state.auth.user);
+  const socialLinks = useMemo(
+    () =>
+      Array.isArray(user?.socials)
+        ? user.socials
+        : Object.entries(user?.socials || {}).map(([name, link]) => ({ name, link })),
+    [user?.socials]
+  );
 
   const INFO = useMemo(() => {
     return {
@@ -30,14 +37,14 @@ const ProfileTabAbout = () => {
               </div>
             ))}
 
-            {!!user?.socials && (
+            {socialLinks.length > 0 && (
               <div>
                 <h5 className="text-gray-dark font-semibold mb-1 text-sm">Social Links</h5>
                 <div className="flex flex-wrap gap-2">
-                  {user?.socials.map((item) => (
+                  {socialLinks.map((item) => (
                     <a
-                      key={item}
-                      href={item.link}
+                      key={item.name}
+                      href={item.link?.startsWith("http") ? item.link : `https://${item.link}`}
                       className="bg-gray-light rounded-full text-xl h-10 w-10 inline-flex justify-center items-center hover:text-primary cursor-pointer"
                       target="_blank"
                       rel="noreferrer"

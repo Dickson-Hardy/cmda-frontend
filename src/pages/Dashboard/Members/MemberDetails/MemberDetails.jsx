@@ -33,7 +33,7 @@ const DashboardMemberDetailsPage = () => {
         <div className="flex gap-3 justify-between items-center p-5 mb-5 bg-white rounded-t-lg sticky top-0 right-0 left-0">
           <h2 className="text-black truncate text-xl md:text-2xl font-bold">{member?.firstName}</h2>
           <Button
-            color={member?.role === "student" ? "secondary" : member?.role.includes("global") ? "tertiary" : "primary"}
+            color={member?.role === "Student" ? "secondary" : member?.role?.includes("Global") ? "tertiary" : "primary"}
             onClick={() => navigate("/dashboard/messaging?id=" + member?._id)}
           >
             Message
