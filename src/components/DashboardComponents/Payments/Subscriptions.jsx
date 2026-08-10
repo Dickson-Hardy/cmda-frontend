@@ -5,13 +5,10 @@ import StatusChip from "~/components/Global/StatusChip/StatusChip";
 import Table from "~/components/Global/Table/Table";
 import { SUBSCRIPTION_PRICES, GLOBAL_INCOME_BASED_PRICING } from "~/constants/subscription";
 import {
-  useCancelSubscriptionMutation,
   useExportSubscriptionsMutation,
   useGetAllSubscriptionsQuery,
   useGetSubscriptionStatusQuery,
-  useRenewSubscriptionMutation,
 } from "~/redux/api/payments/subscriptionApi";
-import { toast } from "react-toastify";
 import { selectAuth } from "~/redux/features/auth/authSlice";
 import { downloadFile } from "~/utilities/fileDownloader";
 import formatDate from "~/utilities/fomartDate";
@@ -33,33 +30,7 @@ const Subscriptions = () => {
   const {
     data: subscriptionStatus,
     isLoading: isLoadingStatus,
-    refetch: refetchStatus,
   } = useGetSubscriptionStatusQuery();
-  const [cancelSubscription, { isLoading: isCancelling }] = useCancelSubscriptionMutation();
-  const [renewSubscription, { isLoading: isRenewing }] = useRenewSubscriptionMutation();
-
-  const handleCancelSubscription = async () => {
-    if (!window.confirm("Cancel automatic renewal? Your current access remains active until its expiry date.")) return;
-    try {
-      await cancelSubscription().unwrap();
-      await refetchStatus();
-      toast.success("Automatic renewal cancelled");
-    } catch (error) {
-      toast.error(error?.data?.message || "Unable to cancel subscription");
-    }
-  };
-
-  const handleRenewSubscription = async () => {
-    try {
-      const result = await renewSubscription().unwrap();
-      const checkoutUrl =
-        result?.data?.checkout_url || result?.data?.links?.find?.((link) => link.rel === "approve")?.href;
-      if (!checkoutUrl) throw new Error("The payment link was not returned.");
-      window.location.assign(checkoutUrl);
-    } catch (error) {
-      toast.error(error?.data?.message || error?.message || "Unable to renew subscription");
-    }
-  };
 
   const getDaysUntilExpiry = () => {
     if (!subscriptionStatus?.expiryDate) return null;
@@ -227,19 +198,6 @@ const Subscriptions = () => {
               {daysUntilExpiry !== null && daysUntilExpiry <= 0 && (
                 <p className="text-xs font-medium text-error">Expired</p>
               )}
-              <Button
-                label={
-                  subscriptionStatus.isActive && !subscriptionStatus.cancelled ? "Cancel Renewal" : "Renew Subscription"
-                }
-                small
-                variant={subscriptionStatus.isActive && !subscriptionStatus.cancelled ? "outlined" : undefined}
-                loading={isCancelling || isRenewing}
-                onClick={
-                  subscriptionStatus.isActive && !subscriptionStatus.cancelled
-                    ? handleCancelSubscription
-                    : handleRenewSubscription
-                }
-              />
             </div>
           )}
         </div>
