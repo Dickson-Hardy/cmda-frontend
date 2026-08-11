@@ -20,7 +20,6 @@ const DashboardMemberDetailsPage = () => {
       Gender: member?.gender,
       Membership: member?.role,
       Region: member?.region,
-      "Email Address": member?.email,
       About: member?.bio,
     };
   }, [member]);
@@ -73,11 +72,11 @@ const DashboardMemberDetailsPage = () => {
                 <div
                   key={key}
                   className={
-                    key === "About" ? "col-span-2 md:col-span-3" : key === "Email Address" ? "col-span-2" : "col-span-1"
+                    key === "About" ? "col-span-2 md:col-span-3" : "col-span-1"
                   }
                 >
                   <h5 className="font-bold uppercase mb-0.5 text-xs text-gray-dark">{key}</h5>
-                  <p className={classNames("text-black text-sm md:text-base", !key.includes("Email") && "capitalize")}>
+                  <p className={classNames("text-black text-sm md:text-base", "capitalize")}>
                     {value || "---"}
                   </p>
                 </div>

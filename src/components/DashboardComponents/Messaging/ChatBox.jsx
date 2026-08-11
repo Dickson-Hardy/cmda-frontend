@@ -138,7 +138,7 @@ const ChatBox = ({ userId, recipientId }) => {
             asHeader={true}
             name={recipientId === "admin" ? "Admin" : recipientData?.fullName}
             image={recipientId === "admin" ? null : recipientData?.avatarUrl}
-            subText={recipientId === "admin" ? "CMDA Nigeria" : recipientData?.email}
+            subText={recipientId === "admin" ? "CMDA Nigeria" : recipientData?.membershipId || "CMDA Member"}
           />
         )}
       </div>

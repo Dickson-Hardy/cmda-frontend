@@ -40,7 +40,7 @@ const SendNewMessage = ({ userId }) => {
                   key={user._id}
                   name={user.fullName}
                   image={user?.avatarUrl}
-                  subText={user?.email}
+                  subText={user?.membershipId || user?.role}
                   onClick={() => {
                     setSearchParams({ id: user?._id });
                     setOpenModal(false);
