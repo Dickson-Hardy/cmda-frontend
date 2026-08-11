@@ -1,9 +1,9 @@
-import { useEffect, useState, useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { classNames } from "~/utilities/classNames";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { NAV_LINKS } from "../../constants/navigation";
 import { useIsSmallScreen } from "~/hooks/useIsSmallScreen";
 import BottomNav from "./BottomNav";
@@ -14,6 +14,7 @@ import TutorialModal from "~/components/Tutorial/TutorialModal";
 import SkipConfirmationDialog from "~/components/Tutorial/SkipConfirmationDialog";
 import { useSocket } from "~/utilities/socket";
 import api from "~/redux/api/api";
+import { missingProfileFields } from "~/utilities/profileCompletion";
 
 /**
  * Tutorial Integration Component
@@ -107,6 +108,58 @@ const TutorialIntegration = () => {
   );
 };
 
+const ProfileCompletionPrompt = () => {
+  const user = useSelector((state) => state.auth.user);
+  const { isActive: tutorialIsActive } = useTutorial();
+  const navigate = useNavigate();
+  const promptedUserId = useRef(null);
+  const [missing, setMissing] = useState([]);
+
+  useEffect(() => {
+    if (!user?._id) {
+      promptedUserId.current = null;
+      setMissing([]);
+      return;
+    }
+    const fields = missingProfileFields(user);
+    if (!fields.length || tutorialIsActive || promptedUserId.current === user._id) return;
+
+    const timer = setTimeout(() => {
+      promptedUserId.current = user._id;
+      setMissing(fields);
+    }, 15_000);
+    return () => clearTimeout(timer);
+  }, [tutorialIsActive, user]);
+
+  if (!missing.length) return null;
+
+  return (
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 p-4" role="dialog" aria-modal="true">
+      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+        <h2 className="text-xl font-bold text-black">Complete your member profile</h2>
+        <p className="mt-2 text-sm text-gray-600">
+          Add your {missing.slice(0, 3).join(", ")}
+          {missing.length > 3 ? ` and ${missing.length - 3} more` : ""} so members can identify and connect with you.
+        </p>
+        <div className="mt-6 flex justify-end gap-3">
+          <button className="rounded-lg border border-primary px-4 py-2 text-sm font-semibold text-primary" onClick={() => setMissing([])}>
+            Later
+          </button>
+          <button
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white"
+            onClick={() => {
+              setMissing([]);
+              navigate("/dashboard/edit-profile");
+            }}
+          >
+            Update Profile
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const DashboardLayout = ({ withOutlet = true, children }) => {
   const dispatch = useDispatch();
   const { socket } = useSocket();
@@ -192,6 +245,7 @@ const DashboardLayout = ({ withOutlet = true, children }) => {
 
         {/* Tutorial Integration - Overlay and Modal */}
         <TutorialIntegration />
+        <ProfileCompletionPrompt />
       </div>
     </TutorialProvider>
   );

@@ -89,11 +89,11 @@ const Subscriptions = () => {
 
   const COLUMNS = [
     { header: "Reference", accessor: "reference" },
-    { header: "Year", accessor: "subscriptionYear" },
-    { header: "Date", accessor: "createdAt" },
+    { header: "Membership Year", accessor: "subscriptionYear" },
+    { header: "Payment Date", accessor: "createdAt" },
     { header: "Amount", accessor: "amount" },
     { header: "Frequency", accessor: "frequency" },
-    { header: "ExpiryDate", accessor: "expiryDate" },
+    { header: "Valid Until", accessor: "expiryDate" },
     { header: "Receipt", accessor: "_id" },
   ];
 
