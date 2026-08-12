@@ -19,6 +19,7 @@ import {
 } from "~/redux/api/profile/profileApi";
 import { toast } from "react-toastify";
 import { useTutorial } from "~/components/Tutorial/TutorialContext";
+import LifetimeMemberStatus from "~/components/Global/LifetimeMemberStatus/LifetimeMemberStatus";
 
 const DashboardProfilePage = () => {
   const { user } = useSelector(selectAuth);
@@ -131,14 +132,17 @@ const DashboardProfilePage = () => {
               <p className="text-sm font-medium mb-4">
                 <span className="text-gray">ID: </span> {user?.membershipId}
               </p>
-              <p className="text-sm mb-4 font-medium flex items-center gap-2">
+              <div className="text-sm mb-4 font-medium flex flex-wrap items-center gap-2">
                 <span className="text-gray">Type:</span>
                 <Chip
                   className="capitalize text-xs !h-7 !rounded-full"
                   color={user?.role === "Student" ? "secondary" : user?.role === "Doctor" ? "primary" : "tertiary"}
                   label={user?.role}
                 />
-              </p>
+                {user?.hasLifetimeMembership ? (
+                  <LifetimeMemberStatus membershipType={user?.lifetimeMembershipType} compact />
+                ) : null}
+              </div>
               <p className="text-sm font-medium mb-4">
                 <span className="text-gray">Chapter/Region: </span> {user?.region}
               </p>
