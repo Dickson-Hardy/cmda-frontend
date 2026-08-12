@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import Button from "~/components/Global/Button/Button";
 import StatusChip from "~/components/Global/StatusChip/StatusChip";
+import LifetimeMemberStatus from "~/components/Global/LifetimeMemberStatus/LifetimeMemberStatus";
 import Table from "~/components/Global/Table/Table";
 import { SUBSCRIPTION_PRICES, GLOBAL_INCOME_BASED_PRICING } from "~/constants/subscription";
 import {
@@ -27,10 +28,7 @@ const Subscriptions = () => {
 
   const [loadingReceipt, setLoadingReceipt] = useState(null);
 
-  const {
-    data: subscriptionStatus,
-    isLoading: isLoadingStatus,
-  } = useGetSubscriptionStatusQuery();
+  const { data: subscriptionStatus, isLoading: isLoadingStatus } = useGetSubscriptionStatusQuery();
 
   const getDaysUntilExpiry = () => {
     if (!subscriptionStatus?.expiryDate) return null;
@@ -157,22 +155,13 @@ const Subscriptions = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
         <div className="border p-4 bg-white rounded-xl">
           <h6 className="text-gray text-sm font-medium mb-4">Subscription Status</h6>
-          <StatusChip status={user.subscribed ? "Active" : "Inactive"} />
-          {user.hasLifetimeMembership && (
-            <div className="mt-3 flex items-center gap-2 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-300 rounded-lg p-3">
-              <span className="text-2xl">👑</span>
-              <div>
-                <p className="text-sm font-bold text-orange-700">Lifetime Member</p>
-                <p className="text-xs text-orange-600">
-                  {user.lifetimeMembershipType === "lifetime"
-                    ? "Nigerian Lifetime"
-                    : `${user.lifetimeMembershipType.charAt(0).toUpperCase() + user.lifetimeMembershipType.slice(1)}`}
-                </p>
-              </div>
-            </div>
+          {user.hasLifetimeMembership ? (
+            <LifetimeMemberStatus membershipType={user.lifetimeMembershipType} />
+          ) : (
+            <StatusChip status={user.subscribed ? "Active" : "Inactive"} />
           )}
 
-          {!isLoadingStatus && subscriptionStatus && (
+          {!user.hasLifetimeMembership && !isLoadingStatus && subscriptionStatus && (
             <div className="mt-3 space-y-2">
               {subscriptionStatus.expiryDate && (
                 <p className="text-xs text-gray-600">
@@ -204,7 +193,12 @@ const Subscriptions = () => {
 
         <div className="border p-4 bg-white rounded-xl">
           <h6 className="text-gray text-sm font-medium mb-4">Subscription Package</h6>
-          {user.role === "GlobalNetwork" ? (
+          {user.hasLifetimeMembership ? (
+            <div>
+              <p className="font-semibold text-sm">Lifetime membership</p>
+              <p className="text-xs text-gray-600 mt-1">No annual renewal is required.</p>
+            </div>
+          ) : user.role === "GlobalNetwork" ? (
             <div>
               {user.incomeBracket ? (
                 <div>
@@ -215,9 +209,6 @@ const Subscriptions = () => {
                   <p className="font-semibold">
                     Annual: {formatCurrency(GLOBAL_INCOME_BASED_PRICING[user.incomeBracket]?.annual || 100, "USD")}
                   </p>
-                  {user.hasLifetimeMembership && (
-                    <p className="text-sm text-success mt-2">✓ Lifetime Member ({user.lifetimeMembershipType})</p>
-                  )}
                 </div>
               ) : (
                 <p className="font-semibold">
