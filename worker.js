@@ -84,6 +84,12 @@ self.addEventListener('activate', (e) => {
     if (isHtmlNav && response.ok) {
       const newHeaders = new Headers(response.headers);
       newHeaders.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+      newHeaders.set(
+        "Content-Security-Policy",
+        "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https: wss:; frame-src 'self' https://www.youtube.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' https:; upgrade-insecure-requests",
+      );
+      newHeaders.set("Referrer-Policy", "strict-origin-when-cross-origin");
+      newHeaders.set("X-Content-Type-Options", "nosniff");
       // Inline kill-switch for any client that reaches network HTML
       let html = await response.text();
       if (!html.includes("CMDA_SW_KILL")) {
@@ -132,6 +138,13 @@ self.addEventListener('activate', (e) => {
       });
     }
 
-    return response;
+    const securedHeaders = new Headers(response.headers);
+    securedHeaders.set("X-Content-Type-Options", "nosniff");
+    securedHeaders.set("Referrer-Policy", "strict-origin-when-cross-origin");
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: securedHeaders,
+    });
   },
 };

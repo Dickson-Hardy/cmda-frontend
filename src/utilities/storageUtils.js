@@ -3,7 +3,7 @@
  */
 
 export const StorageKeys = {
-  PERSIST_ROOT: "persist:root",
+  PERSIST_ROOT: "persist:root-v2",
   REDIRECT_URL: "redirectUrl",
   CONFERENCE_SLUG: "conferenceSlug",
   USER_PREFERENCES: "userPreferences",
@@ -122,7 +122,7 @@ export const emergencyCleanup = () => {
   }
 
   // Clear any potentially problematic data
-  const problematicKeys = ["redux-persist", "persist:root", "api-cache", "rtk-query-cache"];
+  const problematicKeys = ["redux-persist", "persist:root", "persist:root-v2", "api-cache", "rtk-query-cache"];
 
   problematicKeys.forEach((key) => {
     localStorage.removeItem(key);

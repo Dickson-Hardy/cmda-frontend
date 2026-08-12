@@ -5,13 +5,18 @@ import rootReducer from "../reducers/rootReducer";
 import combinedMiddlewares from "../middlewares";
 
 const persistConfig = {
-  key: "root",
+  key: "root-v2",
   storage,
   timeout: 10000, // 10 second timeout
   throttle: 100, // Throttle writes to storage
   debug: false, // Set to true only for debugging
-  whitelist: ["auth", "token"], // Only persist auth and token
+  whitelist: ["auth"], // Session tokens stay in memory and the refresh token is an HttpOnly cookie
+  version: 2,
+  migrate: (state) => Promise.resolve(state ? { ...state, token: undefined } : state),
 };
+
+// Remove the legacy persisted tree because it may contain access and refresh tokens.
+void storage.removeItem("persist:root");
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -39,7 +44,7 @@ persistor.subscribe(() => {
   if (state.error) {
     console.error("Persistor error:", state.error);
     // Clear storage and reload on critical errors
-    storage.removeItem("persist:root").then(() => {
+    storage.removeItem("persist:root-v2").then(() => {
       console.log("Cleared corrupted persistence data");
     });
   }

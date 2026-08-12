@@ -24,7 +24,9 @@ const EmailVerification = () => {
         const conferenceSlug = localStorage.getItem("conferenceSlug");
         if (conferenceSlug) {
           // Redirect to login with conference info
-          navigate(`/login?conference=${conferenceSlug}&email=${verifyEmail}`);
+          navigate(`/login?conference=${conferenceSlug}`, {
+            state: { email: verifyEmail, conference: conferenceSlug },
+          });
         } else {
           navigate("/login");
         }
