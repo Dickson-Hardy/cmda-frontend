@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
@@ -15,6 +15,7 @@ import { fourteenYrsAgo } from "~/utilities/fomartDate";
 const GlobalForm = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const {
     control,
     register,
@@ -29,7 +30,7 @@ const GlobalForm = () => {
 
   // Get email from URL parameters if present
   useEffect(() => {
-    const email = searchParams.get("email");
+    const email = location.state?.email;
     const conferenceSlug = searchParams.get("conference");
 
     // Pre-fill email field if it's provided in the URL
@@ -41,7 +42,7 @@ const GlobalForm = () => {
     if (conferenceSlug) {
       localStorage.setItem("conferenceSlug", conferenceSlug);
     }
-  }, [searchParams, setValue]);
+  }, [location.state, searchParams, setValue]);
   const handleSignUp = (payload) => {
     const { confirmPassword, ...data } = payload;
     signUp({ ...data, role: "GlobalNetwork" })

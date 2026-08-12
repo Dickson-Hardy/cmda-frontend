@@ -4,12 +4,13 @@ import doctorImg from "~/assets/images/auth/doctor.svg";
 import globalImg from "~/assets/images/auth/global.svg";
 import { useState, useEffect } from "react";
 import Button from "../../Global/Button/Button";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const GetStarted = () => {
   const [accountType, setAccountType] = useState(""); //to get the selected account type
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
 
   const getStartedList = [
     { title: "student", bg: "bg-onPrimary", border: "ring ring-primary", image: studentImg },
@@ -19,7 +20,7 @@ const GetStarted = () => {
 
   // Get conference and email params if any
   const conferenceSlug = searchParams.get("conference");
-  const email = searchParams.get("email");
+  const email = location.state?.email;
 
   // Store conference in localStorage if present
   useEffect(() => {
@@ -36,7 +37,7 @@ const GetStarted = () => {
       if (conferenceSlug) newParams.conference = conferenceSlug;
       if (email) newParams.email = email;
 
-      setSearchParams(newParams);
+      setSearchParams(newParams, { state: location.state });
     } else {
       toast.error("Please select an account type");
     }

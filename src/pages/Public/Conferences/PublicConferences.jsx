@@ -127,7 +127,6 @@ const PublicConferences = () => {
 
     const email = data.email.trim().toLowerCase();
 
-    console.log("PublicConferences.jsx: Checking email:", email);
     try {
       // The RTK Query hook handles the async logic
       // The result will be in checkUserResponse, and errors in checkUserErrorData
@@ -161,15 +160,16 @@ const PublicConferences = () => {
   };
   useEffect(() => {
     if (checkUserResponse && selectedConference) {
-      console.log("PublicConferences.jsx: Email check response:", checkUserResponse);
       const email = checkUserResponse.email || "";
 
       if (checkUserResponse.exists) {
-        // User exists, redirect to login with conference slug
-        navigate(`/login?conference=${selectedConference.slug}&email=${email}`);
+        navigate(`/login?conference=${selectedConference.slug}`, {
+          state: { email, conference: selectedConference.slug },
+        });
       } else {
-        // User doesn't exist, redirect to signup with conference slug
-        navigate(`/signup?conference=${selectedConference.slug}&email=${email}`);
+        navigate(`/signup?conference=${selectedConference.slug}`, {
+          state: { email, conference: selectedConference.slug },
+        });
       }
     }
   }, [checkUserResponse, navigate, selectedConference]);

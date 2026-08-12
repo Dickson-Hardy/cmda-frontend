@@ -161,19 +161,12 @@ const eventsApi = api.injectEndpoints({
     }),
     checkUserExists: build.mutation({
       query: (email) => {
-        console.log("RTK Query checkUserExists called with:", email);
-
-        // Ensure email is a valid string
         let emailValue = email;
         if (typeof email === "object" && email !== null) {
           emailValue = email.email;
         }
 
-        // Validate email format
         if (!emailValue || typeof emailValue !== "string") {
-          // Consider throwing a more specific error or returning a rejected promise
-          // for the calling code to handle, rather than a generic Error.
-          // This allows the UI to give more specific feedback.
           return Promise.reject({
             status: "VALIDATION_ERROR",
             message: "Email is required and must be a string",
@@ -188,38 +181,17 @@ const eventsApi = api.injectEndpoints({
           });
         }
 
-        console.log("Final email to be sent:", emailValue);
-
-        const requestBody = { email: emailValue };
-        console.log("Request body being sent:", requestBody);
-        console.log("Request body JSON:", JSON.stringify(requestBody));
-
-        // Log the full URL that will be constructed
-        const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
-        const endpointPath = "/events/public/check-user"; // Explicitly define the endpoint
-        const fullUrl = `${baseUrl}${endpointPath}`;
-        console.log("Full URL being called:", fullUrl);
-        console.log("Base URL:", baseUrl);
-
         return {
-          url: endpointPath, // Use the explicit endpointPath here
+          url: "/events/public/check-user",
           method: "POST",
-          body: requestBody,
+          body: { email: emailValue },
           headers: {
             "Content-Type": "application/json",
           },
         };
       },
-      transformResponse: (response) => {
-        console.log("RTK Query response:", response);
-        return response.data || response;
-      },
-      transformErrorResponse: (response, meta, arg) => {
-        console.error("RTK Query error response:", response);
-        console.error("Error meta:", meta);
-        console.error("Error arg:", arg);
-        return response;
-      },
+      transformResponse: (response) => response.data || response,
+      transformErrorResponse: (response) => response,
     }),
 
     getEventFeedback: build.query({

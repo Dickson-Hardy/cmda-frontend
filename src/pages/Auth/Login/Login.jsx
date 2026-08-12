@@ -27,8 +27,8 @@ const Login = () => {
   // Extract conference and email from URL parameters if present
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const email = searchParams.get("email");
-    const conference = searchParams.get("conference");
+    const email = location.state?.email;
+    const conference = location.state?.conference || searchParams.get("conference");
 
     // Pre-fill email field if it's provided in the URL
     if (email) {
@@ -39,7 +39,7 @@ const Login = () => {
     if (conference) {
       localStorage.setItem("conferenceSlug", conference);
     }
-  }, [location.search, setValue]);
+  }, [location.search, location.state, setValue]);
   const handleLogin = (payload) => {
     login(payload)
       .unwrap()

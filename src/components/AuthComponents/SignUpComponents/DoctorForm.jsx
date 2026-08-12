@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Button from "../../Global/Button/Button";
 import TextInput from "../../Global/FormElements/TextInput/TextInput";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
@@ -15,6 +15,7 @@ import { useEffect } from "react";
 const DoctorForm = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const {
     control,
     register,
@@ -29,7 +30,7 @@ const DoctorForm = () => {
 
   // Get email from URL parameters if present
   useEffect(() => {
-    const email = searchParams.get("email");
+    const email = location.state?.email;
     const conferenceSlug = searchParams.get("conference");
 
     // Pre-fill email field if it's provided in the URL
@@ -41,7 +42,7 @@ const DoctorForm = () => {
     if (conferenceSlug) {
       localStorage.setItem("conferenceSlug", conferenceSlug);
     }
-  }, [searchParams, setValue]);
+  }, [location.state, searchParams, setValue]);
   const handleSignUp = (payload) => {
     const { confirmPassword, ...data } = payload;
     signUp({ ...data, role: "Doctor" })
