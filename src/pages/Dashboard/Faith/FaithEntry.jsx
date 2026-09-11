@@ -13,6 +13,7 @@ import {
 } from "~/redux/api/prayerTestimonies/prayerTestimoniesApi";
 import { classNames } from "~/utilities/classNames";
 import formatDate from "~/utilities/fomartDate";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const DashboardFaithEntryPage = () => {
   const [faithEntries, setFaithEntries] = useState([]);
@@ -32,6 +33,10 @@ const DashboardFaithEntryPage = () => {
         refetch();
         toast.success(`Your ${payload.category} has been submitted successfully`);
         setOpenModal(false);
+      })
+      .catch((error) => {
+        const entryType = payload.category?.toLowerCase() || "entry";
+        toast.error(getApiErrorMessage(error, `Unable to submit your ${entryType}.`));
       });
   };
 
@@ -65,6 +70,7 @@ const DashboardFaithEntryPage = () => {
           <SearchBar
             onSearch={(v) => {
               setFaithEntries([]);
+              setPage(1);
               setSearchBy(v);
             }}
             placeholder="Search entries..."
@@ -126,16 +132,18 @@ const DashboardFaithEntryPage = () => {
           </div>
         ))}
       </div>
-      <div className="flex justify-center p-2 mt-6">
-        <Button
-          large
-          disabled={page === totalPages}
-          label={page === totalPages ? "The End" : "Load More"}
-          className={"md:w-1/3 w-full"}
-          loading={isLoading}
-          onClick={() => setPage((prev) => prev + 1)}
-        />
-      </div>
+      {faithEntries.length > 0 ? (
+        <div className="flex justify-center p-2 mt-6">
+          <Button
+            large
+            disabled={page >= totalPages}
+            label={page >= totalPages ? "The End" : "Load More"}
+            className={"md:w-1/3 w-full"}
+            loading={isLoading}
+            onClick={() => setPage((prev) => prev + 1)}
+          />
+        </div>
+      ) : null}
 
       <NewFaithEntryModal
         isOpen={openModal}

@@ -16,6 +16,7 @@ import { fourteenYrsAgo } from "~/utilities/fomartDate";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 import { admissionYearOptions, currentYearOptions, genderOptions } from "~/utilities/reusableVariables";
 import { useChapters } from "~/hooks/useChapters";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const toSocialList = (value) => {
   if (Array.isArray(value)) return value.filter((item) => item?.name && item?.link);
@@ -108,8 +109,7 @@ const DashboardEditProfile = () => {
         navigate("/dashboard/profile");
       })
       .catch((error) => {
-        const message = Array.isArray(error) ? error.join(", ") : error;
-        toast.error(message || "Unable to update profile. Please try again.");
+        toast.error(getApiErrorMessage(error, "Unable to update profile. Please try again."));
       });
   };
 

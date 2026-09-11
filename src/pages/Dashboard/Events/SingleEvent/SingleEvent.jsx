@@ -13,6 +13,7 @@ import EventAttendeesList from "~/components/DashboardComponents/Events/EventAtt
 import BackButton from "~/components/Global/BackButton/BackButton";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
+import Loading from "~/components/Global/Loading/Loading";
 import {
   useConfirmEventPaymentMutation,
   useGetSingleEventQuery,
@@ -26,6 +27,7 @@ import { classNames } from "~/utilities/classNames";
 import formatDate from "~/utilities/fomartDate";
 import { formatCurrency } from "~/utilities/formatCurrency";
 import { toClickableUrl } from "~/utilities/isExternalUrl";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const DashboardStoreSingleEventPage = () => {
   const { slug } = useParams();
@@ -34,7 +36,12 @@ const DashboardStoreSingleEventPage = () => {
   const reference = searchParams.get("reference");
   const source = searchParams.get("source");
   const navigate = useNavigate();
-  const { data: singleEvent, refetch } = useGetSingleEventQuery(slug, { refetchOnMountOrArgChange: true });
+  const {
+    data: singleEvent,
+    isLoading: isLoadingEvent,
+    error: eventError,
+    refetch,
+  } = useGetSingleEventQuery(slug, { refetchOnMountOrArgChange: true });
 
   const { data: paymentPlansData } = useGetUserPaymentPlansQuery(slug, {
     skip: !slug,
@@ -70,11 +77,15 @@ const DashboardStoreSingleEventPage = () => {
       confirmPayment({ reference, source })
         .unwrap()
         .then(() => {
-          toast.success("Event registeration successfully");
+          toast.success("Event registration successful");
+          refetch();
+        })
+        .catch((error) => {
+          toast.error(getApiErrorMessage(error, "Unable to confirm the event payment."));
         });
       // }
     }
-  }, [reference, paymentSuccess, source, confirmPayment]);
+  }, [reference, paymentSuccess, source, confirmPayment, refetch]);
   const getPaymentBreakdown = () => {
     return paymentPlansData?.paymentBreakdown || null;
   };
@@ -127,19 +138,17 @@ const DashboardStoreSingleEventPage = () => {
         else window.open(res.checkout_url, "_self");
         //
       } else {
-        registerForEvent({ slug })
-          .unwrap()
-          .then(() => {
-            toast.success("Registered for event successfully");
-            setConfirmRegister(false);
-          });
+        await registerForEvent({ slug }).unwrap();
+        toast.success("Registered for event successfully");
+        setConfirmRegister(false);
+        refetch();
       }
     } catch (error) {
       if (error?.status === 403 || error?.data?.message?.includes("subscription")) {
         toast.error("You must have an active subscription to register for events. Please subscribe first.");
         navigate("/dashboard/payments");
       } else {
-        toast.error(error?.data?.message || "Failed to register for event");
+        toast.error(getApiErrorMessage(error, "Failed to register for event."));
       }
       setConfirmRegister(false);
     }
@@ -156,11 +165,24 @@ const DashboardStoreSingleEventPage = () => {
       setShowReminder(false);
       setReminderDate("");
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to set reminder");
+      toast.error(getApiErrorMessage(err, "Failed to set reminder."));
     }
   };
 
   const isPastEvent = singleEvent?.eventDateTime && new Date(singleEvent.eventDateTime).getTime() < Date.now();
+
+  if (isLoadingEvent) {
+    return <Loading height={64} width={64} className="text-primary mx-auto my-40" />;
+  }
+
+  if (eventError || !singleEvent) {
+    return (
+      <div>
+        <BackButton label="Back to Events List" to="/dashboard/events" />
+        <p className="mt-8 text-center text-error">{getApiErrorMessage(eventError, "Unable to load this event.")}</p>
+      </div>
+    );
+  }
 
   return (
     <div>

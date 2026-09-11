@@ -17,6 +17,7 @@ import {
 } from "~/redux/api/volunteer/volunteerApi";
 import { selectAuth } from "~/redux/features/auth/authSlice";
 import formatDate from "~/utilities/fomartDate";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const DashboardVolunteerDetailsPage = () => {
   const { id } = useParams();
@@ -43,6 +44,9 @@ const DashboardVolunteerDetailsPage = () => {
       .then(() => {
         toast.success("Volunteered for job successfully");
         setConfirmRegister(false);
+      })
+      .catch((error) => {
+        toast.error(getApiErrorMessage(error, "Unable to volunteer for this job."));
       });
   };
 
@@ -52,6 +56,9 @@ const DashboardVolunteerDetailsPage = () => {
       .then(() => {
         toast.success(`Signed up for "${shiftTitle}" successfully`);
         setConfirmShiftAction(null);
+      })
+      .catch((error) => {
+        toast.error(getApiErrorMessage(error, "Unable to sign up for this shift."));
       });
   };
 
@@ -61,6 +68,9 @@ const DashboardVolunteerDetailsPage = () => {
       .then(() => {
         toast.success(`Withdrawn from "${shiftTitle}" successfully`);
         setConfirmShiftAction(null);
+      })
+      .catch((error) => {
+        toast.error(getApiErrorMessage(error, "Unable to withdraw from this shift."));
       });
   };
 

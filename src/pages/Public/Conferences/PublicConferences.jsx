@@ -10,6 +10,7 @@ import Select from "~/components/Global/FormElements/Select/Select";
 import { conferenceTypes, conferenceZones, conferenceRegions } from "~/constants/conferences";
 import { useForm } from "react-hook-form";
 import Loading from "~/components/Global/Loading/Loading";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const PublicConferences = () => {
   const navigate = useNavigate();
@@ -36,6 +37,10 @@ const PublicConferences = () => {
   const region = watch("region");
   const membersGroup = watch("membersGroup");
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchBy, conferenceType, zone, region, membersGroup]);
+
   const {
     data: conferences,
     isLoading,
@@ -50,19 +55,10 @@ const PublicConferences = () => {
     ...(membersGroup && { membersGroup }),
   });
 
-  const [
-    checkUserExists,
-    { isLoading: isCheckingUser, isError: isCheckUserError, error: checkUserErrorData, data: checkUserResponse },
-  ] = useCheckUserExistsMutation();
+  const [checkUserExists, { isLoading: isCheckingUser, data: checkUserResponse }] = useCheckUserExistsMutation();
 
   const conferenceData = conferences?.items || [];
   const meta = conferences?.meta || {};
-
-  // Debug logging
-  console.log("Conferences API Response:", conferences);
-  console.log("Conference Data:", conferenceData);
-  console.log("Meta:", meta);
-  console.log("Error:", error);
 
   const getConferenceTypeDisplay = (conf) => {
     const type = conf.conferenceConfig?.conferenceType;
@@ -133,27 +129,7 @@ const PublicConferences = () => {
       await checkUserExists({ email }).unwrap();
       // unwrap() will throw an error if the mutation fails, which is caught below
     } catch (error) {
-      console.error("PublicConferences.jsx: Error during email check:", error);
-      let errorMessage = "Failed to check email. Please try again.";
-      if (error.status) {
-        // This is likely an error from RTK Query (e.g., HTTP error)
-        errorMessage = `Error ${error.status}: `;
-        if (error.data && error.data.message) {
-          if (Array.isArray(error.data.message)) {
-            errorMessage += error.data.message.join(", ");
-          } else {
-            errorMessage += error.data.message;
-          }
-        } else if (typeof error.data === "string") {
-          errorMessage += error.data;
-        } else {
-          errorMessage += "An unexpected error occurred.";
-        }
-      } else if (error.message) {
-        // This might be a network error or other client-side error
-        errorMessage = error.message;
-      }
-
+      const errorMessage = getApiErrorMessage(error, "Failed to check email. Please try again.");
       setEmailError(errorMessage);
       toast.error(errorMessage);
     }
@@ -173,19 +149,6 @@ const PublicConferences = () => {
       }
     }
   }, [checkUserResponse, navigate, selectedConference]);
-
-  // It's good practice to also log the raw error object from the hook if it occurs
-  useEffect(() => {
-    if (isCheckUserError && checkUserErrorData) {
-      console.error(
-        "PublicConferences.jsx: RTK Query checkUserExists mutation error:",
-        JSON.stringify(checkUserErrorData, null, 2) // Pretty print the error object
-      );
-      // The error is already handled by the catch block in handleEmailCheck if using unwrap()
-      // If not using unwrap(), you would handle it here.
-      // For now, the toast in handleEmailCheck's catch block should suffice.
-    }
-  }, [isCheckUserError, checkUserErrorData]);
 
   const closeModal = () => {
     setShowRegistrationModal(false);
@@ -257,16 +220,14 @@ const PublicConferences = () => {
         {/* Conference Grid */}
         {error && (
           <div className="text-center py-12">
-            <p className="text-red-500 text-lg">Error loading conferences: {error.message || "Unknown error"}</p>
-            <p className="text-gray-500 text-sm mt-2">Check the console for more details.</p>
+            <p className="text-red-500 text-lg">
+              {getApiErrorMessage(error, "Unable to load conferences. Please try again.")}
+            </p>
           </div>
         )}
         {!error && conferenceData.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">No conferences found matching your criteria.</p>
-            <p className="text-gray-400 text-sm mt-2">
-              Total conferences in response: {conferences?.items?.length || 0}
-            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

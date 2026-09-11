@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setVerifyEmail } from "~/redux/features/auth/authSlice";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const EmailVerification = () => {
   const [verifyUser, { isLoading }] = useVerifyUserMutation();
@@ -34,8 +35,7 @@ const EmailVerification = () => {
         dispatch(setVerifyEmail(""));
       })
       .catch((error) => {
-        const message = error?.data?.message || "Verification failed, please try again";
-        toast.error(message);
+        toast.error(getApiErrorMessage(error, "Verification failed. Please try again."));
       });
   };
 
@@ -44,6 +44,9 @@ const EmailVerification = () => {
       .unwrap()
       .then(() => {
         toast.success("Email verification code resent");
+      })
+      .catch((error) => {
+        toast.error(getApiErrorMessage(error, "Unable to resend the verification code. Please try again."));
       });
   };
 

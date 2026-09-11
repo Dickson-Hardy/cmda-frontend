@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEditProfileMutation } from "~/redux/api/profile/profileApi";
 import { toast } from "react-toastify";
 import { setUser } from "~/redux/features/auth/authSlice";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const ProfileImageUpdate = () => {
   const user = useSelector((state) => state.auth.user);
@@ -18,9 +19,19 @@ const ProfileImageUpdate = () => {
   const [image, setImage] = useState("");
 
   const handleImageChange = (e) => {
-    setImagePreview(URL.createObjectURL(e.target.files[0]));
-    setImage(e.target.files[0]);
+    const selectedImage = e.target.files?.[0];
+    if (!selectedImage) return;
+
+    setImagePreview(URL.createObjectURL(selectedImage));
+    setImage(selectedImage);
   };
+
+  useEffect(
+    () => () => {
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
+    },
+    [imagePreview]
+  );
 
   const handleUpdateImage = () => {
     if (!image) return;
@@ -35,6 +46,9 @@ const ProfileImageUpdate = () => {
         setImagePreview("");
         setImage("");
         setOpenModal(false);
+      })
+      .catch((error) => {
+        toast.error(getApiErrorMessage(error, "Unable to update the profile photo. Please try again."));
       });
   };
 
@@ -46,7 +60,11 @@ const ProfileImageUpdate = () => {
             {icons.person}
           </span>
         ) : (
-          <img src={user?.avatarUrl} alt="img" className="size-32 md:size-40 object-cover rounded-full" />
+          <img
+            src={user?.avatarUrl}
+            alt={`${user?.fullName || "Member"} profile`}
+            className="size-32 md:size-40 object-cover rounded-full"
+          />
         )}
 
         <span
@@ -76,8 +94,8 @@ const ProfileImageUpdate = () => {
                 )}
                 <img
                   src={imagePreview ? imagePreview : user?.avatarUrl}
-                  alt="img"
-                  className=" w-full h-full object-cover rounded-full object-conain"
+                  alt="Profile preview"
+                  className="w-full h-full object-cover rounded-full"
                 />
               </div>
             </div>

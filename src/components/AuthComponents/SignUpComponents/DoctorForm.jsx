@@ -12,6 +12,7 @@ import { genderOptions } from "~/utilities/reusableVariables";
 import { fourteenYrsAgo } from "~/utilities/fomartDate";
 import { useEffect } from "react";
 import { useChapters } from "~/hooks/useChapters";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const DoctorForm = () => {
   const navigate = useNavigate();
@@ -51,13 +52,12 @@ const DoctorForm = () => {
     signUp({ ...data, role: "Doctor" })
       .unwrap()
       .then(() => {
-        toast.success("Doctor account created successfully, Check email for token");
+        toast.success("Doctor account created successfully. Check your email for the verification code.");
         dispatch(setVerifyEmail(payload?.email));
         navigate("/verify-email");
       })
       .catch((error) => {
-        const message = error?.data?.message || "Sign up failed, please try again";
-        toast.error(message);
+        toast.error(getApiErrorMessage(error, "Sign up failed. Please try again."));
       });
   };
 

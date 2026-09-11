@@ -3,7 +3,6 @@ import ErrorElement from "./ErrorElement/ErrorElement";
 import AuthLayout from "~/layouts/AuthLayout/AuthLayout";
 import DashboardLayout from "~/layouts/DashboardLayout/DashboardLayout";
 import EmptyLayout from "~/layouts/EmptyLayout/EmptyLayout";
-import WelcomePage from "~/pages/Welcome";
 import Login from "~/pages/Auth/Login/Login";
 import ForgotPassword from "~/pages/Auth/ForgotPassword/ForgotPassword";
 import NewPassword from "~/pages/Auth/NewPassword/NewPassword";
@@ -22,6 +21,7 @@ import DashboardMessagingPage from "~/pages/Dashboard/Messaging/Messaging";
 import DashboardStorePage from "~/pages/Dashboard/Store/Store";
 import DashboardStoreSingleProductPage from "~/pages/Dashboard/Store/SingleProduct/SingleProduct";
 import DashboardStoreSingleEventPage from "~/pages/Dashboard/Events/SingleEvent/SingleEvent";
+import SingleConferencePage from "~/pages/Dashboard/Events/SingleConference/SingleConference";
 import DashboardEditProfile from "~/pages/Dashboard/Profile/EditProfile/EditProfile";
 import DashboardCartPage from "~/pages/Dashboard/Store/Cart/Cart";
 import DashboardVolunteersPage from "~/pages/Dashboard/Volunteers/Volunteers";
@@ -66,7 +66,7 @@ export default function AppRouter() {
       element: <EmptyLayout />,
       children: [
         { path: "/", element: isAuthenticated ? <Navigate to="/dashboard" /> : <IndexPage /> },
-        { path: "/welcome", element: <WelcomePage /> },
+        { path: "/welcome", element: <Navigate to="/" replace /> },
         { path: "/conferences", element: <PublicConferences /> },
       ],
       errorElement: <ErrorDisplay />,
@@ -103,6 +103,7 @@ export default function AppRouter() {
             { path: "events", element: <DashboardEventsPage /> },
             { path: "events/:slug", element: <DashboardStoreSingleEventPage /> },
             { path: "conferences", element: <DashboardConferencesPage /> },
+            { path: "conferences/:slug", element: <SingleConferencePage /> },
             { path: "profile", element: <DashboardProfilePage /> },
             { path: "faith-entry", element: <DashboardFaithEntryPage /> },
             { path: "resources", element: <DashboardResources /> },

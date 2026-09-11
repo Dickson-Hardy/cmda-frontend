@@ -10,6 +10,7 @@ import { setUser, setVerifyEmail } from "~/redux/features/auth/authSlice";
 import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
 import { setTokens } from "~/redux/features/auth/tokenSlice";
 import { useEffect } from "react";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const Login = () => {
   const {
@@ -67,7 +68,7 @@ const Login = () => {
           // Remove the stored conference slug
           localStorage.removeItem("conferenceSlug");
           // Redirect to conference registration
-          navigate(`/dashboard/events/${conferenceSlug}`);
+          navigate(`/dashboard/conferences/${conferenceSlug}`);
           return;
         }
 
@@ -77,12 +78,12 @@ const Login = () => {
         else navigate("/dashboard");
       })
       .catch((error) => {
-        const message = error?.data?.message;
-        if (message && message.includes("not verified")) {
+        const message = getApiErrorMessage(error, "Login failed. Please try again.");
+        if (message.toLowerCase().includes("not verified")) {
           dispatch(setVerifyEmail(payload.email));
           navigate("/verify-email");
         } else {
-          toast.error(message || "Login failed. Please try again.");
+          toast.error(message);
         }
       });
   };

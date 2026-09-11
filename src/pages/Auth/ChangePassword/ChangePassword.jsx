@@ -8,6 +8,7 @@ import { useUpdatePasswordMutation } from "~/redux/api/profile/profileApi";
 import { setUser } from "~/redux/features/auth/authSlice";
 import { selectAuth } from "~/redux/features/auth/authSlice";
 import { useEffect, useState } from "react";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const ChangePassword = () => {
   const {
@@ -58,7 +59,7 @@ const ChangePassword = () => {
         navigate("/dashboard");
       })
       .catch((error) => {
-        toast.error(error?.data?.message || error?.message || "Failed to change password. Please try again.");
+        toast.error(getApiErrorMessage(error, "Failed to change password. Please try again."));
       });
   };
 

@@ -165,7 +165,11 @@ const DashboardHomePage = () => {
         ) : (
           <MultiItemCarousel>
             {events?.items?.map((evt) => (
-              <Link key={evt._id} to={`/dashboard/events/${evt.slug}`} className="mb-4 mx-10">
+              <Link
+                key={evt._id}
+                to={`/dashboard/${evt?.isConference ? "conferences" : "events"}/${evt.slug}`}
+                className="mb-4 mx-10"
+              >
                 <EventCard
                   title={evt.name}
                   date={evt.eventDateTime}

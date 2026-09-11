@@ -5,6 +5,7 @@ import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import { useUpdatePasswordMutation } from "~/redux/api/profile/profileApi";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const DashboardUpdatePassword = () => {
   const {
@@ -20,7 +21,7 @@ const DashboardUpdatePassword = () => {
   const handleUpdatePassword = (payload) => {
     const { oldPassword, newPassword, confirmPassword } = payload;
     if (newPassword !== confirmPassword) {
-      toast.error("Password do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
@@ -31,7 +32,7 @@ const DashboardUpdatePassword = () => {
         reset();
       })
       .catch((error) => {
-        toast.error(error);
+        toast.error(getApiErrorMessage(error, "Unable to update the password. Please try again."));
       });
   };
 

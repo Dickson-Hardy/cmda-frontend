@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FiCalendar, FiMapPin, FiUsers, FiDollarSign, FiClock, FiGlobe } from "react-icons/fi";
+import { FiCalendar, FiMapPin, FiUsers, FiDollarSign, FiGlobe } from "react-icons/fi";
 import DOMPurify from "dompurify";
 import PaypalPaymentButton from "~/components/DashboardComponents/Payments/PaypalPaymentButton";
 import VirtualMeetingCard from "~/components/DashboardComponents/Events/VirtualMeetingCard";
@@ -14,6 +14,7 @@ import EventAttendeesList from "~/components/DashboardComponents/Events/EventAtt
 import BackButton from "~/components/Global/BackButton/BackButton";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
+import Loading from "~/components/Global/Loading/Loading";
 import {
   useConfirmEventPaymentMutation,
   useGetSingleEventQuery,
@@ -27,6 +28,7 @@ import formatDate from "~/utilities/fomartDate";
 import { formatCurrency } from "~/utilities/formatCurrency";
 import { toClickableUrl } from "~/utilities/isExternalUrl";
 import { conferenceTypes, conferenceZones, conferenceRegions } from "~/constants/conferences";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const SingleConferencePage = () => {
   const { slug } = useParams();
@@ -36,9 +38,12 @@ const SingleConferencePage = () => {
   const source = searchParams.get("source");
   const shouldRegister = searchParams.get("register");
   const navigate = useNavigate();
-  const { data: conference, refetch } = useGetSingleEventQuery(slug, {
-    refetchOnMountOrArgChange: true,
-  });
+  const {
+    data: conference,
+    isLoading: isLoadingConference,
+    error: conferenceError,
+    refetch,
+  } = useGetSingleEventQuery(slug, { refetchOnMountOrArgChange: true });
 
   const { data: paymentPlansData } = useGetUserPaymentPlansQuery(slug, {
     skip: !slug,
@@ -77,6 +82,9 @@ const SingleConferencePage = () => {
         .then(() => {
           toast.success("Conference registration successful");
           refetch();
+        })
+        .catch((error) => {
+          toast.error(getApiErrorMessage(error, "Unable to confirm the conference payment."));
         });
     }
   }, [reference, paymentSuccess, source, confirmPayment, refetch]);
@@ -90,7 +98,7 @@ const SingleConferencePage = () => {
 
   const handleSocialsShare = (social) => {
     const pageUrl = encodeURIComponent(window.location.href);
-    const shareText = encodeURIComponent(conference?.title);
+    const shareText = encodeURIComponent(conference?.name);
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
     const twitterUrl = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${shareText}`;
     const linkedInUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${pageUrl}&title=${shareText}`;
@@ -161,10 +169,7 @@ const SingleConferencePage = () => {
     setCustomResponses((current) => ({ ...current, [fieldId]: value }));
   };
   const getPaymentBreakdown = () => {
-    console.log("Full paymentPlansData:", paymentPlansData);
-    const breakdown = paymentPlansData?.paymentBreakdown || null;
-    console.log("Payment breakdown:", breakdown);
-    return breakdown;
+    return paymentPlansData?.paymentBreakdown || null;
   };
 
   const isRegistrationOpen = () => {
@@ -183,8 +188,9 @@ const SingleConferencePage = () => {
     }
     const missingField = registrationFields.find((field) => {
       const value = customResponses[field.id];
-      return field.required &&
-        (field.type === "checkbox" ? value !== true : value == null || String(value).trim() === "");
+      return (
+        field.required && (field.type === "checkbox" ? value !== true : value == null || String(value).trim() === "")
+      );
     });
     if (missingField) {
       toast.error(`Please complete ${missingField.label}`);
@@ -214,7 +220,7 @@ const SingleConferencePage = () => {
             toast.error("You must have an active subscription to register for conferences. Please subscribe first.");
             navigate("/dashboard/payments");
           } else {
-            toast.error(error?.data?.message || "Failed to register for conference");
+            toast.error(getApiErrorMessage(error, "Failed to register for conference."));
           }
           setConfirmRegister(false);
         });
@@ -244,7 +250,7 @@ const SingleConferencePage = () => {
         navigate("/dashboard/payments");
         setShowPaymentModal(false);
       } else {
-        toast.error(error?.data?.message || "Payment failed. Please try again.");
+        toast.error(getApiErrorMessage(error, "Payment failed. Please try again."));
       }
     }
   };
@@ -260,28 +266,36 @@ const SingleConferencePage = () => {
       setShowReminder(false);
       setReminderDate("");
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to set reminder");
+      toast.error(getApiErrorMessage(err, "Failed to set reminder."));
     }
   };
 
-  const isPastConference = conference?.endDate && new Date(conference.endDate).getTime() < Date.now();
+  const isPastConference = conference?.eventDateTime && new Date(conference.eventDateTime).getTime() < Date.now();
 
-  if (!conference) {
+  if (isLoadingConference) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading conference details...</p>
-        </div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loading height={64} width={64} className="text-primary" />
+      </div>
+    );
+  }
+
+  if (conferenceError || !conference) {
+    return (
+      <div>
+        <BackButton label="Back to Conferences" to="/dashboard/conferences" />
+        <p className="mt-8 text-center text-error">
+          {getApiErrorMessage(conferenceError, "Unable to load this conference.")}
+        </p>
       </div>
     );
   }
 
   return (
     <div>
-      {conference && typeof conference.title === "string" && (
+      {conference && typeof conference.name === "string" && (
         <Helmet>
-          <title>{conference.title} - CMDA Conferences</title>
+          <title>{conference.name} - CMDA Conferences</title>
           <meta name="description" content={conference.description} />
         </Helmet>
       )}
@@ -293,12 +307,14 @@ const SingleConferencePage = () => {
       <div className="max-w-4xl mx-auto">
         {/* Conference Header */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
-          {conference.image && (
+          {conference.featuredImageUrl && (
             <div className="h-64 bg-gradient-to-r from-blue-500 to-purple-600 relative">
-              <img src={conference.image} alt={conference.title} className="w-full h-full object-cover" />
+              <img src={conference.featuredImageUrl} alt={conference.name} className="w-full h-full object-cover" />
               <div className="absolute top-4 left-4">
                 <span className="bg-white text-blue-600 px-3 py-1 rounded-full text-sm font-medium">
-                  {getConferenceTypeLabel(conference.conferenceConfig?.type)}
+                  {getConferenceTypeLabel(
+                    conference.conferenceConfig?.conferenceType || conference.conferenceConfig?.type
+                  )}
                 </span>
               </div>
               {conference.isRegistered && (
@@ -310,7 +326,7 @@ const SingleConferencePage = () => {
           )}
 
           <div className="p-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">{conference.title}</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">{conference.name}</h1>
 
             {conference._id && <ReactionBar parentType="event" parentId={conference._id} />}
 
@@ -319,16 +335,8 @@ const SingleConferencePage = () => {
                 <div className="flex items-center text-gray-700">
                   <FiCalendar className="w-5 h-5 mr-3" />
                   <div>
-                    <p className="font-medium">Start Date</p>
-                    <p className="text-sm">{formatDate(conference.startDate).date}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center text-gray-700">
-                  <FiClock className="w-5 h-5 mr-3" />
-                  <div>
-                    <p className="font-medium">End Date</p>
-                    <p className="text-sm">{formatDate(conference.endDate).date}</p>
+                    <p className="font-medium">Date and Time</p>
+                    <p className="text-sm">{formatDate(conference.eventDateTime).dateTime}</p>
                   </div>
                 </div>
 
@@ -336,7 +344,7 @@ const SingleConferencePage = () => {
                   <FiMapPin className="w-5 h-5 mr-3" />
                   <div>
                     <p className="font-medium">Location</p>
-                    <p className="text-sm">{conference.location}</p>
+                    <p className="text-sm">{conference.linkOrLocation}</p>
                   </div>
                 </div>
               </div>
@@ -346,7 +354,11 @@ const SingleConferencePage = () => {
                   <FiUsers className="w-5 h-5 mr-3" />
                   <div>
                     <p className="font-medium">Conference Type</p>
-                    <p className="text-sm">{getConferenceTypeLabel(conference.conferenceConfig?.type)}</p>
+                    <p className="text-sm">
+                      {getConferenceTypeLabel(
+                        conference.conferenceConfig?.conferenceType || conference.conferenceConfig?.type
+                      )}
+                    </p>
                   </div>
                 </div>
                 {conference.conferenceConfig?.zone && (
@@ -373,7 +385,7 @@ const SingleConferencePage = () => {
                     <div>
                       <p className="font-medium">Registration Fee</p>
                       <p className="text-sm">
-                        {formatCurrency(getCurrentPrice())}
+                        {formatCurrency(getCurrentPrice(), accountCurrency)}
                         {getCurrentRegistrationPeriod() === "late" && (
                           <span className="text-orange-500 ml-1">(Late Registration)</span>
                         )}
@@ -382,16 +394,10 @@ const SingleConferencePage = () => {
                         )}
                       </p>
 
-                      {/* Debug info */}
-                      <div className="text-xs text-red-500 mt-1">
-                        DEBUG: Has breakdown: {getPaymentBreakdown() ? "Yes" : "No"} | Includes fees:{" "}
-                        {getPaymentBreakdown()?.includesFees ? "Yes" : "No"}
-                      </div>
-
                       {getPaymentBreakdown() && getPaymentBreakdown().includesFees && (
                         <div className="text-xs text-gray-500 mt-1">
-                          Conference: {formatCurrency(getPaymentBreakdown().baseAmount)} + Processing:{" "}
-                          {formatCurrency(getPaymentBreakdown().feeBreakdown.totalFees)}
+                          Conference: {formatCurrency(getPaymentBreakdown().baseAmount, accountCurrency)} + Processing:{" "}
+                          {formatCurrency(getPaymentBreakdown().feeBreakdown.totalFees, accountCurrency)}
                         </div>
                       )}
                     </div>
@@ -499,11 +505,7 @@ const SingleConferencePage = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-3 mt-6">
-          <Button
-            label="See Attendees"
-            variant="outlined"
-            onClick={() => setShowAttendees(!showAttendees)}
-          />
+          <Button label="See Attendees" variant="outlined" onClick={() => setShowAttendees(!showAttendees)} />
           {isPastConference && (
             <Button
               label="Rate This Conference"
@@ -532,31 +534,23 @@ const SingleConferencePage = () => {
                 className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
               />
             </div>
-            <Button
-              label="Set"
-              loading={isSettingReminder}
-              disabled={!reminderDate}
-              onClick={handleSetReminder}
-            />
+            <Button label="Set" loading={isSettingReminder} disabled={!reminderDate} onClick={handleSetReminder} />
             <Button
               label="Cancel"
               variant="text"
-              onClick={() => { setShowReminder(false); setReminderDate(""); }}
+              onClick={() => {
+                setShowReminder(false);
+                setReminderDate("");
+              }}
             />
           </div>
         )}
 
         {/* Attendees List */}
-        {showAttendees && conference._id && (
-          <EventAttendeesList eventId={conference._id} />
-        )}
+        {showAttendees && conference._id && <EventAttendeesList eventId={conference._id} />}
 
         {/* Feedback Modal */}
-        <EventFeedbackModal
-          eventId={conference._id}
-          isOpen={showFeedback}
-          onClose={() => setShowFeedback(false)}
-        />
+        <EventFeedbackModal eventId={conference._id} isOpen={showFeedback} onClose={() => setShowFeedback(false)} />
 
         {/* Comments Section */}
         {conference._id && <EventCommentsSection eventId={conference._id} />}
@@ -566,7 +560,7 @@ const SingleConferencePage = () => {
       <Modal isOpen={confirmRegister} onClose={() => setConfirmRegister(false)} title="Confirm Registration">
         <div className="p-6">
           <p className="text-gray-700 mb-6">
-            Are you sure you want to register for <strong>{conference.title}</strong>?
+            Are you sure you want to register for <strong>{conference.name}</strong>?
           </p>
 
           {registrationFields.length > 0 && (
@@ -576,8 +570,13 @@ const SingleConferencePage = () => {
                 const value = customResponses[field.id];
                 return (
                   <label key={field.id} className="block text-sm font-medium text-gray-900">
-                    <span>{field.label}{field.required ? " *" : ""}</span>
-                    {field.helpText ? <span className="mt-1 block text-xs font-normal text-gray-500">{field.helpText}</span> : null}
+                    <span>
+                      {field.label}
+                      {field.required ? " *" : ""}
+                    </span>
+                    {field.helpText ? (
+                      <span className="mt-1 block text-xs font-normal text-gray-500">{field.helpText}</span>
+                    ) : null}
 
                     {field.type === "checkbox" ? (
                       <span className="mt-2 flex items-center gap-2">
@@ -595,7 +594,11 @@ const SingleConferencePage = () => {
                         className="mt-2 block h-12 w-full rounded-lg border border-gray-300 bg-white p-3"
                       >
                         <option value="">Select an option</option>
-                        {(field.options || []).map((option) => <option key={option} value={option}>{option}</option>)}
+                        {(field.options || []).map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
                       </select>
                     ) : field.type === "radio" ? (
                       <span className="mt-2 block space-y-2">
@@ -622,7 +625,15 @@ const SingleConferencePage = () => {
                       />
                     ) : (
                       <input
-                        type={field.type === "email" ? "email" : field.type === "number" ? "number" : field.type === "date" ? "date" : "text"}
+                        type={
+                          field.type === "email"
+                            ? "email"
+                            : field.type === "number"
+                              ? "number"
+                              : field.type === "date"
+                                ? "date"
+                                : "text"
+                        }
                         value={value || ""}
                         onChange={(event) => setCustomResponse(field.id, event.target.value)}
                         placeholder={field.placeholder || field.label}
@@ -648,9 +659,7 @@ const SingleConferencePage = () => {
                     <label
                       key={option.id}
                       className={`flex cursor-pointer items-start gap-3 rounded-lg border p-3 ${
-                        selectedAccommodationOptionId === option.id
-                          ? "border-primary bg-primary/5"
-                          : "border-gray-200"
+                        selectedAccommodationOptionId === option.id ? "border-primary bg-primary/5" : "border-gray-200"
                       } ${unavailable ? "cursor-not-allowed opacity-50" : ""}`}
                     >
                       <input
@@ -669,8 +678,8 @@ const SingleConferencePage = () => {
                             {unavailable
                               ? `${accountCurrency} unavailable`
                               : option.isPriced
-                              ? `+${formatCurrency(price, accountCurrency)}`
-                              : "No extra charge"}
+                                ? `+${formatCurrency(price, accountCurrency)}`
+                                : "No extra charge"}
                           </span>
                         </span>
                         {option.description ? (
@@ -803,7 +812,7 @@ const SingleConferencePage = () => {
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">Successfully Registered!</h3>
           <p className="text-gray-600 mb-6">
-            You have been registered for {conference.title}. You should receive a confirmation email shortly.
+            You have been registered for {conference.name}. You should receive a confirmation email shortly.
           </p>
           <Button
             onClick={() => {

@@ -5,6 +5,7 @@ import { useGetRegisteredEventsQuery } from "~/redux/api/events/eventsApi";
 import { Link } from "react-router-dom";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
 import EventFilterModal from "./EventFilterModal";
+import Loading from "~/components/Global/Loading/Loading";
 
 const RegisteredEvents = ({ row, isSmallScreen }) => {
   const [registeredEvents, setRegisteredEvents] = useState([]);
@@ -35,15 +36,23 @@ const RegisteredEvents = ({ row, isSmallScreen }) => {
           placeholder="Search events"
           onSearch={(v) => {
             setRegisteredEvents([]);
+            setPage(1);
             setSearchBy(v);
           }}
         />
       </div>
 
       <div className={`flex gap-8 ${row || isSmallScreen ? "flex-col" : "flex-row flex-wrap"}`}>
-        {registeredEvents && registeredEvents.length > 0 ? (
+        {isLoading && page === 1 ? (
+          <div className="flex justify-center px-6 py-20">
+            <Loading height={64} width={64} className="text-primary" />
+          </div>
+        ) : registeredEvents && registeredEvents.length > 0 ? (
           registeredEvents.map((evt) => (
-            <Link key={evt?.slug || evt?._id} to={`/dashboard/events/${evt?.slug}`}>
+            <Link
+              key={evt?.slug || evt?._id}
+              to={`/dashboard/${evt?.isConference ? "conferences" : "events"}/${evt?.slug}`}
+            >
               <EventCard
                 row={row && !isSmallScreen}
                 width={row ? "auto" : isSmallScreen ? "100%" : 330}

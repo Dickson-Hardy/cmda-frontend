@@ -13,6 +13,7 @@ import {
   useWithdrawFromShiftMutation,
 } from "~/redux/api/volunteer/volunteerApi";
 import formatDate from "~/utilities/fomartDate";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const MyVolunteerApplications = () => {
   const [tab, setTab] = useState("applications");
@@ -27,11 +28,14 @@ const MyVolunteerApplications = () => {
   const shifts = shiftsData?.items || shiftsData || [];
 
   const handleWithdrawApplication = (id, title) => {
-    withdrawApplication({ id })
+    withdrawApplication(id)
       .unwrap()
       .then(() => {
         toast.success(`Withdrawn from "${title}" successfully`);
         setConfirmAction(null);
+      })
+      .catch((error) => {
+        toast.error(getApiErrorMessage(error, "Unable to withdraw this application."));
       });
   };
 
@@ -41,6 +45,9 @@ const MyVolunteerApplications = () => {
       .then(() => {
         toast.success(`Withdrawn from "${title}" successfully`);
         setConfirmAction(null);
+      })
+      .catch((error) => {
+        toast.error(getApiErrorMessage(error, "Unable to withdraw from this shift."));
       });
   };
 

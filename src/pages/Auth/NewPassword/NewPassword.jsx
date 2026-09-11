@@ -7,6 +7,7 @@ import ConfirmationModal from "~/components/Global/ConfirmationModal/Confirmatio
 import icons from "~/assets/js/icons";
 import { usePasswordResetMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const NewPassword = () => {
   const {
@@ -26,7 +27,7 @@ const NewPassword = () => {
     passwordReset(resetData)
       .unwrap()
       .then(() => setConfirm(true))
-      .catch((error) => toast.error(error));
+      .catch((error) => toast.error(getApiErrorMessage(error, "Unable to reset the password. Please try again.")));
   };
 
   return (

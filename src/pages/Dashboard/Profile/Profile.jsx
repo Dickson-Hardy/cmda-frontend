@@ -20,6 +20,7 @@ import {
 import { toast } from "react-toastify";
 import { useTutorial } from "~/components/Tutorial/TutorialContext";
 import LifetimeMemberStatus from "~/components/Global/LifetimeMemberStatus/LifetimeMemberStatus";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const DashboardProfilePage = () => {
   const { user } = useSelector(selectAuth);
@@ -98,6 +99,9 @@ const DashboardProfilePage = () => {
       .then(() => {
         toast.success("Transition info updated successfully");
         setOpenTransit(false);
+      })
+      .catch((error) => {
+        toast.error(getApiErrorMessage(error, "Unable to update transition information. Please try again."));
       });
   };
 
@@ -116,7 +120,7 @@ const DashboardProfilePage = () => {
             label={
               transitionInfo
                 ? "Transition in Progress"
-                : `Transit to ${user.role === "Student" ? "Doctor" : "GlobalNetwork"}`
+                : `Transit to ${user.role === "Student" ? "Doctor" : "Global Network"}`
             }
             onClick={() => setOpenTransit(true)}
           />
@@ -190,7 +194,7 @@ const DashboardProfilePage = () => {
           <h3 className="mb-2 text-base font-semibold">About Me</h3>
           <p className="text-gray-dark text-sm font-medium mb-4">{user?.bio}</p>
           <p className="text-sm font-medium mb-4">
-            <span className="text-gray">Date of Brith: </span>{" "}
+            <span className="text-gray">Date of Birth: </span>{" "}
             {user?.dateOfBirth ? formatDate(user.dateOfBirth).date : "--/--/----"}
           </p>
           <p className="text-sm font-medium mb-4 capitalize">

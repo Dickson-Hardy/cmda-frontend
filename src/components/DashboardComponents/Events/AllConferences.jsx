@@ -58,6 +58,7 @@ const AllConferences = ({ row, isSmallScreen }) => {
         <SearchBar
           onSearch={(v) => {
             setAllConferences([]);
+            setPage(1);
             setSearchBy(v);
           }}
         />
@@ -76,7 +77,7 @@ const AllConferences = ({ row, isSmallScreen }) => {
           </div>
         ) : allConferences?.length ? (
           allConferences.map((conf) => (
-            <Link key={conf.slug} to={`/dashboard/events/${conf.slug}`}>
+            <Link key={conf.slug} to={`/dashboard/conferences/${conf.slug}`}>
               <EventCard
                 row={row && !isSmallScreen}
                 width={row ? "auto" : isSmallScreen ? "100%" : 330}
@@ -121,6 +122,7 @@ const AllConferences = ({ row, isSmallScreen }) => {
         onClose={() => setOpenFilter(false)}
         onSubmit={({ eventDate, eventType, conferenceType, zone, region }) => {
           setAllConferences([]);
+          setPage(1);
           setEventDate(eventDate);
           setEventType(eventType);
           setConferenceType(conferenceType);

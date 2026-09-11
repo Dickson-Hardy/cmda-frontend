@@ -76,12 +76,7 @@ const EventsCalender = () => {
 
     return (
       <div className="flex justify-center gap-0.5 mt-0.5">
-        {hasPersonal && (
-          <span
-            className="w-1.5 h-1.5 inline-block"
-            style={{ backgroundColor: "#6B7280" }}
-          />
-        )}
+        {hasPersonal && <span className="w-1.5 h-1.5 inline-block" style={{ backgroundColor: "#6B7280" }} />}
       </div>
     );
   };
@@ -131,7 +126,10 @@ const EventsCalender = () => {
           <ul className="space-y-3 h-52 overflow-y-auto py-2">
             {eventsOnThisDay?.items.map((evt, i) => (
               <li key={i}>
-                <Link to={`/dashboard/events/${evt?.slug}`} className="block bg-white border rounded-xl p-4 space-y-2">
+                <Link
+                  to={`/dashboard/${evt?.isConference ? "conferences" : "events"}/${evt?.slug}`}
+                  className="block bg-white border rounded-xl p-4 space-y-2"
+                >
                   <div className="flex items-center gap-2">
                     <span
                       className="w-2.5 h-2.5 rounded-full flex-shrink-0"
@@ -165,11 +163,7 @@ const EventsCalender = () => {
         )}
       </div>
 
-      <PersonalEventsModal
-        isOpen={openPersonalModal}
-        onClose={() => setOpenPersonalModal(false)}
-        selectedDate={date}
-      />
+      <PersonalEventsModal isOpen={openPersonalModal} onClose={() => setOpenPersonalModal(false)} selectedDate={date} />
     </div>
   );
 };
