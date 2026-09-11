@@ -69,6 +69,7 @@ const DashboardEditProfile = () => {
       licenseNumber: user?.licenseNumber || "",
       specialty: user?.specialty || "",
       yearsOfExperience: user?.yearsOfExperience,
+      leadershipPosition: user?.leadershipPosition || "",
     },
   });
 
@@ -105,6 +106,10 @@ const DashboardEditProfile = () => {
         dispatch(setUser(data.data));
         toast.success(data?.message);
         navigate("/dashboard/profile");
+      })
+      .catch((error) => {
+        const message = Array.isArray(error) ? error.join(", ") : error;
+        toast.error(message || "Unable to update profile. Please try again.");
       });
   };
 
