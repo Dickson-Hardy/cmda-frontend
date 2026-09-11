@@ -6,7 +6,7 @@ import Select from "~/components/Global/FormElements/Select/Select";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import Modal from "~/components/Global/Modal/Modal";
 import { selectAuth } from "~/redux/features/auth/authSlice";
-import { doctorsRegionLists, globalRegionsData } from "~/utilities/reusableVariables";
+import { useAllChapters } from "~/hooks/useChapters";
 
 const TransitionModal = ({ isOpen, onClose, transition, loading, onSubmit = console.log }) => {
   const {
@@ -19,6 +19,11 @@ const TransitionModal = ({ isOpen, onClose, transition, loading, onSubmit = cons
   } = useForm({ mode: "all" });
 
   const { user } = useSelector(selectAuth);
+  const { chapters } = useAllChapters();
+  const destinationChapterType = user?.role === "Student" ? "Doctor" : user?.role === "Doctor" ? "Global" : null;
+  const chapterOptions = destinationChapterType
+    ? chapters.filter((chapter) => chapter.type === destinationChapterType)
+    : [];
 
   useEffect(() => {
     if (isOpen && transition) {
@@ -44,13 +49,7 @@ const TransitionModal = ({ isOpen, onClose, transition, loading, onSubmit = cons
       showCloseBtn
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <Select
-          title="New Region"
-          label="region"
-          control={control}
-          options={user.role === "Student" ? doctorsRegionLists : user.role === "Doctor" ? globalRegionsData : []}
-          errors={errors}
-        />
+        <Select title="New Region" label="region" control={control} options={chapterOptions} errors={errors} />
 
         {user?.role === "Student" ? (
           <>

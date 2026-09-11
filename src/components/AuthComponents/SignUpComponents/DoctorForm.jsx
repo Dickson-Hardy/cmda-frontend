@@ -8,9 +8,10 @@ import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
 import { setVerifyEmail } from "~/redux/features/auth/authSlice";
 import { useDispatch } from "react-redux";
-import { doctorsRegionLists, genderOptions } from "~/utilities/reusableVariables";
+import { genderOptions } from "~/utilities/reusableVariables";
 import { fourteenYrsAgo } from "~/utilities/fomartDate";
 import { useEffect } from "react";
+import { useChapters } from "~/hooks/useChapters";
 
 const DoctorForm = () => {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const DoctorForm = () => {
 
   const [signUp, { isLoading }] = useSignUpMutation();
   const dispatch = useDispatch();
+  const { chapters: chapterOptions, isLoading: isLoadingChapters } = useChapters("Doctor");
 
   // Get email from URL parameters if present
   useEffect(() => {
@@ -44,7 +46,8 @@ const DoctorForm = () => {
     }
   }, [location.state, searchParams, setValue]);
   const handleSignUp = (payload) => {
-    const { confirmPassword, ...data } = payload;
+    const data = { ...payload };
+    delete data.confirmPassword;
     signUp({ ...data, role: "Doctor" })
       .unwrap()
       .then(() => {
@@ -171,11 +174,12 @@ const DoctorForm = () => {
           <Select
             label="region"
             control={control}
-            options={doctorsRegionLists}
+            options={chapterOptions}
             errors={errors}
             required
             title="Chapter/Region"
-            placeholder="choose your chapter/region"
+            placeholder={isLoadingChapters ? "Loading chapters..." : "choose your chapter/region"}
+            disabled={isLoadingChapters}
           />
         </div>
 

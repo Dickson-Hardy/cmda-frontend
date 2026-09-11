@@ -9,8 +9,9 @@ import Select from "../../Global/FormElements/Select/Select";
 import Button from "../../Global/Button/Button";
 import { setVerifyEmail } from "~/redux/features/auth/authSlice";
 import { useDispatch } from "react-redux";
-import { genderOptions, globalRegionsData } from "~/utilities/reusableVariables";
+import { genderOptions } from "~/utilities/reusableVariables";
 import { fourteenYrsAgo } from "~/utilities/fomartDate";
+import { useChapters } from "~/hooks/useChapters";
 
 const GlobalForm = () => {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const GlobalForm = () => {
 
   const [signUp, { isLoading }] = useSignUpMutation();
   const dispatch = useDispatch();
+  const { chapters: chapterOptions, isLoading: isLoadingChapters } = useChapters("GlobalNetwork");
 
   // Get email from URL parameters if present
   useEffect(() => {
@@ -44,7 +46,8 @@ const GlobalForm = () => {
     }
   }, [location.state, searchParams, setValue]);
   const handleSignUp = (payload) => {
-    const { confirmPassword, ...data } = payload;
+    const data = { ...payload };
+    delete data.confirmPassword;
     signUp({ ...data, role: "GlobalNetwork" })
       .unwrap()
       .then(() => {
@@ -171,10 +174,11 @@ const GlobalForm = () => {
           <Select
             label="region"
             control={control}
-            options={globalRegionsData}
+            options={chapterOptions}
             errors={errors}
             required
-            placeholder="choose your region"
+            placeholder={isLoadingChapters ? "Loading regions..." : "choose your region"}
+            disabled={isLoadingChapters}
           />
         </div>
 

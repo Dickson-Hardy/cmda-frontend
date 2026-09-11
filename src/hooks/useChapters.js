@@ -57,14 +57,24 @@ export const useAllChapters = () => {
   );
 
   const chapters = useMemo(() => {
-    if (!data?.items) return [];
+    if (!data?.items?.length) {
+      if (error || !data) {
+        return [
+          ...studentChapterOptions.map((chapter) => ({ ...chapter, type: "Student" })),
+          ...doctorsRegionLists.map((chapter) => ({ ...chapter, type: "Doctor" })),
+          ...globalRegionsData.map((chapter) => ({ ...chapter, type: "Global" })),
+        ];
+      }
+
+      return [];
+    }
 
     return data.items.map((chapter) => ({
       label: chapter.name,
       value: chapter.name,
       type: chapter.type,
     }));
-  }, [data]);
+  }, [data, error]);
 
   return {
     chapters,

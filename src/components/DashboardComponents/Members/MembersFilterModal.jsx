@@ -2,10 +2,13 @@ import { useForm } from "react-hook-form";
 import Button from "~/components/Global/Button/Button";
 import Select from "~/components/Global/FormElements/Select/Select";
 import Modal from "~/components/Global/Modal/Modal";
-import { doctorsRegionLists, globalRegionsData, studentChapterOptions } from "~/utilities/reusableVariables";
+import { useAllChapters } from "~/hooks/useChapters";
 
 const MembersFilterModal = ({ isOpen, onClose, onSubmit = console.log }) => {
   const { control, handleSubmit, reset, watch, setValue } = useForm({ mode: "all" });
+  const { chapters } = useAllChapters();
+  const selectedRole = watch("role");
+  const selectedChapterType = selectedRole === "GlobalNetwork" ? "Global" : selectedRole;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} maxWidth={400} title="Filter Members">
@@ -23,15 +26,7 @@ const MembersFilterModal = ({ isOpen, onClose, onSubmit = console.log }) => {
           title="Chapter/Region"
           label="region"
           control={control}
-          options={
-            watch("role") === "Student"
-              ? studentChapterOptions
-              : watch("role") === "Doctor"
-                ? doctorsRegionLists
-                : watch("role") === "GlobalNetwork"
-                  ? globalRegionsData
-                  : []
-          }
+          options={selectedChapterType ? chapters.filter((chapter) => chapter.type === selectedChapterType) : []}
           required={false}
           errors={{}}
         />

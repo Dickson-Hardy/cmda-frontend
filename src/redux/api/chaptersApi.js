@@ -8,21 +8,23 @@ const chaptersApi = api.injectEndpoints({
         params: type ? { type } : {},
       }),
       transformResponse: (response) => {
-        // API returns chapters as a flat array directly
-        // Transform to match expected format: { items: [...], meta: {...} }
-        if (Array.isArray(response)) {
+        const payload = response?.data ?? response;
+
+        // Keep a consistent shape for both the legacy array response used by
+        // public selectors and the paginated response used by management pages.
+        if (Array.isArray(payload)) {
           return {
-            items: response,
+            items: payload,
             meta: {
-              totalItems: response.length,
+              totalItems: payload.length,
               currentPage: 1,
-              itemsPerPage: response.length,
-              totalPages: 1,
+              itemsPerPage: payload.length,
+              totalPages: payload.length > 0 ? 1 : 0,
             },
           };
         }
-        // If response already has the expected structure
-        return response.data || response;
+
+        return payload;
       },
       providesTags: ["CHAPTERS"],
     }),
