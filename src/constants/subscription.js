@@ -6,6 +6,17 @@ export const SUBSCRIPTION_PRICES = {
   LifeMember: 250000,
 };
 
+export const UK_EUROPE_SUBSCRIPTION = {
+  monthlyAmount: 20,
+  annualTarget: 240,
+  currency: "GBP",
+};
+
+const UK_EUROPE_REGION_NAMES = new Set(["uk/europe region", "uk/europe", "global europe"]);
+
+export const isUkEuropeGlobalMember = (user) =>
+  user?.role === "GlobalNetwork" && UK_EUROPE_REGION_NAMES.has(user?.region?.trim().toLowerCase());
+
 // Income-based pricing for Global Network members (USD)
 export const GLOBAL_INCOME_BASED_PRICING = {
   greater_than_200k: {

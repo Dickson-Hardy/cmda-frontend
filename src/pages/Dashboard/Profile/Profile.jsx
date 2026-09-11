@@ -21,9 +21,15 @@ import { toast } from "react-toastify";
 import { useTutorial } from "~/components/Tutorial/TutorialContext";
 import LifetimeMemberStatus from "~/components/Global/LifetimeMemberStatus/LifetimeMemberStatus";
 import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
+import { useGetSubscriptionStatusQuery } from "~/redux/api/payments/subscriptionApi";
+import { isUkEuropeGlobalMember } from "~/constants/subscription";
+import { formatCurrency } from "~/utilities/formatCurrency";
 
 const DashboardProfilePage = () => {
   const { user } = useSelector(selectAuth);
+  const isUkEuropeMember = isUkEuropeGlobalMember(user);
+  const { data: subscriptionStatus } = useGetSubscriptionStatusQuery(undefined, { skip: !isUkEuropeMember });
+  const subscriptionComplete = isUkEuropeMember ? subscriptionStatus?.isFullyPaid : user?.subscribed;
   const { restartTutorial } = useTutorial();
   const socialLinks = Array.isArray(user?.socials)
     ? user.socials
@@ -109,10 +115,10 @@ const DashboardProfilePage = () => {
     <div>
       <div className="flex justify-end gap-2 mb-4">
         <Button
-          icon={icons.checkAlt}
-          label={user?.subscribed ? "Subscribed" : "Subscribe Now"}
-          color={user?.subscribed ? "secondary" : "primary"}
-          disabled={user?.subscribed}
+          icon={subscriptionComplete ? icons.checkAlt : null}
+          label={subscriptionComplete ? "Year Fully Paid" : isUkEuropeMember ? "Pay Subscription" : "Subscribe Now"}
+          color={subscriptionComplete ? "secondary" : "primary"}
+          disabled={subscriptionComplete}
           onClick={() => navigate("/dashboard/payments")}
         />
         {["Student", "Doctor"].includes(user?.role) ? (
@@ -150,6 +156,15 @@ const DashboardProfilePage = () => {
               <p className="text-sm font-medium mb-4">
                 <span className="text-gray">Chapter/Region: </span> {user?.region}
               </p>
+              {isUkEuropeMember && subscriptionStatus ? (
+                <div className="mb-4 rounded-lg border border-primary/20 bg-onPrimary p-3 text-sm">
+                  <p className="font-semibold">{subscriptionStatus.subscriptionYear} subscription</p>
+                  <p className="mt-1 text-gray-700">
+                    {formatCurrency(subscriptionStatus.paidAmount, "GBP")} paid ·{" "}
+                    {formatCurrency(subscriptionStatus.remainingAmount, "GBP")} remaining
+                  </p>
+                </div>
+              ) : null}
               <p className="text-sm font-medium mb-4">
                 <span className="text-gray">Leadership Position: </span> {user?.leadershipPosition || "--"}
               </p>

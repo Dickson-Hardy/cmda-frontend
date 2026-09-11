@@ -104,8 +104,7 @@ const PaymentSuccessful = () => {
             )}
             {type === "subscription" && !alreadyConfirmed && !errorMessage && (
               <p className="text-base text-gray-600">
-                Thank you for subscribing! Your annual subscription is now active, and you can enjoy all the benefits
-                and features available to our subscribers.
+                Thank you! Your membership payment has been confirmed and your subscription progress has been updated.
               </p>
             )}
             {alreadyConfirmed ? (

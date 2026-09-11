@@ -4,7 +4,12 @@ import Button from "~/components/Global/Button/Button";
 import StatusChip from "~/components/Global/StatusChip/StatusChip";
 import LifetimeMemberStatus from "~/components/Global/LifetimeMemberStatus/LifetimeMemberStatus";
 import Table from "~/components/Global/Table/Table";
-import { SUBSCRIPTION_PRICES, GLOBAL_INCOME_BASED_PRICING } from "~/constants/subscription";
+import {
+  SUBSCRIPTION_PRICES,
+  GLOBAL_INCOME_BASED_PRICING,
+  UK_EUROPE_SUBSCRIPTION,
+  isUkEuropeGlobalMember,
+} from "~/constants/subscription";
 import {
   useExportSubscriptionsMutation,
   useGetAllSubscriptionsQuery,
@@ -21,6 +26,7 @@ const selectToken = (state) => state.token?.accessToken;
 
 const Subscriptions = () => {
   const { user } = useSelector(selectAuth);
+  const isUkEuropeMember = isUkEuropeGlobalMember(user);
   const accessToken = useSelector(selectToken);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -125,7 +131,7 @@ const Subscriptions = () => {
       ) : col.accessor === "createdAt" || col.accessor === "expiryDate" ? (
         <span className="whitespace-nowrap">{formatDate(value).dateTime}</span>
       ) : col.accessor === "amount" ? (
-        formatCurrency(value, user.role === "GlobalNetwork" ? "USD" : "NGN")
+        formatCurrency(value, row.currency || (user.role === "GlobalNetwork" ? "USD" : "NGN"))
       ) : (
         value || "--"
       );
@@ -163,13 +169,33 @@ const Subscriptions = () => {
 
           {!user.hasLifetimeMembership && !isLoadingStatus && subscriptionStatus && (
             <div className="mt-3 space-y-2">
+              {isUkEuropeMember && (
+                <>
+                  <p className="text-sm font-semibold">
+                    {formatCurrency(subscriptionStatus.paidAmount, "GBP")} of{" "}
+                    {formatCurrency(subscriptionStatus.annualTarget, "GBP")} paid for{" "}
+                    {subscriptionStatus.subscriptionYear}
+                  </p>
+                  <div className="h-2 overflow-hidden rounded-full bg-gray-200" aria-label="Annual payment progress">
+                    <div
+                      className="h-full rounded-full bg-primary transition-all"
+                      style={{ width: `${subscriptionStatus.progressPercent || 0}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-600">
+                    {subscriptionStatus.isFullyPaid
+                      ? "Your annual target is fully paid."
+                      : `${formatCurrency(subscriptionStatus.remainingAmount, "GBP")} remaining this year.`}
+                  </p>
+                </>
+              )}
               {subscriptionStatus.expiryDate && (
                 <p className="text-xs text-gray-600">
                   Expires:{" "}
                   <span className="font-medium text-black">{formatDate(subscriptionStatus.expiryDate).date}</span>
                 </p>
               )}
-              {subscriptionStatus.autoRenew !== undefined && (
+              {!isUkEuropeMember && subscriptionStatus.autoRenew !== undefined && (
                 <p className="text-xs text-gray-600">
                   Auto-Renew:{" "}
                   <span
@@ -197,6 +223,15 @@ const Subscriptions = () => {
             <div>
               <p className="font-semibold text-sm">Lifetime membership</p>
               <p className="text-xs text-gray-600 mt-1">No annual renewal is required.</p>
+            </div>
+          ) : isUkEuropeMember ? (
+            <div>
+              <p className="font-semibold text-sm">UK/Europe membership</p>
+              <p className="font-semibold mt-2">
+                {formatCurrency(UK_EUROPE_SUBSCRIPTION.monthlyAmount, "GBP")} installments or{" "}
+                {formatCurrency(UK_EUROPE_SUBSCRIPTION.annualTarget, "GBP")} yearly
+              </p>
+              <p className="text-xs text-gray-600 mt-1">Pay at any time. Balances reset each calendar year.</p>
             </div>
           ) : user.role === "GlobalNetwork" ? (
             <div>
@@ -231,6 +266,38 @@ const Subscriptions = () => {
         </div>
       </div>
 
+      {isUkEuropeMember && (
+        <div className="border p-4 bg-white rounded-xl mb-6">
+          <h6 className="font-semibold text-sm mb-2">Pay by UK/European bank transfer</h6>
+          {subscriptionStatus?.bankDetails ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
+              {Object.entries({
+                "Account name": subscriptionStatus.bankDetails.accountName,
+                Bank: subscriptionStatus.bankDetails.bankName,
+                "Sort code": subscriptionStatus.bankDetails.sortCode,
+                "Account number": subscriptionStatus.bankDetails.accountNumber,
+                IBAN: subscriptionStatus.bankDetails.iban,
+                "SWIFT/BIC": subscriptionStatus.bankDetails.swiftBic,
+              })
+                .filter(([, value]) => value)
+                .map(([label, value]) => (
+                  <p key={label}>
+                    <span className="text-gray-600">{label}:</span> <span className="font-medium">{value}</span>
+                  </p>
+                ))}
+              <p className="sm:col-span-2 mt-1 text-xs text-gray-600">
+                Use <strong>{subscriptionStatus.bankTransferReference}</strong> as your payment reference. Your profile
+                updates after an administrator confirms the transfer.
+              </p>
+            </div>
+          ) : (
+            <p className="text-sm text-gray-600">
+              Bank details are being configured. Please use PayPal or contact the UK/Europe administrator.
+            </p>
+          )}
+        </div>
+      )}
+
       <div className="bg-white shadow py-6 rounded-3xl">
         <div className="mb-4 px-6 flex flex-col md:flex-row gap-4">
           <h3 className="text-lg font-semibold">Subscription History</h3>
@@ -241,8 +308,8 @@ const Subscriptions = () => {
           tableColumns={formattedColumns}
           loading={isLoading}
           serverSidePagination
-          totalItemsCount={subscriptions?.totalItems || 0}
-          totalPageCount={subscriptions?.totalPages || 1}
+          totalItemsCount={subscriptions?.meta?.totalItems || 0}
+          totalPageCount={subscriptions?.meta?.totalPages || 1}
           onPaginationChange={({ currentPage, perPage }) => {
             setPage(currentPage);
             setLimit(perPage);

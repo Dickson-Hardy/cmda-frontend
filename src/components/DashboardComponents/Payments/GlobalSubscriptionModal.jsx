@@ -4,15 +4,24 @@ import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
 import Select from "~/components/Global/FormElements/Select/Select";
-import { GLOBAL_INCOME_BASED_PRICING, LIFETIME_MEMBERSHIPS, INCOME_BRACKETS } from "~/constants/subscription";
+import {
+  GLOBAL_INCOME_BASED_PRICING,
+  LIFETIME_MEMBERSHIPS,
+  INCOME_BRACKETS,
+  UK_EUROPE_SUBSCRIPTION,
+  isUkEuropeGlobalMember,
+} from "~/constants/subscription";
 import { classNames } from "~/utilities/classNames";
 import { formatCurrency } from "~/utilities/formatCurrency";
 import PayPalRedirectButton from "./PayPalRedirectButton";
 
-const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit }) => {
+const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, user, subscriptionStatus }) => {
   const [selectedTab, setSelectedTab] = useState("regular");
+  const [paymentOption, setPaymentOption] = useState("monthly");
   const currentYear = new Date().getFullYear();
   const [targetYear, setTargetYear] = useState(currentYear);
+  const isUkEuropeMember = isUkEuropeGlobalMember(user);
+  const remainingAmount = subscriptionStatus?.remainingAmount ?? UK_EUROPE_SUBSCRIPTION.annualTarget;
 
   const {
     control,
@@ -46,7 +55,9 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit }) => {
       selectedTab,
       ...(selectedTab === "lifetime"
         ? { lifetimeType: data.lifetimeType }
-        : { incomeBracket: data.incomeBracket, targetYear }),
+        : isUkEuropeMember
+          ? { paymentOption }
+          : { incomeBracket: data.incomeBracket, targetYear }),
     };
     onSubmit(subscriptionData);
   };
@@ -54,6 +65,7 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit }) => {
   const handleModalClose = () => {
     reset();
     setSelectedTab("regular");
+    setPaymentOption("monthly");
     setTargetYear(currentYear);
     onClose();
   };
@@ -61,7 +73,7 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit }) => {
   const availableYears = Array.from({ length: 3 }, (_, index) => currentYear - 2 + index);
 
   const tabs = [
-    { id: "regular", label: "Annual Subscriptions", icon: icons.card },
+    { id: "regular", label: isUkEuropeMember ? "Membership Payments" : "Annual Subscriptions", icon: icons.card },
     { id: "lifetime", label: "Lifetime Membership", icon: icons.star },
   ];
 
@@ -78,7 +90,11 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit }) => {
             {icons.card}
           </span>{" "}
           <h4 className="text-xl font-semibold mb-2">Choose Your Membership Plan</h4>
-          <p className="text-sm text-gray-600 mb-4">Select the plan that best fits your income level and commitment</p>
+          <p className="text-sm text-gray-600 mb-4">
+            {isUkEuropeMember
+              ? `Pay toward your ${currentYear} UK/Europe membership at any time.`
+              : "Select the plan that best fits your income level and commitment"}
+          </p>
         </div>
 
         {/* Tab Navigation */}
@@ -104,43 +120,89 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit }) => {
           {/* Subscriptions Tab */}
           {selectedTab === "regular" && (
             <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Select
-                  label="incomeBracket"
-                  title="Annual Income Level"
-                  placeholder="Select your income bracket"
-                  options={INCOME_BRACKETS}
-                  control={control}
-                  errors={errors}
-                  required
-                />
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Subscription Year</label>
-                  <select
-                    value={targetYear}
-                    onChange={(event) => setTargetYear(Number(event.target.value))}
-                    className="w-full py-2 px-3 text-sm rounded-lg border border-gray-300 focus:border-primary focus:outline-none"
-                  >
-                    {availableYears.map((year) => (
-                      <option key={year} value={year}>
-                        {year}
-                      </option>
-                    ))}
-                  </select>
+              {isUkEuropeMember ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {[
+                    {
+                      id: "monthly",
+                      title: "£20 installment",
+                      detail: "Pay whenever convenient",
+                      amount: Math.min(UK_EUROPE_SUBSCRIPTION.monthlyAmount, remainingAmount),
+                    },
+                    {
+                      id: "annual",
+                      title: "Pay yearly balance",
+                      detail: `Complete your ${currentYear} target`,
+                      amount: remainingAmount,
+                    },
+                  ].map((option) => (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => setPaymentOption(option.id)}
+                      className={classNames(
+                        "rounded-lg border-2 p-4 text-left transition-colors",
+                        paymentOption === option.id
+                          ? "border-primary bg-onPrimary"
+                          : "border-gray-200 hover:border-primary/50"
+                      )}
+                    >
+                      <span className="block font-semibold text-sm">{option.title}</span>
+                      <span className="block text-2xl font-bold text-primary my-1">
+                        {formatCurrency(option.amount, UK_EUROPE_SUBSCRIPTION.currency)}
+                      </span>
+                      <span className="text-xs text-gray-600">{option.detail}</span>
+                    </button>
+                  ))}
                 </div>
-              </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Select
+                    label="incomeBracket"
+                    title="Annual Income Level"
+                    placeholder="Select your income bracket"
+                    options={INCOME_BRACKETS}
+                    control={control}
+                    errors={errors}
+                    required
+                  />
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Subscription Year</label>
+                    <select
+                      value={targetYear}
+                      onChange={(event) => setTargetYear(Number(event.target.value))}
+                      className="w-full py-2 px-3 text-sm rounded-lg border border-gray-300 focus:border-primary focus:outline-none"
+                    >
+                      {availableYears.map((year) => (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
 
               {/* Pricing Display */}
-              <div className="bg-onPrimary border-2 border-primary rounded-lg p-4">
-                <div className="text-center">
-                  <h5 className="text-lg font-semibold text-primary mb-2">
-                    {GLOBAL_INCOME_BASED_PRICING[watchedIncomeBracket]?.label}
-                  </h5>
-                  <div className="text-3xl font-bold text-primary mb-2">{formatCurrency(getCurrentPrice(), "USD")}</div>
-                  <p className="text-sm text-gray-600">Calendar Year {targetYear} (Jan 1 - Dec 31)</p>
+              {!isUkEuropeMember && (
+                <div className="bg-onPrimary border-2 border-primary rounded-lg p-4">
+                  <div className="text-center">
+                    <h5 className="text-lg font-semibold text-primary mb-2">
+                      {GLOBAL_INCOME_BASED_PRICING[watchedIncomeBracket]?.label}
+                    </h5>
+                    <div className="text-3xl font-bold text-primary mb-2">
+                      {formatCurrency(getCurrentPrice(), "USD")}
+                    </div>
+                    <p className="text-sm text-gray-600">Calendar Year {targetYear} (Jan 1 - Dec 31)</p>
+                  </div>
                 </div>
-              </div>
+              )}
+              {isUkEuropeMember && (
+                <p className="text-xs text-gray-600 text-center">
+                  Payments count only toward {currentYear}. Any unpaid balance does not roll into the next year.
+                </p>
+              )}
             </div>
           )}
 
@@ -189,7 +251,7 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit }) => {
             <PayPalRedirectButton
               createOrder={async () => {
                 // Validate form first
-                const isValid = await trigger();
+                const isValid = isUkEuropeMember && selectedTab === "regular" ? true : await trigger();
                 if (!isValid) {
                   throw new Error("Please fill in all required fields");
                 }
@@ -200,7 +262,9 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit }) => {
                   selectedTab,
                   ...(selectedTab === "lifetime"
                     ? { lifetimeType: data.lifetimeType }
-                    : { incomeBracket: data.incomeBracket, targetYear }),
+                    : isUkEuropeMember
+                      ? { paymentOption }
+                      : { incomeBracket: data.incomeBracket, targetYear }),
                 };
 
                 const order = await onSubmit(subscriptionData);

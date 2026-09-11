@@ -9,7 +9,7 @@ const subscriptionApi = api.injectEndpoints({
     saveSubscription: build.mutation({
       query: (body) => ({ url: "/subscriptions/save", body, method: "POST" }),
       transformResponse: (response) => response.data,
-      invalidatesTags: ["SUBSCRIPTION"],
+      invalidatesTags: ["SUBSCRIPTION", "SUBSCRIPTION_STATUS"],
     }),
     getAllSubscriptions: build.query({
       query: ({ page, limit, searchBy }) => ({
@@ -35,7 +35,7 @@ const subscriptionApi = api.injectEndpoints({
     syncSubscriptionPaymentStatus: build.mutation({
       query: (body) => ({ url: "/subscriptions/sync-payment-status", body, method: "POST" }),
       transformResponse: (response) => response.data,
-      invalidatesTags: ["SUBSCRIPTION"],
+      invalidatesTags: ["SUBSCRIPTION", "SUBSCRIPTION_STATUS"],
     }),
     getSubscriptionStatus: build.query({
       query: () => "/subscriptions/status",

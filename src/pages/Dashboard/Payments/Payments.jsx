@@ -14,9 +14,13 @@ import Button from "~/components/Global/Button/Button";
 import Modal from "~/components/Global/Modal/Modal";
 import Tabs from "~/components/Global/Tabs/Tabs";
 import { useInitDonationSessionMutation } from "~/redux/api/payments/donationApi";
-import { useInitSubscriptionSessionMutation } from "~/redux/api/payments/subscriptionApi";
+import {
+  useGetSubscriptionStatusQuery,
+  useInitSubscriptionSessionMutation,
+} from "~/redux/api/payments/subscriptionApi";
 import { useGetProfileQuery } from "~/redux/api/profile/profileApi";
 import { selectAuth, setUser } from "~/redux/features/auth/authSlice";
+import { isUkEuropeGlobalMember } from "~/constants/subscription";
 
 const DashboardPaymentsPage = () => {
   const PAYMENT_TABS = [
@@ -33,6 +37,11 @@ const DashboardPaymentsPage = () => {
   const [openSubscribe, setOpenSubscribe] = useState(false);
   const [openLifetime, setOpenLifetime] = useState(false);
   const [initSubscription, { isLoading: isSubscribing }] = useInitSubscriptionSessionMutation();
+  const isUkEuropeMember = isUkEuropeGlobalMember(user);
+  const { data: subscriptionStatus } = useGetSubscriptionStatusQuery(undefined, {
+    skip: user?.role !== "GlobalNetwork",
+  });
+  const subscriptionComplete = isUkEuropeMember ? subscriptionStatus?.isFullyPaid : user?.subscribed;
 
   const { data: myProfile } = useGetProfileQuery(null, { refetchOnMountOrArgChange: true });
   const dispatch = useDispatch();
@@ -88,10 +97,10 @@ const DashboardPaymentsPage = () => {
               <Button label="Lifetime Membership" variant="outlined" onClick={() => setOpenLifetime(true)} />
             )}
             <Button
-              icon={user?.subscribed ? icons.checkAlt : null}
-              label={user?.subscribed ? "Subscribed" : "Subscribe Now"}
-              color={user?.subscribed ? "secondary" : "primary"}
-              disabled={user?.subscribed}
+              icon={subscriptionComplete ? icons.checkAlt : null}
+              label={subscriptionComplete ? "Year Fully Paid" : isUkEuropeMember ? "Make a Payment" : "Subscribe Now"}
+              color={subscriptionComplete ? "secondary" : "primary"}
+              disabled={subscriptionComplete}
               onClick={() => setOpenSubscribe(true)}
               className="ml-auto"
             />
@@ -117,6 +126,8 @@ const DashboardPaymentsPage = () => {
           isOpen={openSubscribe}
           onClose={() => setOpenSubscribe(false)}
           onSubmit={onSubscribe}
+          user={user}
+          subscriptionStatus={subscriptionStatus}
         />
       ) : (
         <ConfirmSubscriptionModal
