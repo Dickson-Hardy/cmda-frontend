@@ -98,10 +98,13 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, user, subscription
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-gray-200 mb-4">
+        <div className="flex border-b border-gray-200 mb-4" role="tablist" aria-label="Membership plan type">
           {tabs.map((tab) => (
             <button
               key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={selectedTab === tab.id}
               onClick={() => setSelectedTab(tab.id)}
               className={classNames(
                 "flex-1 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium border-b-2 transition-colors",
@@ -139,6 +142,7 @@ const GlobalSubscriptionModal = ({ isOpen, onClose, onSubmit, user, subscription
                     <button
                       key={option.id}
                       type="button"
+                      aria-pressed={paymentOption === option.id}
                       onClick={() => setPaymentOption(option.id)}
                       className={classNames(
                         "rounded-lg border-2 p-4 text-left transition-colors",

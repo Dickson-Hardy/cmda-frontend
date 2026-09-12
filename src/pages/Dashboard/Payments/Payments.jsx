@@ -38,10 +38,16 @@ const DashboardPaymentsPage = () => {
   const [openLifetime, setOpenLifetime] = useState(false);
   const [initSubscription, { isLoading: isSubscribing }] = useInitSubscriptionSessionMutation();
   const isUkEuropeMember = isUkEuropeGlobalMember(user);
-  const { data: subscriptionStatus } = useGetSubscriptionStatusQuery(undefined, {
-    skip: user?.role !== "GlobalNetwork",
-  });
+  const { data: subscriptionStatus, isLoading: isLoadingSubscriptionStatus } = useGetSubscriptionStatusQuery(
+    undefined,
+    {
+      skip: user?.role !== "GlobalNetwork",
+    }
+  );
   const subscriptionComplete = isUkEuropeMember ? subscriptionStatus?.isFullyPaid : user?.subscribed;
+  const isSubscriptionActionDisabled = Boolean(
+    subscriptionComplete || (isUkEuropeMember && isLoadingSubscriptionStatus)
+  );
 
   const { data: myProfile } = useGetProfileQuery(null, { refetchOnMountOrArgChange: true });
   const dispatch = useDispatch();
@@ -98,9 +104,17 @@ const DashboardPaymentsPage = () => {
             )}
             <Button
               icon={subscriptionComplete ? icons.checkAlt : null}
-              label={subscriptionComplete ? "Year Fully Paid" : isUkEuropeMember ? "Make a Payment" : "Subscribe Now"}
+              label={
+                subscriptionComplete
+                  ? "Year Fully Paid"
+                  : isUkEuropeMember && isLoadingSubscriptionStatus
+                    ? "Loading Balance..."
+                    : isUkEuropeMember
+                      ? "Make a Payment"
+                      : "Subscribe Now"
+              }
               color={subscriptionComplete ? "secondary" : "primary"}
-              disabled={subscriptionComplete}
+              disabled={isSubscriptionActionDisabled}
               onClick={() => setOpenSubscribe(true)}
               className="ml-auto"
             />

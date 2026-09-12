@@ -28,8 +28,16 @@ import { formatCurrency } from "~/utilities/formatCurrency";
 const DashboardProfilePage = () => {
   const { user } = useSelector(selectAuth);
   const isUkEuropeMember = isUkEuropeGlobalMember(user);
-  const { data: subscriptionStatus } = useGetSubscriptionStatusQuery(undefined, { skip: !isUkEuropeMember });
+  const { data: subscriptionStatus, isLoading: isLoadingSubscriptionStatus } = useGetSubscriptionStatusQuery(
+    undefined,
+    {
+      skip: !isUkEuropeMember,
+    }
+  );
   const subscriptionComplete = isUkEuropeMember ? subscriptionStatus?.isFullyPaid : user?.subscribed;
+  const isSubscriptionActionDisabled = Boolean(
+    subscriptionComplete || (isUkEuropeMember && isLoadingSubscriptionStatus)
+  );
   const { restartTutorial } = useTutorial();
   const socialLinks = Array.isArray(user?.socials)
     ? user.socials
@@ -116,9 +124,17 @@ const DashboardProfilePage = () => {
       <div className="flex justify-end gap-2 mb-4">
         <Button
           icon={subscriptionComplete ? icons.checkAlt : null}
-          label={subscriptionComplete ? "Year Fully Paid" : isUkEuropeMember ? "Pay Subscription" : "Subscribe Now"}
+          label={
+            subscriptionComplete
+              ? "Year Fully Paid"
+              : isUkEuropeMember && isLoadingSubscriptionStatus
+                ? "Loading Balance..."
+                : isUkEuropeMember
+                  ? "Pay Subscription"
+                  : "Subscribe Now"
+          }
           color={subscriptionComplete ? "secondary" : "primary"}
-          disabled={subscriptionComplete}
+          disabled={isSubscriptionActionDisabled}
           onClick={() => navigate("/dashboard/payments")}
         />
         {["Student", "Doctor"].includes(user?.role) ? (

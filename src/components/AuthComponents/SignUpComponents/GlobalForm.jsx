@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useSignUpMutation } from "~/redux/api/auth/authApi";
 import { toast } from "react-toastify";
 import TextInput from "../../Global/FormElements/TextInput/TextInput";
-import { EMAIL_PATTERN } from "~/utilities/regExpValidations";
+import { EMAIL_PATTERN, PASSWORD_PATTERN, PASSWORD_REQUIREMENT_MESSAGE } from "~/utilities/regExpValidations";
 import Select from "../../Global/FormElements/Select/Select";
 import Button from "../../Global/Button/Button";
 import { setVerifyEmail } from "~/redux/features/auth/authSlice";
@@ -141,7 +141,11 @@ const GlobalForm = () => {
             errors={errors}
             placeholder="Set a password"
             title="Create Password"
+            rules={{
+              pattern: { value: PASSWORD_PATTERN, message: PASSWORD_REQUIREMENT_MESSAGE },
+            }}
           />
+          {!errors.password ? <p className="mt-1.5 text-xs text-gray-600">{PASSWORD_REQUIREMENT_MESSAGE}.</p> : null}
         </div>
 
         <div>

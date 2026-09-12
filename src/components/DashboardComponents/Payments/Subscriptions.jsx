@@ -176,7 +176,14 @@ const Subscriptions = () => {
                     {formatCurrency(subscriptionStatus.annualTarget, "GBP")} paid for{" "}
                     {subscriptionStatus.subscriptionYear}
                   </p>
-                  <div className="h-2 overflow-hidden rounded-full bg-gray-200" aria-label="Annual payment progress">
+                  <div
+                    className="h-2 overflow-hidden rounded-full bg-gray-200"
+                    role="progressbar"
+                    aria-label="Annual payment progress"
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={subscriptionStatus.progressPercent || 0}
+                  >
                     <div
                       className="h-full rounded-full bg-primary transition-all"
                       style={{ width: `${subscriptionStatus.progressPercent || 0}%` }}
