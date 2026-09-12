@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 const PayPalButtonWrapper = ({ createOrder, onApprove, currency }) => {
   const [{ options, isPending, isResolved }, dispatch] = usePayPalScriptReducer();
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     // Only reset if currency actually changed and SDK is loaded
@@ -20,36 +21,51 @@ const PayPalButtonWrapper = ({ createOrder, onApprove, currency }) => {
   }
 
   return (
-    <PayPalButtons
-      createOrder={async (data, actions) => {
-        try {
-          const orderId = await createOrder(data, actions);
-          if (!orderId) {
-            throw new Error("No order ID returned from createOrder");
+    <div className="w-full space-y-2">
+      {errorMessage ? (
+        <div role="alert" className="rounded bg-red-50 p-3 text-center text-sm text-red-700">
+          {errorMessage}
+        </div>
+      ) : null}
+      <PayPalButtons
+        createOrder={async (data, actions) => {
+          setErrorMessage("");
+          try {
+            const orderId = await createOrder(data, actions);
+            if (!orderId) {
+              throw new Error("No order ID returned from createOrder");
+            }
+            return orderId;
+          } catch (error) {
+            console.error("Error creating PayPal order:", error);
+            setErrorMessage(error?.data?.message || error?.message || "Unable to start PayPal. Please try again.");
+            throw error;
           }
-          return orderId;
-        } catch (error) {
-          console.error("Error creating PayPal order:", error);
-          throw error;
-        }
-      }}
-      onApprove={async (data, actions) => {
-        try {
-          await onApprove(data, actions);
-        } catch (error) {
-          console.error("Error approving PayPal payment:", error);
-        }
-      }}
-      style={{ layout: "horizontal", label: "pay", height: 48 }}
-      fundingSource="paypal"
-      forceReRender={[currency]}
-      onError={(err) => {
-        console.error("PayPal Button Error:", err);
-      }}
-      onCancel={(data) => {
-        console.log("PayPal payment cancelled:", data);
-      }}
-    />
+        }}
+        onApprove={async (data, actions) => {
+          try {
+            await onApprove(data, actions);
+          } catch (error) {
+            console.error("Error approving PayPal payment:", error);
+            setErrorMessage(
+              error?.data?.message || error?.message || "Unable to confirm PayPal payment. Please retry."
+            );
+            throw error;
+          }
+        }}
+        style={{ layout: "horizontal", label: "pay", height: 48 }}
+        fundingSource="paypal"
+        forceReRender={[currency]}
+        onError={(err) => {
+          console.error("PayPal Button Error:", err);
+          setErrorMessage("PayPal could not complete this payment. Please try again.");
+        }}
+        onCancel={(data) => {
+          console.log("PayPal payment cancelled:", data);
+          setErrorMessage("PayPal payment was cancelled. You have not been charged.");
+        }}
+      />
+    </div>
   );
 };
 

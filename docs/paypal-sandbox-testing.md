@@ -165,6 +165,7 @@ Your backend also needs sandbox configuration:
 PAYPAL_CLIENT_ID="YOUR_SANDBOX_CLIENT_ID"
 PAYPAL_CLIENT_SECRET="YOUR_SANDBOX_SECRET"
 PAYPAL_API_URL="https://api-m.sandbox.paypal.com"
+PAYPAL_WEBHOOK_ID="YOUR_SANDBOX_WEBHOOK_ID"
 
 # Production (comment out for testing)
 # PAYPAL_CLIENT_ID="AVxCHqrf5iA3G8mv21_qIx_ht4mRRLDWW48pkYwq-ColsbeviS5GL0XKonX-fLNrhWamB_fRDtQGwAWk"
@@ -297,6 +298,7 @@ VITE_PAYPAL_MODE="production"
 PAYPAL_CLIENT_ID="AVxCHqrf5iA3G8mv21_qIx_ht4mRRLDWW48pkYwq-ColsbeviS5GL0XKonX-fLNrhWamB_fRDtQGwAWk"
 PAYPAL_CLIENT_SECRET="YOUR_PRODUCTION_SECRET"
 PAYPAL_API_URL="https://api-m.paypal.com"
+PAYPAL_WEBHOOK_ID="YOUR_PRODUCTION_WEBHOOK_ID"
 ```
 
 ## Testing Checklist

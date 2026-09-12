@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import icons from "~/assets/js/icons";
@@ -17,18 +17,29 @@ const OrderSuccessful = () => {
   const wasCalled = useRef(false);
   const [loading, setLoading] = useState(true);
   const [alreadyConfirmed, setAlreadyConfirmed] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const confirmOrder = useCallback(async () => {
+    setLoading(true);
+    setErrorMessage("");
+    try {
+      await createOrder({ reference, source: source || "PAYSTACK" }).unwrap();
+    } catch (err) {
+      if (err?.status === 409) {
+        setAlreadyConfirmed(true);
+      } else {
+        setErrorMessage(err?.data?.message || "We could not confirm this payment yet. Please retry.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [createOrder, reference, source]);
 
   useEffect(() => {
     if (wasCalled.current) return;
     wasCalled.current = true;
-    createOrder({ reference, source: source || "PAYSTACK" })
-      .then(() => setLoading(false))
-      .catch((err) => {
-        if (err.status === 409) setAlreadyConfirmed(true);
-      })
-      .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    void confirmOrder();
+  }, [confirmOrder]);
 
   const handleSuccess = () => {
     dispatch(clearCart());
@@ -41,6 +52,12 @@ const OrderSuccessful = () => {
         {loading || isLoading ? (
           <div className="flex justify-center items-center">
             <Loading className="my-12 size-20 text-primary" />
+          </div>
+        ) : errorMessage ? (
+          <div role="alert" className="space-y-4">
+            <h3 className="text-xl font-bold text-red-700">Payment confirmation needs attention</h3>
+            <p className="text-base text-gray-600">{errorMessage}</p>
+            <Button label="Retry confirmation" large loading={isLoading} onClick={confirmOrder} />
           </div>
         ) : (
           <>
