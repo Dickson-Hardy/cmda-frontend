@@ -12,7 +12,7 @@ const AddSocials = ({ onSave }) => {
   };
 
   return (
-    <form onSubmit={handleSave} className="flex items-center gap-3 w-full my-3">
+    <form onSubmit={handleSave} className="flex flex-col sm:flex-row sm:items-center gap-3 w-full my-3">
       <select
         value={name}
         onChange={(e) => setName(e.target.value)}

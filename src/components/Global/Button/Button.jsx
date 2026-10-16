@@ -24,7 +24,7 @@ const Button = ({
           filled: "bg-primary text-white hover:bg-primaryContainer disabled:hover:bg-primary",
           outlined:
             "bg-transparent text-primary border-[1.5px] border-primary hover:bg-onPrimary disabled:hover:bg-transparent",
-          text: "bg-tranparent text-primary hover:bg-onPrimary disabled:hover:bg-transparent",
+          text: "bg-transparent text-primary hover:bg-onPrimary disabled:hover:bg-transparent",
         };
       case "tertiary":
         // Define styles for tertiary color
@@ -32,7 +32,7 @@ const Button = ({
           filled: "bg-tertiary text-white hover:bg-tertiaryContainer disabled:hover:bg-tertiary",
           outlined:
             "bg-transparent text-tertiary border-[1.5px] border-tertiary hover:bg-onTertiary disabled:hover:bg-transparent",
-          text: "bg-tranparent text-tertiary hover:bg-onTertiary disabled:hover:bg-transparent",
+          text: "bg-transparent text-tertiary hover:bg-onTertiary disabled:hover:bg-transparent",
         };
       case "secondary":
         // Define styles for secondary color
@@ -40,7 +40,7 @@ const Button = ({
           filled: "bg-secondary text-white hover:bg-secondaryContainer disabled:hover:bg-secondary",
           outlined:
             "bg-transparent text-secondary border-[1.5px] border-secondary hover:bg-onSecondary disabled:hover:bg-transparent",
-          text: "bg-tranparent text-secondary hover:bg-onSecondary disabled:hover:bg-transparent",
+          text: "bg-transparent text-secondary hover:bg-onSecondary disabled:hover:bg-transparent",
         };
       case "error":
         // Define styles for error color
@@ -48,14 +48,14 @@ const Button = ({
           filled: "bg-error text-white hover:bg-error",
           outlined:
             "bg-transparent text-error border-[1.5px] border-error hover:bg-error/20 disabled:hover:bg-transparent",
-          text: "bg-tranparent text-error hover:bg-error/20 disabled:hover:bg-transparent",
+          text: "bg-transparent text-error hover:bg-error/20 disabled:hover:bg-transparent",
         };
       default:
         // Default to black color styles if an invalid color is provided
         return {
           filled: "bg-black text-white hover:bg-black",
           outlined: "bg-transparent text-black border-[1.5px] border-black hover:bg-black/10",
-          text: "bg-tranparent text-black hover:bg-black/10",
+          text: "bg-transparent text-black hover:bg-black/10",
         };
     }
   };
@@ -66,11 +66,16 @@ const Button = ({
     <button
       type={type}
       disabled={disabled || loading}
+      aria-busy={loading || undefined}
       className={classNames(
-        "inline-flex justify-center items-center gap-2.5 rounded-md font-medium  text-sm",
-        large ? "h-12 py-4 px-8" : small ? "h-8 py-3 px-3" : "h-10 py-4 px-8",
+        "inline-flex max-w-full justify-center items-center gap-2.5 rounded-md font-medium text-center",
+        large
+          ? "min-h-12 px-6 py-3 text-sm leading-5"
+          : small
+            ? "min-h-8 px-3 py-1.5 text-xs leading-4"
+            : "min-h-10 px-5 py-2.5 text-sm leading-5",
         variant === "filled" && colorStyles.filled,
-        variant === "outlined" && colorStyles.outlined,
+        (variant === "outlined" || variant === "outline") && colorStyles.outlined,
         variant === "text" && colorStyles.text,
         "disabled:cursor-not-allowed disabled:bg-opacity-50 disabled:hover:bg-opacity-50",
         "focus:ring-4 focus:outline-none hover:bg-opacity-90 transition-all duration-150",
@@ -89,8 +94,8 @@ const Button = ({
         <Loading height={20} width={20} />
       ) : (
         <>
-          {icon && <span className={classNames("text-base", iconClassName)}>{icon}</span>}
-          {children || label}
+          {icon && <span className={classNames("shrink-0 text-base", iconClassName)}>{icon}</span>}
+          <span className="min-w-0 break-words">{children || label}</span>
         </>
       )}
       {loading && loadingText ? loadingText : null}

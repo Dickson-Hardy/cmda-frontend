@@ -9,6 +9,7 @@ import { setUser } from "~/redux/features/auth/authSlice";
 import { selectAuth } from "~/redux/features/auth/authSlice";
 import { useEffect, useState } from "react";
 import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
+import { setTokens } from "~/redux/features/auth/tokenSlice";
 
 const ChangePassword = () => {
   const {
@@ -52,10 +53,10 @@ const ChangePassword = () => {
 
     updatePassword({ oldPassword, newPassword, confirmPassword })
       .unwrap()
-      .then(() => {
+      .then(({ data }) => {
         toast.success("Password changed successfully! Your account is now verified.");
-        // Update user state to reflect password change
-        dispatch(setUser({ ...user, requirePasswordChange: false, isVerified: true }));
+        dispatch(setTokens({ accessToken: data.accessToken, refreshToken: data.refreshToken }));
+        dispatch(setUser(data.user));
         navigate("/dashboard");
       })
       .catch((error) => {

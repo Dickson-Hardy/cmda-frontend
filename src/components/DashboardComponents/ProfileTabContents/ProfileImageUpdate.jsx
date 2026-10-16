@@ -84,7 +84,7 @@ const ProfileImageUpdate = () => {
             </span>
           </div>
 
-          <div className="flex items-center justify-between w-full gap-x-8">
+          <div className="flex w-full flex-col items-center gap-6 sm:flex-row sm:justify-between sm:gap-x-8">
             <div className="relative">
               <div className="size-[8rem] sm:size-[12rem] overflow-hidden rounded-full relative">
                 {!imagePreview && !user?.avatarUrl && (

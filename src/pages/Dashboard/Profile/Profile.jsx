@@ -121,7 +121,7 @@ const DashboardProfilePage = () => {
 
   return (
     <div>
-      <div className="flex justify-end gap-2 mb-4">
+      <div className="mb-4 flex flex-wrap justify-end gap-2">
         <Button
           icon={subscriptionComplete ? icons.checkAlt : null}
           label={

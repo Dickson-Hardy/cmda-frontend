@@ -83,7 +83,7 @@ const NigerianLifetimeModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
           </label>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row">
           <Button variant="outlined" onClick={onClose} className="flex-1">
             Cancel
           </Button>

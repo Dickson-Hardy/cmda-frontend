@@ -134,7 +134,11 @@ const ProfileCompletionPrompt = () => {
   if (!missing.length) return null;
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 p-4" role="dialog" aria-modal="true">
+    <div
+      className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 p-4"
+      role="dialog"
+      aria-modal="true"
+    >
       <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
         <h2 className="text-xl font-bold text-black">Complete your member profile</h2>
         <p className="mt-2 text-sm text-gray-600">
@@ -142,7 +146,10 @@ const ProfileCompletionPrompt = () => {
           {missing.length > 3 ? ` and ${missing.length - 3} more` : ""} so members can identify and connect with you.
         </p>
         <div className="mt-6 flex justify-end gap-3">
-          <button className="rounded-lg border border-primary px-4 py-2 text-sm font-semibold text-primary" onClick={() => setMissing([])}>
+          <button
+            className="rounded-lg border border-primary px-4 py-2 text-sm font-semibold text-primary"
+            onClick={() => setMissing([])}
+          >
             Later
           </button>
           <button
@@ -222,7 +229,7 @@ const DashboardLayout = ({ withOutlet = true, children }) => {
       <div className="bg-background">
         <Header unreadMessagesCount={unreadMessagesCount} unreadNotificationCount={unreadNotificationCount} />
 
-        <div className="flex h-screen overflow-hidden">
+        <div className="flex h-dvh overflow-hidden">
           <Sidebar
             isOpen={isSidebarOpen}
             onToggleSidebar={toggleSidebar}
@@ -232,7 +239,7 @@ const DashboardLayout = ({ withOutlet = true, children }) => {
           <div
             className={classNames(
               isSidebarOpen && "md:ml-60",
-              "flex-1 flex flex-col overflow-hidden transition-all duration-300"
+              "min-w-0 flex-1 flex flex-col overflow-hidden transition-all duration-300"
             )}
           >
             <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-6 pb-20 md:pb-6 mt-16">

@@ -120,9 +120,15 @@ const DashboardEditProfile = () => {
       <div className="mt-6 flex items-center justify-center relative">
         <div className="bg-white w-full max-w-2xl max-auto p-5 md:p-8 rounded-lg ">
           <form onSubmit={handleSubmit(handleUpdateProfile)}>
-            <div className="flex items-center justify-between mb-7">
-              <h2 className="text-lg font-bold mb-4">Edit Profile</h2>
-              <Button label="Save Changes" type="submit" loading={isLoading} loadingText="Saving..." />
+            <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <h2 className="text-lg font-bold">Edit Profile</h2>
+              <Button
+                label="Save Changes"
+                type="submit"
+                loading={isLoading}
+                loadingText="Saving..."
+                className="w-full sm:w-auto"
+              />
             </div>
             <div className="flex flex-col gap-6">
               <div>
@@ -326,19 +332,23 @@ const DashboardEditProfile = () => {
             )}
             <div>
               {socials.map((social, index) => (
-                <div key={index} className="w-full flex justify-between items-center my-3 ">
-                  <div className="flex items-center gap-x-4">
+                <div key={index} className="my-3 flex w-full items-center justify-between gap-3">
+                  <div className="flex min-w-0 items-center gap-x-4">
                     <span className="bg-gray-light p-3 flex justify-center items-center rounded-full">
                       {social.name === "facebook" && icons.facebook}
                       {social.name === "instagram" && icons.instagram}
                       {social.name === "twitter" && icons.twitter}
                       {social.name === "linkedIn" && icons.linkedIn}
                     </span>
-                    <p className="text-primaryContainer font-medium text-sm">{social.link}</p>
+                    <p className="min-w-0 break-all text-sm font-medium text-primaryContainer">{social.link}</p>
                   </div>
-                  <p className="text-primary font-semibold cursor-pointer text-sm" onClick={() => removeSocial(index)}>
+                  <button
+                    type="button"
+                    className="shrink-0 text-sm font-semibold text-primary"
+                    onClick={() => removeSocial(index)}
+                  >
                     Remove
-                  </p>
+                  </button>
                 </div>
               ))}
             </div>

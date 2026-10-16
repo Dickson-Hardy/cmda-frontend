@@ -103,14 +103,14 @@ const PaymentIntents = ({ showTitle = true, compact = false }) => {
   if (compact) {
     return (
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 text-blue-600">ℹ️</div>
             <span className="text-sm text-blue-800">{requiresAttention.length} payment(s) pending verification</span>
           </div>
           <Button
             label="Verify All"
-            size="sm"
+            small
             variant="outline"
             onClick={handleRequeryAll}
             loading={requeryingIntents.length > 0}
@@ -123,7 +123,7 @@ const PaymentIntents = ({ showTitle = true, compact = false }) => {
   return (
     <div className="bg-white rounded-lg shadow p-6">
       {showTitle && (
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
           <div>
             <h3 className="text-lg font-semibold text-gray-900">Payment Transactions</h3>
             <p className="text-sm text-gray-600">
@@ -156,12 +156,12 @@ const PaymentIntents = ({ showTitle = true, compact = false }) => {
             return (
               <div
                 key={intent._id}
-                className={`flex items-center justify-between p-4 rounded-lg border ${
+                className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-lg border ${
                   needsRequery ? "bg-yellow-50 border-yellow-200" : "bg-gray-50 border-gray-200"
                 }`}
               >
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
+                <div className="min-w-0 flex-1 break-words">
+                  <div className="flex flex-wrap items-center gap-2 mb-1">
                     <p className="font-medium text-gray-900">{getContextLabel(intent.context)}</p>
                     <span className={`px-2 py-0.5 text-xs font-medium rounded border ${getStatusColor(intent.status)}`}>
                       {intent.status}
@@ -183,8 +183,8 @@ const PaymentIntents = ({ showTitle = true, compact = false }) => {
                   {needsRequery && (
                     <Button
                       label={isRequerying ? "Verifying..." : "Verify Payment"}
-                      size="sm"
-                      variant={intent.status === "FAILED" ? "danger" : "primary"}
+                      small
+                      color={intent.status === "FAILED" ? "error" : "primary"}
                       onClick={() => handleRequery(intent)}
                       loading={isRequerying}
                       disabled={isRequerying}

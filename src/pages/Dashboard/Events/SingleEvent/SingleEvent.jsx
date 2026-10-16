@@ -424,7 +424,7 @@ const DashboardStoreSingleEventPage = () => {
 
         {/* Reminder Input */}
         {showReminder && (
-          <div className="mt-4 flex items-end gap-3 p-4 bg-gray-50 rounded-lg">
+          <div className="mt-4 flex flex-wrap items-end gap-3 p-4 bg-gray-50 rounded-lg">
             <div className="flex-1">
               <label className="block text-sm font-semibold mb-1">Reminder Date &amp; Time</label>
               <input

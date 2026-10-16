@@ -93,12 +93,12 @@ const DashboardPaymentsPage = () => {
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row justify-center gap-y-3 md:justify-between md:items-center">
+      <div className="flex flex-col xl:flex-row justify-center gap-y-3 xl:justify-between xl:items-center">
         <h2 className="text-xl sm:text-2xl font-bold text-primary">Manage Payments</h2>
         {activeIndex ? (
           <Button label="Make a Donation" onClick={() => setOpenDonate(true)} />
         ) : (
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             {user?.role !== "GlobalNetwork" && !user?.subscribed && (
               <Button label="Lifetime Membership" variant="outlined" onClick={() => setOpenLifetime(true)} />
             )}

@@ -23,7 +23,7 @@ const ForgotPassword = () => {
       .unwrap()
       .then(() => {
         toast.success("Reset OTP sent successfully");
-        navigate("/reset-password");
+        navigate("/reset-password", { state: { email: payload.email.trim() } });
       })
       .catch((error) => {
         toast.error(getApiErrorMessage(error, "Unable to send the reset OTP. Please try again."));

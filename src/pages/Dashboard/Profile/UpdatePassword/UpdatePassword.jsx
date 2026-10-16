@@ -6,6 +6,9 @@ import Button from "~/components/Global/Button/Button";
 import TextInput from "~/components/Global/FormElements/TextInput/TextInput";
 import { useUpdatePasswordMutation } from "~/redux/api/profile/profileApi";
 import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
+import { useDispatch } from "react-redux";
+import { setTokens } from "~/redux/features/auth/tokenSlice";
+import { setUser } from "~/redux/features/auth/authSlice";
 
 const DashboardUpdatePassword = () => {
   const {
@@ -16,6 +19,7 @@ const DashboardUpdatePassword = () => {
   } = useForm({ mode: "all" });
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [updatePassword, { isLoading }] = useUpdatePasswordMutation();
 
   const handleUpdatePassword = (payload) => {
@@ -28,6 +32,8 @@ const DashboardUpdatePassword = () => {
     updatePassword({ oldPassword, newPassword, confirmPassword })
       .unwrap()
       .then((data) => {
+        dispatch(setTokens({ accessToken: data.data.accessToken, refreshToken: data.data.refreshToken }));
+        dispatch(setUser(data.data.user));
         toast.success(data.message);
         reset();
       })
@@ -41,7 +47,7 @@ const DashboardUpdatePassword = () => {
       <Button variant="text" onClick={() => navigate(-1)}>
         {icons.arrowLeft} Back
       </Button>
-      <div className="mt-6 h-[70vh] flex items-center justify-center">
+      <div className="mt-6 flex items-start justify-center pb-6">
         <div className="bg-white w-full max-w-md max-auto p-8 rounded-lg">
           <h2 className="text-lg font-bold mb-4">Update Password</h2>
           <form className="flex flex-col gap-6" onSubmit={handleSubmit(handleUpdatePassword)}>
