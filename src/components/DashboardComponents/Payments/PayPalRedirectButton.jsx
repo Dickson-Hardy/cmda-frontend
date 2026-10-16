@@ -11,7 +11,8 @@ const PayPalRedirectButton = ({ createOrder, label = "Continue to PayPal", class
 
     try {
       const order = await createOrder();
-      const isApprovalLink = (link) => link.rel === "approve" || link.rel === "approval_url";
+      const isApprovalLink = (link) =>
+        ["approve", "approval_url", "authorization_url", "payer-action"].includes(link.rel);
       const approvalUrl = order?.links?.find(isApprovalLink)?.href || order?.approvalUrl;
 
       if (!approvalUrl) {
