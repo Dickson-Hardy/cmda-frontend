@@ -238,12 +238,14 @@ const SingleConferencePage = () => {
         customResponses,
       }).unwrap();
 
-      if (paymentMethod === "paypal" || user.role === "GlobalNetwork") {
+      if (res?.id) {
         return res.id;
-      } else {
-        // Paystack
-        window.open(res.checkout_url, "_self");
       }
+      if (res?.checkout_url) {
+        window.open(res.checkout_url, "_self");
+        return undefined;
+      }
+      throw new Error("The payment provider did not return a checkout session");
     } catch (error) {
       if (error?.status === 403 || error?.data?.message?.includes("subscription")) {
         toast.error("You must have an active subscription to register for conferences. Please subscribe first.");
@@ -767,17 +769,18 @@ const SingleConferencePage = () => {
           </p>
 
           <div className="space-y-4">
-            {/* Paystack Option */}
-            <Button
-              onClick={() => handlePayment("paystack")}
-              isLoading={isPaying}
-              className="w-full bg-green-600 hover:bg-green-700"
-            >
-              Pay with Paystack (Card/Bank Transfer)
-            </Button>
+            {!(user?.role === "GlobalNetwork" && conference.conferenceConfig?.usePayPalForGlobal) ? (
+              <Button
+                onClick={() => handlePayment("paystack")}
+                isLoading={isPaying}
+                className="w-full bg-green-600 hover:bg-green-700"
+              >
+                Pay with Paystack (Card/Bank Transfer)
+              </Button>
+            ) : null}
 
             {/* PayPal Option for Global Network */}
-            {(user?.role === "GlobalNetwork" || conference.conferenceConfig?.paymentMethods?.includes("paypal")) && (
+            {user?.role === "GlobalNetwork" && conference.conferenceConfig?.usePayPalForGlobal ? (
               <div className="w-full">
                 <PaypalPaymentButton
                   amount={getRegistrationTotal()}
@@ -791,7 +794,7 @@ const SingleConferencePage = () => {
                   className="w-full"
                 />
               </div>
-            )}
+            ) : null}
           </div>
 
           <div className="mt-6">

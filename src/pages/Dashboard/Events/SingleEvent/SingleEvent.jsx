@@ -134,8 +134,9 @@ const DashboardStoreSingleEventPage = () => {
     try {
       if (singleEvent?.isPaid) {
         const res = await payForEvent({ slug }).unwrap();
-        if (user.role === "GlobalNetwork") return res.id;
-        else window.open(res.checkout_url, "_self");
+        if (res?.id) return res.id;
+        if (res?.checkout_url) window.open(res.checkout_url, "_self");
+        else throw new Error("The payment provider did not return a checkout session");
         //
       } else {
         await registerForEvent({ slug }).unwrap();
@@ -584,7 +585,10 @@ const DashboardStoreSingleEventPage = () => {
               No, Cancel
             </Button>
 
-            {user.role === "GlobalNetwork" && singleEvent?.isPaid ? (
+            {user.role === "GlobalNetwork" &&
+            singleEvent?.isPaid &&
+            singleEvent?.isConference &&
+            singleEvent?.conferenceConfig?.usePayPalForGlobal ? (
               <PaypalPaymentButton
                 amount={getCurrentPrice()}
                 currency="USD"
