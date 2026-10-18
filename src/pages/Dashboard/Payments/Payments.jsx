@@ -20,7 +20,7 @@ import {
 } from "~/redux/api/payments/subscriptionApi";
 import { useGetProfileQuery } from "~/redux/api/profile/profileApi";
 import { selectAuth, setUser } from "~/redux/features/auth/authSlice";
-import { isUkEuropeGlobalMember } from "~/constants/subscription";
+import { ZelleTransfers } from "~/components/DashboardComponents/Payments/ZellePayment";
 
 const DashboardPaymentsPage = () => {
   const PAYMENT_TABS = [
@@ -37,17 +37,16 @@ const DashboardPaymentsPage = () => {
   const [openSubscribe, setOpenSubscribe] = useState(false);
   const [openLifetime, setOpenLifetime] = useState(false);
   const [initSubscription, { isLoading: isSubscribing }] = useInitSubscriptionSessionMutation();
-  const isUkEuropeMember = isUkEuropeGlobalMember(user);
+  const isGlobalMember = user?.role === "GlobalNetwork";
   const { data: subscriptionStatus, isLoading: isLoadingSubscriptionStatus } = useGetSubscriptionStatusQuery(
     undefined,
     {
       skip: user?.role !== "GlobalNetwork",
     }
   );
-  const subscriptionComplete = isUkEuropeMember ? subscriptionStatus?.isFullyPaid : user?.subscribed;
-  const isSubscriptionActionDisabled = Boolean(
-    subscriptionComplete || (isUkEuropeMember && isLoadingSubscriptionStatus)
-  );
+  const subscriptionComplete =
+    user.role === "GlobalNetwork" && !user.hasLifetimeMembership ? subscriptionStatus?.isFullyPaid : user?.subscribed;
+  const isSubscriptionActionDisabled = Boolean(subscriptionComplete || (isGlobalMember && isLoadingSubscriptionStatus));
 
   const { data: myProfile } = useGetProfileQuery(null, { refetchOnMountOrArgChange: true });
   const dispatch = useDispatch();
@@ -107,9 +106,9 @@ const DashboardPaymentsPage = () => {
               label={
                 subscriptionComplete
                   ? "Year Fully Paid"
-                  : isUkEuropeMember && isLoadingSubscriptionStatus
+                  : isGlobalMember && isLoadingSubscriptionStatus
                     ? "Loading Balance..."
-                    : isUkEuropeMember
+                    : isGlobalMember
                       ? "Make a Payment"
                       : "Subscribe Now"
               }
@@ -122,8 +121,28 @@ const DashboardPaymentsPage = () => {
         )}
       </div>
       <div className="my-6">
+        {user.role === "GlobalNetwork" && subscriptionStatus?.annualTarget && (
+          <div className="bg-white border rounded-lg p-4 mb-4 space-y-2">
+            <h3 className="font-semibold">{subscriptionStatus.subscriptionYear} membership giving</h3>
+            <p>
+              {subscriptionStatus.currency} {Number(subscriptionStatus.paidAmount || 0).toFixed(2)} confirmed of{" "}
+              {Number(subscriptionStatus.annualTarget).toFixed(2)} ·{" "}
+              {Number(subscriptionStatus.remainingAmount).toFixed(2)} remaining
+            </p>
+            <progress
+              className="w-full"
+              max="100"
+              value={subscriptionStatus.progressPercent || 0}
+              aria-label="Annual membership payment progress"
+            />
+            <p className="text-sm text-gray-600">
+              Pay in installments at any time. Only confirmed payments count toward your yearly target.
+            </p>
+          </div>
+        )}
         <Tabs tabs={PAYMENT_TABS} setActiveIndex={setActiveIndex} activeIndex={activeIndex} />
       </div>
+      {user.role === "GlobalNetwork" && <ZelleTransfers />}
       {/* Payment Intents - Show all transactions with requery buttons */}
       <div className="mb-6">
         <PaymentIntents />

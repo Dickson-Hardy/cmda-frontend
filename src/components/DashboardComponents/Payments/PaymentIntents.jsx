@@ -41,7 +41,7 @@ const PaymentIntents = ({ showTitle = true, compact = false }) => {
   const { data, isLoading, refetch } = useGetMyPaymentIntentsQuery({ page: 1, limit: 100 });
   const [requeryPaymentIntents] = useRequeryPaymentIntentsMutation();
 
-  const paymentIntents = data?.items || [];
+  const paymentIntents = (data?.items || []).filter((intent) => intent.provider !== "ZELLE");
 
   // Filter to show only pending/failed transactions
   const requiresAttention = paymentIntents.filter(

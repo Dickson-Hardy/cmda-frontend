@@ -22,22 +22,20 @@ import { useTutorial } from "~/components/Tutorial/TutorialContext";
 import LifetimeMemberStatus from "~/components/Global/LifetimeMemberStatus/LifetimeMemberStatus";
 import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 import { useGetSubscriptionStatusQuery } from "~/redux/api/payments/subscriptionApi";
-import { isUkEuropeGlobalMember } from "~/constants/subscription";
 import { formatCurrency } from "~/utilities/formatCurrency";
 
 const DashboardProfilePage = () => {
   const { user } = useSelector(selectAuth);
-  const isUkEuropeMember = isUkEuropeGlobalMember(user);
+  const isGlobalMember = user?.role === "GlobalNetwork";
   const { data: subscriptionStatus, isLoading: isLoadingSubscriptionStatus } = useGetSubscriptionStatusQuery(
     undefined,
     {
-      skip: !isUkEuropeMember,
+      skip: user?.role !== "GlobalNetwork",
     }
   );
-  const subscriptionComplete = isUkEuropeMember ? subscriptionStatus?.isFullyPaid : user?.subscribed;
-  const isSubscriptionActionDisabled = Boolean(
-    subscriptionComplete || (isUkEuropeMember && isLoadingSubscriptionStatus)
-  );
+  const subscriptionComplete =
+    user?.role === "GlobalNetwork" && !user?.hasLifetimeMembership ? subscriptionStatus?.isFullyPaid : user?.subscribed;
+  const isSubscriptionActionDisabled = Boolean(subscriptionComplete || (isGlobalMember && isLoadingSubscriptionStatus));
   const { restartTutorial } = useTutorial();
   const socialLinks = Array.isArray(user?.socials)
     ? user.socials
@@ -127,9 +125,9 @@ const DashboardProfilePage = () => {
           label={
             subscriptionComplete
               ? "Year Fully Paid"
-              : isUkEuropeMember && isLoadingSubscriptionStatus
+              : isGlobalMember && isLoadingSubscriptionStatus
                 ? "Loading Balance..."
-                : isUkEuropeMember
+                : isGlobalMember
                   ? "Pay Subscription"
                   : "Subscribe Now"
           }
@@ -172,12 +170,12 @@ const DashboardProfilePage = () => {
               <p className="text-sm font-medium mb-4">
                 <span className="text-gray">Chapter/Region: </span> {user?.region}
               </p>
-              {isUkEuropeMember && subscriptionStatus ? (
+              {subscriptionStatus?.annualTarget ? (
                 <div className="mb-4 rounded-lg border border-primary/20 bg-onPrimary p-3 text-sm">
                   <p className="font-semibold">{subscriptionStatus.subscriptionYear} subscription</p>
                   <p className="mt-1 text-gray-700">
-                    {formatCurrency(subscriptionStatus.paidAmount, "GBP")} paid ·{" "}
-                    {formatCurrency(subscriptionStatus.remainingAmount, "GBP")} remaining
+                    {formatCurrency(subscriptionStatus.paidAmount, subscriptionStatus.currency)} paid ·{" "}
+                    {formatCurrency(subscriptionStatus.remainingAmount, subscriptionStatus.currency)} remaining
                   </p>
                 </div>
               ) : null}

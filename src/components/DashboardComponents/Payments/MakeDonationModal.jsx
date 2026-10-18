@@ -11,8 +11,11 @@ import PayPalRedirectButton from "./PayPalRedirectButton";
 import Checkbox from "~/components/Global/FormElements/Checkbox/Checkbox";
 import { useEffect } from "react";
 import { formatCurrency } from "~/utilities/formatCurrency";
+import { useState } from "react";
+import ZellePayment from "./ZellePayment";
 
 const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading }) => {
+  const [method, setMethod] = useState("PAYPAL");
   const { user } = useSelector(selectAuth);
 
   const {
@@ -82,7 +85,15 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading }) => {
   }, [watch, setValue]);
 
   return (
-    <Modal maxWidth={560} isOpen={isOpen} onClose={onClose} title="Make a Donation">
+    <Modal
+      maxWidth={560}
+      isOpen={isOpen}
+      onClose={() => {
+        setMethod("PAYPAL");
+        onClose();
+      }}
+      title="Make a Donation"
+    >
       {/* Paypal button */}
 
       <form onSubmit={handleSubmit(onPreSubmit)} className="grid grid-cols-2 gap-2 sm:gap-3">
@@ -154,7 +165,38 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading }) => {
 
         <div className="col-span-2">
           {user?.role === "GlobalNetwork" ? (
-            <PayPalRedirectButton createOrder={handlePayPalOrder} />
+            <div className="space-y-3">
+              {watch("currency") === "USD" && (
+                <label className="block text-sm">
+                  Payment method
+                  <select
+                    value={method}
+                    onChange={(e) => setMethod(e.target.value)}
+                    className="mt-1 w-full p-3 border rounded"
+                  >
+                    <option value="PAYPAL">PayPal</option>
+                    <option value="ZELLE">Zelle</option>
+                  </select>
+                </label>
+              )}
+              {method === "ZELLE" && watch("currency") === "USD" ? (
+                <ZellePayment
+                  getRequest={async () => {
+                    if (!(await trigger())) throw new Error("Please complete the donation details");
+                    const values = getValues();
+                    return {
+                      context: "DONATION",
+                      amount: Number(values.totalAmount),
+                      areasOfNeed: Object.entries(values.areasOfNeed)
+                        .filter(([, v]) => Number(v.amount) > 0)
+                        .map(([name, v]) => ({ name, amount: Number(v.amount) })),
+                    };
+                  }}
+                />
+              ) : (
+                <PayPalRedirectButton createOrder={handlePayPalOrder} />
+              )}
+            </div>
           ) : (
             <Button type="submit" className="w-full" label="Donate Now" large loading={loading} />
           )}
