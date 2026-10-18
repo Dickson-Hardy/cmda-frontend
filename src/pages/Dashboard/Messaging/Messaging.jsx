@@ -16,28 +16,17 @@ const DashboardMessagingPage = () => {
         <SendNewMessage userId={user?._id} />
       </div>
 
-      {/* large screen */}
-      <section className=" gap-10 h-[calc(100vh-190px)] hidden lg:flex">
-        {/* messages Lists */}
-        <ContactList />
-
-        {/* Chatbox */}
+      <section className="gap-10 h-[calc(100vh-190px)] flex">
+        <div className={recipientId ? "hidden lg:contents" : "contents"}>
+          <ContactList />
+        </div>
         {recipientId ? (
-          <ChatBox userId={user._id} recipientId={recipientId} />
+          <ChatBox key={recipientId} userId={user._id} recipientId={recipientId} />
         ) : (
-          <div className="w-3/5 flex flex-col justify-center items-center">
-            <p className="font-bold text-lg text-center cursor-not-allowed">Select A User to start chatting with</p>
+          <div className="hidden lg:flex w-3/5 flex-col justify-center items-center">
+            <p className="font-bold text-lg text-center">Select a member to start a conversation.</p>
           </div>
         )}
-      </section>
-
-      {/* small screen  */}
-      <section className=" gap-10 h-[calc(100vh-190px)] lg:hidden flex">
-        {/* messages Lists */}
-        {!recipientId && <ContactList userId={user?._id} />}
-
-        {/* Chatbox */}
-        {recipientId && <ChatBox userId={user._id} recipientId={recipientId} />}
       </section>
     </div>
   );

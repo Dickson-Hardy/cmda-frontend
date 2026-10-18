@@ -43,6 +43,8 @@ import SingleOrder from "~/pages/Dashboard/Store/OrderHistory/SingleOrder";
 import DashboardFaithEntryPage from "~/pages/Dashboard/Faith/FaithEntry";
 import DashboardNotificationsPage from "~/pages/Dashboard/Notifications/Notifications";
 import SingleNotification from "~/pages/Dashboard/Notifications/SingleNotification";
+import { lazy, Suspense } from "react";
+const SupportPortal = lazy(() => import("~/components/Support/SupportPortal"));
 
 export default function AppRouter() {
   const { isAuthenticated } = useSelector(selectAuth);
@@ -62,6 +64,22 @@ export default function AppRouter() {
 
   // ================= ROUTES ======================= //
   const router = createBrowserRouter([
+    {
+      path: "/support/embed",
+      element: (
+        <Suspense fallback={<p role="status">Loading support…</p>}>
+          <SupportPortal embedded />
+        </Suspense>
+      ),
+    },
+    {
+      path: "/support",
+      element: (
+        <Suspense fallback={<p role="status">Loading support…</p>}>
+          <SupportPortal />
+        </Suspense>
+      ),
+    },
     {
       element: <EmptyLayout />,
       children: [

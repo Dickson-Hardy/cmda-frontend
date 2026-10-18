@@ -32,6 +32,7 @@ const chatsApi = api.injectEndpoints({
       invalidatesTags: ["ALL_CONTACTS"],
     }),
     sendMessage: build.mutation({
+      extraOptions: { handlesError: true },
       query: (body) => ({ url: "/chats/messages", method: "POST", body }),
       transformResponse: (response) => response.data,
       invalidatesTags: ["ALL_CONTACTS"],

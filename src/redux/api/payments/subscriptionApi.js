@@ -7,6 +7,7 @@ const subscriptionApi = api.injectEndpoints({
       transformResponse: (response) => response.data,
     }),
     saveSubscription: build.mutation({
+      extraOptions: { handlesError: true },
       query: (body) => ({ url: "/subscriptions/save", body, method: "POST" }),
       transformResponse: (response) => response.data,
       invalidatesTags: ["SUBSCRIPTION", "SUBSCRIPTION_STATUS"],

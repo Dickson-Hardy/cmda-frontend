@@ -82,17 +82,31 @@ self.addEventListener('activate', (e) => {
     const response = await env.ASSETS.fetch(request);
 
     if (isHtmlNav && response.ok) {
+      const isSupportEmbed = url.pathname === "/support/embed";
       const newHeaders = new Headers(response.headers);
       newHeaders.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
       newHeaders.set(
         "Content-Security-Policy",
-        "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https: wss:; frame-src 'self' https://www.youtube.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' https:; upgrade-insecure-requests",
+        "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https: wss:; frame-src 'self' https://www.youtube.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' https:; upgrade-insecure-requests"
       );
       newHeaders.set("Referrer-Policy", "strict-origin-when-cross-origin");
+      if (isSupportEmbed) {
+        const policy = newHeaders.get("Content-Security-Policy");
+        newHeaders.set(
+          "Content-Security-Policy",
+          policy.replace(
+            "frame-ancestors 'none'",
+            "frame-ancestors https://cmdanigeria.org https://www.cmdanigeria.org https://cmdanigeria.net https://www.cmdanigeria.net"
+          )
+        );
+        newHeaders.delete("X-Frame-Options");
+        newHeaders.set("Referrer-Policy", "no-referrer");
+        newHeaders.set("X-Robots-Tag", "noindex");
+      }
       newHeaders.set("X-Content-Type-Options", "nosniff");
       // Inline kill-switch for any client that reaches network HTML
       let html = await response.text();
-      if (!html.includes("CMDA_SW_KILL")) {
+      if (!isSupportEmbed && !html.includes("CMDA_SW_KILL")) {
         const kill = `<script id="CMDA_SW_KILL">
 (function(){
   if(!('serviceWorker' in navigator)) return;

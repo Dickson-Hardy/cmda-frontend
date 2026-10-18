@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+.Toastify__toast {
+  border: 1px solid #e7e3e6;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px #00000012;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.Toastify__toast-body {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 480px) {
+  .Toastify__toast-container {
+    width: calc(100% - 24px);
+    left: 12px;
+    top: 12px;
+  }
+}
+
 :root {
   --toastify-color-success: #117e45;
   --toastify-color-error: #ff4834;
@@ -145,15 +164,17 @@
 
 /* Modal with smooth position transitions - Requirements 3.7 */
 .tutorial-modal-transitioning {
-  transition: top 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    top 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Overlay with smooth clip-path transitions - Requirements 3.6 */
 .tutorial-overlay-transitioning {
-  transition: clip-path 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.3s ease-in-out;
+  transition:
+    clip-path 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s ease-in-out;
 }
 
 /* Respect reduced motion preference - Requirements 8.5 */
@@ -169,11 +190,11 @@
     opacity: 1;
     transform: none;
   }
-  
+
   .tutorial-modal-transitioning {
     transition: none;
   }
-  
+
   .tutorial-overlay-transitioning {
     transition: opacity 0.15s ease-in-out;
   }
@@ -239,7 +260,7 @@
     min-height: 40px; /* Touch target size */
     touch-action: manipulation;
   }
-  
+
   /* Make sure bottom sheet is visible at screen bottom */
   .tutorial-bottom-sheet {
     margin-bottom: 0;
@@ -248,7 +269,7 @@
     overflow-y: auto;
     border-radius: 20px 20px 0 0 !important;
   }
-  
+
   /* Make sure top sheet is visible at screen top */
   .tutorial-top-sheet {
     margin-top: 0;
@@ -257,7 +278,7 @@
     overflow-y: auto;
     border-radius: 0 0 20px 20px !important;
   }
-  
+
   /* Ensure skip confirmation dialog is also above everything */
   .tutorial-skip-dialog {
     z-index: 10001 !important;

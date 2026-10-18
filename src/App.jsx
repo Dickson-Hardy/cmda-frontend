@@ -4,11 +4,28 @@ import store, { persistor } from "./redux/store/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { ToastContainer } from "react-toastify";
 import { HelmetProvider } from "react-helmet-async";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import ErrorBoundary from "./components/Global/ErrorBoundary/ErrorBoundary";
 import "react-toastify/dist/ReactToastify.css";
+import SupportLauncher from "./components/Support/SupportLauncher";
+
+const PublicSupport = lazy(() => import("./components/Support/SupportPortal"));
 
 export default function App() {
+  // The cross-site widget must not depend on a member session or persisted storage.
+  if (["/support", "/support/embed"].includes(window.location.pathname)) {
+    return (
+      <ErrorBoundary>
+        <Suspense fallback={<p role="status">Loading support…</p>}>
+          <PublicSupport embedded={window.location.pathname.endsWith("/embed")} />
+        </Suspense>
+      </ErrorBoundary>
+    );
+  }
+  return <MemberApp />;
+}
+
+function MemberApp() {
   const [persistorReady, setPersistorReady] = useState(false);
   const [loadingTimeout, setLoadingTimeout] = useState(false);
 
@@ -67,18 +84,20 @@ export default function App() {
         <Provider store={store}>
           <PersistGate loading={<LoadingComponent />} persistor={persistor}>
             {(persistorReady || loadingTimeout) && <AppRouter />}
+            {(persistorReady || loadingTimeout) && <SupportLauncher />}
 
             <ToastContainer
               position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
+              autoClose={6000}
+              hideProgressBar
+              limit={2}
               newestOnTop={true}
               closeOnClick
               rtl={false}
               pauseOnFocusLoss
               draggable
               pauseOnHover
-              theme="colored"
+              theme="light"
             />
           </PersistGate>
         </Provider>

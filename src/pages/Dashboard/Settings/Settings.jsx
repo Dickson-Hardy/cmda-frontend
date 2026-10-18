@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
 import Switch from "~/components/Global/FormElements/Switch/Switch";
@@ -36,7 +37,7 @@ const DashboardSettingsPage = () => {
       await updateSettings(payload).unwrap();
       toast.success("Notification preferences saved");
     } catch (error) {
-      toast.error(error?.data?.message || "Settings could not be saved");
+      toast.error(getApiErrorMessage(error, "Settings could not be saved. Please try again."));
     }
   };
 

@@ -3,3 +3,9 @@
   Referrer-Policy: strict-origin-when-cross-origin
   X-Content-Type-Options: nosniff
   Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+/support/embed
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https: wss:; object-src 'none'; base-uri 'self'; frame-ancestors https://cmdanigeria.org https://www.cmdanigeria.org https://cmdanigeria.net https://www.cmdanigeria.net; form-action 'self'; upgrade-insecure-requests
+  Referrer-Policy: no-referrer
+  X-Robots-Tag: noindex

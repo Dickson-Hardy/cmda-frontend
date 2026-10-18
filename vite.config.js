@@ -48,6 +48,10 @@ export default defineConfig({
         clientsClaim: true,
         runtimeCaching: [
           {
+            urlPattern: ({ url }) => url.pathname.startsWith('/support/') && url.hostname === 'cmdabackend-38258a63fa98.herokuapp.com',
+            handler: "NetworkOnly",
+          },
+          {
             urlPattern: /^https:\/\/cmdabackend-38258a63fa98\.herokuapp\.com\/.*/i,
             handler: "NetworkFirst",
             options: {

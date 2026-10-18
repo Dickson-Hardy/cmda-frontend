@@ -8,11 +8,13 @@ const zelleApi = api.injectEndpoints({
       providesTags: ["PAYMENT_INTENTS"],
     }),
     createZellePayment: build.mutation({
+      extraOptions: { handlesError: true },
       query: (body) => ({ url: "/zelle/intents", method: "POST", body }),
       transformResponse: (r) => r.data,
       invalidatesTags: ["PAYMENT_INTENTS"],
     }),
     uploadZelleProof: build.mutation({
+      extraOptions: { handlesError: true },
       query: ({ id, body }) => ({ url: `/zelle/intents/${id}/proof`, method: "POST", body }),
       transformResponse: (r) => r.data,
       invalidatesTags: ["PAYMENT_INTENTS", "SUBSCRIPTION_STATUS"],

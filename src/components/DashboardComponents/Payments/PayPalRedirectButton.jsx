@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Button from "~/components/Global/Button/Button";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const PayPalRedirectButton = ({ createOrder, label = "Continue to PayPal", className = "" }) => {
   const [loading, setLoading] = useState(false);
@@ -21,10 +22,7 @@ const PayPalRedirectButton = ({ createOrder, label = "Continue to PayPal", class
 
       window.location.assign(approvalUrl);
     } catch (error) {
-      const message = Array.isArray(error?.data?.message)
-        ? error.data.message.join(" ")
-        : error?.data?.message || error?.message || "Unable to start PayPal checkout.";
-      setErrorMessage(message);
+      setErrorMessage(getApiErrorMessage(error, "We couldn’t open PayPal checkout. Please try again."));
       setLoading(false);
     }
   };
@@ -32,7 +30,11 @@ const PayPalRedirectButton = ({ createOrder, label = "Continue to PayPal", class
   return (
     <div className={`w-full ${className}`}>
       <Button type="button" label={label} large loading={loading} onClick={handleRedirect} className="w-full" />
-      {errorMessage && <p className="mt-2 text-xs text-center text-error">{errorMessage}</p>}
+      {errorMessage && (
+        <p role="alert" className="mt-2 text-sm text-center text-error">
+          {errorMessage}
+        </p>
+      )}
     </div>
   );
 };

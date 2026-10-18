@@ -7,6 +7,7 @@ const donationApi = api.injectEndpoints({
       transformResponse: (response) => response.data,
     }),
     saveDonation: build.mutation({
+      extraOptions: { handlesError: true },
       query: (body) => ({ url: "/donations/create", body, method: "POST" }),
       transformResponse: (response) => response.data,
       invalidatesTags: ["DONATIONS"],

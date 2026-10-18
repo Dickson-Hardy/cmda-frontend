@@ -7,6 +7,7 @@ import Loading from "~/components/Global/Loading/Loading";
 import { useSaveDonationMutation } from "~/redux/api/payments/donationApi";
 import { useSaveSubscriptionMutation } from "~/redux/api/payments/subscriptionApi";
 import { setUser } from "~/redux/features/auth/authSlice";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const PaymentSuccessful = () => {
   const navigate = useNavigate();
@@ -39,7 +40,13 @@ const PaymentSuccessful = () => {
           .then(() => setLoading(false))
           .catch((err) => {
             if (err.status === 409) setAlreadyConfirmed(true);
-            else setErrorMessage(err?.data?.message || "The donation payment could not be verified.");
+            else
+              setErrorMessage(
+                getApiErrorMessage(
+                  err,
+                  "We couldn’t confirm this donation yet. Check your history before paying again."
+                )
+              );
           })
           .finally(() => setLoading(false));
       }
@@ -52,7 +59,13 @@ const PaymentSuccessful = () => {
           })
           .catch((err) => {
             if (err.status === 409) setAlreadyConfirmed(true);
-            else setErrorMessage(err?.data?.message || "The subscription payment could not be verified.");
+            else
+              setErrorMessage(
+                getApiErrorMessage(
+                  err,
+                  "We couldn’t confirm this subscription yet. Check your history before paying again."
+                )
+              );
           })
           .finally(() => setLoading(false));
       }

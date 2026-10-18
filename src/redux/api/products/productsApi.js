@@ -18,6 +18,7 @@ const productsApi = api.injectEndpoints({
       transformResponse: (response) => response.data,
     }),
     createOrder: build.mutation({
+      extraOptions: { handlesError: true },
       query: (body) => ({ url: "/orders/create", body, method: "POST" }),
       transformResponse: (response) => response.data,
       invalidatesTags: ["ORDERS"],

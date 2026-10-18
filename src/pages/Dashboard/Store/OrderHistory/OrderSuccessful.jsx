@@ -6,6 +6,7 @@ import Button from "~/components/Global/Button/Button";
 import Loading from "~/components/Global/Loading/Loading";
 import { useCreateOrderMutation } from "~/redux/api/products/productsApi";
 import { clearCart } from "~/redux/features/cart/cartSlice";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const OrderSuccessful = () => {
   const dispatch = useDispatch();
@@ -28,7 +29,9 @@ const OrderSuccessful = () => {
       if (err?.status === 409) {
         setAlreadyConfirmed(true);
       } else {
-        setErrorMessage(err?.data?.message || "We could not confirm this payment yet. Please retry.");
+        setErrorMessage(
+          getApiErrorMessage(err, "We couldn’t confirm this payment yet. Check your order history before paying again.")
+        );
       }
     } finally {
       setLoading(false);

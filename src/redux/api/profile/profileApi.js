@@ -8,11 +8,13 @@ const profileApi = api.injectEndpoints({
     }),
     // edit profile
     editProfile: build.mutation({
+      extraOptions: { handlesError: true },
       query: (payload) => ({ url: `/auth/me`, method: "PATCH", body: payload }),
       transformErrorResponse: (response) => response.data?.message,
     }),
     // update password
     updatePassword: build.mutation({
+      extraOptions: { handlesError: true },
       query: (payload) => ({ url: `/auth/change-password`, method: "POST", body: payload }),
       transformErrorResponse: (response) => response.data?.message,
     }),
@@ -22,6 +24,7 @@ const profileApi = api.injectEndpoints({
       providesTags: ["TRANSIT"],
     }),
     createUpdateTransition: build.mutation({
+      extraOptions: { handlesError: true },
       query: (body) => ({ url: `/users/transition`, method: "POST", body }),
       transformErrorResponse: (response) => response.data?.message,
       invalidatesTags: ["TRANSIT"],
