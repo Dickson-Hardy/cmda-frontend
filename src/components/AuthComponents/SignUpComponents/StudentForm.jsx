@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setVerifyEmail } from "~/redux/features/auth/authSlice";
 import { admissionYearOptions, currentYearOptions, genderOptions } from "~/utilities/reusableVariables";
-import { fourteenYrsAgo } from "~/utilities/fomartDate";
+import { getSignupBirthDateLimit, validateSignupDateOfBirth } from "~/utilities/signupDateOfBirth";
 import { useEffect } from "react";
 import { useChapters } from "~/hooks/useChapters";
 import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
@@ -49,6 +49,7 @@ const StudentForm = () => {
   const handleSignUp = (payload) => {
     const data = { ...payload };
     delete data.confirmPassword;
+    if (!data.dateOfBirth) delete data.dateOfBirth;
     signUp({ ...data, role: "Student" })
       .unwrap()
       .then(() => {
@@ -104,14 +105,14 @@ const StudentForm = () => {
 
         <div>
           <TextInput
-            title="Date of Birth"
+            title="Date of Birth (optional)"
             label="dateOfBirth"
             register={register}
             errors={errors}
-            placeholder="Enter email address"
             type="date"
-            max={fourteenYrsAgo}
-            required
+            max={getSignupBirthDateLimit()}
+            required={false}
+            rules={{ validate: (value) => validateSignupDateOfBirth(value) }}
           />
         </div>
 
