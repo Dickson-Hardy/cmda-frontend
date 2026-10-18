@@ -108,14 +108,20 @@ const Table = ({
     ...(serverSidePagination ? { pageCount: totalPageCount } : { getPaginationRowModel: getPaginationRowModel() }),
     onRowSelectionChange: setRowSelection,
     manualPagination: serverSidePagination,
-    onPaginationChange: setPagination,
+    onPaginationChange: (updater) => {
+      const next = typeof updater === "function" ? updater(pagination) : updater;
+      setPagination(next);
+      if (serverSidePagination) {
+        onPaginationChange({ currentPage: next.pageIndex + 1, perPage: next.pageSize });
+      }
+    },
   });
 
   useEffect(() => {
     if (serverSidePagination) {
-      onPaginationChange({ currentPage: pagination.pageIndex + 1, perPage: pagination.pageSize });
+      setPagination({ pageIndex: currentPage - 1, pageSize: perPage });
     }
-  }, [pagination, onPaginationChange, serverSidePagination]);
+  }, [currentPage, perPage, serverSidePagination]);
 
   useEffect(() => {
     if (enableRowSelection) {
@@ -227,6 +233,7 @@ const Table = ({
           <div className="ml-auto md:ml-0 flex items-center gap-1 text-black">
             <Button
               icon={icons.chevronLeft}
+              aria-label="Previous page"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
               variant="outlined"
@@ -251,6 +258,7 @@ const Table = ({
             </span>
             <Button
               icon={icons.chevronRight}
+              aria-label="Next page"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
               variant="outlined"

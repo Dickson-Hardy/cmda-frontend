@@ -1,3 +1,4 @@
+import QueryFeedback from "~/components/Global/QueryFeedback/QueryFeedback";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import icons from "~/assets/js/icons";
@@ -20,7 +21,14 @@ const DashboardStoreSingleProductPage = () => {
   const dispatch = useDispatch();
   const { user } = useSelector(selectAuth);
 
-  const { data: product = {}, isLoading } = useGetSingleProductQuery(slug, { refetchOnMountOrArgChange: true });
+  const {
+    currentData: product = {},
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useGetSingleProductQuery(slug, { refetchOnMountOrArgChange: true });
   const { data: otherProducts, isLoading: loadingOthers } = useGetAllProductsQuery({ page: 1, limit: 10 });
   const { cartItems } = useSelector((state) => state.cart);
   const alreadyInCart = useMemo(() => {
@@ -39,33 +47,35 @@ const DashboardStoreSingleProductPage = () => {
   }, [product]);
   const [currentImage, setCurrentImage] = useState(product?.featuredImageUrl);
 
-  const [addingItem, setAddingItem] = useState(false);
-  const [removingItem, setRemovingItem] = useState(false);
+  const addingItem = false;
+  const removingItem = false;
 
   const handleAddItem = () => {
-    if (product.sizes.length && !size) {
+    if (!product?._id) return;
+    if (product?.sizes?.length && !size) {
       return toast.error("Please select a size");
     }
-    if (product.additionalImages.filter((x) => !!x.color).length && !color) {
+    if ((product.additionalImages || []).filter((x) => !!x.color).length && !color) {
       return toast.error("Please select a color");
     }
-    setAddingItem(true);
-    setTimeout(() => {
-      dispatch(addItemToCart({ item: { ...product, selected: { color, size } }, quantity }));
-      toast.success(`"${convertToCapitalizedWords(product?.name)}" added to cart!`);
-      setAddingItem(false);
-    }, 2000);
+    dispatch(addItemToCart({ item: { ...product, selected: { color, size } }, quantity }));
+    toast.success(`"${convertToCapitalizedWords(product?.name)}" added to cart!`);
   };
 
   const handleRemoveItem = () => {
-    setRemovingItem(true);
-    setTimeout(() => {
-      dispatch(removeItemFromCart(product?._id));
-      toast.success(`"${convertToCapitalizedWords(product?.name)}" removed from cart!`);
-      setRemovingItem(false);
-    }, 2000);
+    dispatch(removeItemFromCart(product?._id));
+    toast.success(`"${convertToCapitalizedWords(product?.name)}" removed from cart!`);
   };
 
+  if ((isFetching && !product._id) || isError)
+    return (
+      <QueryFeedback
+        label="product"
+        loading={isFetching && !product._id}
+        error={isError ? error : null}
+        onRetry={refetch}
+      />
+    );
   return (
     <div>
       <BackButton to="/dashboard/store" label="Back to Store" />
@@ -78,23 +88,34 @@ const DashboardStoreSingleProductPage = () => {
                 <Loading width={64} height={64} className="text-primary" />
               </div>
             ) : (
-              <img src={currentImage} className="w-full object-cover max-h-[500px] min-h-80 border p-0.5 rounded-3xl" />
+              <img
+                alt={product.name || "Product"}
+                src={currentImage}
+                className="w-full object-cover max-h-[500px] min-h-80 border p-0.5 rounded-3xl"
+              />
             )}
 
             {product?.featuredImageUrl ? (
               <div className="flex gap-3 justify-center mt-6">
                 {[{ imageUrl: product?.featuredImageUrl }]
-                  .concat(product?.additionalImages?.filter((x) => !!x?.imageUrl))
+                  .concat((product?.additionalImages || []).filter((x) => !!x?.imageUrl))
                   .map((x) => (
-                    <img
+                    <button
+                      type="button"
                       key={x.imageUrl}
-                      src={x?.imageUrl}
-                      className={classNames(
-                        "h-14 w-14 lg:w-16 lg:h-16 rounded-lg border-2 border-white",
-                        currentImage == x?.imageUrl && "outline-none ring-4 ring-primary"
-                      )}
-                      onClick={() => setCurrentImage(x?.imageUrl)}
-                    />
+                      aria-label="View product image"
+                      aria-pressed={currentImage === x.imageUrl}
+                      onClick={() => setCurrentImage(x.imageUrl)}
+                    >
+                      <img
+                        alt={product.name || "Product thumbnail"}
+                        src={x?.imageUrl}
+                        className={classNames(
+                          "h-14 w-14 lg:w-16 lg:h-16 rounded-lg border-2 border-white",
+                          currentImage == x?.imageUrl && "outline-none ring-4 ring-primary"
+                        )}
+                      />
+                    </button>
                   ))}
               </div>
             ) : null}
@@ -125,6 +146,8 @@ const DashboardStoreSingleProductPage = () => {
                     <Button
                       variant="outlined"
                       className="px-[16px]"
+                      aria-label="Decrease quantity"
+                      disabled={quantity <= 1}
                       onClick={() => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))}
                     >
                       {icons.minus}
@@ -132,7 +155,12 @@ const DashboardStoreSingleProductPage = () => {
                     <span className="border px-4 border-gray inline-flex text-2xl font-semibold rounded-lg">
                       {quantity}
                     </span>
-                    <Button variant="outlined" className="px-[16px]" onClick={() => setQuantity((prev) => prev + 1)}>
+                    <Button
+                      aria-label="Increase quantity"
+                      variant="outlined"
+                      className="px-[16px]"
+                      onClick={() => setQuantity((prev) => prev + 1)}
+                    >
                       {icons.plus}
                     </Button>
                   </div>
@@ -153,12 +181,12 @@ const DashboardStoreSingleProductPage = () => {
                     </div>
                   </div>
                 ) : null}
-                {product?.additionalImages?.filter((x) => !!x.color && !x.name.startsWith("Additional")).length ? (
+                {product?.additionalImages?.filter((x) => !!x.color && !x.name?.startsWith("Additional")).length ? (
                   <div className="mb-4">
                     <h4 className="font-bold mb-2 text-sm">Colors</h4>
                     <div className="flex gap-3">
                       {product?.additionalImages
-                        ?.filter((x) => !!x.color && !x.name.startsWith("Additional"))
+                        ?.filter((x) => !!x.color && !x.name?.startsWith("Additional"))
                         .map((x) => (
                           <div key={x.imageUrl} className="flex flex-col gap-0.5 items-center text-center">
                             <button
@@ -167,6 +195,8 @@ const DashboardStoreSingleProductPage = () => {
                                 "h-12 w-12 rounded-full border-4 border-white",
                                 color == x.color && "outline-none ring-4 ring-primary"
                               )}
+                              aria-label={`Select color ${x.name || x.color}`}
+                              aria-pressed={color === x.color}
                               style={{ backgroundColor: x.color }}
                               onClick={() => {
                                 setColor(x.color);

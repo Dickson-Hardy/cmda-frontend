@@ -85,6 +85,7 @@ const IndexPage = () => {
           {CATEGORIES.map((item, x) => (
             <div
               key={x}
+              tabIndex={0}
               className={classNames(
                 "group rounded-3xl relative bg-cover transition-all cursor-pointer text-onPrimary",
                 x > 1 ? "lg:col-span-2 h-[300px] bg-contain" : "h-96 bg-top"
@@ -98,7 +99,7 @@ const IndexPage = () => {
                 className={classNames(
                   "absolute bottom-0 left-0 right-0 w-full flex flex-col justify-end",
                   item.colors[1],
-                  "h-0 opacity-0 group-hover:h-full group-hover:opacity-100 rounded-3xl p-10 transition-all duration-500 ease-in-out"
+                  "h-full opacity-100 lg:h-0 lg:opacity-0 group-hover:h-full group-hover:opacity-100 group-focus-within:h-full group-focus-within:opacity-100 rounded-3xl p-10 transition-all duration-500 ease-in-out"
                 )}
               >
                 <h4 className="text-base font-semibold mb-2 lg:text-xl">{item.name}</h4>
@@ -111,7 +112,11 @@ const IndexPage = () => {
 
       <section className="bg-primary py-10 lg:py-10">
         <div className="px-8 xl:px-28 flex flex-col lg:flex-row gap-10">
-          <img className="bg-onPrimaryContainer rounded-3xl w-full lg:w-1/2 h-auto hidden lg:block" src={faqPng} />
+          <img
+            alt="CMDA community"
+            className="bg-onPrimaryContainer rounded-3xl w-full lg:w-1/2 h-auto hidden lg:block"
+            src={faqPng}
+          />
           <div className="p-8 lg:p-12 bg-onPrimary rounded-3xl w-full lg:w-1/2">
             <h3 className="font-bold text-2xl lg:text-3xl mb-4">Frequently Asked Questions</h3>
             <div className="space-y-2 max-h-[500px] overflow-y-auto">

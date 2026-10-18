@@ -1,3 +1,4 @@
+import Modal from "~/components/Global/Modal/Modal";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -310,12 +311,23 @@ const PublicConferences = () => {
 
       {/* Registration Modal */}
       {showRegistrationModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <Modal
+          isOpen={showRegistrationModal}
+          onClose={closeModal}
+          title="Register for Conference"
+          maxWidth={448}
+          showCloseBtn={false}
+        >
           <div className="bg-white rounded-lg max-w-md w-full mx-4">
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold">Register for Conference</h3>
-                <button onClick={closeModal} className="text-gray-400 hover:text-gray-600">
+                <button
+                  type="button"
+                  aria-label="Close registration"
+                  onClick={closeModal}
+                  className="text-gray-400 hover:text-gray-600"
+                >
                   ×
                 </button>
               </div>
@@ -364,7 +376,7 @@ const PublicConferences = () => {
               </div>
             </div>
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   );

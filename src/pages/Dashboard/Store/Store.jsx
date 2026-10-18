@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { usePagedResults } from "~/hooks/usePagedResults";
+import QueryFeedback from "~/components/Global/QueryFeedback/QueryFeedback";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import icons from "~/assets/js/icons";
@@ -12,33 +14,40 @@ import { formatProductPrice } from "~/utilities/formatCurrency";
 const DashboardStorePage = () => {
   const { user } = useSelector(selectAuth);
 
-  const [products, setProducts] = useState([]);
+  const [searchBy, setSearchBy] = useState("");
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
 
-  const { data: productsData, isLoading, isFetching } = useGetAllProductsQuery({ page, limit: 12 });
+  const {
+    currentData: productsData,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useGetAllProductsQuery({ feedbackHandled: true, page, limit: 12, searchBy });
 
-  useEffect(() => {
-    if (productsData) {
-      setProducts((prevProds) => {
-        const combinedProducts = [...prevProds, ...productsData.items];
-        const uniqueProducts = Array.from(new Set(combinedProducts.map((evt) => evt._id))).map((_id) =>
-          combinedProducts.find((evt) => evt._id === _id)
-        );
-        return uniqueProducts;
-      });
-
-      setTotalPages(productsData.meta?.totalPages);
-    }
-  }, [productsData]);
+  const { items: products, totalPages } = usePagedResults(productsData, page, JSON.stringify([searchBy]));
 
   return (
     <div>
       <div className="flex flex-row gap-3 justify-between items-center">
         <h2 className="text-xl sm:text-2xl font-bold text-primary">Store</h2>
-        <SearchBar />
+        <SearchBar
+          placeholder="Search products..."
+          onSearch={(value) => {
+            setPage(1);
+            setSearchBy(value);
+          }}
+        />
       </div>
 
+      <QueryFeedback
+        label="products"
+        loading={isFetching && !products.length}
+        error={isError ? error : null}
+        empty={!isFetching && !isError && !products.length}
+        onRetry={refetch}
+      />
       <section className="flex flex-col-reverse sm:flex-row justify-center gap-6 md:gap-10 mt-4 md:mt-8 ">
         <div className="w-full sm:w-1/2 md:w-2/3 xl:w-3/4">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -54,16 +63,18 @@ const DashboardStorePage = () => {
               </Link>
             ))}
           </div>
-          <div className="flex justify-center p-2 mt-6">
-            <Button
-              large
-              disabled={page === totalPages}
-              label={page === totalPages ? "The End" : "Load More"}
-              className={"md:w-1/3 w-full"}
-              loading={isLoading || isFetching}
-              onClick={() => setPage((prev) => prev + 1)}
-            />
-          </div>
+          {products.length > 0 && (
+            <div className="flex justify-center p-2 mt-6">
+              <Button
+                large
+                disabled={page >= totalPages || isError}
+                label={page >= totalPages ? "The End" : "Load More"}
+                className={"md:w-1/3 w-full"}
+                loading={isLoading || isFetching}
+                onClick={() => setPage((prev) => prev + 1)}
+              />
+            </div>
+          )}
         </div>
         <div className="w-full sm:w-1/2 md:w-1/3 xl:w-1/4">
           <div className="sticky top-0 right-0 left-0 flex flex-col gap-2 sm:gap-8">

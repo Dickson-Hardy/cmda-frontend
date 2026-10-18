@@ -1,9 +1,12 @@
+import { toast } from "react-toastify";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import Button from "~/components/Global/Button/Button";
 import StatusChip from "~/components/Global/StatusChip/StatusChip";
 import LifetimeMemberStatus from "~/components/Global/LifetimeMemberStatus/LifetimeMemberStatus";
 import Table from "~/components/Global/Table/Table";
+import QueryFeedback from "~/components/Global/QueryFeedback/QueryFeedback";
 import {
   SUBSCRIPTION_PRICES,
   GLOBAL_INCOME_BASED_PRICING,
@@ -30,7 +33,13 @@ const Subscriptions = () => {
   const accessToken = useSelector(selectToken);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const { data: subscriptions, isLoading } = useGetAllSubscriptionsQuery({ page, limit });
+  const {
+    data: subscriptions,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useGetAllSubscriptionsQuery({ page, limit, feedbackHandled: true });
 
   const [loadingReceipt, setLoadingReceipt] = useState(null);
 
@@ -77,6 +86,7 @@ const Subscriptions = () => {
         document.body.removeChild(a);
       } else {
         const newWindow = window.open(url, "_blank");
+        if (newWindow) newWindow.opener = null;
         if (!newWindow) {
           throw new Error("Pop-up blocked. Please allow pop-ups for this site.");
         }
@@ -85,7 +95,7 @@ const Subscriptions = () => {
       setTimeout(() => window.URL.revokeObjectURL(url), 10000);
     } catch (error) {
       console.error("Error downloading receipt:", error);
-      alert(error.message || "Failed to download receipt. Please try again.");
+      toast.error(getApiErrorMessage(error, "The receipt could not be downloaded. Please try again."));
     } finally {
       setLoadingReceipt(null);
     }
@@ -310,11 +320,14 @@ const Subscriptions = () => {
           <h3 className="text-lg font-semibold">Subscription History</h3>
           <Button label="Export" variant="outlined" loading={isExporting} className="ml-auto" onClick={handleExport} />
         </div>
+        {isError && <QueryFeedback label="subscription history" error={error} onRetry={refetch} />}
         <Table
           tableData={paidSubscriptions}
           tableColumns={formattedColumns}
           loading={isLoading}
           serverSidePagination
+          currentPage={page}
+          perPage={limit}
           totalItemsCount={subscriptions?.meta?.totalItems || 0}
           totalPageCount={subscriptions?.meta?.totalPages || 1}
           onPaginationChange={({ currentPage, perPage }) => {

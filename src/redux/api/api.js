@@ -52,8 +52,8 @@ const baseQueryWithRefresh = async (args, apiContext, extraOptions) => {
 export const api = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithRefresh,
-  refetchOnMountOrArgChange: true,
-  keepUnusedDataFor: 0.0001,
+  refetchOnMountOrArgChange: 60,
+  keepUnusedDataFor: 60,
   tagTypes: [
     "Auth",
     "User",

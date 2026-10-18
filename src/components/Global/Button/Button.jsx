@@ -5,6 +5,7 @@ const Button = ({
   children,
   label,
   loading,
+  isLoading,
   loadingText,
   type = "button",
   variant = "filled", // outlined, text
@@ -16,7 +17,9 @@ const Button = ({
   icon,
   iconClassName,
   onClick = () => {},
+  ...buttonProps
 }) => {
+  loading = Boolean(loading || isLoading);
   const getColorStyles = () => {
     switch (color) {
       case "primary":
@@ -64,6 +67,7 @@ const Button = ({
 
   return (
     <button
+      {...buttonProps}
       type={type}
       disabled={disabled || loading}
       aria-busy={loading || undefined}

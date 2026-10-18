@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { usePagedResults } from "~/hooks/usePagedResults";
+import QueryFeedback from "~/components/Global/QueryFeedback/QueryFeedback";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import ResourceCard from "~/components/DashboardComponents/Resources/ResourceCard";
 import Button from "~/components/Global/Button/Button";
 import Chip from "~/components/Global/Chip/Chip";
-import EmptyData from "~/components/Global/EmptyData/EmptyData";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
 import { useGetAllResourcesQuery } from "~/redux/api/resources/resourcesApi";
 
@@ -13,7 +14,7 @@ const DashboardResources = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
 
   const handleSelectCategory = (category) => {
-    setResources([]);
+    setPage(1);
     if (selectedCategory === category) {
       setSelectedCategory("");
     } else {
@@ -21,31 +22,22 @@ const DashboardResources = () => {
     }
   };
 
-  const [resources, setResources] = useState([]);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
   const [searchBy, setSearchBy] = useState("");
 
   const {
-    data: allResources,
-    isLoading: loadingResources,
+    currentData: allResources,
     isFetching,
-  } = useGetAllResourcesQuery({ page, limit: 12, searchBy, category: selectedCategory });
+    isError,
+    error,
+    refetch,
+  } = useGetAllResourcesQuery({ feedbackHandled: true, page, limit: 12, searchBy, category: selectedCategory });
 
-  useEffect(() => {
-    if (allResources) {
-      setResources((prevResources) => {
-        const combinedResources = [...prevResources, ...allResources.items];
-        // Use Set to remove duplicate objects based on their IDs
-        const uniqueResources = Array.from(new Set(combinedResources.map((res) => res._id))).map((id) =>
-          combinedResources.find((res) => res._id === id)
-        );
-        return uniqueResources;
-      });
-
-      setTotalPages(allResources.meta.totalPages);
-    }
-  }, [allResources]);
+  const { items: resources, totalPages } = usePagedResults(
+    allResources,
+    page,
+    JSON.stringify([searchBy, selectedCategory])
+  );
 
   return (
     <div>
@@ -67,7 +59,7 @@ const DashboardResources = () => {
 
         <SearchBar
           onSearch={(v) => {
-            setResources([]);
+            setPage(1);
             setSearchBy(v);
           }}
           className="w-full md:w-auto"
@@ -77,6 +69,13 @@ const DashboardResources = () => {
 
       <section className="mt-8">
         <h3 className="text-lg font-bold mb-4">Recent Resources </h3>
+        <QueryFeedback
+          label="resources"
+          loading={isFetching && !resources.length}
+          error={isError ? error : null}
+          empty={!isFetching && !isError && !resources.length}
+          onRetry={refetch}
+        />
         {resources.length ? (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
@@ -95,17 +94,15 @@ const DashboardResources = () => {
             <div className="flex justify-center p-2 mt-6">
               <Button
                 large
-                disabled={page === totalPages}
-                label={page === totalPages ? "The End" : "Load More"}
+                disabled={page >= totalPages || isError}
+                label={page >= totalPages ? "The End" : "Load More"}
                 className={"md:w-1/3 w-full"}
-                loading={loadingResources || isFetching}
+                loading={isFetching}
                 onClick={() => setPage((prev) => prev + 1)}
               />
             </div>
           </>
-        ) : (
-          <EmptyData title="Resources" />
-        )}
+        ) : null}
       </section>
     </div>
   );

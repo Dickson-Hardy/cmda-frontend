@@ -1,9 +1,12 @@
+import { toast } from "react-toastify";
+import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { API_BASE_URL } from "~/utilities/apiBaseUrl";
 import Button from "~/components/Global/Button/Button";
 import SearchBar from "~/components/Global/SearchBar/SearchBar";
 import Table from "~/components/Global/Table/Table";
+import QueryFeedback from "~/components/Global/QueryFeedback/QueryFeedback";
 import { useExportDonationsMutation, useGetAllDonationsQuery } from "~/redux/api/payments/donationApi";
 import { selectAuth } from "~/redux/features/auth/authSlice";
 import { downloadFile } from "~/utilities/fileDownloader";
@@ -17,7 +20,13 @@ const Donations = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchBy, setSearchBy] = useState("");
-  const { data: donations, isLoading } = useGetAllDonationsQuery({ page, limit, searchBy });
+  const {
+    data: donations,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useGetAllDonationsQuery({ page, limit, searchBy, feedbackHandled: true });
   const accessToken = useSelector(selectToken);
 
   const [loadingReceipt, setLoadingReceipt] = useState(null);
@@ -53,6 +62,7 @@ const Donations = () => {
         document.body.removeChild(a);
       } else {
         const newWindow = window.open(url, "_blank");
+        if (newWindow) newWindow.opener = null;
         if (!newWindow) {
           throw new Error("Pop-up blocked. Please allow pop-ups for this site.");
         }
@@ -61,7 +71,7 @@ const Donations = () => {
       setTimeout(() => window.URL.revokeObjectURL(url), 10000);
     } catch (error) {
       console.error("Error downloading receipt:", error);
-      alert(error.message || "Failed to download receipt. Please try again.");
+      toast.error(getApiErrorMessage(error, "The receipt could not be downloaded. Please try again."));
     } finally {
       setLoadingReceipt(null);
     }
@@ -83,7 +93,7 @@ const Donations = () => {
     cell: (info) => {
       const [value, item] = [info.getValue(), info.row.original];
       return col.accessor === "_id" ? (
-        item.isPaid ? (
+        item.isPaid !== false ? (
           <button
             onClick={() => handleDownloadReceipt(value)}
             disabled={loadingReceipt === value}
@@ -116,7 +126,7 @@ const Donations = () => {
   const { user } = useSelector(selectAuth);
 
   // Filter to show only paid donations
-  const paidDonations = (donations?.items || []).filter((don) => don.isPaid);
+  const paidDonations = (donations?.items || []).filter((don) => don.isPaid !== false);
 
   const [exportDonations, { isLoading: isExporting }] = useExportDonationsMutation();
 
@@ -134,9 +144,16 @@ const Donations = () => {
           <h3 className="text-lg font-semibold">Donation History</h3>
           <div className="flex flex-row-reverse justify-between md:flex-row items-center gap-4">
             <Button label="Export" variant="outlined" loading={isExporting} onClick={handleExport} />
-            <SearchBar onSearch={setSearchBy} placeholder="reference or amount" />
+            <SearchBar
+              onSearch={(value) => {
+                setPage(1);
+                setSearchBy(value);
+              }}
+              placeholder="reference or amount"
+            />
           </div>
         </div>
+        {isError && <QueryFeedback label="donation history" error={error} onRetry={refetch} />}
         <Table
           tableData={paidDonations}
           tableColumns={formattedColumns}
@@ -144,8 +161,10 @@ const Donations = () => {
           emptyDataTitle="No Donation History"
           emptyDataSubtitle="You have not made any donation yet. All donations made will appear here. Click the 'Make a Donation' button to make one."
           serverSidePagination
-          totalItemsCount={paidDonations.length}
-          totalPageCount={Math.ceil(paidDonations.length / limit)}
+          currentPage={page}
+          perPage={limit}
+          totalItemsCount={donations?.meta?.totalItems || 0}
+          totalPageCount={donations?.meta?.totalPages || 1}
           onPaginationChange={({ currentPage, perPage }) => {
             setPage(currentPage);
             setLimit(perPage);

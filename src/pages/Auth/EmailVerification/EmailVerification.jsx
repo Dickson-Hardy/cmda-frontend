@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import OTPInput from "~/components/Global/FormElements/OTPInput/OTPInput";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { setVerifyEmail } from "~/redux/features/auth/authSlice";
 import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
@@ -16,6 +16,7 @@ const EmailVerification = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleVerify = () => {
+    if (!verifyEmail || token?.length !== 6 || isLoading) return;
     verifyUser({ code: token, email: verifyEmail })
       .unwrap()
       .then(() => {
@@ -40,6 +41,7 @@ const EmailVerification = () => {
   };
 
   const handleResend = () => {
+    if (!verifyEmail || isResending) return;
     resendVerifyCode({ email: verifyEmail })
       .unwrap()
       .then(() => {
@@ -50,6 +52,20 @@ const EmailVerification = () => {
       });
   };
 
+  if (!verifyEmail)
+    return (
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold">Choose an account to verify</h2>
+        <p>Your verification session is missing. Sign in to request a new code, or create an account.</p>
+        <Link className="text-primary underline" to="/login">
+          Back to sign in
+        </Link>
+        <br />
+        <Link className="text-primary underline" to="/signup">
+          Create an account
+        </Link>
+      </div>
+    );
   return (
     <div className="flex flex-col items-center gap-8">
       <div className="text-center">
@@ -74,6 +90,7 @@ const EmailVerification = () => {
         large
         className="w-full"
         label="Verify Account"
+        disabled={token?.length !== 6 || isResending}
         loading={isLoading}
         loadingText="Verifying..."
         onClick={handleVerify}

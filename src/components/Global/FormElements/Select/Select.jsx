@@ -29,7 +29,7 @@ const Select = ({
   return (
     <div>
       {showTitleLabel && (
-        <label htmlFor={label} className="block mb-2 text-sm font-semibold text-black">
+        <label htmlFor={`${label}-input`} className="block mb-2 text-sm font-semibold text-black">
           {title || convertToCapitalizedWords(label)}
           {required ? <span className="text-error ml-px">*</span> : null}
         </label>
@@ -41,13 +41,16 @@ const Select = ({
           <ReactSelect
             unstyled
             id={label}
+            inputId={`${label}-input`}
             value={
               multiple
                 ? transformedOptions.filter((option) => value?.includes(option.value))
                 : transformedOptions.find((option) => option.value === value) || null
             }
             onChange={(selectedOption) => {
-              const newValue = multiple ? selectedOption.map((option) => option.value) : selectedOption.value;
+              const newValue = multiple
+                ? (selectedOption || []).map((option) => option.value)
+                : (selectedOption?.value ?? "");
               onChange(newValue);
               onSelect(newValue);
             }}

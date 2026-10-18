@@ -1,78 +1,62 @@
+import { cloneElement, isValidElement, useEffect, useId, useRef, useState } from "react";
 import { classNames } from "~/utilities/classNames";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-
-const useOutsideAlerter = (ref, setX) => {
-  useEffect(() => {
-    // handle if clicked on outside of element
-    function handleClickOutside(event) {
-      if (ref.current && !ref.current.contains(event.target)) {
-        setX(false);
-      }
-    }
-    // Bind the event listener
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      // Unbind the event listener on clean up
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [ref, setX]);
-};
-
 const Dropdown = ({ toggleElement, children, className }) => {
-  const wrapperRef = useRef(null);
-  const toggleRef = useRef(null);
-  const [openWrapper, setOpenWrapper] = useState(false);
-  const [positionClass, setPositionClass] = useState("");
-  useOutsideAlerter(wrapperRef, setOpenWrapper);
-
-  const determinePosition = useCallback(() => {
-    const toggleRect = toggleRef.current?.getBoundingClientRect();
-    if (toggleRect) {
-      const windowHeight = window.innerHeight;
-      const spaceAbove = toggleRect.top;
-      const spaceBelow = windowHeight - toggleRect.bottom;
-
-      const topPositionClass = spaceAbove > spaceBelow ? "bottom-full -mb-2" : "top-full -mt-2";
-      const leftPositionClass = toggleRect.left < window.innerWidth / 2 ? "left-0" : "right-0";
-
-      setPositionClass(`${topPositionClass} ${leftPositionClass}`);
-    }
-  }, [toggleRef]);
-
-  const originClass = useMemo(() => {
-    return positionClass.includes("top") && positionClass.includes("left")
-      ? "origin-top-left"
-      : positionClass.includes("bottom") && positionClass.includes("left")
-        ? "origin-bottom-left"
-        : positionClass.includes("bottom") && positionClass.includes("right")
-          ? "origin-bottom-right"
-          : "origin-top-right";
-  }, [positionClass]);
-
+  const ref = useRef(null),
+    trigger = useRef(null),
+    id = useId();
+  const [open, setOpen] = useState(false);
   useEffect(() => {
-    determinePosition();
-  }, [determinePosition]);
-
+    if (!open) return;
+    const outside = (event) => {
+      if (!ref.current?.contains(event.target)) setOpen(false);
+    };
+    const key = (event) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        trigger.current?.querySelector("button,[role=button]")?.focus();
+      }
+    };
+    document.addEventListener("pointerdown", outside);
+    document.addEventListener("keydown", key);
+    return () => {
+      document.removeEventListener("pointerdown", outside);
+      document.removeEventListener("keydown", key);
+    };
+  }, [open]);
+  const nativeButton = isValidElement(toggleElement) && toggleElement.type === "button";
+  const control = isValidElement(toggleElement) ? (
+    cloneElement(toggleElement, {
+      "aria-expanded": open,
+      "aria-controls": id,
+      ...(nativeButton ? { type: "button" } : { role: "button", tabIndex: 0 }),
+      onClick: (event) => {
+        toggleElement.props.onClick?.(event);
+        setOpen((previous) => !previous);
+      },
+      onKeyDown: (event) => {
+        if (!nativeButton && ["Enter", " "].includes(event.key)) {
+          event.preventDefault();
+          setOpen((previous) => !previous);
+        }
+      },
+    })
+  ) : (
+    <button type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}>
+      {toggleElement}
+    </button>
+  );
   return (
-    <div ref={wrapperRef} className="relative select-none">
-      <div onMouseDown={() => setOpenWrapper(!openWrapper)} className="inline-block cursor-pointer">
-        {toggleElement}
-      </div>
+    <div ref={ref} className="relative select-none">
+      <div ref={trigger}>{control}</div>
       <div
-        ref={toggleRef}
-        className={classNames(
-          "absolute z-[2] transition-all duration-300 ease-in-out min-w-full",
-          openWrapper ? "scale-100" : "scale-0",
-          positionClass,
-          originClass,
-          className
-        )}
-        onClick={() => setOpenWrapper(false)}
+        id={id}
+        style={{ display: open ? "block" : "none" }}
+        className={classNames("absolute right-0 top-full mt-2 z-30 min-w-full", className)}
+        onClick={() => setOpen(false)}
       >
         {children}
       </div>
     </div>
   );
 };
-
 export default Dropdown;

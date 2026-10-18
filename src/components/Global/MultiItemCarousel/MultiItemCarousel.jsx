@@ -25,6 +25,8 @@ const responsive = {
 const CustomLeftArrow = ({ onClick }) => {
   return (
     <button
+      type="button"
+      aria-label="Previous slide"
       className="absolute left-0 top-1/2 transform -translate-y-1/2 p-2 bg-primary text-white rounded-full focus:outline-none"
       onClick={onClick}
     >
@@ -36,6 +38,8 @@ const CustomLeftArrow = ({ onClick }) => {
 const CustomRightArrow = ({ onClick }) => {
   return (
     <button
+      type="button"
+      aria-label="Next slide"
       className="absolute right-0 top-1/2 transform -translate-y-1/2 p-2 bg-primary text-white rounded-full focus:outline-none"
       onClick={onClick}
     >

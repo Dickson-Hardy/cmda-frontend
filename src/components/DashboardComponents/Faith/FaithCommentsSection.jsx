@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { selectAuth } from "~/redux/features/auth/authSlice";
-import { useGetCommentsQuery, useCreateCommentMutation, useDeleteCommentMutation } from "~/redux/api/commentsReactionsApi";
+import {
+  useGetCommentsQuery,
+  useCreateCommentMutation,
+  useDeleteCommentMutation,
+} from "~/redux/api/commentsReactionsApi";
 import { classNames } from "~/utilities/classNames";
 import Loading from "~/components/Global/Loading/Loading";
+import QueryFeedback from "~/components/Global/QueryFeedback/QueryFeedback";
 
 const getRelativeTime = (dateStr) => {
   const now = Date.now();
@@ -26,7 +31,8 @@ const FaithCommentsSection = ({ entryId }) => {
   const [commentText, setCommentText] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
 
-  const { data, isLoading, isFetching } = useGetCommentsQuery({
+  const { data, isLoading, isFetching, isError, error, refetch } = useGetCommentsQuery({
+    feedbackHandled: true,
     parentType: "faith_entry",
     parentId: entryId,
     page,
@@ -34,14 +40,14 @@ const FaithCommentsSection = ({ entryId }) => {
   });
 
   const [createComment, { isLoading: isCreating }] = useCreateCommentMutation();
-  const [deleteComment] = useDeleteCommentMutation();
+  const [deleteComment, { isLoading: isDeleting }] = useDeleteCommentMutation();
 
   const comments = data?.items || [];
   const totalPages = data?.meta?.totalPages || 1;
 
   const handleSubmit = async () => {
     const trimmed = commentText.trim();
-    if (!trimmed) return;
+    if (!trimmed || isCreating) return;
     try {
       await createComment({
         parentType: "faith_entry",
@@ -57,6 +63,7 @@ const FaithCommentsSection = ({ entryId }) => {
   };
 
   const handleDelete = async (id) => {
+    if (isDeleting || !window.confirm("Delete this comment? This cannot be undone.")) return;
     try {
       await deleteComment(id).unwrap();
     } catch {
@@ -101,7 +108,8 @@ const FaithCommentsSection = ({ entryId }) => {
         </div>
       </div>
 
-      {isLoading || isFetching ? (
+      {isError && <QueryFeedback label="comments" error={error} onRetry={refetch} />}
+      {isLoading ? (
         <div className="flex justify-center py-4">
           <Loading className="text-primary w-6 h-6" />
         </div>
@@ -127,6 +135,7 @@ const FaithCommentsSection = ({ entryId }) => {
                 <button
                   type="button"
                   onClick={() => handleDelete(comment._id)}
+                  disabled={isDeleting}
                   className="text-[10px] text-error hover:underline flex-shrink-0"
                 >
                   Delete
@@ -143,7 +152,7 @@ const FaithCommentsSection = ({ entryId }) => {
         <div className="flex justify-center gap-2 mt-3">
           <button
             type="button"
-            disabled={page <= 1}
+            disabled={page <= 1 || isFetching}
             onClick={() => setPage((p) => p - 1)}
             className="px-2.5 py-1 text-[10px] rounded border border-gray-300 disabled:opacity-40"
           >
@@ -154,7 +163,7 @@ const FaithCommentsSection = ({ entryId }) => {
           </span>
           <button
             type="button"
-            disabled={page >= totalPages}
+            disabled={page >= totalPages || isFetching}
             onClick={() => setPage((p) => p + 1)}
             className="px-2.5 py-1 text-[10px] rounded border border-gray-300 disabled:opacity-40"
           >

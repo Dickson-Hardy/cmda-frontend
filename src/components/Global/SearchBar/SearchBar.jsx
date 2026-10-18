@@ -1,13 +1,10 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import icons from "~/assets/js/icons";
 import { classNames } from "~/utilities/classNames";
 
-const SearchBar = ({
-  placeholder = "Search...",
-  className,
-  onSearch = console.log, // function to handle the search, it contains inputValue as a params
-}) => {
+const SearchBar = ({ placeholder = "Search...", className, onSearch = () => {} }) => {
   const [inputValue, setInputValue] = useState("");
+  const id = useId();
 
   return (
     <form
@@ -17,7 +14,7 @@ const SearchBar = ({
       }}
       className={classNames("max-w-md", className)}
     >
-      <label htmlFor="search-input" className="sr-only">
+      <label htmlFor={id} className="sr-only">
         Search
       </label>
       <div className="relative w-full">
@@ -40,7 +37,7 @@ const SearchBar = ({
         </div>
         <input
           type="text"
-          id="search-input"
+          id={id}
           value={inputValue}
           className={classNames(
             "h-12 border border-gray-300 text-black placeholder:text-gray-400",
@@ -53,6 +50,7 @@ const SearchBar = ({
         />
         {inputValue && (
           <button
+            aria-label="Clear search"
             type="button"
             onClick={() => {
               setInputValue("");

@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test:feedback": "node --test tests/feedback.test.js tests/support-worker.test.js"
+    "test:feedback": "node --test tests/feedback.test.js tests/query-ux.test.js tests/support-worker.test.js"
   },
   "dependencies": {
     "@paypal/react-paypal-js": "^8.7.0",

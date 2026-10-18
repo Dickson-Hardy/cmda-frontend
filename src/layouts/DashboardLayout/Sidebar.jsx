@@ -30,6 +30,7 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [], unreadMessagesCount }
   const user = useSelector((state) => state.auth.user);
 
   const handleLogout = () => {
+    if (!window.confirm("Log out of your CMDA account?")) return;
     window.location.href = "/login";
     dispatch(clearTokens());
     dispatch(setUser(null));
@@ -99,14 +100,17 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [], unreadMessagesCount }
                 </li>
               );
             })}
-            <li
-              className={classNames(
-                "flex items-center gap-4 px-4 py-2.5 cursor-pointer text-sm font-semibold rounded-lg transition-all",
-                "bg-transparent text-white hover:bg-onPrimary/20"
-              )}
-              onClick={handleLogout}
-            >
-              <span className="text-xl">{icons.logout}</span> Logout
+            <li>
+              <button
+                type="button"
+                className={classNames(
+                  "flex items-center gap-4 px-4 py-2.5 cursor-pointer text-sm font-semibold rounded-lg transition-all",
+                  "bg-transparent text-white hover:bg-onPrimary/20"
+                )}
+                onClick={handleLogout}
+              >
+                <span className="text-xl">{icons.logout}</span> Logout
+              </button>
             </li>
           </ul>
         </nav>

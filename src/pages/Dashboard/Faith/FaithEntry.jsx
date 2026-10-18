@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { usePagedResults } from "~/hooks/usePagedResults";
+import QueryFeedback from "~/components/Global/QueryFeedback/QueryFeedback";
+import { useState } from "react";
 import { BiComment } from "react-icons/bi";
 import { toast } from "react-toastify";
 import icons from "~/assets/js/icons";
@@ -16,11 +18,15 @@ import formatDate from "~/utilities/fomartDate";
 import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 
 const DashboardFaithEntryPage = () => {
-  const [faithEntries, setFaithEntries] = useState([]);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
   const [searchBy, setSearchBy] = useState("");
-  const { data: faithEntrys, isLoading, refetch } = useGetAllFaithEntriesQuery({ page, limit: 10, searchBy });
+  const {
+    currentData: faithEntrys,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useGetAllFaithEntriesQuery({ feedbackHandled: true, page, limit: 10, searchBy });
   const [openModal, setOpenModal] = useState(false);
   const [createFaithEntry, { isLoading: isCreating }] = useCreateFaithEntryMutation();
   const [expandedComments, setExpandedComments] = useState({});
@@ -29,7 +35,7 @@ const DashboardFaithEntryPage = () => {
     createFaithEntry({ ...payload, isAnonymous: payload.isAnonymous || false })
       .unwrap()
       .then(() => {
-        setFaithEntries([]);
+        setPage(1);
         refetch();
         toast.success(`Your ${payload.category} has been submitted successfully`);
         setOpenModal(false);
@@ -47,19 +53,7 @@ const DashboardFaithEntryPage = () => {
     }));
   };
 
-  useEffect(() => {
-    if (faithEntrys) {
-      setFaithEntries((prevVols) => {
-        const combinedVols = [...prevVols, ...faithEntrys.items];
-        const uniqueVols = Array.from(new Set(combinedVols.map((vol) => vol._id))).map((_id) =>
-          combinedVols.find((vol) => vol._id === _id)
-        );
-        return uniqueVols;
-      });
-
-      setTotalPages(faithEntrys.meta?.totalPages);
-    }
-  }, [faithEntrys]);
+  const { items: faithEntries, totalPages } = usePagedResults(faithEntrys, page, JSON.stringify([searchBy]));
 
   return (
     <div>
@@ -69,7 +63,6 @@ const DashboardFaithEntryPage = () => {
           <Button icon={icons.pencil} label="New" onClick={() => setOpenModal(true)} />
           <SearchBar
             onSearch={(v) => {
-              setFaithEntries([]);
               setPage(1);
               setSearchBy(v);
             }}
@@ -78,6 +71,13 @@ const DashboardFaithEntryPage = () => {
         </div>
       </div>
 
+      <QueryFeedback
+        label="faith entries"
+        loading={isFetching && !faithEntries.length}
+        error={isError ? error : null}
+        empty={!isFetching && !isError && !faithEntries.length}
+        onRetry={refetch}
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         {faithEntries?.map((item, i) => (
           <div key={i} className="bg-white rounded-lg p-4 shadow-sm">
@@ -136,10 +136,10 @@ const DashboardFaithEntryPage = () => {
         <div className="flex justify-center p-2 mt-6">
           <Button
             large
-            disabled={page >= totalPages}
+            disabled={page >= totalPages || isError}
             label={page >= totalPages ? "The End" : "Load More"}
             className={"md:w-1/3 w-full"}
-            loading={isLoading}
+            loading={isFetching}
             onClick={() => setPage((prev) => prev + 1)}
           />
         </div>

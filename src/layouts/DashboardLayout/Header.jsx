@@ -14,6 +14,7 @@ const Header = ({ unreadMessagesCount, unreadNotificationCount }) => {
   const { cartItems } = useSelector((state) => state.cart);
 
   const handleLogout = () => {
+    if (!window.confirm("Log out of your CMDA account?")) return;
     window.location.href = "/login";
     dispatch(clearTokens());
     dispatch(setUser(null));
@@ -22,7 +23,7 @@ const Header = ({ unreadMessagesCount, unreadNotificationCount }) => {
   return (
     <header className="bg-white fixed top-0 inset-x-0 z-[2] shadow">
       <nav className="h-full w-full flex items-center gap-2 md:gap-3 p-6 px-3 md:px-6 py-3">
-        <Logo className="w-auto h-10 sm:h-12 md:hidde" />
+        <Logo className="w-auto h-10 sm:h-12 md:hidden" />
 
         <div className="flex-1" />
         {/* Shopping Cart */}
@@ -112,11 +113,14 @@ const Header = ({ unreadMessagesCount, unreadNotificationCount }) => {
                 <span className="text-lg">{icons.settings}</span> Settings
               </NavLink>
             </li>
-            <li
-              className="flex gap-3 items-center text-black cursor-pointer border-t px-5 py-2 hover:bg-onPrimary transition-all"
-              onClick={handleLogout}
-            >
-              <span className="text-lg">{icons.logout}</span> Logout
+            <li>
+              <button
+                type="button"
+                className="flex gap-3 items-center text-black cursor-pointer border-t px-5 py-2 hover:bg-onPrimary transition-all"
+                onClick={handleLogout}
+              >
+                <span className="text-lg">{icons.logout}</span> Logout
+              </button>
             </li>
           </ul>
         </Dropdown>
