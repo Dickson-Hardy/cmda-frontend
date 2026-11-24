@@ -7,6 +7,7 @@ import Dropdown from "~/components/Global/Dropdown/DropDown";
 import Logo from "~/components/Global/Logo/Logo";
 import { setUser } from "~/redux/features/auth/authSlice";
 import { clearTokens } from "~/redux/features/auth/tokenSlice";
+import { useLogoutAllMutation } from "~/redux/api/auth/authApi";
 import { useUnsubscribeFromPushMutation } from "~/redux/api/notification/notificationApi";
 import { removeLocalPushSubscription } from "~/utilities/pwa";
 import { classNames } from "~/utilities/classNames";
@@ -21,13 +22,19 @@ const Header = ({ unreadMessagesCount, unreadNotificationCount, onToggleSidebar 
   const { cartItems } = useSelector((state) => state.cart);
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [unsubscribeFromPush] = useUnsubscribeFromPushMutation();
+  const [logoutAll] = useLogoutAllMutation();
 
   const handleLogout = async () => {
     try {
       const endpoint = await removeLocalPushSubscription();
       if (endpoint) await unsubscribeFromPush({ endpoint }).unwrap();
     } catch (_) {
-      // Logout must still complete if push cleanup fails.
+      // Push cleanup failure must not block logout.
+    }
+    try {
+      await logoutAll().unwrap();
+    } catch (_) {
+      // Still clear local state if the server call fails (offline, expired token, etc.).
     }
     dispatch(clearTokens());
     dispatch(setUser(null));

@@ -74,6 +74,7 @@ const Login = () => {
 
         // Otherwise use the standard redirect logic
         const redirectUrl = localStorage.getItem("redirectUrl");
+        localStorage.removeItem("redirectUrl");
         if (redirectUrl && redirectUrl.includes("dashboard")) navigate(redirectUrl);
         else navigate("/dashboard");
       })

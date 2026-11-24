@@ -34,6 +34,11 @@ const authApi = api.injectEndpoints({
       query: (body) => ({ url: "/auth/reset-password", method: "POST", body }),
       transformErrorResponse: (response) => response.data?.message,
     }),
+    // LOG OUT (revoke refresh tokens/sessions on the server)
+    logoutAll: build.mutation({
+      extraOptions: { handlesError: false },
+      query: () => ({ url: "/auth/logout-all", method: "POST" }),
+    }),
     // GET SETTINGS
     getSettings: build.query({
       query: () => ({ url: "/users/settings" }),
@@ -62,6 +67,7 @@ export const {
   usePasswordResetMutation,
   useVerifyUserMutation,
   useResendVerifyCodeMutation,
+  useLogoutAllMutation,
   useGetSettingsQuery,
   useUpdateSettingsMutation,
   useCheckUserExistsMutation,

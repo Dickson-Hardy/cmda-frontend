@@ -47,6 +47,7 @@ const DashboardSettingsPage = () => {
   }, [reset, userSettings]);
 
   const saveChanges = async (changes) => {
+    let pushFailed = false;
     try {
       if ("pushNotifications" in changes) {
         if (changes.pushNotifications) {
@@ -58,13 +59,13 @@ const DashboardSettingsPage = () => {
               await subscribeToPush(subscription).unwrap();
               toast.success("This device is now subscribed to push notifications");
             } catch (error) {
+              pushFailed = true;
               toast.error(
                 getApiErrorMessage(
                   error,
                   "Push notifications could not be enabled. Check your browser permissions.",
                 ),
               );
-              return;
             }
           }
         } else {
@@ -78,12 +79,18 @@ const DashboardSettingsPage = () => {
           }
         }
       }
-      if (!Object.keys(changes).length) {
-        toast.info("No preferences changed");
+      // A failed push subscription must not discard the other toggles in this save.
+      const settingsToSave = pushFailed
+        ? Object.fromEntries(Object.entries(changes).filter(([key]) => key !== "pushNotifications"))
+        : changes;
+      if (!Object.keys(settingsToSave).length) {
+        if (!pushFailed) toast.info("No preferences changed");
         return;
       }
-      await updateSettings(changes).unwrap();
-      toast.success("Notification preferences saved");
+      await updateSettings(settingsToSave).unwrap();
+      toast.success(
+        pushFailed ? "Preferences saved, but this device could not be subscribed to push" : "Notification preferences saved"
+      );
     } catch (error) {
       toast.error(getApiErrorMessage(error, "Settings could not be saved. Please try again."));
     }

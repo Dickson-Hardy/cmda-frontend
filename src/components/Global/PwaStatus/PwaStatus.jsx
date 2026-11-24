@@ -7,21 +7,17 @@ import { flushQueuedActions } from "~/utilities/pwa";
  * Updates are opt-in so a form or payment is never interrupted by a reload.
  */
 const PwaStatus = () => {
-  const [needRefresh, setNeedRefresh] = useState(false);
-  const [offlineReady, setOfflineReady] = useState(false);
   const [isOnline, setIsOnline] = useState(typeof navigator === "undefined" ? true : navigator.onLine);
   const [installPrompt, setInstallPrompt] = useState(null);
 
-  const { registerSW, updateServiceWorker } = useRegisterSW({
-    immediate: false,
-    onNeedRefresh: () => setNeedRefresh(true),
-    onOfflineReady: () => setOfflineReady(true),
-  });
-
-  useEffect(() => {
-    // Register once on mount; updates stay opt-in so a form or payment is never interrupted.
-    registerSW();
-  }, [registerSW]);
+  // useRegisterSW returns tuple state, not a `registerSW` function. It also
+  // registers the worker itself (injectRegister is disabled in vite.config).
+  // Updates stay opt-in: the worker is displayed only via the Update button.
+  const {
+    needRefresh: [needRefresh, setNeedRefresh],
+    offlineReady: [offlineReady, setOfflineReady],
+    updateServiceWorker,
+  } = useRegisterSW();
 
   useEffect(() => {
     const goOnline = () => {

@@ -17,7 +17,6 @@ export const useSocket = () => {
   const [socket, setSocket] = useState(null);
   const [state, setState] = useState(socketState);
   const accessToken = useSelector((store) => store.token?.accessToken);
-  const refreshToken = useSelector((store) => store.token?.refreshToken);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -49,10 +48,10 @@ export const useSocket = () => {
     };
 
     const onAuthError = async () => {
-      if (refreshing || !refreshToken) return;
+      if (refreshing) return;
       refreshing = true;
       try {
-        const refreshedTokens = await refreshSession(URL, refreshToken);
+        const refreshedTokens = await refreshSession(URL);
         if (!refreshedTokens) throw new Error("Session refresh failed");
         dispatch(setTokens(refreshedTokens));
         newSocket.auth = { token: refreshedTokens.accessToken };
@@ -82,7 +81,7 @@ export const useSocket = () => {
         sharedSocket = null;
       }
     };
-  }, [accessToken, refreshToken, dispatch]);
+  }, [accessToken, dispatch]);
 
   return { socket, state };
 };

@@ -22,7 +22,9 @@ const ProtectedRoutes = () => {
 
     return <Outlet />;
   } else {
-    return <Navigate to="/login" />;
+    // Remember where the member was headed so Login can return them there.
+    localStorage.setItem("redirectUrl", location.pathname + location.search);
+    return <Navigate to="/login" replace />;
   }
 };
 

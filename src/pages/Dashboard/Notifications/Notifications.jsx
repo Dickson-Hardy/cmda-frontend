@@ -61,8 +61,13 @@ const DashboardNotificationsPage = () => {
           <button
             className="font-semibold underline"
             onClick={async () => {
-              await restoreNotification(notification._id).unwrap();
-              setAllNotifications((items) => [notification, ...items]);
+              try {
+                await restoreNotification(notification._id).unwrap();
+                setAllNotifications((items) => [notification, ...items]);
+                toast.success("Notification restored");
+              } catch {
+                toast.error("Could not restore notification");
+              }
             }}
           >
             Undo

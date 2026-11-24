@@ -194,24 +194,6 @@ const eventsApi = api.injectEndpoints({
       transformErrorResponse: (response) => response,
     }),
 
-    getEventFeedback: build.query({
-      query: ({ eventId, page = 1, limit = 10 }) =>
-        `/events/${eventId}/feedback?page=${page}&limit=${limit}`,
-      providesTags: ["EVENT_FEEDBACK"],
-    }),
-    submitEventFeedback: build.mutation({
-      query: ({ eventId, ...body }) => ({
-        url: `/events/${eventId}/feedback`,
-        method: "POST",
-        body,
-      }),
-      invalidatesTags: ["EVENT_FEEDBACK"],
-    }),
-    getEventAttendees: build.query({
-      query: ({ eventId, page = 1, limit = 20 }) =>
-        `/events/${eventId}/attendees?page=${page}&limit=${limit}`,
-      providesTags: ["EVENT_ATTENDEES"],
-    }),
     createEventReminder: build.mutation({
       query: ({ eventId, ...body }) => ({
         url: `/events/${eventId}/reminders`,

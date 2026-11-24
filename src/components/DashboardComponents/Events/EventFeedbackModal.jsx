@@ -2,7 +2,11 @@ import { useState } from "react";
 import Modal from "~/components/Global/Modal/Modal";
 import Button from "~/components/Global/Button/Button";
 import Loading from "~/components/Global/Loading/Loading";
-import { useSubmitEventFeedbackMutation, useGetEventFeedbackQuery } from "~/redux/api/commentsReactionsApi";
+import {
+  useSubmitEventFeedbackMutation,
+  useGetEventFeedbackQuery,
+  useGetEventAverageRatingQuery,
+} from "~/redux/api/commentsReactionsApi";
 import { classNames } from "~/utilities/classNames";
 
 const EventFeedbackModal = ({ eventId, isOpen, onClose }) => {
@@ -11,10 +15,11 @@ const EventFeedbackModal = ({ eventId, isOpen, onClose }) => {
   const [comment, setComment] = useState("");
 
   const { data, isLoading } = useGetEventFeedbackQuery({ eventId, page: 1, limit: 10 }, { skip: !isOpen });
+  const { data: ratingData } = useGetEventAverageRatingQuery(eventId, { skip: !isOpen });
   const [submitFeedback, { isLoading: isSubmitting }] = useSubmitEventFeedbackMutation();
 
   const feedbackList = data?.items || [];
-  const averageRating = data?.averageRating || 0;
+  const averageRating = ratingData?.averageRating || 0;
 
   const handleSubmit = async () => {
     if (rating === 0) return;

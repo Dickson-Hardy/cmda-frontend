@@ -33,7 +33,7 @@ const DoctorForm = () => {
 
   // Get email from URL parameters if present
   useEffect(() => {
-    const email = location.state?.email;
+    const email = location.state?.email || searchParams.get("email");
     const conferenceSlug = searchParams.get("conference");
 
     // Pre-fill email field if it's provided in the URL

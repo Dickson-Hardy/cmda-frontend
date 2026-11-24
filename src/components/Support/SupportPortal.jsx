@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { API_BASE_URL } from "~/utilities/apiBaseUrl";
 import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
+import { queueAction } from "~/utilities/pwa";
 import "./support.css";
 
 const categories = {
@@ -40,6 +41,25 @@ async function supportRequest(path, { token, body, method = "GET" } = {}) {
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw { status: response.status, data };
     return data.data;
+  } catch (error) {
+    // Network failures while submitting a ticket are safe to retry later.
+    // FormData (screenshot uploads) is not queued because replay would need a
+    // fresh multipart boundary.
+    if ((error?.name === "TypeError" || !navigator.onLine) && !(body instanceof FormData)) {
+      await queueAction({
+        url: `${API_BASE_URL}/support/${path}`,
+        method,
+        body: body ? JSON.stringify(body) : undefined,
+        headers: {
+          ...(token ? { "X-Support-Token": token } : {}),
+          "Content-Type": "application/json",
+        },
+      });
+      const queued = new Error("Queued while offline");
+      queued.queued = true;
+      throw queued;
+    }
+    throw error;
   } finally {
     clearTimeout(timer);
   }
@@ -132,7 +152,12 @@ export default function SupportPortal({ embedded = false }) {
         setError("Your message was saved, but the screenshot was not attached. You can retry the upload below.");
       }
     } catch (err) {
-      report(err);
+      if (err?.queued) {
+        setError("");
+        setNotice("You’re offline. Your message is queued and will be sent automatically when you’re back online.");
+      } else {
+        report(err);
+      }
     } finally {
       setBusy(false);
     }

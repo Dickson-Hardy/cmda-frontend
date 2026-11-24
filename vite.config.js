@@ -61,9 +61,13 @@ export default defineConfig({
         // embeds must always hit the network.
         navigateFallbackDenylist: [
           /^\/apk\//,
-          /^\/dashboard\//,
+          /^\/dashboard(?:\/|$)/,
           /^\/login(?:\/|$)/,
           /^\/signup(?:\/|$)/,
+          /^\/verify-email(?:\/|$)/,
+          /^\/forgot-password(?:\/|$)/,
+          /^\/reset-password(?:\/|$)/,
+          /^\/change-password(?:\/|$)/,
           /^\/support\/embed(?:\/|$)/,
         ],
         cleanupOutdatedCaches: true,

@@ -58,7 +58,9 @@ const PaymentIntents = ({ showTitle = true, compact = false }) => {
         intentId: intent._id,
       }).unwrap();
 
-      const outcome = result.data?.[0];
+      // The mutation's transformResponse already unwraps the envelope, so
+      // `result` is the outcomes array, not another { data: [...] } wrapper.
+      const outcome = result?.[0];
       if (outcome?.providerStatus === "success") {
         toast.success(`Payment verified and synced successfully!`);
         refetch();

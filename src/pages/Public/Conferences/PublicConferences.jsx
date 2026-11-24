@@ -20,6 +20,7 @@ const PublicConferences = () => {
   const [selectedConference, setSelectedConference] = useState(null);
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
   const [emailError, setEmailError] = useState("");
+  const [submittedEmail, setSubmittedEmail] = useState("");
   const { control, register, watch } = useForm();
 
   const {
@@ -124,6 +125,7 @@ const PublicConferences = () => {
     }
 
     const email = data.email.trim().toLowerCase();
+    setSubmittedEmail(email);
 
     try {
       // The RTK Query hook handles the async logic
@@ -138,7 +140,7 @@ const PublicConferences = () => {
   };
   useEffect(() => {
     if (checkUserResponse && selectedConference) {
-      const email = checkUserResponse.email || "";
+      const email = submittedEmail;
 
       if (checkUserResponse.exists) {
         navigate(`/login?conference=${selectedConference.slug}`, {
@@ -150,11 +152,12 @@ const PublicConferences = () => {
         });
       }
     }
-  }, [checkUserResponse, navigate, selectedConference]);
+  }, [checkUserResponse, navigate, selectedConference, submittedEmail]);
 
   const closeModal = () => {
     setShowRegistrationModal(false);
     setSelectedConference(null);
+    setSubmittedEmail("");
     resetEmail();
   };
 

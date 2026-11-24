@@ -49,6 +49,11 @@ export const commentsReactionsApi = api.injectEndpoints({
       transformResponse: unwrapData,
       providesTags: ["EVENT_FEEDBACK"],
     }),
+    getEventAverageRating: build.query({
+      query: (eventId) => `/events/${eventId}/average-rating`,
+      transformResponse: unwrapData,
+      providesTags: ["EVENT_FEEDBACK"],
+    }),
     getEventAttendees: build.query({
       query: ({ eventId, page = 1, limit = 20 }) => `/events/${eventId}/attendees?page=${page}&limit=${limit}`,
       transformResponse: unwrapData,
@@ -66,5 +71,6 @@ export const {
   useGetReactionsQuery,
   useSubmitEventFeedbackMutation,
   useGetEventFeedbackQuery,
+  useGetEventAverageRatingQuery,
   useGetEventAttendeesQuery,
 } = commentsReactionsApi;

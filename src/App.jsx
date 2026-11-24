@@ -5,6 +5,10 @@ import { PersistGate } from "redux-persist/integration/react";
 import { ToastContainer } from "react-toastify";
 import { HelmetProvider } from "react-helmet-async";
 import { lazy, Suspense, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setTokens } from "./redux/features/auth/tokenSlice";
+import { refreshSession } from "./utilities/refreshSession";
+import { API_BASE_URL } from "./utilities/apiBaseUrl";
 import ErrorBoundary from "./components/Global/ErrorBoundary/ErrorBoundary";
 import "react-toastify/dist/ReactToastify.css";
 import SupportLauncher from "./components/Support/SupportLauncher";
@@ -23,6 +27,23 @@ export default function App() {
     );
   }
   return <MemberApp />;
+}
+
+// Access tokens are intentionally memory-only, so after a reload the socket
+// and API need a fresh token from the HttpOnly refresh cookie.
+function RestoreSession() {
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state) => state.auth?.isAuthenticated);
+  const hasToken = useSelector((state) => Boolean(state.token?.accessToken));
+
+  useEffect(() => {
+    if (!isAuthenticated || hasToken) return;
+    refreshSession(API_BASE_URL).then((tokens) => {
+      if (tokens) dispatch(setTokens(tokens));
+    });
+  }, [dispatch, isAuthenticated, hasToken]);
+
+  return null;
 }
 
 function MemberApp() {
@@ -83,6 +104,7 @@ function MemberApp() {
       <HelmetProvider>
         <Provider store={store}>
           <PersistGate loading={<LoadingComponent />} persistor={persistor}>
+            <RestoreSession />
             {(persistorReady || loadingTimeout) && <AppRouter />}
             {(persistorReady || loadingTimeout) && <SupportLauncher />}
 

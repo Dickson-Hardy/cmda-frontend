@@ -46,24 +46,28 @@ import SingleNotification from "~/pages/Dashboard/Notifications/SingleNotificati
 import { lazy, Suspense } from "react";
 const SupportPortal = lazy(() => import("~/components/Support/SupportPortal"));
 
-export default function AppRouter() {
+// Auth is read from the store at render time, not at router creation time,
+// so signing in/out never forces the RouterProvider to remount.
+const ErrorDisplay = () => {
   const { isAuthenticated } = useSelector(selectAuth);
+  return isAuthenticated ? (
+    <DashboardLayout withOutlet={false}>
+      <ErrorElement />
+    </DashboardLayout>
+  ) : (
+    <AuthLayout withOutlet={false}>
+      <ErrorElement />
+    </AuthLayout>
+  );
+};
 
-  // Use different layout to display error depending on authentication status
-  const ErrorDisplay = () => {
-    return isAuthenticated ? (
-      <DashboardLayout withOutlet={false}>
-        <ErrorElement />
-      </DashboardLayout>
-    ) : (
-      <AuthLayout withOutlet={false}>
-        <ErrorElement />
-      </AuthLayout>
-    );
-  };
+const HomeRedirect = () => {
+  const { isAuthenticated } = useSelector(selectAuth);
+  return isAuthenticated ? <Navigate to="/dashboard" /> : <IndexPage />;
+};
 
-  // ================= ROUTES ======================= //
-  const router = createBrowserRouter([
+// ================= ROUTES ======================= //
+const router = createBrowserRouter([
     {
       path: "/support/embed",
       element: (
@@ -83,7 +87,7 @@ export default function AppRouter() {
     {
       element: <EmptyLayout />,
       children: [
-        { path: "/", element: isAuthenticated ? <Navigate to="/dashboard" /> : <IndexPage /> },
+        { path: "/", element: <HomeRedirect /> },
         { path: "/welcome", element: <Navigate to="/" replace /> },
         { path: "/conferences", element: <PublicConferences /> },
       ],
@@ -156,7 +160,8 @@ export default function AppRouter() {
       path: "/public-conferences",
       element: <PublicConferences />,
     },
-  ]);
+]);
 
+export default function AppRouter() {
   return <RouterProvider router={router} />;
 }
