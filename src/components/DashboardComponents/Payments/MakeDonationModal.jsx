@@ -96,7 +96,7 @@ const MakeDonationModal = ({ isOpen, onClose, onSubmit, loading }) => {
     >
       {/* Paypal button */}
 
-      <form onSubmit={handleSubmit(onPreSubmit)} className="grid grid-cols-2 gap-2 sm:gap-3">
+      <form onSubmit={handleSubmit(onPreSubmit)} className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
         <div className="col-span-2">
           <Select
             label="currency"

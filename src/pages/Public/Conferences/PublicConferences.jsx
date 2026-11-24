@@ -12,6 +12,7 @@ import { conferenceTypes, conferenceZones, conferenceRegions } from "~/constants
 import { useForm } from "react-hook-form";
 import Loading from "~/components/Global/Loading/Loading";
 import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
+import { shareContent } from "~/utilities/pwa";
 
 const PublicConferences = () => {
   const navigate = useNavigate();
@@ -169,11 +170,21 @@ const PublicConferences = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">CMDA Conferences</h1>
-          <p className="mt-2 text-gray-600">
-            Join our upcoming conferences and connect with medical professionals worldwide
-          </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-ink">CMDA Conferences</h1>
+            <p className="mt-2 text-muted">
+              Join our upcoming conferences and connect with medical professionals worldwide
+            </p>
+          </div>
+          <Button
+            variant="outlined"
+            label="Share conferences"
+            aria-label="Share CMDA conferences"
+            onClick={() =>
+              shareContent({ title: "CMDA Conferences", text: "Upcoming CMDA conferences", url: window.location.href })
+            }
+          />
         </div>
       </div>
 

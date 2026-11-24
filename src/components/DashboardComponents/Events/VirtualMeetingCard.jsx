@@ -23,14 +23,14 @@ const VirtualMeetingCard = ({ meetingInfo }) => {
 
   const getJoinButtonColor = (platform) => {
     const platformLower = platform?.toLowerCase() || "";
-    if (platformLower.includes("zoom")) return "bg-blue-600 hover:bg-blue-700";
+    if (platformLower.includes("zoom")) return "bg-primary hover:bg-primaryDark";
     if (platformLower.includes("google")) return "bg-green-600 hover:bg-green-700";
-    if (platformLower.includes("teams")) return "bg-purple-600 hover:bg-purple-700";
-    return "bg-primary hover:bg-primary-dark";
+    if (platformLower.includes("teams")) return "bg-primaryDark hover:bg-primaryDark";
+    return "bg-primary hover:bg-primaryDark";
   };
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 shadow-lg border border-blue-200">
+    <div className="bg-gradient-to-br from-primaryTint to-primaryTint2 rounded-xl p-6 shadow-lg border border-primaryTint2">
       <div className="flex items-center gap-3 mb-4">
         <span className="text-3xl">{getPlatformIcon(meetingInfo.platform)}</span>
         <div>
@@ -60,7 +60,7 @@ const VirtualMeetingCard = ({ meetingInfo }) => {
             <button
               type="button"
               onClick={() => copyToClipboard(meetingInfo.meetingId, "Meeting ID")}
-              className="text-blue-600 hover:text-blue-700 p-2"
+              className="text-primary hover:text-primaryDark p-2"
               title="Copy Meeting ID"
             >
               {icons.copy || "📋"}
@@ -79,7 +79,7 @@ const VirtualMeetingCard = ({ meetingInfo }) => {
                 <button
                   type="button"
                   onClick={() => setShowPasscode(!showPasscode)}
-                  className="text-xs text-blue-600 hover:text-blue-700"
+                  className="text-xs text-primary hover:text-primaryDark"
                 >
                   {showPasscode ? "Hide" : "Show"}
                 </button>
@@ -88,7 +88,7 @@ const VirtualMeetingCard = ({ meetingInfo }) => {
             <button
               type="button"
               onClick={() => copyToClipboard(meetingInfo.passcode, "Passcode")}
-              className="text-blue-600 hover:text-blue-700 p-2"
+              className="text-primary hover:text-primaryDark p-2"
               title="Copy Passcode"
             >
               {icons.copy || "📋"}
@@ -100,12 +100,12 @@ const VirtualMeetingCard = ({ meetingInfo }) => {
           <div className="flex items-center justify-between pt-2 border-t">
             <div className="flex-1 overflow-hidden">
               <p className="text-xs text-gray-500 font-medium">Meeting Link</p>
-              <p className="text-xs text-blue-600 truncate">{meetingInfo.meetingLink}</p>
+              <p className="text-xs text-primary truncate">{meetingInfo.meetingLink}</p>
             </div>
             <button
               type="button"
               onClick={() => copyToClipboard(meetingInfo.meetingLink, "Meeting Link")}
-              className="text-blue-600 hover:text-blue-700 p-2"
+              className="text-primary hover:text-primaryDark p-2"
               title="Copy Link"
             >
               {icons.copy || "📋"}

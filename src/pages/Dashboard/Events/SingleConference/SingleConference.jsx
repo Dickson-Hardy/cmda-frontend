@@ -310,10 +310,10 @@ const SingleConferencePage = () => {
         {/* Conference Header */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
           {conference.featuredImageUrl && (
-            <div className="h-64 bg-gradient-to-r from-blue-500 to-purple-600 relative">
+            <div className="h-64 bg-gradient-to-r from-primaryTint to-primary relative">
               <img src={conference.featuredImageUrl} alt={conference.name} className="w-full h-full object-cover" />
               <div className="absolute top-4 left-4">
-                <span className="bg-white text-blue-600 px-3 py-1 rounded-full text-sm font-medium">
+                <span className="bg-white text-primary px-3 py-1 rounded-full text-sm font-medium">
                   {getConferenceTypeLabel(
                     conference.conferenceConfig?.conferenceType || conference.conferenceConfig?.type
                   )}
@@ -389,7 +389,7 @@ const SingleConferencePage = () => {
                       <p className="text-sm">
                         {formatCurrency(getCurrentPrice(), accountCurrency)}
                         {getCurrentRegistrationPeriod() === "late" && (
-                          <span className="text-orange-500 ml-1">(Late Registration)</span>
+                          <span className="text-muted ml-1">(Late Registration)</span>
                         )}
                         {getPaymentBreakdown() && getPaymentBreakdown().includesFees && (
                           <span className="text-gray-500 ml-1">(includes processing fees)</span>
@@ -430,7 +430,7 @@ const SingleConferencePage = () => {
               {hasExternalAction ? (
                 <Button
                   onClick={() => window.open(clickableExternalUrl, "_blank", "noopener,noreferrer")}
-                  className="w-full md:w-auto bg-blue-600 hover:bg-blue-700"
+                  className="w-full md:w-auto bg-primary hover:bg-primaryDark"
                 >
                   Open Conference Link
                 </Button>
@@ -442,7 +442,7 @@ const SingleConferencePage = () => {
                 <Button
                   onClick={() => setConfirmRegister(true)}
                   disabled={conference?.requiresSubscription !== false && !user.subscribed}
-                  className="w-full md:w-auto bg-blue-600 hover:bg-blue-700"
+                  className="w-full md:w-auto bg-primary hover:bg-primaryDark"
                 >
                   Register for Conference
                 </Button>
@@ -480,19 +480,19 @@ const SingleConferencePage = () => {
           <div className="flex space-x-3">
             <button
               onClick={() => handleSocialsShare("facebook")}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              className="bg-primary text-white px-4 py-2 rounded hover:bg-primaryDark"
             >
               Facebook
             </button>
             <button
               onClick={() => handleSocialsShare("twitter")}
-              className="bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-500"
+              className="bg-primary/80 text-white px-4 py-2 rounded hover:bg-primary"
             >
               Twitter
             </button>
             <button
               onClick={() => handleSocialsShare("linkedIn")}
-              className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800"
+              className="bg-primaryDark text-white px-4 py-2 rounded hover:bg-primaryDark"
             >
               LinkedIn
             </button>
@@ -533,7 +533,7 @@ const SingleConferencePage = () => {
                 type="datetime-local"
                 value={reminderDate}
                 onChange={(e) => setReminderDate(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm focus-visible:ring-2 focus-visible:ring-primary/30 focus:border-primary"
               />
             </div>
             <Button label="Set" loading={isSettingReminder} disabled={!reminderDate} onClick={handleSetReminder} />
@@ -696,8 +696,8 @@ const SingleConferencePage = () => {
           )}
 
           {getRegistrationTotal() > 0 && (
-            <div className="bg-blue-50 p-4 rounded-lg mb-6">
-              <p className="text-blue-800 mb-2">
+            <div className="bg-primaryTint p-4 rounded-lg mb-6">
+              <p className="text-primaryDark mb-2">
                 <strong>Registration Fee Details:</strong>
               </p>
 
@@ -722,7 +722,7 @@ const SingleConferencePage = () => {
                   </div>
                   <div className="border-t pt-2 flex justify-between font-semibold">
                     <span>Total Amount to Pay:</span>
-                    <span className="text-blue-600">{formatCurrency(getRegistrationTotal(), accountCurrency)}</span>
+                    <span className="text-primary">{formatCurrency(getRegistrationTotal(), accountCurrency)}</span>
                   </div>
                   <div className="text-xs text-gray-600 mt-1">
                     <strong>Note:</strong> The processing fee ensures the organization receives the full conference fee
@@ -730,16 +730,16 @@ const SingleConferencePage = () => {
                   </div>
                 </div>
               ) : (
-                <p className="text-blue-800">
+                <p className="text-primaryDark">
                   <strong>Registration Total:</strong> {formatCurrency(getRegistrationTotal(), accountCurrency)}
                   {getCurrentRegistrationPeriod() === "late" && (
-                    <span className="text-orange-600 ml-1">(Late Registration)</span>
+                    <span className="text-muted ml-1">(Late Registration)</span>
                   )}
                 </p>
               )}
 
               {getCurrentRegistrationPeriod() === "late" && (
-                <div className="mt-2 text-orange-600 text-sm">
+                <div className="mt-2 text-muted text-sm">
                   <strong>Late Registration</strong> - Higher fees apply after the early bird period.
                 </div>
               )}
@@ -753,7 +753,7 @@ const SingleConferencePage = () => {
             <Button
               onClick={handleRegisterConference}
               isLoading={isRegistering}
-              className="flex-1 bg-blue-600 hover:bg-blue-700"
+              className="flex-1 bg-primary hover:bg-primaryDark"
             >
               {getRegistrationTotal() > 0 ? "Proceed to Payment" : "Register"}
             </Button>

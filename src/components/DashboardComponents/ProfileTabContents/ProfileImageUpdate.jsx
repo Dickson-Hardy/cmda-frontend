@@ -67,12 +67,14 @@ const ProfileImageUpdate = () => {
           />
         )}
 
-        <span
-          className="p-2 sm:p-3 rounded-full border border-gray-light bg-white text-primary cursor-pointer absolute bottom-1 -right-2"
+        <button
+          type="button"
+          aria-label="Edit profile photo"
+          className="p-2 sm:p-3 rounded-full border border-gray-light bg-white text-primary cursor-pointer absolute bottom-1 -right-2 focus-visible:ring-2 focus-visible:ring-primary"
           onClick={() => setOpenModal(true)}
         >
           {icons.pencil}
-        </span>
+        </button>
       </div>
 
       <Modal isOpen={openModal} className="max-w-3xl px-3 md:px-6" onClose={() => setOpenModal(false)}>
@@ -101,18 +103,33 @@ const ProfileImageUpdate = () => {
             </div>
 
             <div className="w-full space-y-5 flex flex-col items-center">
-              <label htmlFor="image" className="cursor-pointer text-primary font-semibold hover:underline">
-                Click here to browse image
-                <input
-                  type="file"
-                  name="image"
-                  id="image"
-                  accept=".jpg,.jpeg,.png"
-                  className="sr-only"
-                  disabled={isLoading}
-                  onChange={handleImageChange}
-                />
-              </label>
+              <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
+                <label htmlFor="image" className="cursor-pointer text-primary font-semibold hover:underline">
+                  Browse from gallery
+                  <input
+                    type="file"
+                    name="image"
+                    id="image"
+                    accept="image/jpeg,image/png"
+                    className="sr-only"
+                    disabled={isLoading}
+                    onChange={handleImageChange}
+                  />
+                </label>
+                <label htmlFor="camera-image" className="cursor-pointer text-primary font-semibold hover:underline">
+                  Take a photo
+                  <input
+                    type="file"
+                    name="camera-image"
+                    id="camera-image"
+                    accept="image/jpeg,image/png"
+                    capture="environment"
+                    className="sr-only"
+                    disabled={isLoading}
+                    onChange={handleImageChange}
+                  />
+                </label>
+              </div>
 
               <Button
                 label="Save Image"

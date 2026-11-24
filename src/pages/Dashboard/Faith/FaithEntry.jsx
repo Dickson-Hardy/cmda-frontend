@@ -96,10 +96,10 @@ const DashboardFaithEntryPage = () => {
             <p className="my-4 text-sm font-medium">{item.content}</p>
             <p className="text-gray-600 text-xs">
               Posted by:{" "}
-              <span className="text-black font-medium">{!item.isAnonymous ? item.user?.fullName : "Anonymous"}</span>
+              <span className="text-ink font-medium">{!item.isAnonymous ? item.user?.fullName : "Anonymous"}</span>
             </p>
             <p className="text-gray-600 text-xs mt-2">
-              Date: <span className="text-black font-medium">{formatDate(item.createdAt).dateTime}</span>
+              Date: <span className="text-ink font-medium">{formatDate(item.createdAt).dateTime}</span>
             </p>
 
             {/* Reaction Bar */}

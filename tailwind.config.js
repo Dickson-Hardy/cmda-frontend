@@ -8,9 +8,15 @@ export default {
       },
       colors: {
         primary: "#994279", // student
+        primaryDark: "#6E2F50",
         onPrimary: "#F5ECF2",
         primaryContainer: "#2C1323",
+        primaryTint: "#F7EAF2",
+        primaryTint2: "#F4EEF2",
         onPrimaryContainer: "#E0C6D7",
+        ink: "#333333",
+        muted: "#666666",
+        surface: "#F4F4F4",
         secondary: "#117E45", // doctor
         onSecondary: "#E7F2EC",
         secondaryContainer: "#03140B",

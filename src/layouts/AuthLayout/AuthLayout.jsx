@@ -37,7 +37,7 @@ const AuthLayout = ({ withOutlet = true, children }) => {
   const activeImg = allImages[currentPage];
 
   return (
-    <div className="h-screen flex w-full">
+    <div className="min-h-dvh flex w-full">
       <div
         className={classNames(
           "h-full w-full hidden lg:flex flex-col relative",

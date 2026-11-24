@@ -127,7 +127,7 @@ const SingleResource = () => {
         </div>
 
         <p className="text-gray text-sm mb-4">
-          Posted: <span className="text-black font-medium">{formatDate(singleRes?.createdAt).dateTime}</span>{" "}
+          Posted: <span className="text-ink font-medium">{formatDate(singleRes?.createdAt).dateTime}</span>{" "}
         </p>
         <div className="inline-flex items-center gap-4">
           {singleRes?.author?.avatarUrl ? (

@@ -12,11 +12,22 @@ import { classNames } from "~/utilities/classNames";
 import { useMemo } from "react";
 import { useIsSmallScreen } from "~/hooks/useIsSmallScreen";
 import AppDownloadBanner from "~/components/Global/AppDownloadBanner";
+import { shareContent } from "~/utilities/pwa";
+import { toast } from "react-toastify";
 
 const IndexPage = () => {
   const navigate = useNavigate();
 
   const isMobile = useIsSmallScreen("1023px");
+
+  const handleShare = async () => {
+    const shared = await shareContent({
+      title: "CMDA Nigeria",
+      text: "Christian Medical and Dental Association of Nigeria",
+      url: window.location.origin,
+    });
+    if (shared) toast.success("Link copied to clipboard");
+  };
 
   const CATEGORIES = useMemo(
     () => [
@@ -48,7 +59,7 @@ const IndexPage = () => {
       <section className="bg-gray-200 py-10 lg:py-10 bg-cover" style={{ backgroundImage: `url(${welcomePng})` }}>
         <div className="px-8 xl:px-28 flex items-center min-h-[600px]">
           <div className="p-8 lg:p-12 bg-white rounded-3xl w-full lg:w-1/2">
-            <h3 className="font-bold text-3xl lg:text-4xl">Welcome to CMDA Nigeria</h3>
+            <h1 className="font-bold text-3xl lg:text-4xl">Welcome to CMDA Nigeria</h1>
             <p className="my-6 lg:text-lg">
               Christian Medical and Dental Association of Nigeria seeks to establish a Christian witness through Medical
               and Dental doctors and students in every community in Nigeria and beyond.
@@ -56,14 +67,15 @@ const IndexPage = () => {
             <div className="flex flex-col sm:flex-row gap-3">
               <Button onClick={() => navigate("/signup")} large label="Join us Now" />
               <Button onClick={() => navigate("/login")} large variant="outlined" label="Login Now" />
-              <Button onClick={() => navigate("/conferences")} large color="tertiary" label="View Conferences" />
+              <Button onClick={() => navigate("/conferences")} large variant="text" label="View Conferences" />
+              <Button onClick={handleShare} large variant="text" label="Share CMDA" aria-label="Share CMDA Nigeria" />
             </div>
             <div className="mt-4">
               <a
                 href="https://impact.cmdanigeria.org"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative inline-flex items-center gap-3 bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl overflow-visible"
+                className="relative inline-flex items-center gap-3 bg-primary hover:bg-primaryDark text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl overflow-visible"
               >
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg shadow-red-500/50 tracking-wider animate-pulse">
                   NEW
@@ -118,7 +130,7 @@ const IndexPage = () => {
             src={faqPng}
           />
           <div className="p-8 lg:p-12 bg-onPrimary rounded-3xl w-full lg:w-1/2">
-            <h3 className="font-bold text-2xl lg:text-3xl mb-4">Frequently Asked Questions</h3>
+            <h2 className="font-bold text-2xl lg:text-3xl mb-4">Frequently Asked Questions</h2>
             <div className="space-y-2 max-h-[500px] overflow-y-auto">
               {FAQS.map((faq, index) => (
                 <details key={index} className="py-2">
@@ -146,7 +158,7 @@ const IndexPage = () => {
                 </h3>
               </div>
             </div>
-            <div className="w-full lg:w-3/4 grid grid-cols-2 gap-10 md:grid-cols-3 lg:grid-cols-6">
+            <div className="w-full lg:w-3/4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-10">
               {Object.keys(FOOTER_LINKS).map((key) => (
                 <div key={key}>
                   <h4 className="text-sm font-semibold capitalize mb-4">{key}</h4>

@@ -84,7 +84,7 @@ const EventFeedbackModal = ({ eventId, isOpen, onClose }) => {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Share your thoughts about this event..."
-            className="w-full rounded-lg border border-gray-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+            className="w-full rounded-lg border border-gray-300 p-3 text-sm focus-visible:ring-2 focus-visible:ring-primary/30 focus:border-primary"
           />
         </div>
 

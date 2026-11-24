@@ -213,7 +213,7 @@ const StudentForm = () => {
 
         <div className="grid gap-6">
           <Button large label="Create Account" loading={isLoading} className="w-full" type="submit" />
-          <div className="text-center font-bold text-black ">
+          <div className="text-center font-bold text-ink ">
             Already have an account?
             <Link to="/login" className="ml-2 text-primary font-medium text-sm hover:underline">
               Log in

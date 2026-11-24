@@ -30,7 +30,7 @@ const DashboardMemberDetailsPage = () => {
 
       <div className="max-w-screen-md mx-auto shadow h-[calc(100vh-240px)] md:h-[calc(100vh-180px)] overflow-y-auto bg-white rounded-lg pb-5 mt-6">
         <div className="flex gap-3 justify-between items-center p-5 mb-5 bg-white rounded-t-lg sticky top-0 right-0 left-0">
-          <h2 className="text-black truncate text-xl md:text-2xl font-bold">{member?.firstName}</h2>
+          <h2 className="text-ink truncate text-xl md:text-2xl font-bold">{member?.firstName}</h2>
           <Button
             color={member?.role === "Student" ? "secondary" : member?.role?.includes("Global") ? "tertiary" : "primary"}
             onClick={() => navigate("/dashboard/messaging?id=" + member?._id)}
@@ -67,7 +67,7 @@ const DashboardMemberDetailsPage = () => {
           <Loading height={48} width={48} className="text-primary mx-auto my-40" />
         ) : (
           <>
-            <div className="grid grid-cols-2 sm:grid-col-2 md:grid-cols-3 gap-4 md:gap-8 mt-5 p-5 pb-0">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-4 md:gap-8 mt-5 p-5 pb-0">
               {Object.entries(memberInfo).map(([key, value]) => (
                 <div
                   key={key}
@@ -76,7 +76,7 @@ const DashboardMemberDetailsPage = () => {
                   }
                 >
                   <h5 className="font-bold uppercase mb-0.5 text-xs text-gray-dark">{key}</h5>
-                  <p className={classNames("text-black text-sm md:text-base", "capitalize")}>
+                  <p className={classNames("text-ink text-sm md:text-base", "capitalize")}>
                     {value || "---"}
                   </p>
                 </div>

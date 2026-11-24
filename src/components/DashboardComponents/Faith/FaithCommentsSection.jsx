@@ -9,6 +9,7 @@ import {
 import { classNames } from "~/utilities/classNames";
 import Loading from "~/components/Global/Loading/Loading";
 import QueryFeedback from "~/components/Global/QueryFeedback/QueryFeedback";
+import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 
 const getRelativeTime = (dateStr) => {
   const now = Date.now();
@@ -30,6 +31,7 @@ const FaithCommentsSection = ({ entryId }) => {
   const [page, setPage] = useState(1);
   const [commentText, setCommentText] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const { data, isLoading, isFetching, isError, error, refetch } = useGetCommentsQuery({
     feedbackHandled: true,
@@ -62,10 +64,11 @@ const FaithCommentsSection = ({ entryId }) => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (isDeleting || !window.confirm("Delete this comment? This cannot be undone.")) return;
+  const handleDelete = async () => {
+    if (!deleteTarget || isDeleting) return;
     try {
-      await deleteComment(id).unwrap();
+      await deleteComment(deleteTarget).unwrap();
+      setDeleteTarget(null);
     } catch {
       // handled by RTK
     }
@@ -80,7 +83,7 @@ const FaithCommentsSection = ({ entryId }) => {
           onChange={(e) => setCommentText(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
           placeholder="Write a comment..."
-          className="w-full h-9 px-3 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white"
+          className="w-full h-9 px-3 rounded-lg border border-gray-300 text-sm focus-visible:ring-2 focus-visible:ring-primary/30 focus:border-primary bg-white"
         />
         <div className="flex items-center justify-between">
           <label className="flex items-center gap-1.5 text-xs text-gray-500 cursor-pointer">
@@ -134,7 +137,7 @@ const FaithCommentsSection = ({ entryId }) => {
               {comment.user?._id === user?._id && (
                 <button
                   type="button"
-                  onClick={() => handleDelete(comment._id)}
+                  onClick={() => setDeleteTarget(comment._id)}
                   disabled={isDeleting}
                   className="text-[10px] text-error hover:underline flex-shrink-0"
                 >
@@ -171,6 +174,18 @@ const FaithCommentsSection = ({ entryId }) => {
           </button>
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        title="Delete comment?"
+        subtitle="This cannot be undone."
+        mainAction={handleDelete}
+        mainActionText="Delete"
+        mainActionLoading={isDeleting}
+        subAction={true}
+        subActionText="Cancel"
+      />
     </div>
   );
 };

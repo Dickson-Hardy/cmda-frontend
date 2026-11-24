@@ -15,12 +15,15 @@ const Select = ({
   rules,
   multiple,
   placeholder,
-  required = "This field is required", // set to false if not required or pass custom error message as string
+  required = false, // set to true or pass a custom error message when the field is required
   disabled,
   showTitleLabel = true, // whether to show label or title of input above the component
   onSelect = () => {},
 }) => {
   // Convert options if they are strings to { label, value } format
+  const fieldName = name || label;
+  const errorMessage = errors?.[fieldName]?.message;
+
   const transformedOptions = useMemo(
     () => (options?.every((x) => typeof x === "string") ? options.map((v) => ({ label: v, value: v })) : options),
     [options]
@@ -29,7 +32,7 @@ const Select = ({
   return (
     <div>
       {showTitleLabel && (
-        <label htmlFor={`${label}-input`} className="block mb-2 text-sm font-semibold text-black">
+        <label htmlFor={`${label}-input`} className="block mb-2 text-sm font-semibold text-ink">
           {title || convertToCapitalizedWords(label)}
           {required ? <span className="text-error ml-px">*</span> : null}
         </label>
@@ -67,7 +70,7 @@ const Select = ({
                   "bg-white border-gray placeholder:text-gray placeholder:text-xs border rounded-lg w-full text-sm p-3 min-h-12 cursor-pointer",
                   state.isFocused
                     ? "ring ring-primary/25 outline-none border-transparent bg-white"
-                    : errors?.[label]?.message
+                    : errorMessage
                       ? "border-error"
                       : "border-gray"
                 ),
@@ -86,8 +89,8 @@ const Select = ({
                   state.isSelected
                     ? "bg-primary text-white"
                     : state.isFocused
-                      ? "bg-onPrimary text-black"
-                      : "bg-transparent text-black"
+                      ? "bg-onPrimary text-ink"
+                      : "bg-transparent text-ink"
                 ),
             }}
           />
@@ -97,7 +100,7 @@ const Select = ({
           ...rules,
         }}
       />
-      <FormError error={errors?.[label]?.message} />
+      <FormError error={errorMessage} />
     </div>
   );
 };

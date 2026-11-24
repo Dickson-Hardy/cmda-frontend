@@ -121,7 +121,7 @@ const Subscriptions = () => {
           <button
             onClick={() => handleDownloadReceipt(value)}
             disabled={loadingReceipt === value}
-            className="text-primary hover:text-primary-dark underline text-sm font-medium"
+            className="text-primary hover:text-primaryDark underline text-sm font-medium"
           >
             {loadingReceipt === value ? "Preparing..." : "Download PDF"}
           </button>
@@ -209,7 +209,7 @@ const Subscriptions = () => {
               {subscriptionStatus.expiryDate && (
                 <p className="text-xs text-gray-600">
                   Expires:{" "}
-                  <span className="font-medium text-black">{formatDate(subscriptionStatus.expiryDate).date}</span>
+                  <span className="font-medium text-ink">{formatDate(subscriptionStatus.expiryDate).date}</span>
                 </p>
               )}
               {!isUkEuropeMember && subscriptionStatus.autoRenew !== undefined && (
@@ -223,7 +223,7 @@ const Subscriptions = () => {
                 </p>
               )}
               {daysUntilExpiry !== null && daysUntilExpiry > 0 && (
-                <p className={`text-xs font-medium ${daysUntilExpiry <= 30 ? "text-orange-600" : "text-gray-600"}`}>
+                <p className={`text-xs font-medium ${daysUntilExpiry <= 30 ? "text-muted" : "text-gray-600"}`}>
                   {daysUntilExpiry} day{daysUntilExpiry !== 1 ? "s" : ""} until expiry
                 </p>
               )}
@@ -265,7 +265,7 @@ const Subscriptions = () => {
               ) : (
                 <p className="font-semibold">
                   {formatCurrency(SUBSCRIPTION_PRICES[user.role], "USD")} / Annually
-                  <span className="block text-xs text-orange-600 mt-1">Consider upgrading to income-based pricing</span>
+                  <span className="block text-xs text-muted mt-1">Consider upgrading to income-based pricing</span>
                 </p>
               )}
             </div>

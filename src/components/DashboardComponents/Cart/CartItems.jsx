@@ -38,7 +38,7 @@ const DashboardCartItems = ({ item }) => {
             <Button variant="text" className="!px-3" onClick={() => handleQtyChange(item._id, item?.quantity - 1)}>
               {icons.minus}
             </Button>
-            <span className="px-3 inline-flex text-lg text-black font-medium">{item.quantity}</span>
+            <span className="px-3 inline-flex text-lg text-ink font-medium">{item.quantity}</span>
             <Button variant="text" className="!px-3" onClick={() => handleQtyChange(item._id, item?.quantity + 1)}>
               {icons.plus}
             </Button>

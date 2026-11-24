@@ -16,9 +16,9 @@ const Checkbox = ({
   return (
     <div>
       {showTitleLabel && (
-        <div htmlFor={label} className="block mb-1 text-sm font-medium text-black">
+        <p className="block mb-1 text-sm font-medium text-ink">
           {title || convertToCapitalizedWords(label)}
-        </div>
+        </p>
       )}
       <Controller
         control={control}
@@ -29,8 +29,8 @@ const Checkbox = ({
             <input
               type="checkbox"
               className={classNames(
-                "w-4 h-4 accent-primary transition-all duration-200 rounded-lg",
-                "focus:ring focus:ring-primary/25 focus:outline-none focus:border-transparent",
+                "h-5 w-5 min-h-5 min-w-5 accent-primary transition-all duration-200 rounded",
+                "focus:ring focus:ring-primary/25 focus:border-transparent",
                 className
               )}
               style={{ clipPath: "circle(90% at 50% 50%)" }}

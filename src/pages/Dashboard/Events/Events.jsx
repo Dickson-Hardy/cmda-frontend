@@ -28,18 +28,30 @@ const DashboardEventsPage = () => {
 
   const AddonElement = () => (
     <div className="hidden lg:flex items-center gap-x-4">
-      <div
-        className={classNames(activeView === "list" && "p-1 bg-[#f5f5f5] rounded-full", "cursor-pointer")}
+      <button
+        type="button"
+        aria-label="List view"
+        aria-pressed={activeView === "list"}
+        className={classNames(
+          activeView === "list" && "p-1 bg-primary/10 rounded-full",
+          "cursor-pointer rounded-full"
+        )}
         onClick={() => handleViewClick("list")}
       >
         {icons.list}
-      </div>
-      <div
-        className={classNames(activeView === "grid" && "p-1 bg-[#f5f5f5] rounded-full", "cursor-pointer")}
+      </button>
+      <button
+        type="button"
+        aria-label="Grid view"
+        aria-pressed={activeView === "grid"}
+        className={classNames(
+          activeView === "grid" && "p-1 bg-primary/10 rounded-full",
+          "cursor-pointer rounded-full"
+        )}
         onClick={() => handleViewClick("grid")}
       >
         {icons.grid}
-      </div>
+      </button>
     </div>
   );
 
@@ -47,12 +59,14 @@ const DashboardEventsPage = () => {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl sm:text-2xl font-bold text-primary">Events</h2>
-        <div
+        <button
+          type="button"
+          aria-label="Open calendar"
           className="lg:hidden flex items-center justify-center p-4 cursor-pointer bg-gray-light rounded-full shadow-md"
           onClick={() => setOpenMobileCalender(true)}
         >
           {icons.calendar}
-        </div>
+        </button>
       </div>
 
       <section className="flex gap-10">

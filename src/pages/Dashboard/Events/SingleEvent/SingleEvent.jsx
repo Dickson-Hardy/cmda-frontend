@@ -251,7 +251,7 @@ const DashboardStoreSingleEventPage = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-6 mt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
           {" "}
           {singleEvent?.isPaid ? (
             <div>
@@ -269,8 +269,8 @@ const DashboardStoreSingleEventPage = () => {
               ))}
               {/* Payment Breakdown */}
               {getPaymentBreakdown() && (
-                <div className="bg-blue-50 p-3 rounded-lg mt-3">
-                  <h5 className="text-sm font-semibold text-blue-800 mb-2">
+                <div className="bg-primaryTint p-3 rounded-lg mt-3">
+                  <h5 className="text-sm font-semibold text-primaryDark mb-2">
                     {getPaymentBreakdown().includesFees ? "Your Payment Breakdown:" : "Payment Information:"}
                   </h5>
                   <div className="space-y-1 text-xs">
@@ -295,7 +295,7 @@ const DashboardStoreSingleEventPage = () => {
                             )}
                           </span>
                         </div>
-                        <div className="border-t pt-1 flex justify-between font-semibold text-blue-800">
+                        <div className="border-t pt-1 flex justify-between font-semibold text-primaryDark">
                           <span>Total Amount:</span>
                           <span>
                             {formatCurrency(getCurrentPrice(), user?.role === "GlobalNetwork" ? "USD" : "NGN")}
@@ -308,7 +308,7 @@ const DashboardStoreSingleEventPage = () => {
                     ) : (
                       // Show simple payment info when no fees
                       <>
-                        <div className="flex justify-between font-semibold text-blue-800">
+                        <div className="flex justify-between font-semibold text-primaryDark">
                           <span>Registration Fee:</span>
                           <span>
                             {formatCurrency(
@@ -321,7 +321,7 @@ const DashboardStoreSingleEventPage = () => {
                           <strong>Payment Method:</strong> {getPaymentBreakdown().paymentMethod} (
                           {getPaymentBreakdown().currency})
                         </div>
-                        <div className="text-xs text-orange-600 mt-1">
+                        <div className="text-xs text-muted mt-1">
                           <strong>Note:</strong> This event does not include additional processing fees.
                         </div>
                       </>
@@ -431,7 +431,7 @@ const DashboardStoreSingleEventPage = () => {
                 type="datetime-local"
                 value={reminderDate}
                 onChange={(e) => setReminderDate(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm focus-visible:ring-2 focus-visible:ring-primary/30 focus:border-primary"
               />
             </div>
             <Button label="Set" loading={isSettingReminder} disabled={!reminderDate} onClick={handleSetReminder} />
@@ -517,8 +517,8 @@ const DashboardStoreSingleEventPage = () => {
                 </p>{" "}
                 {/* Fee Breakdown in Modal */}
                 {getPaymentBreakdown() && (
-                  <div className="bg-blue-50 p-3 rounded-lg mt-3">
-                    <p className="text-sm font-semibold text-blue-800 mb-2">
+                  <div className="bg-primaryTint p-3 rounded-lg mt-3">
+                    <p className="text-sm font-semibold text-primaryDark mb-2">
                       {getPaymentBreakdown().includesFees ? "Payment Details:" : "Payment Information:"}
                     </p>
                     <div className="space-y-1 text-xs">
@@ -543,7 +543,7 @@ const DashboardStoreSingleEventPage = () => {
                               )}
                             </span>
                           </div>
-                          <div className="border-t pt-1 flex justify-between font-semibold text-blue-800">
+                          <div className="border-t pt-1 flex justify-between font-semibold text-primaryDark">
                             <span>Total Amount:</span>
                             <span>
                               {formatCurrency(getCurrentPrice(), user?.role === "GlobalNetwork" ? "USD" : "NGN")}
@@ -553,7 +553,7 @@ const DashboardStoreSingleEventPage = () => {
                       ) : (
                         // Show simple payment info when no fees
                         <>
-                          <div className="flex justify-between font-semibold text-blue-800">
+                          <div className="flex justify-between font-semibold text-primaryDark">
                             <span>Registration Fee:</span>
                             <span>
                               {formatCurrency(
@@ -580,7 +580,7 @@ const DashboardStoreSingleEventPage = () => {
             </div>
           )}
 
-          <div className={classNames("grid grid-cols-2 gap-4 items-center")}>
+          <div className={classNames("grid grid-cols-1 sm:grid-cols-2 gap-4 items-center")}>
             <Button className="w-full mb-1.5" variant="outlined" large onClick={() => setConfirmRegister(false)}>
               No, Cancel
             </Button>

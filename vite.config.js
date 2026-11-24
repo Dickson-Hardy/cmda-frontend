@@ -7,10 +7,14 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: "autoUpdate",
-      filename: "sw-v3.js",
-      includeAssets: ["favicon.ico", "CMDALOGO_white.png"],
+      // Users choose when to reload. This prevents an update from interrupting
+      // a form, a checkout, or a payment in progress.
+      registerType: "prompt",
+      injectRegister: false,
+      filename: "sw-v4.js",
+      includeAssets: ["CMDALOGO_white.png", "icons/*.png"],
       manifest: {
+        id: "/",
         name: "CMDA Nigeria - Christian Medical And Dental Association",
         short_name: "CMDA Nigeria",
         description:
@@ -18,67 +22,84 @@ export default defineConfig({
         theme_color: "#994279",
         background_color: "#FDFBFC",
         display: "standalone",
-        orientation: "portrait",
+        display_override: ["window-controls-overlay", "standalone", "minimal-ui"],
+        orientation: "any",
         start_url: "/",
         scope: "/",
+        categories: ["health", "medical", "education", "lifestyle"],
         icons: [
+          { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+          { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+          { src: "/icons/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+        ],
+        shortcuts: [
           {
-            src: "https://cmdanigeria.org/wp-content/uploads/2019/12/christian-medical-and-dental-association-nigeria.png",
-            sizes: "192x192",
-            type: "image/png",
+            name: "Events",
+            short_name: "Events",
+            description: "Browse upcoming CMDA events",
+            url: "/conferences",
+            icons: [{ src: "/icons/icon-192.png", sizes: "192x192" }],
           },
           {
-            src: "https://cmdanigeria.org/wp-content/uploads/2019/12/christian-medical-and-dental-association-nigeria.png",
-            sizes: "512x512",
-            type: "image/png",
-          },
-          {
-            src: "https://cmdanigeria.org/wp-content/uploads/2019/12/christian-medical-and-dental-association-nigeria.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "any maskable",
+            name: "Support",
+            short_name: "Support",
+            description: "Contact CMDA support",
+            url: "/support",
+            icons: [{ src: "/icons/icon-192.png", sizes: "192x192" }],
           },
         ],
+        share_target: {
+          action: "/support",
+          method: "GET",
+          enctype: "application/x-www-form-urlencoded",
+          params: { title: "title", text: "text", url: "url" },
+        },
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
-        navigateFallbackDenylist: [/^\/apk\//],
+        // Only public pages are available offline. Auth, payments and support
+        // embeds must always hit the network.
+        navigateFallbackDenylist: [
+          /^\/apk\//,
+          /^\/dashboard\//,
+          /^\/login(?:\/|$)/,
+          /^\/signup(?:\/|$)/,
+          /^\/support\/embed(?:\/|$)/,
+        ],
         cleanupOutdatedCaches: true,
-        skipWaiting: true,
-        clientsClaim: true,
+        // Handled explicitly by the in-app update prompt instead.
+        skipWaiting: false,
+        clientsClaim: false,
+        importScripts: ["sw-sync.js", "sw-push.js"],
         runtimeCaching: [
+          // Never cache authenticated or payment-related API responses in a
+          // shared service-worker cache.
           {
-            urlPattern: ({ url }) => url.pathname.startsWith('/support/') && url.hostname === 'cmdabackend-38258a63fa98.herokuapp.com',
+            urlPattern: ({ url }) =>
+              url.hostname === "cmdabackend-38258a63fa98.herokuapp.com" ||
+              url.pathname.startsWith("/api/"),
             handler: "NetworkOnly",
-          },
-          {
-            urlPattern: /^https:\/\/cmdabackend-38258a63fa98\.herokuapp\.com\/.*/i,
-            handler: "NetworkFirst",
-            options: {
-              cacheName: "api-cache",
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60,
-              },
-              networkTimeoutSeconds: 10,
-            },
           },
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: "StaleWhileRevalidate",
-            options: {
-              cacheName: "google-fonts-stylesheets",
-            },
+            options: { cacheName: "google-fonts-stylesheets" },
           },
           {
             urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
             handler: "CacheFirst",
             options: {
               cacheName: "google-fonts-webfonts",
-              expiration: {
-                maxEntries: 30,
-                maxAgeSeconds: 60 * 60 * 24 * 365,
-              },
+              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 365 },
+            },
+          },
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|webp|gif)$/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "public-images",
+              expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              cacheableResponse: { statuses: [0, 200] },
             },
           },
         ],

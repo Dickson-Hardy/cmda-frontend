@@ -63,7 +63,7 @@ class ErrorBoundary extends React.Component {
             <div className="space-y-3">
               <button
                 onClick={this.handleReset}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+                className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primaryDark transition-colors"
               >
                 Try Again
               </button>

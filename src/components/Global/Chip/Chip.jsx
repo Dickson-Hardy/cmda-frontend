@@ -9,6 +9,7 @@ const Chip = ({
   color = "primary", // primary, tertiary, secondary, error, defaults to black if none or invalid color
   className,
   onClick,
+  pressed,
 }) => {
   const getColorStyles = () => {
     switch (color) {
@@ -36,10 +37,10 @@ const Chip = ({
           outlined: "bg-transparent text-error border-2 border-error hover:bg-error/20",
         };
       default:
-        // Default to black color styles if an invalid color is provided
+        // Default to neutral ink styles if an invalid color is provided
         return {
-          filled: "bg-black text-white hover:bg-blackContainer",
-          outlined: "bg-transparent text-black border-2 border-black hover:bg-black/10",
+          filled: "bg-ink text-white hover:bg-primaryDark",
+          outlined: "bg-transparent text-ink border-2 border-muted hover:bg-surface",
         };
     }
   };
@@ -50,6 +51,7 @@ const Chip = ({
     <button
       type="button"
       disabled={disabled}
+      aria-pressed={onClick ? Boolean(pressed) : undefined}
       className={classNames(
         "inline-flex justify-center items-center gap-2.5 rounded-xl font-medium py-2 px-4 text-sm",
         onClick ? "cursor-pointer" : "cursor-default",

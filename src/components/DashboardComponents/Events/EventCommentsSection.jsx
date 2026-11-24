@@ -9,6 +9,7 @@ import {
 import { classNames } from "~/utilities/classNames";
 import Loading from "~/components/Global/Loading/Loading";
 import QueryFeedback from "~/components/Global/QueryFeedback/QueryFeedback";
+import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 
 const getRelativeTime = (dateStr) => {
   const now = Date.now();
@@ -29,6 +30,7 @@ const EventCommentsSection = ({ eventId }) => {
   const { user } = useSelector(selectAuth);
   const [page, setPage] = useState(1);
   const [commentText, setCommentText] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const { data, isLoading, isFetching, isError, error, refetch } = useGetCommentsQuery({
     feedbackHandled: true,
@@ -55,10 +57,11 @@ const EventCommentsSection = ({ eventId }) => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (isDeleting || !window.confirm("Delete this comment? This cannot be undone.")) return;
+  const handleDelete = async () => {
+    if (!deleteTarget || isDeleting) return;
     try {
-      await deleteComment(id).unwrap();
+      await deleteComment(deleteTarget).unwrap();
+      setDeleteTarget(null);
     } catch {
       // handled by RTK
     }
@@ -75,7 +78,7 @@ const EventCommentsSection = ({ eventId }) => {
           onChange={(e) => setCommentText(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
           placeholder="Write a comment..."
-          className="flex-1 h-10 px-4 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+          className="flex-1 h-10 px-4 rounded-lg border border-gray-300 text-sm focus-visible:ring-2 focus-visible:ring-primary/30 focus:border-primary"
         />
         <button
           type="button"
@@ -116,7 +119,7 @@ const EventCommentsSection = ({ eventId }) => {
               {comment.user?._id === user?._id && (
                 <button
                   type="button"
-                  onClick={() => handleDelete(comment._id)}
+                  onClick={() => setDeleteTarget(comment._id)}
                   disabled={isDeleting}
                   className="text-xs text-error hover:underline flex-shrink-0"
                 >
@@ -153,6 +156,18 @@ const EventCommentsSection = ({ eventId }) => {
           </button>
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        title="Delete comment?"
+        subtitle="This cannot be undone."
+        mainAction={handleDelete}
+        mainActionText="Delete"
+        mainActionLoading={isDeleting}
+        subAction={true}
+        subActionText="Cancel"
+      />
     </div>
   );
 };

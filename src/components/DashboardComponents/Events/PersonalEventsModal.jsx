@@ -67,7 +67,7 @@ const PersonalEventsModal = ({ isOpen, onClose, selectedDate }) => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Event title"
-            className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+            className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm focus-visible:ring-2 focus-visible:ring-primary/30 focus:border-primary"
           />
         </div>
 
@@ -78,7 +78,7 @@ const PersonalEventsModal = ({ isOpen, onClose, selectedDate }) => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Optional description"
-            className="w-full rounded-lg border border-gray-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+            className="w-full rounded-lg border border-gray-300 p-3 text-sm focus-visible:ring-2 focus-visible:ring-primary/30 focus:border-primary"
           />
         </div>
 
@@ -88,7 +88,7 @@ const PersonalEventsModal = ({ isOpen, onClose, selectedDate }) => {
             type="date"
             value={date || handleDateValue()}
             onChange={(e) => setDate(e.target.value)}
-            className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+            className="w-full h-10 px-3 rounded-lg border border-gray-300 text-sm focus-visible:ring-2 focus-visible:ring-primary/30 focus:border-primary"
           />
         </div>
 

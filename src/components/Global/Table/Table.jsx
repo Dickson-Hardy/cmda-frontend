@@ -143,26 +143,46 @@ const Table = ({
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <th key={header.id} colSpan={header.colSpan}>
-                      {header.isPlaceholder ? null : (
-                        <span
-                          {...{
-                            className: classNames(
-                              header.column.getCanSort() && "cursor-pointer",
-                              "flex gap-2 items-center select-none py-3 px-3",
-                              "text-sm font-semibold text-capitalize"
-                            ),
-                            onClick: header.column.getToggleSortingHandler(),
-                          }}
+                    <th
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      aria-sort={
+                        header.column.getIsSorted() === "asc"
+                          ? "ascending"
+                          : header.column.getIsSorted() === "desc"
+                            ? "descending"
+                            : header.column.getCanSort()
+                              ? "none"
+                              : undefined
+                      }
+                    >
+                      {header.isPlaceholder ? null : header.column.getCanSort() ? (
+                        <button
+                          type="button"
+                          aria-label={`Sort by ${header.column.id}`}
+                          className={classNames(
+                            "flex gap-2 items-center select-none py-3 px-3 text-left",
+                            "text-sm font-semibold text-capitalize cursor-pointer"
+                          )}
+                          onClick={header.column.getToggleSortingHandler()}
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
-                          {header.column.getCanSort()
-                            ? {
-                                asc: icons.ascending,
-                                desc: icons.descending,
-                                false: icons.sort,
-                              }[header.column.getIsSorted()]
-                            : null}
+                          {
+                            {
+                              asc: icons.ascending,
+                              desc: icons.descending,
+                              false: icons.sort,
+                            }[header.column.getIsSorted()]
+                          }
+                        </button>
+                      ) : (
+                        <span
+                          className={classNames(
+                            "flex gap-2 items-center select-none py-3 px-3",
+                            "text-sm font-semibold text-capitalize"
+                          )}
+                        >
+                          {flexRender(header.column.columnDef.header, header.getContext())}
                         </span>
                       )}
                     </th>
@@ -230,7 +250,7 @@ const Table = ({
             </select>
           </label>
           {/* pagination buttons */}
-          <div className="ml-auto md:ml-0 flex items-center gap-1 text-black">
+          <div className="ml-auto md:ml-0 flex items-center gap-1 text-ink">
             <Button
               icon={icons.chevronLeft}
               aria-label="Previous page"

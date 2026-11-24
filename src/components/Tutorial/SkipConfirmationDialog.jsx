@@ -151,8 +151,8 @@ const SkipConfirmationDialog = ({
                      bg-white border border-gray-300 rounded-lg
                      hover:bg-gray-50 hover:border-gray-400
                      active:bg-gray-100
-                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-                     focus:border-blue-500 focus:bg-blue-50
+                     focus-visible:ring-2 focus-visible:ring-primary focus:ring-offset-2
+                     focus:border-primary focus:bg-primaryTint
                      transition-all duration-200"
             aria-label="Continue with the tutorial"
           >
@@ -163,10 +163,10 @@ const SkipConfirmationDialog = ({
           <button
             onClick={onSkip}
             className="flex-1 px-4 py-2.5 text-sm font-medium text-white 
-                     bg-blue-600 rounded-lg
-                     hover:bg-blue-700
-                     active:bg-blue-800
-                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                     bg-primary rounded-lg
+                     hover:bg-primaryDark
+                     active:bg-primaryDark
+                     focus-visible:ring-2 focus-visible:ring-primary focus:ring-offset-2
                      transition-all duration-200"
             aria-label="Skip the tutorial and close it"
           >

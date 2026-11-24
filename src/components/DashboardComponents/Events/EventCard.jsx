@@ -21,7 +21,7 @@ const EventCard = ({ width = 240, row, title, image, date, type, location, descr
             {type}
           </span>
           {conference && (
-            <span className="px-2 py-1 capitalize text-blue-600 text-xs font-semibold bg-blue-100 rounded-3xl">
+            <span className="px-2 py-1 capitalize text-primary text-xs font-semibold bg-primaryTint rounded-3xl">
               {conference.type} Conference
             </span>
           )}

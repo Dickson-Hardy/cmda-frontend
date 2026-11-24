@@ -1,12 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getApiErrorMessage } from "~/utilities/getApiErrorMessage";
 import icons from "~/assets/js/icons";
 import Button from "~/components/Global/Button/Button";
+import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import Switch from "~/components/Global/FormElements/Switch/Switch";
 import { useGetSettingsQuery, useUpdateSettingsMutation } from "~/redux/api/auth/authApi";
+import {
+  disablePushNotifications,
+  enablePushNotifications,
+  isPushSupported,
+} from "~/utilities/pwa";
 
 const DEFAULT_SETTINGS = {
   newMessage: false,
@@ -27,18 +33,65 @@ const DashboardSettingsPage = () => {
   const { control, handleSubmit, reset } = useForm({
     defaultValues: DEFAULT_SETTINGS,
   });
+  const [marketingConfirmOpen, setMarketingConfirmOpen] = useState(false);
+  const [pendingChanges, setPendingChanges] = useState(null);
 
   useEffect(() => {
     if (userSettings) reset({ ...DEFAULT_SETTINGS, ...userSettings });
   }, [reset, userSettings]);
 
-  const handleUpdate = async (payload) => {
+  const saveChanges = async (changes) => {
     try {
-      await updateSettings(payload).unwrap();
+      if ("pushNotifications" in changes) {
+        if (changes.pushNotifications) {
+          if (!isPushSupported()) {
+            toast.warn("Push notifications are not supported on this device");
+          } else {
+            try {
+              await enablePushNotifications();
+              toast.success("This device is now subscribed to push notifications");
+            } catch (error) {
+              toast.error(getApiErrorMessage(error, "Push notifications could not be enabled. Check your browser permissions."));
+              return;
+            }
+          }
+        } else {
+          await disablePushNotifications();
+        }
+      }
+      if (!Object.keys(changes).length) {
+        toast.info("No preferences changed");
+        return;
+      }
+      await updateSettings(changes).unwrap();
       toast.success("Notification preferences saved");
     } catch (error) {
       toast.error(getApiErrorMessage(error, "Settings could not be saved. Please try again."));
     }
+  };
+
+  const handleUpdate = (payload) => {
+    const changes = Object.fromEntries(
+      Object.keys(DEFAULT_SETTINGS)
+        .filter((key) => payload[key] !== (userSettings?.[key] ?? DEFAULT_SETTINGS[key]))
+        .map((key) => [key, payload[key]])
+    );
+    if (changes.marketing === true) {
+      setPendingChanges(changes);
+      setMarketingConfirmOpen(true);
+      return;
+    }
+    saveChanges(changes);
+  };
+
+  const confirmMarketing = () => {
+    setMarketingConfirmOpen(false);
+    saveChanges({
+      ...pendingChanges,
+      marketingConsentConfirmed: true,
+      marketingConsentVersion: Number(userSettings?.marketingConsentVersion || 0),
+    });
+    setPendingChanges(null);
   };
 
   const groups = [
@@ -109,6 +162,21 @@ const DashboardSettingsPage = () => {
           Change Password
         </Link>
       </div>
+
+      <ConfirmationModal
+        isOpen={marketingConfirmOpen}
+        onClose={() => {
+          setMarketingConfirmOpen(false);
+          setPendingChanges(null);
+        }}
+        icon={icons.mail || icons.announcement || undefined}
+        title="Receive optional campaigns?"
+        subtitle="Receive optional CMDA campaigns and promotions? You can unsubscribe at any time."
+        mainAction={confirmMarketing}
+        mainActionText="Yes, subscribe"
+        subAction={true}
+        subActionText="No, thanks"
+      />
     </div>
   );
 };

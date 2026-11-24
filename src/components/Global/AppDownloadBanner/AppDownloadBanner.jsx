@@ -43,7 +43,7 @@ const AppDownloadBanner = () => {
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg animate-slideDown">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-primaryDark to-primary text-white shadow-lg animate-slideDown">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-4">
             {/* Icon and Content */}
@@ -54,7 +54,7 @@ const AppDownloadBanner = () => {
 
               <div className="flex-1 min-w-0">
                 <h3 className="font-bold text-sm sm:text-base mb-0.5">Get the CMDA Nigeria Mobile App</h3>
-                <p className="text-xs sm:text-sm text-blue-100 line-clamp-1">
+                <p className="text-xs sm:text-sm text-white/80 line-clamp-1">
                   {isMobile
                     ? "Download now for a better mobile experience"
                     : "Access CMDA on-the-go with our mobile app"}
@@ -66,7 +66,7 @@ const AppDownloadBanner = () => {
             <div className="flex items-center gap-2 flex-shrink-0">
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-semibold text-sm whitespace-nowrap"
+                className="flex items-center gap-2 px-4 py-2 bg-white text-primary rounded-lg hover:bg-primaryTint transition-colors font-semibold text-sm whitespace-nowrap"
               >
                 <Download className="w-4 h-4" />
                 <span className="hidden sm:inline">Download APK</span>
@@ -92,8 +92,8 @@ const AppDownloadBanner = () => {
         maxWidth={420}
       >
         <div className="flex flex-col items-center text-center gap-4">
-          <div className="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full">
-            <Smartphone className="w-8 h-8 text-blue-600" />
+          <div className="flex items-center justify-center w-16 h-16 bg-primaryTint rounded-full">
+            <Smartphone className="w-8 h-8 text-primary" />
           </div>
 
           <div>
@@ -107,7 +107,7 @@ const AppDownloadBanner = () => {
 
           <button
             onClick={handleDownload}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold text-sm"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary text-white rounded-lg hover:bg-primaryDark transition-colors font-semibold text-sm"
           >
             <Download className="w-4 h-4" />
             Download APK (Android)

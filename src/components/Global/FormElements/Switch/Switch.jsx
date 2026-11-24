@@ -15,9 +15,9 @@ const Switch = ({
   return (
     <div>
       {showTitleLabel && (
-        <div htmlFor={label} className="block mb-1 text-sm font-medium text-black">
+        <p className="block mb-1 text-sm font-medium text-ink">
           {title || convertToCapitalizedWords(label)}
-        </div>
+        </p>
       )}
       <Controller
         control={control}
@@ -27,10 +27,10 @@ const Switch = ({
             <input
               type="checkbox"
               className={classNames(
-                "relative h-[18px] w-10 appearance-none rounded-2xl bg-gray outline-none transition duration-500",
-                "before:absolute before:top-[50%] before:h-3.5 before:w-3.5 before:translate-x-[2px] before:translate-y-[-50%] before:rounded-2xl",
-                "before:bg-white before:shadow-[0_2px_5px_rgba(0,_0,_0,_.2)] before:transition before:content-['']|",
-                "checked:before:translate-x-6 hover:cursor-pointer checked:bg-primary "
+                "relative h-6 w-11 min-h-6 min-w-11 appearance-none rounded-2xl bg-gray outline-none transition duration-500",
+                "before:absolute before:top-[50%] before:h-5 before:w-5 before:translate-x-0.5 before:translate-y-[-50%] before:rounded-2xl",
+                "before:bg-white before:shadow-[0_2px_5px_rgba(0,_0,_0,_.2)] before:transition before:content-['']",
+                "checked:before:translate-x-[22px] hover:cursor-pointer checked:bg-primary focus-visible:ring-2 focus-visible:ring-primary/40"
               )}
               checked={!!field.value}
               {...field}

@@ -2,8 +2,9 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    // Kill-switch for old service workers (/sw.js and /sw-v2.js).
-    if (url.pathname === "/sw.js" || url.pathname === "/sw-v2.js") {
+    // One-time cleanup for legacy service workers only. Current versions are
+    // updated in-app via the update prompt, so caches are never wiped blindly.
+    if (url.pathname === "/sw.js" || url.pathname === "/sw-v2.js" || url.pathname === "/sw-v3.js") {
       const killSw = `
 self.addEventListener('install', (e) => { self.skipWaiting(); });
 self.addEventListener('activate', (e) => {
@@ -60,7 +61,13 @@ self.addEventListener('activate', (e) => {
     }
 
     // Never cache service worker files
-    if (url.pathname === "/sw-v3.js" || url.pathname.startsWith("/workbox-") || url.pathname === "/registerSW.js") {
+    if (
+      url.pathname === "/sw-v4.js" ||
+      url.pathname === "/sw-sync.js" ||
+      url.pathname === "/sw-push.js" ||
+      url.pathname.startsWith("/workbox-") ||
+      url.pathname === "/registerSW.js"
+    ) {
       const response = await env.ASSETS.fetch(request);
       const newHeaders = new Headers(response.headers);
       newHeaders.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
@@ -73,7 +80,7 @@ self.addEventListener('activate', (e) => {
       });
     }
 
-    // HTML navigations: prevent CDN/browser caching + clear site data once SW is gone
+    // HTML navigations: prevent CDN/browser caching.
     const accept = request.headers.get("Accept") || "";
     const isHtmlNav =
       request.method === "GET" &&
@@ -104,47 +111,7 @@ self.addEventListener('activate', (e) => {
         newHeaders.set("X-Robots-Tag", "noindex");
       }
       newHeaders.set("X-Content-Type-Options", "nosniff");
-      // Inline kill-switch for any client that reaches network HTML
-      let html = await response.text();
-      if (!isSupportEmbed && !html.includes("CMDA_SW_KILL")) {
-        const kill = `<script id="CMDA_SW_KILL">
-(function(){
-  if(!('serviceWorker' in navigator)) return;
-  var DEPLOY_VERSION="2026-08-09-sw-v3";
-  var STORED=localStorage.getItem("CMDA_SW_VER");
-  if(STORED!==DEPLOY_VERSION){
-    localStorage.setItem("CMDA_SW_VER",DEPLOY_VERSION);
-    navigator.serviceWorker.getRegistrations().then(function(regs){
-      return Promise.all(regs.map(function(r){return r.unregister();}));
-    }).then(function(){
-      if(window.caches) return caches.keys().then(function(ks){
-        return Promise.all(ks.map(function(k){return caches.delete(k);}));
-      });
-    }).then(function(){location.reload();});
-    return;
-  }
-  function isOldSW(u){return !!u&&/\\/sw\\.js(\\?|$)/.test(u);}
-  function regIsOld(r){
-    return isOldSW(r.active&&r.active.scriptURL)||
-           isOldSW(r.waiting&&r.waiting.scriptURL)||
-           isOldSW(r.installing&&r.installing.scriptURL);
-  }
-  navigator.serviceWorker.getRegistrations().then(function(regs){
-    var old=regs.filter(regIsOld);
-    var c=navigator.serviceWorker.controller;
-    var cOld=isOldSW(c&&c.scriptURL);
-    if(!old.length&&!cOld) return null;
-    return Promise.all(old.map(function(r){return r.unregister();})).then(function(){
-      if(!window.caches) return;
-      return caches.keys().then(function(ks){
-        return Promise.all(ks.map(function(k){return caches.delete(k);}));
-      });
-    }).then(function(){location.reload();});
-  }).catch(function(){});
-})();
-</script>`;
-        html = html.replace("<head>", "<head>" + kill);
-      }
+      const html = await response.text();
       return new Response(html, {
         status: response.status,
         statusText: response.statusText,

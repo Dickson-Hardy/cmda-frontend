@@ -130,7 +130,7 @@ const ChatBox = ({ userId, recipientId }) => {
       {/* back button mobile screen */}
       <div className="lg:hidden">
         <div
-          className="flex items-center text-black gap-x-2 mt-1 mb-4 cursor-pointer"
+          className="flex items-center text-ink gap-x-2 mt-1 mb-4 cursor-pointer"
           onClick={() => navigate("/dashboard/messaging")}
         >
           <span className="text-lg">{icons.arrowLeft}</span> <span>Back</span>

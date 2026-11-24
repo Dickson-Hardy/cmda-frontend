@@ -69,7 +69,7 @@ const EmailVerification = () => {
   return (
     <div className="flex flex-col items-center gap-8">
       <div className="text-center">
-        <h2 className="text-3xl md:text-4xl font-bold">Email verification</h2>
+        <h1 className="text-3xl md:text-4xl font-bold">Email verification</h1>
         <p className="text-gray-dark mt-1">Enter the OTP sent to your email {verifyEmail ? " - " + verifyEmail : ""}</p>
       </div>
       <div>

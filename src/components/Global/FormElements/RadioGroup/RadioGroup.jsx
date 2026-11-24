@@ -18,10 +18,10 @@ const RadioGroup = ({
   return (
     <div>
       {showTitleLabel && (
-        <label className="block mb-1 text-sm font-medium text-black">
+        <span className="block mb-1 text-sm font-medium text-ink">
           {title || convertToCapitalizedWords(label)}
           {required ? <span className="text-error ml-px">*</span> : null}
-        </label>
+        </span>
       )}
       <div className={classNames("flex flex-wrap gap-4", orientation === "vertical" ? "flex-col" : "flex-row")}>
         {options.map((option) => (
@@ -31,10 +31,10 @@ const RadioGroup = ({
             name={name || label}
             render={({ field }) => (
               <label className="flex items-center cursor-pointer text-sm">
-                <input type="radio" {...field} value={option.value} hidden />
+                <input type="radio" {...field} value={option.value} className="peer sr-only" />
                 <span
                   className={classNames(
-                    "h-4 w-4 rounded-full mr-2 border-[3px]",
+                    "h-5 w-5 min-h-5 min-w-5 rounded-full mr-2 border-[3px] peer-focus-visible:ring-2 peer-focus-visible:ring-primary/40",
                     "outline outline-2 transition-all duration-300",
                     option.value === field.value
                       ? "border-white outline-primary bg-primary"

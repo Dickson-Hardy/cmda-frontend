@@ -293,7 +293,7 @@ const DashboardProfilePage = () => {
           <h3 className="text-base font-bold mb-2">Community Statistics</h3>
           <ul className="space-y-4 capitalize">
             <li className="flex items-center gap-4">
-              <span className="h-14 w-14 rounded-xl inline-flex items-center justify-center bg-black/10 text-black text-2xl">
+              <span className="h-14 w-14 rounded-xl inline-flex items-center justify-center bg-black/10 text-ink text-2xl">
                 {icons.calendar}
               </span>
               <div>

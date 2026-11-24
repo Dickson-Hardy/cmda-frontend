@@ -97,7 +97,7 @@ const Donations = () => {
           <button
             onClick={() => handleDownloadReceipt(value)}
             disabled={loadingReceipt === value}
-            className="text-primary hover:text-primary-dark underline text-sm font-medium"
+            className="text-primary hover:text-primaryDark underline text-sm font-medium"
           >
             {loadingReceipt === value ? "Preparing..." : "Download PDF"}
           </button>

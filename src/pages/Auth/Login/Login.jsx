@@ -91,7 +91,7 @@ const Login = () => {
   return (
     <div>
       <div className="mb-4 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold">Welcome Back</h2>
+        <h1 className="text-3xl md:text-4xl font-bold">Welcome Back</h1>
         <p className="text-gray-dark mt-2">Login to your account</p>
       </div>
       <form onSubmit={handleSubmit(handleLogin)} className="grid grid-cols-1 gap-4">
@@ -128,7 +128,7 @@ const Login = () => {
 
         <div className="grid gap-6">
           <Button large label="Login" loading={isLoading} className="w-full" type="submit" />
-          <div className="text-center font-bold text-black ">
+          <div className="text-center font-bold text-ink ">
             Don&apos;t have an account?
             <Link to="/signup" className="ml-2 text-primary font-semibold text-sm hover:underline">
               Sign Up

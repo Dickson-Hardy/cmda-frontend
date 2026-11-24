@@ -47,7 +47,7 @@ const ConfirmSubscriptionModal = ({ isOpen, onClose, onSubmit, loading }) => {
           </select>
         </div>
 
-        <div className={classNames("grid grid-cols-2 gap-2 items-center")}>
+        <div className={classNames("grid grid-cols-1 sm:grid-cols-2 gap-2 items-center")}>
           <Button className="w-full mb-1.5" variant="outlined" large onClick={onClose}>
             No, Cancel
           </Button>

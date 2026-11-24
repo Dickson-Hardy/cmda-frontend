@@ -57,8 +57,8 @@ const ProgressIndicator = ({ currentStep, totalSteps }) => {
               role="listitem"
               className={`
                 w-2 h-2 rounded-full
-                ${isCurrent ? "bg-blue-600 scale-125" : ""}
-                ${isCompleted ? "bg-blue-600" : ""}
+                ${isCurrent ? "bg-primary scale-125" : ""}
+                ${isCompleted ? "bg-primary" : ""}
                 ${isUpcoming ? "bg-gray-300 border border-gray-400" : ""}
               `}
               style={{

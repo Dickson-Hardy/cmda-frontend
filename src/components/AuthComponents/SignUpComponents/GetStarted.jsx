@@ -52,29 +52,31 @@ const GetStarted = () => {
   return (
     <>
       <div className="mb-9 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold">Get Started</h2>
+        <h1 className="text-3xl md:text-4xl font-bold">Get Started</h1>
         <p className="text-gray-dark mt-2">Select account type to create</p>
       </div>
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 place-items-center gap-4 cursor-pointer">
         {getStartedList.map(({ title, bg, border, image }) => (
-          <div
+          <button
+            type="button"
             key={title}
+            aria-pressed={accountType === title}
             className={classNames(
-              "w-full rounded-2xl p-6 flex flex-col items-center justify-center gap-4",
+              "w-full rounded-2xl p-6 flex flex-col items-center justify-center gap-4 text-center",
               bg,
-              accountType == title && border
+              accountType === title && border
             )}
             onClick={() => setAccountType(title)}
           >
-            <img src={image} alt="Student Icon" className="size-[3rem] object-contain" />
+            <img src={image} alt={`${title} icon`} className="size-[3rem] object-contain" />
 
-            <p className="text-black text-sm font-bold capitalize">
+            <p className="text-ink text-sm font-bold capitalize">
               {title === "global member" ? "Global Network Member" : title}
             </p>
             <p className="text-gray-600 text-xs text-center -mt-3">
               <b className="text-error">*</b> Requires {REQUIRES[title]}
             </p>
-          </div>
+          </button>
         ))}
       </div>
 

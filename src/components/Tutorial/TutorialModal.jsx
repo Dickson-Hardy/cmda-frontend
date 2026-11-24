@@ -630,8 +630,8 @@ const TutorialModal = ({
             <button
               onClick={onSkip}
               className={`text-gray-500 hover:text-gray-700 transition-colors
-                       focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
-                       focus:bg-blue-50 rounded px-2 py-1 -mr-2 -mt-1
+                       focus-visible:ring-2 focus-visible:ring-primary focus:ring-offset-2
+                       focus:bg-primaryTint rounded px-2 py-1 -mr-2 -mt-1
                        ${isMobile ? "text-xs" : "text-sm"}`}
               aria-label="Skip tutorial"
             >
@@ -674,8 +674,8 @@ const TutorialModal = ({
                 bg-white border border-gray-300 rounded-lg
                 hover:bg-gray-50 hover:border-gray-400
                 active:bg-gray-100
-                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-                focus:border-blue-500 focus:bg-blue-50
+                focus-visible:ring-2 focus-visible:ring-primary focus:ring-offset-2
+                focus:border-primary focus:bg-primaryTint
                 transition-all duration-200
                 ${isMobile ? "flex-1 text-sm min-h-[40px]" : "text-sm"}
               `}
@@ -697,7 +697,7 @@ const TutorialModal = ({
               bg-primary rounded-lg
               hover:bg-primary/90
               active:bg-primary/80
-              focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+              focus-visible:ring-2 focus-visible:ring-primary focus:ring-offset-2
               focus:ring-offset-white
               transition-all duration-200
               ${isMobile ? "flex-1 text-sm min-h-[40px]" : "text-sm"}

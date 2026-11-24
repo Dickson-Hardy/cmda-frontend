@@ -21,8 +21,8 @@ const BottomNav = ({ navLinks, toggleSidebar }) => {
   const location = useLocation();
 
   return (
-    <div className="block md:hidden fixed bottom-0 left-0 z-20 w-full h-16 bg-primary shadow-lg">
-      <nav className="flex h-full w-full items-stretch font-medium" aria-label="Dashboard navigation">
+    <div className="block md:hidden fixed bottom-0 left-0 z-20 w-full bg-primary shadow-lg pb-safe-area">
+      <nav className="flex h-16 w-full items-stretch font-medium" aria-label="Dashboard navigation">
         {navLinks.slice(0, 4).map((item) => {
           const tutorialAttr = getTutorialAttribute(item.title);
           const isActive =
@@ -35,7 +35,7 @@ const BottomNav = ({ navLinks, toggleSidebar }) => {
               type="button"
               className={classNames(
                 "inline-flex min-w-0 flex-1 basis-0 flex-col items-center justify-center gap-1 px-1 transition-all",
-                "hover:bg-white hover:text-primary",
+                "hover:bg-white hover:text-primary focus-visible:ring-2 focus-visible:ring-white/70",
                 isActive ? "bg-white text-primary" : "text-white"
               )}
               onClick={() => navigate(item.link)}
@@ -53,7 +53,7 @@ const BottomNav = ({ navLinks, toggleSidebar }) => {
           type="button"
           className={classNames(
             "inline-flex min-w-0 flex-1 basis-0 flex-col items-center justify-center gap-1 px-1 text-white transition-all",
-            "hover:bg-white hover:text-primary"
+            "hover:bg-white hover:text-primary focus-visible:ring-2 focus-visible:ring-white/70"
           )}
           onClick={toggleSidebar}
           data-tutorial="bottomnav-more"

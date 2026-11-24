@@ -39,7 +39,7 @@ const NewPassword = () => {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold">Create a new password</h2>
+      <h1 className="text-xl font-semibold">Create a new password</h1>
       <p className="text-gray-dark text-sm">Enter the email and six-digit OTP used for this reset request.</p>
       <form className="my-6" onSubmit={handleSubmit(handleResetPassword)}>
         <div className="max-w-[480px] w-full">

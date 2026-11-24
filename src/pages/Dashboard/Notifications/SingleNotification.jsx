@@ -39,7 +39,7 @@ const SingleNotification = () => {
             </div>
           ) : item ? (
             <article>
-              <span className="inline-flex rounded-full bg-purple-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
+              <span className="inline-flex rounded-full bg-primaryTint px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
                 {notificationTitle(item)}
               </span>
               <h1 className="mt-4 text-2xl font-bold">{notificationTitle(item)}</h1>

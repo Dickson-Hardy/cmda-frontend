@@ -45,7 +45,7 @@ const TextInput = forwardRef(
     return (
       <div className="w-full">
         {showTitleLabel && (
-          <label htmlFor={fieldName} className="block mb-1 text-sm font-semibold text-black">
+          <label htmlFor={fieldName} className="block mb-1 text-sm font-semibold text-ink">
             {title || convertToCapitalizedWords(fieldName)}
             {required ? <span className="text-error ml-px">*</span> : null}
           </label>
@@ -69,6 +69,10 @@ const TextInput = forwardRef(
             min={min}
             max={max}
             disabled={disabled}
+            aria-invalid={Boolean(shouldShowError && errors?.[fieldName]) || undefined}
+            aria-describedby={
+              shouldShowError && errors?.[fieldName] ? `${fieldName}-error` : undefined
+            }
             onBlur={(e) => {
               setHasBeenTouched(true);
               registerProps.onBlur?.(e);
@@ -76,15 +80,16 @@ const TextInput = forwardRef(
           />
           {type === "password" && (
             <button
-              className="absolute top-3.5 right-3 text-gray group-focus-within:text-black transition-all"
+              className="absolute top-3.5 right-3 text-gray group-focus-within:text-ink transition-all"
               type="button"
+              aria-label={showPwd ? "Hide password" : "Show password"}
               onClick={() => setShowPwd(!showPwd)}
             >
               {showPwd ? icons.eyeSlash : icons.eye}
             </button>
           )}
         </div>
-        <FormError error={shouldShowError ? errors?.[fieldName]?.message : ""} />
+        <FormError id={`${fieldName}-error`} error={shouldShowError ? errors?.[fieldName]?.message : ""} />
       </div>
     );
   }

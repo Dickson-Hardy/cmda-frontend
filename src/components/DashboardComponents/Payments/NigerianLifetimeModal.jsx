@@ -62,8 +62,8 @@ const NigerianLifetimeModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
           </ul>
         </div>
 
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-          <p className="text-sm text-blue-800">
+        <div className="bg-primaryTint border border-primaryTint2 rounded-lg p-4 mb-6">
+          <p className="text-sm text-primaryDark">
             <strong>Note:</strong> After clicking “Proceed to Payment”, you’ll be redirected to our secure payment
             gateway to complete your lifetime membership purchase.
           </p>

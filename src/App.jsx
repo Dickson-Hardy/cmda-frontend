@@ -59,7 +59,7 @@ function MemberApp() {
 
   const LoadingComponent = () => (
     <div className="w-full h-screen flex flex-col items-center justify-center">
-      <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mb-4"></div>
+      <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mb-4"></div>
       <h2 className="font-bold text-xl mb-2">Loading...</h2>
       {loadingTimeout && (
         <div className="text-center">
@@ -70,7 +70,7 @@ function MemberApp() {
               sessionStorage.clear();
               window.location.reload();
             }}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+            className="px-4 py-2 bg-primary text-white rounded hover:bg-primaryDark text-sm"
           >
             Clear Cache & Reload
           </button>

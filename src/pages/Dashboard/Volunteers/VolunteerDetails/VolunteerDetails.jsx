@@ -238,7 +238,7 @@ const DashboardVolunteerDetailsPage = () => {
 
             <p className="text-gray text-sm mb-4">
               Posted:{" "}
-              <span className="text-black font-medium">{formatDate(volunteerJob?.createdAt).dateTime}</span>{" "}
+              <span className="text-ink font-medium">{formatDate(volunteerJob?.createdAt).dateTime}</span>{" "}
             </p>
 
             {new Date(volunteerJob?.closingDate).getTime() > Date.now() && (

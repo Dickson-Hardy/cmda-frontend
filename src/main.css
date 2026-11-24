@@ -23,7 +23,36 @@
 
 :root {
   --toastify-color-success: #117e45;
-  --toastify-color-error: #ff4834;
+  --toastify-color-error: #ff4040;
+}
+
+/* Consistent keyboard focus across the app. */
+:focus-visible {
+  outline: 2px solid #994279;
+  outline-offset: 2px;
+}
+
+/* iOS notch / home-indicator safe areas for installed PWAs. */
+.top-safe {
+  top: env(safe-area-inset-top, 0px);
+}
+
+.main-offset {
+  margin-top: calc(4rem + env(safe-area-inset-top, 0px));
+}
+
+@media (max-width: 767px) {
+  .pb-safe-nav {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .pt-safe-header {
+    padding-top: calc(4rem + env(safe-area-inset-top, 0px));
+  }
+
+  .pb-safe-area {
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 /* App Download Banner Animation */

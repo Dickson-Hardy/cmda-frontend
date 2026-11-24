@@ -135,11 +135,11 @@ const PaymentSync = ({ showTitle = true, compact = false }) => {
   }
   if (compact) {
     return (
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div className="bg-primaryTint border border-primaryTint2 rounded-lg p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 text-blue-600">ℹ</div>
-            <span className="text-sm text-blue-800">{pendingTransactions.length} pending payment(s) found</span>
+            <div className="w-5 h-5 text-primary">ℹ</div>
+            <span className="text-sm text-primaryDark">{pendingTransactions.length} pending payment(s) found</span>
           </div>
           <Button
             label="Sync All"

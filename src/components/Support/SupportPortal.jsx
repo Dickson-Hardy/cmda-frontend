@@ -48,14 +48,20 @@ async function supportRequest(path, { token, body, method = "GET" } = {}) {
 export default function SupportPortal({ embedded = false }) {
   const initial = useRef(new URLSearchParams(window.location.search));
   const [mode, setMode] = useState(window.location.hash.startsWith("#CMDA-") ? "track" : "new");
-  const [form, setForm] = useState({
-    kind: "complaint",
-    category: "general",
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-    website: "",
+  const [form, setForm] = useState(() => {
+    const params = initial.current;
+    const sharedTitle = params.get("title") || "";
+    const sharedText = params.get("text") || "";
+    const sharedUrl = params.get("url") || "";
+    return {
+      kind: "complaint",
+      category: "general",
+      name: params.get("name") || "",
+      email: params.get("email") || "",
+      subject: sharedTitle,
+      message: [sharedText, sharedUrl].filter(Boolean).join("\n"),
+      website: "",
+    };
   });
   const identity = useRef(null);
   const [reference, setReference] = useState(window.location.hash.slice(1).split(":")[0] || "");

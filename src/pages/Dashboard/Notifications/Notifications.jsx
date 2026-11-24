@@ -120,7 +120,7 @@ const DashboardNotificationsPage = () => {
                 {visibleNotifications.map((item) => (
                   <article
                     key={item._id}
-                    className={`group flex cursor-pointer gap-3 p-4 transition hover:bg-gray-50 ${!item.read ? "bg-purple-50/60" : ""}`}
+                    className={`group flex cursor-pointer gap-3 p-4 transition hover:bg-gray-50 ${!item.read ? "bg-primaryTint/60" : ""}`}
                     onClick={() => navigate(`/dashboard/notifications/${item._id}`, { state: { item } })}
                   >
                     <span

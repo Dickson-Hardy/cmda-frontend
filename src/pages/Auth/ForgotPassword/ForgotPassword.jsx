@@ -33,7 +33,7 @@ const ForgotPassword = () => {
   return (
     <form onSubmit={handleSubmit(handleForgotPassword)} className="space-y-6">
       <div className="text-center">
-        <h2 className="text-3xl md:text-4xl font-bold">Forgot password?</h2>
+        <h1 className="text-3xl md:text-4xl font-bold">Forgot password?</h1>
         <p className="text-gray-dark mt-1">Enter your email to get a reset OTP</p>
       </div>
 

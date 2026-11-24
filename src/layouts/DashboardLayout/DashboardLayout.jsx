@@ -113,7 +113,18 @@ const ProfileCompletionPrompt = () => {
   const { isActive: tutorialIsActive } = useTutorial();
   const navigate = useNavigate();
   const promptedUserId = useRef(null);
+  const dialogRef = useRef(null);
   const [missing, setMissing] = useState([]);
+
+  useEffect(() => {
+    if (!missing.length) return undefined;
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setMissing([]);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    dialogRef.current?.focus();
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [missing.length]);
 
   useEffect(() => {
     if (!user?._id) {
@@ -135,12 +146,15 @@ const ProfileCompletionPrompt = () => {
 
   return (
     <div
+      ref={dialogRef}
+      tabIndex={-1}
       className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 p-4"
       role="dialog"
       aria-modal="true"
+      aria-labelledby="profile-prompt-title"
     >
       <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-        <h2 className="text-xl font-bold text-black">Complete your member profile</h2>
+        <h2 id="profile-prompt-title" className="text-xl font-bold text-ink">Complete your member profile</h2>
         <p className="mt-2 text-sm text-gray-600">
           Add your {missing.slice(0, 3).join(", ")}
           {missing.length > 3 ? ` and ${missing.length - 3} more` : ""} so members can identify and connect with you.
@@ -173,11 +187,9 @@ const DashboardLayout = ({ withOutlet = true, children }) => {
   const isSmallScreen = useIsSmallScreen("750px");
   const [isSidebarOpen, setSidebarOpen] = useState(!isSmallScreen);
 
-  const toggleSidebar = () => {
-    if (isSmallScreen) {
-      setSidebarOpen(!isSidebarOpen);
-    }
-  };
+  const toggleSidebar = useCallback(() => {
+    setSidebarOpen((open) => !open);
+  }, []);
 
   // Callback to open sidebar (for tutorial mobile navigation)
   const openSidebar = useCallback(() => {
@@ -227,7 +239,11 @@ const DashboardLayout = ({ withOutlet = true, children }) => {
   return (
     <TutorialProvider isSidebarOpen={isSidebarOpen} onOpenSidebar={openSidebar} onCloseSidebar={closeSidebar}>
       <div className="bg-background">
-        <Header unreadMessagesCount={unreadMessagesCount} unreadNotificationCount={unreadNotificationCount} />
+        <Header
+          unreadMessagesCount={unreadMessagesCount}
+          unreadNotificationCount={unreadNotificationCount}
+          onToggleSidebar={toggleSidebar}
+        />
 
         <div className="flex h-dvh overflow-hidden">
           <Sidebar
@@ -242,7 +258,7 @@ const DashboardLayout = ({ withOutlet = true, children }) => {
               "min-w-0 flex-1 flex flex-col overflow-hidden transition-all duration-300"
             )}
           >
-            <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-6 pb-20 md:pb-6 mt-16">
+            <main className="main-offset flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-6 pb-safe-nav md:pb-6">
               {withOutlet ? <Outlet /> : children}
             </main>
           </div>

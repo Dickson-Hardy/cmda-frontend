@@ -1,28 +1,44 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import icons from "~/assets/js/icons";
+import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import Dropdown from "~/components/Global/Dropdown/DropDown";
 import Logo from "~/components/Global/Logo/Logo";
 import { setUser } from "~/redux/features/auth/authSlice";
 import { clearTokens } from "~/redux/features/auth/tokenSlice";
 import { classNames } from "~/utilities/classNames";
 
-const Header = ({ unreadMessagesCount, unreadNotificationCount }) => {
+const iconButtonClass =
+  "relative inline-flex items-center p-1.5 text-xl font-medium text-center text-primary rounded-lg hover:bg-onPrimary focus-visible:ring-2 focus-visible:ring-primary/40";
+
+const Header = ({ unreadMessagesCount, unreadNotificationCount, onToggleSidebar }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
   const { cartItems } = useSelector((state) => state.cart);
+  const [logoutOpen, setLogoutOpen] = useState(false);
 
   const handleLogout = () => {
-    if (!window.confirm("Log out of your CMDA account?")) return;
-    window.location.href = "/login";
     dispatch(clearTokens());
     dispatch(setUser(null));
+    setLogoutOpen(false);
+    navigate("/login", { replace: true });
   };
 
+  const fullName = user ? [user.firstName, user?.middleName, user.lastName].filter(Boolean).join(" ") : "No Name";
+
   return (
-    <header className="bg-white fixed top-0 inset-x-0 z-[2] shadow">
-      <nav className="h-full w-full flex items-center gap-2 md:gap-3 p-6 px-3 md:px-6 py-3">
+    <header className="bg-white fixed inset-x-0 top-safe z-50 shadow">
+      <nav className="h-full w-full flex items-center gap-2 md:gap-3 p-3 px-3 md:px-6 py-3" aria-label="Dashboard header">
+        <button
+          type="button"
+          aria-label="Toggle navigation"
+          onClick={onToggleSidebar}
+          className="hidden md:inline-flex items-center p-1.5 text-xl text-primary rounded-lg hover:bg-onPrimary focus-visible:ring-2 focus-visible:ring-primary/40"
+        >
+          {icons.menu}
+        </button>
         <Logo className="w-auto h-10 sm:h-12 md:hidden" />
 
         <div className="flex-1" />
@@ -30,7 +46,8 @@ const Header = ({ unreadMessagesCount, unreadNotificationCount }) => {
         {cartItems.length ? (
           <button
             type="button"
-            className="relative inline-flex items-center p-1.5 text-2xl font-medium text-center text-primary rounded-lg hover:bg-onPrimary focus:outline-none"
+            aria-label={`Shopping cart, ${cartItems.length} items`}
+            className={iconButtonClass}
             onClick={() => navigate("/dashboard/store/cart")}
           >
             {icons.cart}
@@ -42,7 +59,8 @@ const Header = ({ unreadMessagesCount, unreadNotificationCount }) => {
         {/* Message Icon */}
         <button
           type="button"
-          className="relative inline-flex items-center p-1.5 text-xl font-medium text-center text-primary rounded-lg hover:bg-onPrimary focus:outline-none"
+          aria-label="Messages"
+          className={iconButtonClass}
           onClick={() => navigate("/dashboard/messaging")}
         >
           {icons.message}
@@ -55,7 +73,8 @@ const Header = ({ unreadMessagesCount, unreadNotificationCount }) => {
         {/* Notification Icon */}
         <button
           type="button"
-          className="relative inline-flex items-center p-1.5 text-xl font-medium text-center text-primary rounded-lg hover:bg-onPrimary focus:outline-none"
+          aria-label="Notifications"
+          className={iconButtonClass}
           onClick={() => navigate("/dashboard/notifications")}
         >
           {icons.bell}
@@ -68,9 +87,13 @@ const Header = ({ unreadMessagesCount, unreadNotificationCount }) => {
         {/* Avatar Dropdown */}
         <Dropdown
           toggleElement={
-            <button className="inline-flex items-center gap-2 hover:bg-onPrimary transition rounded-lg">
+            <button
+              type="button"
+              aria-label="Account menu"
+              className="inline-flex items-center gap-2 hover:bg-onPrimary transition rounded-lg focus-visible:ring-2 focus-visible:ring-primary/40"
+            >
               {user?.avatarUrl ? (
-                <img src={user.avatarUrl} className="bg-onPrimary object-cover rounded-full h-10 w-10 flex-shrink-0" />
+                <img src={user.avatarUrl} alt="" className="bg-onPrimary object-cover rounded-full h-10 w-10 flex-shrink-0" />
               ) : (
                 <span className="h-10 w-10 flex-shrink-0 bg-onPrimary rounded-full inline-flex items-center justify-center text-3xl text-primary">
                   {icons.person}
@@ -82,9 +105,7 @@ const Header = ({ unreadMessagesCount, unreadNotificationCount }) => {
         >
           <ul className="w-56 rounded-2xl text-sm pt-2 pb-2 bg-white shadow-lg border border-gray/20">
             <li className="py-2 px-4 truncate">
-              <p className="font-semibold truncate">
-                {user ? user.firstName + " " + user?.middleName + " " + user?.lastName : "No Name"}
-              </p>
+              <p className="font-semibold truncate">{fullName || "No Name"}</p>
               <p className="text-xs text-gray truncate">{user?.email || "----"}</p>
             </li>
             <li>
@@ -92,8 +113,8 @@ const Header = ({ unreadMessagesCount, unreadNotificationCount }) => {
                 to="/dashboard/profile"
                 className={({ isActive }) =>
                   classNames(
-                    "flex items-center gap-3 px-5 py-2 cursor-pointer border-t  font-medium transition-all",
-                    isActive ? "bg-onPrimary text-primary" : "bg-transparent text-black hover:bg-onPrimary"
+                    "flex items-center gap-3 px-5 py-2 cursor-pointer border-t font-medium transition-all",
+                    isActive ? "bg-onPrimary text-primary" : "bg-transparent text-ink hover:bg-onPrimary"
                   )
                 }
               >
@@ -105,8 +126,8 @@ const Header = ({ unreadMessagesCount, unreadNotificationCount }) => {
                 to="/dashboard/settings"
                 className={({ isActive }) =>
                   classNames(
-                    "flex items-center gap-3 px-5 py-2 cursor-pointer border-t  font-medium transition-all",
-                    isActive ? "bg-onPrimary text-primary" : "bg-transparent text-black hover:bg-onPrimary"
+                    "flex items-center gap-3 px-5 py-2 cursor-pointer border-t font-medium transition-all",
+                    isActive ? "bg-onPrimary text-primary" : "bg-transparent text-ink hover:bg-onPrimary"
                   )
                 }
               >
@@ -116,8 +137,8 @@ const Header = ({ unreadMessagesCount, unreadNotificationCount }) => {
             <li>
               <button
                 type="button"
-                className="flex gap-3 items-center text-black cursor-pointer border-t px-5 py-2 hover:bg-onPrimary transition-all"
-                onClick={handleLogout}
+                className="flex gap-3 items-center text-ink cursor-pointer border-t px-5 py-2 hover:bg-onPrimary transition-all"
+                onClick={() => setLogoutOpen(true)}
               >
                 <span className="text-lg">{icons.logout}</span> Logout
               </button>
@@ -125,6 +146,16 @@ const Header = ({ unreadMessagesCount, unreadNotificationCount }) => {
           </ul>
         </Dropdown>
       </nav>
+
+      <ConfirmationModal
+        isOpen={logoutOpen}
+        onClose={() => setLogoutOpen(false)}
+        icon={<span>{icons.logout}</span>}
+        title="Log out of CMDA?"
+        subtitle="You'll need to sign in again to access your account."
+        mainAction={handleLogout}
+        mainActionText="Log out"
+      />
     </header>
   );
 };

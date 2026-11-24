@@ -14,6 +14,7 @@ const FileUploader = ({
   allowedSize = 2, // size in MB
   placeholderText = "Supported types: .jpeg, .png", // a text telling the user what file types the uploader accepts
   required,
+  capture, // "environment" or "user" to open the device camera directly
 }) => {
   const { handleBrowseFiles, handleDragOver, handleDrop, uploadedFile, setUploadedFile, errMsg } = useFileUpload({
     allowedTypes,
@@ -26,7 +27,7 @@ const FileUploader = ({
 
   return (
     <div>
-      <label htmlFor={label} className="block mb-1 text-sm font-medium text-black">
+      <label htmlFor={label} className="block mb-1 text-sm font-medium text-ink">
         {title || convertToCapitalizedWords(label)}
         {required ? <span className="text-error ml-px">*</span> : null}
       </label>
@@ -72,6 +73,7 @@ const FileUploader = ({
           required: required ? "This field is required." : false,
         })}
         accept={allowedTypes.join(", ")}
+        capture={capture}
         onChange={handleBrowseFiles}
         style={{ display: "none" }}
       />

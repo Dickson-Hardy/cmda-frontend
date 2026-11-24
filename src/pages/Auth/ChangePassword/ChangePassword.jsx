@@ -81,7 +81,7 @@ const ChangePassword = () => {
   return (
     <div>
       <div className="mb-6 text-center">
-        <h2 className="text-2xl md:text-3xl font-bold">Change Your Password</h2>
+        <h1 className="text-2xl md:text-3xl font-bold">Change Your Password</h1>
         <p className="text-gray-dark mt-2">
           Your account was created by an administrator. Please change your temporary password to continue.
         </p>
