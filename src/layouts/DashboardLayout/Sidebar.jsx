@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import { setUser } from "~/redux/features/auth/authSlice";
 import { clearTokens } from "~/redux/features/auth/tokenSlice";
+import { useUnsubscribeFromPushMutation } from "~/redux/api/notification/notificationApi";
+import { removeLocalPushSubscription } from "~/utilities/pwa";
 import Logo from "~/components/Global/Logo/Logo";
 
 /**
@@ -32,8 +34,15 @@ const Sidebar = ({ isOpen, onToggleSidebar, navLinks = [], unreadMessagesCount }
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
   const [logoutOpen, setLogoutOpen] = useState(false);
+  const [unsubscribeFromPush] = useUnsubscribeFromPushMutation();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      const endpoint = await removeLocalPushSubscription();
+      if (endpoint) await unsubscribeFromPush({ endpoint }).unwrap();
+    } catch (_) {
+      // Logout must still complete if push cleanup fails.
+    }
     dispatch(clearTokens());
     dispatch(setUser(null));
     setLogoutOpen(false);

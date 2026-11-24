@@ -3,7 +3,7 @@ import { API_BASE_URL } from "./apiBaseUrl";
 const DB_NAME = "cmda-pwa";
 const STORE = "outbox";
 const SYNC_TAG = "cmda-outbox-sync";
-const PUSH_ENDPOINT = "/notifications/push-subscribe";
+const PUSH_KEY_ENDPOINT = "/notifications/push-vapid-public-key";
 
 function openOutbox() {
   return new Promise((resolve, reject) => {
@@ -65,7 +65,7 @@ export async function flushQueuedActions() {
         method: item.method,
         headers: item.headers,
         body: item.body,
-        credentials: "same-origin",
+        credentials: "include",
       });
       if (!response.ok) continue;
       await new Promise((resolve, reject) => {
@@ -91,12 +91,24 @@ function urlBase64ToUint8Array(base64String) {
 export const isPushSupported = () =>
   "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
 
-/** Subscribe this device to Web Push. Requires VITE_VAPID_PUBLIC_KEY. */
-export async function enablePushNotifications() {
-  if (!isPushSupported()) throw new Error("Push notifications are not supported by this browser");
-  const publicKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+/** Fetch the VAPID public key from the API (no build-time env var required). */
+export async function getPushPublicKey() {
+  const response = await fetch(`${API_BASE_URL}${PUSH_KEY_ENDPOINT}`);
+  if (!response.ok) throw new Error("Could not load push notification configuration");
+  const body = await response.json();
+  const publicKey = body?.data?.publicKey;
   if (!publicKey) throw new Error("Push notifications are not configured yet");
+  return publicKey;
+}
 
+/**
+ * Create (or reuse) a browser push subscription. Registration with the API is
+ * handled separately by the RTK Query mutation so it carries the auth token.
+ */
+export async function createPushSubscription() {
+  if (!isPushSupported()) throw new Error("Push notifications are not supported by this browser");
+
+  const publicKey = await getPushPublicKey();
   const permission = await Notification.requestPermission();
   if (permission !== "granted") throw new Error("Notification permission was not granted");
 
@@ -108,29 +120,18 @@ export async function enablePushNotifications() {
       applicationServerKey: urlBase64ToUint8Array(publicKey),
     });
   }
-
-  const response = await fetch(`${API_BASE_URL}${PUSH_ENDPOINT}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify(subscription.toJSON()),
-  });
-  if (!response.ok) throw new Error("Could not save your push subscription");
-  return subscription;
+  return subscription.toJSON();
 }
 
-export async function disablePushNotifications() {
-  if (!isPushSupported()) return;
+/** Unsubscribe locally and return the endpoint so the API can remove it too. */
+export async function removeLocalPushSubscription() {
+  if (!isPushSupported()) return null;
   const registration = await navigator.serviceWorker.ready;
   const subscription = await registration.pushManager.getSubscription();
-  if (!subscription) return;
-  await fetch(`${API_BASE_URL}${PUSH_ENDPOINT}`, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({ endpoint: subscription.endpoint }),
-  }).catch(() => undefined);
+  if (!subscription) return null;
+  const endpoint = subscription.endpoint;
   await subscription.unsubscribe();
+  return endpoint;
 }
 
 /** Native share sheet with a clipboard fallback. */

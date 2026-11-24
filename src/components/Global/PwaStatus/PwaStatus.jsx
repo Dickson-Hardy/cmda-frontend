@@ -12,11 +12,16 @@ const PwaStatus = () => {
   const [isOnline, setIsOnline] = useState(typeof navigator === "undefined" ? true : navigator.onLine);
   const [installPrompt, setInstallPrompt] = useState(null);
 
-  const { updateServiceWorker } = useRegisterSW({
-    immediate: true,
+  const { registerSW, updateServiceWorker } = useRegisterSW({
+    immediate: false,
     onNeedRefresh: () => setNeedRefresh(true),
     onOfflineReady: () => setOfflineReady(true),
   });
+
+  useEffect(() => {
+    // Register once on mount; updates stay opt-in so a form or payment is never interrupted.
+    registerSW();
+  }, [registerSW]);
 
   useEffect(() => {
     const goOnline = () => {

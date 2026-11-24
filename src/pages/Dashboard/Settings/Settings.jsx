@@ -9,10 +9,14 @@ import ConfirmationModal from "~/components/Global/ConfirmationModal/Confirmatio
 import Switch from "~/components/Global/FormElements/Switch/Switch";
 import { useGetSettingsQuery, useUpdateSettingsMutation } from "~/redux/api/auth/authApi";
 import {
-  disablePushNotifications,
-  enablePushNotifications,
+  createPushSubscription,
   isPushSupported,
+  removeLocalPushSubscription,
 } from "~/utilities/pwa";
+import {
+  useSubscribeToPushMutation,
+  useUnsubscribeFromPushMutation,
+} from "~/redux/api/notification/notificationApi";
 
 const DEFAULT_SETTINGS = {
   newMessage: false,
@@ -28,6 +32,8 @@ const DEFAULT_SETTINGS = {
 
 const DashboardSettingsPage = () => {
   const [updateSettings, { isLoading }] = useUpdateSettingsMutation();
+  const [subscribeToPush] = useSubscribeToPushMutation();
+  const [unsubscribeFromPush] = useUnsubscribeFromPushMutation();
   const { data: userSettings } = useGetSettingsQuery(null, { refetchOnMountOrArgChange: true });
 
   const { control, handleSubmit, reset } = useForm({
@@ -48,15 +54,28 @@ const DashboardSettingsPage = () => {
             toast.warn("Push notifications are not supported on this device");
           } else {
             try {
-              await enablePushNotifications();
+              const subscription = await createPushSubscription();
+              await subscribeToPush(subscription).unwrap();
               toast.success("This device is now subscribed to push notifications");
             } catch (error) {
-              toast.error(getApiErrorMessage(error, "Push notifications could not be enabled. Check your browser permissions."));
+              toast.error(
+                getApiErrorMessage(
+                  error,
+                  "Push notifications could not be enabled. Check your browser permissions.",
+                ),
+              );
               return;
             }
           }
         } else {
-          await disablePushNotifications();
+          const endpoint = await removeLocalPushSubscription();
+          if (endpoint) {
+            try {
+              await unsubscribeFromPush({ endpoint }).unwrap();
+            } catch (error) {
+              toast.warn("Removed this device locally, but the server could not be updated");
+            }
+          }
         }
       }
       if (!Object.keys(changes).length) {

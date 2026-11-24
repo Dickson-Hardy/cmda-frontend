@@ -17,6 +17,24 @@ const notificationsApi = api.injectEndpoints({
       transformResponse: (response) => response.data,
       providesTags: ["NOTIFICATIONS_STATS"],
     }),
+    getPushVapidKey: build.query({
+      query: () => ({ url: "/notifications/push-vapid-public-key" }),
+      transformResponse: (response) => response.data,
+    }),
+    subscribeToPush: build.mutation({
+      query: (subscription) => ({
+        url: "/notifications/push-subscribe",
+        method: "POST",
+        body: subscription,
+      }),
+    }),
+    unsubscribeFromPush: build.mutation({
+      query: (endpoint) => ({
+        url: "/notifications/push-subscribe",
+        method: "DELETE",
+        body: typeof endpoint === "string" ? { endpoint } : endpoint,
+      }),
+    }),
     markAsRead: build.mutation({
       query: (id) => ({ url: `/notifications/${id}/read`, method: "PATCH" }),
       transformResponse: (response) => response.data,
@@ -45,6 +63,9 @@ export const {
   useDeleteNotificationMutation,
   useRestoreNotificationMutation,
   useGetNotificationStatsQuery,
+  useGetPushVapidKeyQuery,
+  useSubscribeToPushMutation,
+  useUnsubscribeFromPushMutation,
 } = notificationsApi;
 
 export default notificationsApi;

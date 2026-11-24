@@ -7,6 +7,8 @@ import Dropdown from "~/components/Global/Dropdown/DropDown";
 import Logo from "~/components/Global/Logo/Logo";
 import { setUser } from "~/redux/features/auth/authSlice";
 import { clearTokens } from "~/redux/features/auth/tokenSlice";
+import { useUnsubscribeFromPushMutation } from "~/redux/api/notification/notificationApi";
+import { removeLocalPushSubscription } from "~/utilities/pwa";
 import { classNames } from "~/utilities/classNames";
 
 const iconButtonClass =
@@ -18,8 +20,15 @@ const Header = ({ unreadMessagesCount, unreadNotificationCount, onToggleSidebar 
   const user = useSelector((state) => state.auth.user);
   const { cartItems } = useSelector((state) => state.cart);
   const [logoutOpen, setLogoutOpen] = useState(false);
+  const [unsubscribeFromPush] = useUnsubscribeFromPushMutation();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      const endpoint = await removeLocalPushSubscription();
+      if (endpoint) await unsubscribeFromPush({ endpoint }).unwrap();
+    } catch (_) {
+      // Logout must still complete if push cleanup fails.
+    }
     dispatch(clearTokens());
     dispatch(setUser(null));
     setLogoutOpen(false);
