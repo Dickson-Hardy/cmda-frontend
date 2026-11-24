@@ -71,8 +71,11 @@ export default defineConfig({
           /^\/support\/embed(?:\/|$)/,
         ],
         cleanupOutdatedCaches: true,
-        // Handled explicitly by the in-app update prompt instead.
-        skipWaiting: false,
+        // Activate a newly installed worker immediately so a stale cached
+        // bundle can never trap users on an old (possibly broken) build.
+        // clientsClaim stays false so the current page is not yanked away
+        // mid-form or mid-payment; the new assets apply on next navigation.
+        skipWaiting: true,
         clientsClaim: false,
         importScripts: ["sw-sync.js", "sw-push.js"],
         runtimeCaching: [
