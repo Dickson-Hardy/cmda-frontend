@@ -12,6 +12,7 @@ import { API_BASE_URL } from "./utilities/apiBaseUrl";
 import ErrorBoundary from "./components/Global/ErrorBoundary/ErrorBoundary";
 import "react-toastify/dist/ReactToastify.css";
 import SupportLauncher from "./components/Support/SupportLauncher";
+import InstallGuide from "./components/Global/InstallGuide/InstallGuide";
 
 const PublicSupport = lazy(() => import("./components/Support/SupportPortal"));
 
@@ -107,6 +108,7 @@ function MemberApp() {
             <RestoreSession />
             {(persistorReady || loadingTimeout) && <AppRouter />}
             {(persistorReady || loadingTimeout) && <SupportLauncher />}
+            {(persistorReady || loadingTimeout) && <InstallGuide />}
 
             <ToastContainer
               position="top-right"

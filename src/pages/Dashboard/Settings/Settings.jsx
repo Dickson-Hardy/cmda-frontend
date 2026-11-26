@@ -8,6 +8,7 @@ import Button from "~/components/Global/Button/Button";
 import ConfirmationModal from "~/components/Global/ConfirmationModal/ConfirmationModal";
 import Switch from "~/components/Global/FormElements/Switch/Switch";
 import { useGetSettingsQuery, useUpdateSettingsMutation } from "~/redux/api/auth/authApi";
+import { openInstallGuide } from "~/components/Global/InstallGuide/InstallGuide";
 import {
   createPushSubscription,
   isPushSupported,
@@ -187,6 +188,16 @@ const DashboardSettingsPage = () => {
           <span>{icons.logout}</span>
           Change Password
         </Link>
+      </div>
+
+      <hr className="my-10 border-gray" />
+
+      <div>
+        <h3 className="text-base font-bold mb-2">Install CMDA app</h3>
+        <p className="text-sm text-gray-600 mb-3">
+          Add CMDA to your home screen for one-tap access, offline-friendly browsing and a full-screen app experience.
+        </p>
+        <Button type="button" variant="outlined" label="Show install guide" onClick={openInstallGuide} />
       </div>
 
       <ConfirmationModal
